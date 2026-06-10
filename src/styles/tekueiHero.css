@@ -34,18 +34,6 @@
   pointer-events: none;
 }
 
-.tekuei-hero-root .cursor-dot {
-  position: fixed;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: rgba(240, 232, 223, 0.42);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: screen;
-}
-
 .ui {
   position: fixed;
   inset: 0;
@@ -73,6 +61,7 @@ nav {
   font-size: clamp(14px, 1.05vw, 17px);
   letter-spacing: 0.38em;
   color: var(--text);
+  text-decoration: none;
 }
 
 .nav-links {

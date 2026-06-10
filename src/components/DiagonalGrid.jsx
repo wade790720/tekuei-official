@@ -23,28 +23,62 @@ function buildSvgMarkup(W, H) {
   return d
 }
 
-export function DiagonalGrid() {
+/**
+ * @param {{ extent?: 'viewport' | 'document', className?: string }} props
+ */
+export function DiagonalGrid({ extent = 'viewport', className = '' }) {
   const svgRef = useRef(null)
 
   useEffect(() => {
     const svg = svgRef.current
     if (!svg) return
 
+    let raf = 0
+
     const paint = () => {
       const W = window.innerWidth
-      const H = window.innerHeight
+      const H =
+        extent === 'document'
+          ? Math.max(
+              window.innerHeight,
+              document.documentElement.scrollHeight,
+            )
+          : window.innerHeight
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`)
+      if (extent === 'document') {
+        svg.style.height = `${H}px`
+      } else {
+        svg.style.height = ''
+      }
       svg.innerHTML = buildSvgMarkup(W, H)
     }
 
-    paint()
-    window.addEventListener('resize', paint)
-    return () => window.removeEventListener('resize', paint)
-  }, [])
+    const schedule = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(paint)
+    }
+
+    schedule()
+    window.addEventListener('resize', schedule)
+    window.addEventListener('scroll', schedule, { passive: true })
+
+    const ro =
+      extent === 'document' && typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(schedule)
+        : null
+    ro?.observe(document.documentElement)
+
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', schedule)
+      window.removeEventListener('scroll', schedule)
+      ro?.disconnect()
+    }
+  }, [extent])
 
   return (
-    <svg ref={svgRef} className="grid-svg" aria-hidden>
-      {/* lines injected */}
+    <svg ref={svgRef} className={['grid-svg', className].filter(Boolean).join(' ')} aria-hidden>
+      {/* injected */}
     </svg>
   )
 }

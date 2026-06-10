@@ -27,3 +27,25 @@ body {
   height: 100%;
   margin: 0;
 }
+
+.cursor-dot {
+  position: fixed;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(240, 232, 223, 0.42);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: screen;
+  transition:
+    width 0.35s cubic-bezier(0.23, 0.1, 0.25, 1),
+    height 0.35s cubic-bezier(0.23, 0.1, 0.25, 1),
+    background 0.35s ease;
+}
+
+.cursor-dot.cursor-dot--hover {
+  width: 40px;
+  height: 40px;
+  background: rgba(240, 232, 223, 0.08);
+}
