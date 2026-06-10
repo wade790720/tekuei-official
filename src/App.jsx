@@ -7,10 +7,7 @@ import CaseRouter from './components/CaseRouter.jsx'
 function ScrollClasses() {
   const { pathname } = useLocation()
   useEffect(() => {
-    document.documentElement.classList.toggle(
-      'tekuei-has-scroll-document',
-      pathname !== '/',
-    )
+    document.documentElement.classList.add('tekuei-has-scroll-document')
     window.scrollTo(0, 0)
   }, [pathname])
   return null
