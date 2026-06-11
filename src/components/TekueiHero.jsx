@@ -33,7 +33,9 @@ function HomeNav({ scrolled }) {
         <NavLink to="/work" className={({ isActive }) => (isActive ? 'is-active' : '')}>
           Work
         </NavLink>
-        <a href="#journal">Journal</a>
+        <NavLink to="/journal" className={({ isActive }) => (isActive ? 'is-active' : '')}>
+          Journal
+        </NavLink>
         <a href="#contact">Contact</a>
       </div>
     </nav>

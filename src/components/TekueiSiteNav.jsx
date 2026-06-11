@@ -1,9 +1,9 @@
 import { NavLink } from 'react-router-dom'
 
 /**
- * @param {{ highlightWorkSection?: boolean }} props — 落在案例占位頁時仍讓 Work 看起來為 active。
+ * @param {{ highlightWorkSection?: boolean, highlightJournal?: boolean }} props
  */
-export function TekueiSiteNav({ highlightWorkSection = false }) {
+export function TekueiSiteNav({ highlightWorkSection = false, highlightJournal = false }) {
   return (
     <nav className="tekuei-site-nav">
       <NavLink end to="/" className="tekuei-site-nav__logo">
@@ -21,7 +21,14 @@ export function TekueiSiteNav({ highlightWorkSection = false }) {
         >
           Work
         </NavLink>
-        <a href="/#journal">Journal</a>
+        <NavLink
+          to="/journal"
+          className={({ isActive }) =>
+            isActive || highlightJournal ? 'is-active' : ''
+          }
+        >
+          Journal
+        </NavLink>
         <a href="/#contact">Contact</a>
       </div>
     </nav>
