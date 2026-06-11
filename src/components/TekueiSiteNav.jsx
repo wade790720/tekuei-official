@@ -10,7 +10,9 @@ export function TekueiSiteNav({ highlightWorkSection = false }) {
         T E K U E I
       </NavLink>
       <div className="tekuei-site-nav__links">
-        <a href="#about">About</a>
+        <NavLink to="/about" className={({ isActive }) => (isActive ? 'is-active' : '')}>
+          About
+        </NavLink>
         <NavLink
           to="/work"
           className={({ isActive }) =>
@@ -19,8 +21,8 @@ export function TekueiSiteNav({ highlightWorkSection = false }) {
         >
           Work
         </NavLink>
-        <a href="#journal">Journal</a>
-        <a href="#contact">Contact</a>
+        <a href="/#journal">Journal</a>
+        <a href="/#contact">Contact</a>
       </div>
     </nav>
   )

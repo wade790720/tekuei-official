@@ -27,8 +27,12 @@ function HomeNav({ scrolled }) {
         <span className="home-nav__brand-sub">德 溎</span>
       </Link>
       <div className="home-nav__menu">
-        <a href="#about">About</a>
-        <NavLink to="/work">Work</NavLink>
+        <NavLink to="/about" className={({ isActive }) => (isActive ? 'is-active' : '')}>
+          About
+        </NavLink>
+        <NavLink to="/work" className={({ isActive }) => (isActive ? 'is-active' : '')}>
+          Work
+        </NavLink>
         <a href="#journal">Journal</a>
         <a href="#contact">Contact</a>
       </div>
@@ -105,9 +109,9 @@ export default function TekueiHero() {
               <a href="#contact" className="home-cta">
                 BEGIN <span className="home-cta__arrow">→</span>
               </a>
-              <a href="#about" className="home-cta home-cta--ghost">
+              <Link to="/about" className="home-cta home-cta--ghost">
                 了解更多
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -127,7 +131,7 @@ export default function TekueiHero() {
           </div>
         </section>
 
-        <section className="home-philosophy" id="about">
+        <section className="home-philosophy" id="philosophy">
           <HomeFadeIn className="home-philosophy__inner">
             <div className="home-section-label">{HOME_PHILOSOPHY.label}</div>
             {HOME_PHILOSOPHY.lines.map((item, i) => {
@@ -281,11 +285,17 @@ export default function TekueiHero() {
           </div>
           <div className="home-footer__col">
             <div className="home-footer__col-title">EXPLORE</div>
-            {HOME_FOOTER.explore.map((link) => (
-              <a key={link.href} href={link.href}>
-                {link.label}
-              </a>
-            ))}
+            {HOME_FOOTER.explore.map((link) =>
+              link.href.startsWith('/') ? (
+                <Link key={link.href} to={link.href}>
+                  {link.label}
+                </Link>
+              ) : (
+                <a key={link.href} href={link.href}>
+                  {link.label}
+                </a>
+              ),
+            )}
           </div>
           <div className="home-footer__col">
             <div className="home-footer__col-title">SERVICES</div>

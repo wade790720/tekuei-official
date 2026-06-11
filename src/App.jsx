@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import TekueiHero from './components/TekueiHero.jsx'
+import AboutPage from './components/AboutPage.jsx'
 import WorkListPage from './components/WorkListPage.jsx'
 import CaseRouter from './components/CaseRouter.jsx'
 
@@ -19,6 +20,7 @@ export default function App() {
       <ScrollClasses />
       <Routes>
         <Route path="/" element={<TekueiHero />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/work" element={<WorkListPage />} />
         <Route path="/cases/:slug" element={<CaseRouter />} />
       </Routes>

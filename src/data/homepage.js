@@ -75,25 +75,25 @@ export const HOME_FEATURED_WORKS = [
 
 export const HOME_APPROACH = {
   label: 'APPROACH · 方法論',
-  title: ['不是包裝你，', '是讓你被看見原本的樣子。'],
+  title: ['系統化梳理後', '讓你看見原本的樣貌'],
   items: [
     {
       num: '01',
       title: ['人格挖掘', 'Identity Discovery'],
       desc:
-        '深度訪談，找到你的核心信念、worldview、敘事弧。不是「定位」，是讓你第一次真正看見自己。',
+        '深度訪談，找到你的核心信念、worldview、敘事弧，讓你第一次真正看見自己',
     },
     {
       num: '02',
       title: ['品牌建構', 'Brand Architecture'],
       desc:
-        '從靈魂層長出品牌手冊、視覺語言、文案風格。每一個細節都是你的延伸，不是公版套用。',
+        '從你的性格長出品牌手冊、視覺語言、文案風格，每一個細節都是你的延伸，不是公版套用',
     },
     {
       num: '03',
       title: ['系統延伸', 'System Extension'],
       desc:
-        '社群、官網、影像，所有對外溝通的介面，都從同一個源頭長出來，保持一致的氣質。',
+        '社群、官網、影像，所有對外溝通的介面，都從同一個源頭長出來，保持一致的氣質',
     },
   ],
 }
@@ -111,8 +111,8 @@ export const HOME_CTA = {
   label: 'START YOUR BRAND · 開始你的品牌',
   title: ['如果你準備好', '被世界正確看見'],
   desc: [
-    'TEKUEI 不是顧問服務，是一段旅程。',
-    '我陪你從模糊走向清晰，從表演走向真實。',
+    'TEKUEI 不是顧問服務，是一段旅程',
+    '我陪你從模糊走向清晰，從表演走向真實',
   ],
   email: 'hello@tekuei.com',
 }
@@ -120,7 +120,7 @@ export const HOME_CTA = {
 export const HOME_FOOTER = {
   tagline: ['讓有價值的人', '被世界正確看見'],
   explore: [
-    { label: 'About', href: '#about' },
+    { label: 'About', href: '/about' },
     { label: 'Work', href: '#work' },
     { label: 'Approach', href: '#approach' },
   ],
@@ -133,6 +133,6 @@ export const HOME_FOOTER = {
   contact: [
     { label: 'tekuei.xx@gmail.com', href: 'mailto:tekuei.xx@gmail.com' },
     { label: 'Instagram', href: 'https://www.instagram.com/tekuei.xx' },
-    { label: 'Threads', href: 'https://www.facebook.com/tekuei.xx' },
+    { label: 'Facebook', href: 'https://www.facebook.com/tekuei.xx' },
   ],
 }

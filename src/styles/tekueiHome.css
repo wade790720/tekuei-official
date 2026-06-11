@@ -135,21 +135,62 @@
   will-change: transform;
 }
 
+/* 環境光：多層漸層 + 顆粒，避免 blur 造成可見光圈 */
 .home-hero__glow {
   position: absolute;
-  top: -10%;
-  right: -8%;
-  width: 60%;
-  height: 70%;
-  background: radial-gradient(
-    ellipse,
-    rgba(176, 151, 106, 0.05) 0%,
-    transparent 65%
-  );
-  filter: blur(80px);
+  inset: 0;
   z-index: 2;
   pointer-events: none;
+  overflow: hidden;
   will-change: transform;
+  background: radial-gradient(
+    ellipse 130% 95% at 72% -5%,
+    rgba(176, 151, 106, 0.02) 0%,
+    rgba(176, 151, 106, 0.01) 32%,
+    rgba(176, 151, 106, 0.004) 52%,
+    rgba(176, 151, 106, 0) 72%
+  );
+}
+
+.home-hero__glow::before {
+  content: '';
+  position: absolute;
+  top: -18%;
+  right: -12%;
+  width: 78%;
+  height: 88%;
+  background:
+    radial-gradient(
+      ellipse 52% 48% at 46% 40%,
+      rgba(200, 174, 132, 0.055) 0%,
+      rgba(176, 151, 106, 0.03) 20%,
+      rgba(176, 151, 106, 0.014) 38%,
+      rgba(176, 151, 106, 0.006) 54%,
+      rgba(176, 151, 106, 0.002) 68%,
+      rgba(176, 151, 106, 0) 82%
+    ),
+    radial-gradient(
+      ellipse 38% 32% at 58% 62%,
+      rgba(176, 151, 106, 0.028) 0%,
+      rgba(176, 151, 106, 0.01) 40%,
+      rgba(176, 151, 106, 0) 72%
+    ),
+    radial-gradient(
+      ellipse 90% 70% at 80% 18%,
+      rgba(122, 143, 160, 0.018) 0%,
+      rgba(122, 143, 160, 0) 58%
+    );
+}
+
+.home-hero__glow::after {
+  content: '';
+  position: absolute;
+  inset: -40%;
+  opacity: 0.04;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  pointer-events: none;
 }
 
 .home-hero__content {
@@ -449,17 +490,23 @@
 
 .home-work__item-glow {
   position: absolute;
-  top: -10%;
-  right: -10%;
-  width: 70%;
-  height: 50%;
-  background: radial-gradient(
-    ellipse,
-    rgba(176, 151, 106, 0.07) 0%,
-    transparent 60%
-  );
-  filter: blur(30px);
+  inset: 0;
   pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 65% 55% at 72% 22%,
+      rgba(200, 174, 132, 0.07) 0%,
+      rgba(176, 151, 106, 0.035) 24%,
+      rgba(176, 151, 106, 0.012) 46%,
+      rgba(176, 151, 106, 0.004) 62%,
+      rgba(176, 151, 106, 0) 78%
+    );
+  opacity: 0.85;
+  transition: opacity 0.7s ease;
+}
+
+.home-work__item:hover .home-work__item-glow {
+  opacity: 1;
 }
 
 .home-work__item-content {
