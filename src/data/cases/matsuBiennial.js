@@ -6,7 +6,7 @@ export const MATSU_BIENNIAL_CASE = {
     titleEm: 'Matsu',
     titleRest: 'Biennial',
     subtitle: '藝 術 島 嶼 策 展',
-    bg: 'linear-gradient(135deg, #1a1e2a 0%, #252838 30%, #212026 70%, #18161a 100%)',
+    bg: 'linear-gradient(135deg, rgba(232, 235, 228, 0.92) 0%, rgba(215, 220, 210, 0.82) 45%, rgba(200, 205, 195, 0.72) 100%)',
     meta: [
       {
         label: 'Client',
@@ -30,7 +30,7 @@ export const MATSU_BIENNIAL_CASE = {
   media: {
     fullWidthLabel: 'M A T S U   B I E N N I A L   ·   D I G I T A L   P O R T A L',
     fullWidthBg:
-      'linear-gradient(135deg, #1a1e2a 0%, #252838 50%, #212026 100%)',
+      'linear-gradient(135deg, rgba(232, 235, 228, 0.94) 0%, rgba(215, 220, 210, 0.84) 50%, rgba(200, 205, 195, 0.76) 100%)',
     inlineLabel: 'E X H I B I T I O N   ·   W E B   V I E W',
   },
   sections: {

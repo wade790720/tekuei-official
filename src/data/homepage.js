@@ -39,7 +39,7 @@ export const HOME_PHILOSOPHY = {
 
 export const HOME_WORK = {
   label: 'SELECTED WORK · 精選案例',
-  title: ['每一個品牌，', '都是一個人格被看見的過程。'],
+  title: ['每一個品牌，', '都是一個人格被看見的過程'],
 }
 
 /** 精選案例：順序與 works.js 一致，文案取自 homepage 稿 */

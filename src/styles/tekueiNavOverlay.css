@@ -1,0 +1,327 @@
+/* 手機版全屏 overlay 選單 · 和紙 6:3:1 */
+
+.tekuei-nav-toggle {
+  display: none;
+  position: relative;
+  z-index: 110;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  pointer-events: all;
+}
+
+.tekuei-nav-toggle__line {
+  position: absolute;
+  left: 11px;
+  right: 11px;
+  height: 1px;
+  background: var(--ink-30-head, #2a2622);
+  transition:
+    transform 0.45s var(--nav-overlay-ease, cubic-bezier(0.23, 0.1, 0.25, 1)),
+    opacity 0.3s ease,
+    top 0.45s var(--nav-overlay-ease, cubic-bezier(0.23, 0.1, 0.25, 1));
+}
+
+.tekuei-nav-toggle__line:nth-child(1) {
+  top: 16px;
+}
+
+.tekuei-nav-toggle__line:nth-child(2) {
+  top: 22px;
+}
+
+.tekuei-nav-toggle__line:nth-child(3) {
+  top: 28px;
+}
+
+/* 開啟時隱藏底層 nav，避免 TEKUEI 與選單重疊 */
+html.tekuei-nav-overlay-open {
+  overflow: hidden;
+}
+
+html.tekuei-nav-overlay-open body {
+  overflow: hidden;
+}
+
+html.tekuei-nav-overlay-open .home-nav,
+html.tekuei-nav-overlay-open .tekuei-site-nav {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ── 全屏 Overlay（portal 至 body）── */
+
+.tekuei-nav-overlay {
+  --nav-overlay-ease: cubic-bezier(0.23, 0.1, 0.25, 1);
+  --nav-overlay-ms: 460ms;
+
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  margin: 0;
+  padding: 0;
+  background: #f2ede3;
+  overflow: hidden;
+  isolation: isolate;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.tekuei-nav-overlay.is-active,
+.tekuei-nav-overlay.is-closing {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.tekuei-nav-overlay.is-active {
+  animation: tekuei-nav-overlay-in var(--nav-overlay-ms) var(--nav-overlay-ease) forwards;
+}
+
+.tekuei-nav-overlay.is-closing {
+  animation: tekuei-nav-overlay-out calc(var(--nav-overlay-ms) * 0.82) var(--nav-overlay-ease) forwards;
+  pointer-events: none;
+}
+
+/* 防禦性重置：不受其他頁面 nav 規則影響 */
+.tekuei-nav-overlay nav {
+  position: static;
+  inset: auto;
+  opacity: 1;
+  animation: none;
+  padding: 0;
+  margin: 0;
+  pointer-events: auto;
+}
+
+.tekuei-nav-overlay__bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 72px;
+  padding: 16px max(20px, env(safe-area-inset-right)) 16px
+    max(20px, env(safe-area-inset-left));
+  padding-top: max(16px, env(safe-area-inset-top));
+  border-bottom: 0.5px solid var(--gold-10-whisper, rgba(138, 116, 80, 0.14));
+  box-sizing: border-box;
+}
+
+.tekuei-nav-overlay__mark {
+  font-family: 'Instrument Serif', serif;
+  font-size: 14px;
+  letter-spacing: 0.38em;
+  color: var(--ink-30-head, #2a2622);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.tekuei-nav-overlay.is-active .tekuei-nav-overlay__mark {
+  animation: tekuei-nav-fade-down 0.55s var(--nav-overlay-ease) 0.06s forwards;
+}
+
+.tekuei-nav-overlay.is-active .tekuei-nav-overlay__close {
+  animation: tekuei-nav-fade-down 0.55s var(--nav-overlay-ease) 0.1s forwards;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.tekuei-nav-overlay__close {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  justify-self: end;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.tekuei-nav-overlay__close-line {
+  position: absolute;
+  left: 11px;
+  right: 11px;
+  top: 50%;
+  height: 1px;
+  background: var(--ink-30-head, #2a2622);
+  transform-origin: center;
+}
+
+.tekuei-nav-overlay__close-line:first-child {
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.tekuei-nav-overlay__close-line:last-child {
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.tekuei-nav-overlay__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 0;
+  padding: clamp(40px, 10vh, 80px) max(24px, env(safe-area-inset-right))
+    max(40px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.tekuei-nav-overlay__menu {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 300px);
+  margin: 0;
+}
+
+.tekuei-nav-overlay__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: clamp(60px, 11vh, 76px);
+  padding: 18px 16px;
+  padding-right: calc(16px + 0.1em);
+  border-bottom: 0.5px solid var(--gold-10-whisper, rgba(138, 116, 80, 0.14));
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(1.2rem, 4.8vw, 1.5rem);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: var(--ink-30-head, #2a2622);
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: color 0.35s ease;
+}
+
+.tekuei-nav-overlay.is-active .tekuei-nav-overlay__link {
+  animation: tekuei-nav-fade-up 0.62s var(--nav-overlay-ease) forwards;
+}
+
+.tekuei-nav-overlay.is-active .tekuei-nav-overlay__link:nth-child(1) {
+  animation-delay: 0.12s;
+}
+
+.tekuei-nav-overlay.is-active .tekuei-nav-overlay__link:nth-child(2) {
+  animation-delay: 0.18s;
+}
+
+.tekuei-nav-overlay.is-active .tekuei-nav-overlay__link:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+.tekuei-nav-overlay.is-active .tekuei-nav-overlay__link:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.tekuei-nav-overlay.is-closing .tekuei-nav-overlay__mark,
+.tekuei-nav-overlay.is-closing .tekuei-nav-overlay__close,
+.tekuei-nav-overlay.is-closing .tekuei-nav-overlay__link {
+  animation: tekuei-nav-fade-out 0.34s var(--nav-overlay-ease) forwards;
+}
+
+.tekuei-nav-overlay__link:first-child {
+  border-top: 0.5px solid var(--gold-10-whisper, rgba(138, 116, 80, 0.14));
+}
+
+.tekuei-nav-overlay__link.is-active,
+.tekuei-nav-overlay__link:hover {
+  color: var(--gold-10, #8a7450);
+}
+
+@keyframes tekuei-nav-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tekuei-nav-overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes tekuei-nav-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tekuei-nav-fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tekuei-nav-fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (max-width: 900px) {
+  .tekuei-nav-toggle {
+    display: block;
+  }
+
+  .tekuei-site-nav__links--desktop,
+  .home-nav__menu--desktop {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tekuei-nav-overlay,
+  .tekuei-nav-overlay.is-active,
+  .tekuei-nav-overlay.is-closing,
+  .tekuei-nav-overlay.is-active .tekuei-nav-overlay__mark,
+  .tekuei-nav-overlay.is-active .tekuei-nav-overlay__close,
+  .tekuei-nav-overlay.is-active .tekuei-nav-overlay__link,
+  .tekuei-nav-overlay.is-closing .tekuei-nav-overlay__mark,
+  .tekuei-nav-overlay.is-closing .tekuei-nav-overlay__close,
+  .tekuei-nav-overlay.is-closing .tekuei-nav-overlay__link {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .tekuei-nav-toggle__line {
+    transition: none;
+  }
+}

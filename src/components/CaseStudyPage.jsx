@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { getNextCase } from '../data/cases/index.js'
 import { CaseSiteNav } from './CaseSiteNav.jsx'
 import { CustomCursor } from './CustomCursor.jsx'
-import { DiagonalGrid } from './DiagonalGrid.jsx'
 import { Reveal } from './Reveal.jsx'
 import '../styles/tekueiCase.css'
 
@@ -62,7 +61,6 @@ export default function CaseStudyPage({ data }) {
 
   return (
     <div className="tekuei-case-page">
-      <DiagonalGrid extent="document" className="tekuei-case-page__grid" />
       <CustomCursor interactiveSelector="a" />
 
       <CaseSiteNav />

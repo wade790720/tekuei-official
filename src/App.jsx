@@ -6,6 +6,7 @@ import WorkListPage from './components/WorkListPage.jsx'
 import JournalListPage from './components/JournalListPage.jsx'
 import JournalPostPage from './components/JournalPostPage.jsx'
 import CaseRouter from './components/CaseRouter.jsx'
+import { PaperSiteBackground } from './components/PaperSiteBackground.jsx'
 
 function ScrollClasses() {
   const { pathname } = useLocation()
@@ -20,6 +21,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollClasses />
+      <PaperSiteBackground />
       <Routes>
         <Route path="/" element={<TekueiHero />} />
         <Route path="/about" element={<AboutPage />} />

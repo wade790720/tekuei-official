@@ -5,7 +5,7 @@ export const MONOLAB_CASE = {
     num: 'C A S E   0 2',
     titleRest: 'MONOLAB',
     subtitle: '情 緒 生 態 系 · 藝 術 場 域',
-    bg: 'linear-gradient(135deg, #1a1a22 0%, #28223a 30%, #212026 70%, #18161a 100%)',
+    bg: 'linear-gradient(135deg, rgba(235, 230, 238, 0.92) 0%, rgba(218, 212, 222, 0.82) 45%, rgba(202, 196, 208, 0.72) 100%)',
     meta: [
       {
         label: 'Client',
@@ -29,7 +29,7 @@ export const MONOLAB_CASE = {
   media: {
     fullWidthLabel: 'M O N O L A B   ·   A R T   E C O S Y S T E M',
     fullWidthBg:
-      'linear-gradient(135deg, #1a1a22 0%, #28223a 50%, #212026 100%)',
+      'linear-gradient(135deg, rgba(235, 230, 238, 0.94) 0%, rgba(218, 212, 222, 0.84) 50%, rgba(202, 196, 208, 0.76) 100%)',
     inlineLabel: 'G E N E R A T I V E   ·   E X H I B I T I O N   V I E W',
   },
   sections: {

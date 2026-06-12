@@ -1,9 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { CustomCursor } from './CustomCursor.jsx'
-import { DiagonalGrid } from './DiagonalGrid.jsx'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
-import { InkWashLayer } from './InkWashLayer.jsx'
 import { TekueiSiteNav } from './TekueiSiteNav.jsx'
 import { JOURNAL_META, JOURNAL_POSTS } from '../data/journal.js'
 import '../styles/tekueiWork.css'
@@ -18,8 +16,6 @@ export default function JournalListPage() {
 
   return (
     <div className="tekuei-journal-page">
-      <DiagonalGrid extent="document" className="tekuei-journal-page__grid" />
-      <InkWashLayer />
       <CustomCursor interactiveSelector="a" />
       <TekueiSiteNav highlightJournal />
 

@@ -8,9 +8,13 @@ html {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #212026;
+  background: #f2ede3;
   cursor: none;
   -webkit-font-smoothing: antialiased;
+}
+
+html.tekuei-home-ink {
+  background: #f2ede3;
 }
 
 body {
@@ -18,8 +22,12 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #212026;
+  background: #f2ede3;
   cursor: none;
+}
+
+html.tekuei-home-ink body {
+  background: #f2ede3;
 }
 
 #root {
@@ -30,22 +38,28 @@ body {
 
 .cursor-dot {
   position: fixed;
-  width: 5px;
-  height: 5px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: rgba(240, 232, 223, 0.42);
+  background: #2a2622;
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 9999;
-  mix-blend-mode: screen;
+  box-shadow:
+    0 0 0 2px rgba(255, 252, 245, 0.92),
+    0 0 0 3px rgba(42, 38, 34, 0.18);
   transition:
     width 0.35s cubic-bezier(0.23, 0.1, 0.25, 1),
     height 0.35s cubic-bezier(0.23, 0.1, 0.25, 1),
-    background 0.35s ease;
+    background 0.35s ease,
+    box-shadow 0.35s ease;
 }
 
 .cursor-dot.cursor-dot--hover {
-  width: 40px;
-  height: 40px;
-  background: rgba(240, 232, 223, 0.08);
+  width: 36px;
+  height: 36px;
+  background: rgba(176, 151, 106, 0.14);
+  box-shadow:
+    0 0 0 1px rgba(176, 151, 106, 0.55),
+    inset 0 0 0 1px rgba(255, 252, 245, 0.35);
 }

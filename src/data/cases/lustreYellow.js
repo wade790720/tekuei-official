@@ -6,7 +6,7 @@ export const LUSTRE_YELLOW_CASE = {
     titleEm: 'Lustre',
     titleRest: 'Yellow',
     subtitle: '花 蜜 水 晶 花 工 藝',
-    bg: 'linear-gradient(135deg, #2a1f1a 0%, #3d2820 30%, #212026 70%, #18161a 100%)',
+    bg: 'linear-gradient(135deg, rgba(245, 238, 222, 0.92) 0%, rgba(228, 215, 192, 0.82) 45%, rgba(210, 198, 175, 0.72) 100%)',
     meta: [
       {
         label: 'Client',
@@ -157,7 +157,7 @@ export const LUSTRE_YELLOW_CASE = {
     fullWidthLabel:
       'L U S T R E   Y E L L O W   ·   B R A N D   S Y S T E M',
     fullWidthBg:
-      'linear-gradient(135deg, #2a1f1a 0%, #3d2820 50%, #212026 100%)',
+      'linear-gradient(135deg, rgba(245, 238, 222, 0.94) 0%, rgba(228, 215, 192, 0.84) 50%, rgba(210, 198, 175, 0.76) 100%)',
     inlineLabel: 'S A L E S   P A G E   ·   D E S K T O P   V I E W',
   },
 }

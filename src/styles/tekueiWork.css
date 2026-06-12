@@ -1,18 +1,21 @@
 /* Work 列表頁 · 對應 TEKUEI_Work_List.html，根節點請包在 .tekuei-work-page */
 
 .tekuei-work-page {
-  --bg: #212026;
-  --bg-deep: #18161a;
-  --text: #f0e8df;
-  --burgundy: #7a3028;
-  --burgundy-line: #5a1e14;
-  --warm-gray: #8a7e78;
-  --light-gray: #cfc8c0;
+  --bg: transparent;
+  --bg-deep: rgba(225, 215, 198, 0.55);
+  --text: var(--ink-30-head, #2a2622);
+  --accent: var(--gold-10, #8a7450);
+  --accent-line: var(--gold-10-line, rgba(138, 116, 80, 0.28));
+  --text-muted: var(--ink-30-muted, rgba(42, 38, 34, 0.58));
+  --text-faint: var(--ink-30-faint, rgba(42, 38, 34, 0.36));
+  --text-whisper: var(--ink-30-whisper, rgba(42, 38, 34, 0.22));
+  --panel: var(--paper-60-wash, rgba(255, 252, 245, 0.48));
   --fd: 'Instrument Serif', serif;
-  --fc: 'Noto Serif TC', serif;
+  --fc: 'Noto Serif TC', 'Shippori Mincho', serif;
   --ease-haunt: cubic-bezier(0.23, 0.1, 0.25, 1);
 
   position: relative;
+  z-index: 1;
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
@@ -68,7 +71,7 @@ html.tekuei-has-scroll-document #root {
   left: 44px;
   right: 44px;
   height: 0.3px;
-  background: rgba(240, 232, 223, 0.06);
+  background: var(--accent-line);
 }
 
 .tekuei-site-nav__logo {
@@ -88,17 +91,17 @@ html.tekuei-has-scroll-document #root {
   font-family: var(--fd);
   font-size: clamp(13px, 1vw, 15px);
   letter-spacing: 0.09em;
-  color: rgba(138, 126, 118, 0.75);
+  color: var(--text-faint);
   text-decoration: none;
   transition: color 0.5s;
 }
 
 .tekuei-site-nav__links a:hover {
-  color: rgba(240, 232, 223, 0.9);
+  color: var(--text);
 }
 
 .tekuei-site-nav__links a.is-active {
-  color: rgba(240, 232, 223, 0.85);
+  color: var(--accent);
 }
 
 /* ── Header ── */
@@ -122,7 +125,7 @@ html.tekuei-has-scroll-document #root {
   font-family: var(--fd);
   font-size: 9px;
   letter-spacing: 0.35em;
-  color: rgba(240, 232, 223, 0.25);
+  color: var(--accent);
   margin-bottom: 20px;
   opacity: 0;
   animation: tekuei-work-fade-up 0.9s var(--ease-haunt) 0.6s forwards;
@@ -142,7 +145,7 @@ html.tekuei-has-scroll-document #root {
   font-family: var(--fd);
   font-size: 11px;
   letter-spacing: 0.15em;
-  color: rgba(240, 232, 223, 0.25);
+  color: var(--text-whisper);
   opacity: 0;
   animation: tekuei-work-fade-in 1.5s ease 1.2s forwards;
 }
@@ -161,8 +164,10 @@ html.tekuei-has-scroll-document #root {
   height: 0.3px;
   background: linear-gradient(
     to right,
-    rgba(240, 232, 223, 0.12),
-    rgba(240, 232, 223, 0.04)
+    transparent,
+    var(--accent-line) 22%,
+    var(--accent-line) 78%,
+    transparent
   );
 }
 
@@ -237,7 +242,7 @@ html.tekuei-has-scroll-document #root {
   font-family: var(--fd);
   font-size: 9px;
   letter-spacing: 0.3em;
-  color: rgba(240, 232, 223, 0.3);
+  color: var(--accent);
   z-index: 2;
 }
 
@@ -246,15 +251,15 @@ html.tekuei-has-scroll-document #root {
   flex-direction: column;
   justify-content: center;
   padding: 48px 52px;
-  background: var(--bg);
+  background: var(--panel);
   position: relative;
-  border-left: 0.3px solid rgba(240, 232, 223, 0.06);
+  border-left: 0.5px solid var(--accent-line);
 }
 
 .work-grid__item:nth-child(even) .work-info {
   order: -1;
   border-left: none;
-  border-right: 0.3px solid rgba(240, 232, 223, 0.06);
+  border-right: 0.5px solid var(--accent-line);
 }
 
 .work-grid__item:nth-child(even) .work-thumb {
@@ -265,7 +270,7 @@ html.tekuei-has-scroll-document #root {
   font-family: var(--fd);
   font-size: 9px;
   letter-spacing: 0.35em;
-  color: rgba(240, 232, 223, 0.25);
+  color: var(--accent);
   margin-bottom: 20px;
   text-transform: uppercase;
 }
@@ -286,7 +291,7 @@ html.tekuei-has-scroll-document #root {
 }
 
 .work-grid__item:hover .work-info .title {
-  color: rgba(240, 232, 223, 0.95);
+  color: var(--accent);
 }
 
 .work-info .subtitle {
@@ -294,14 +299,15 @@ html.tekuei-has-scroll-document #root {
   font-weight: 200;
   font-size: clamp(12px, 1.2vw, 14px);
   letter-spacing: 0.2em;
-  color: rgba(240, 232, 223, 0.4);
+  color: var(--text-faint);
   margin-bottom: 32px;
 }
 
 .work-info .divider {
   width: 28px;
-  height: 0.3px;
-  background: rgba(240, 232, 223, 0.12);
+  height: 0.5px;
+  background: var(--accent);
+  opacity: 0.45;
   margin-bottom: 24px;
 }
 
@@ -310,7 +316,7 @@ html.tekuei-has-scroll-document #root {
   font-weight: 200;
   font-size: clamp(11px, 1.1vw, 13px);
   line-height: 2.1;
-  color: rgba(240, 232, 223, 0.5);
+  color: var(--text-muted);
   letter-spacing: 0.04em;
   margin-bottom: 32px;
 }
@@ -326,24 +332,25 @@ html.tekuei-has-scroll-document #root {
   font-family: var(--fd);
   font-size: 9px;
   letter-spacing: 0.12em;
-  color: rgba(240, 232, 223, 0.3);
+  color: var(--accent);
   padding: 4px 12px;
-  border: 0.4px solid rgba(240, 232, 223, 0.08);
+  border: 0.5px solid var(--accent-line);
+  background: rgba(255, 252, 245, 0.35);
   transition:
     border-color 0.5s,
     color 0.5s;
 }
 
 .work-grid__item:hover .tag {
-  border-color: rgba(240, 232, 223, 0.15);
-  color: rgba(240, 232, 223, 0.45);
+  border-color: var(--accent);
+  color: var(--text);
 }
 
 .work-info .arrow {
   font-family: var(--fd);
   font-size: 10px;
   letter-spacing: 0.2em;
-  color: rgba(240, 232, 223, 0.25);
+  color: var(--text-faint);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -355,20 +362,20 @@ html.tekuei-has-scroll-document #root {
 .work-info .arrow-line {
   width: 20px;
   height: 0.5px;
-  background: rgba(240, 232, 223, 0.18);
+  background: var(--accent-line);
   transition:
     width 0.5s,
     background 0.5s;
 }
 
 .work-grid__item:hover .arrow {
-  color: rgba(240, 232, 223, 0.55);
+  color: var(--accent);
   gap: 14px;
 }
 
 .work-grid__item:hover .arrow-line {
   width: 32px;
-  background: rgba(122, 48, 40, 0.5);
+  background: var(--accent);
 }
 
 .work-grid__item + .work-grid__item::before {
@@ -378,17 +385,18 @@ html.tekuei-has-scroll-document #root {
   left: 0;
   right: 0;
   height: 0.3px;
-  background: rgba(240, 232, 223, 0.04);
+  background: var(--accent-line);
 }
 
 .work-thumb-mark {
-  opacity: 0.15;
+  color: var(--text-faint);
+  opacity: 0.35;
 }
 
 .work-page-footer {
   padding: 80px 52px 48px;
   text-align: center;
-  border-top: 0.3px solid rgba(240, 232, 223, 0.04);
+  border-top: 0.5px solid var(--accent-line);
   position: relative;
   z-index: 2;
 }
@@ -398,7 +406,7 @@ html.tekuei-has-scroll-document #root {
   font-weight: 200;
   font-size: 13px;
   line-height: 2.2;
-  color: rgba(240, 232, 223, 0.35);
+  color: var(--text-faint);
   letter-spacing: 0.06em;
   margin-bottom: 48px;
 }
@@ -407,7 +415,7 @@ html.tekuei-has-scroll-document #root {
   font-family: var(--fd);
   font-size: 10px;
   letter-spacing: 0.4em;
-  color: rgba(240, 232, 223, 0.15);
+  color: var(--text-whisper);
 }
 
 /* ── Case stub ── */
@@ -428,7 +436,7 @@ html.tekuei-has-scroll-document #root {
   font-family: var(--fd);
   font-weight: 400;
   font-size: clamp(28px, 4vw, 40px);
-  color: rgba(240, 232, 223, 0.92);
+  color: var(--text);
   line-height: 1.15;
 }
 
@@ -436,7 +444,7 @@ html.tekuei-has-scroll-document #root {
   font-family: var(--fc);
   font-weight: 200;
   font-size: 14px;
-  color: rgba(240, 232, 223, 0.45);
+  color: var(--text-muted);
   letter-spacing: 0.06em;
   line-height: 2;
 }
@@ -445,14 +453,14 @@ html.tekuei-has-scroll-document #root {
   font-family: var(--fd);
   font-size: 11px;
   letter-spacing: 0.2em;
-  color: rgba(240, 232, 223, 0.45);
+  color: var(--accent);
   text-decoration: none;
   margin-top: 1rem;
   transition: color 0.4s ease;
 }
 
 .tekuei-case-stub__back:hover {
-  color: rgba(240, 232, 223, 0.85);
+  color: var(--text);
 }
 
 @keyframes tekuei-work-fade-up {

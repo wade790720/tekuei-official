@@ -14,7 +14,7 @@ export const WORK_ITEMS = [
     ],
     tags: ['Web Design', 'Exhibition', 'Art Direction'],
     thumbBg:
-      'linear-gradient(135deg, #1a1e2a 0%, #252838 40%, #1e1a1f 100%)',
+      'linear-gradient(135deg, rgba(232, 235, 228, 0.96) 0%, rgba(215, 220, 210, 0.88) 45%, rgba(200, 205, 195, 0.8) 100%)',
     thumbSvg: 'matsu',
   },
   {
@@ -31,7 +31,7 @@ export const WORK_ITEMS = [
     ],
     tags: ['Generative Art', 'Exhibition Curation', 'Immersive Experience'],
     thumbBg:
-      'linear-gradient(135deg, #1a1a22 0%, #28223a 40%, #1e1a1f 100%)',
+      'linear-gradient(135deg, rgba(235, 230, 238, 0.96) 0%, rgba(218, 212, 222, 0.88) 45%, rgba(202, 196, 208, 0.8) 100%)',
     thumbSvg: 'monolab',
   },
   {
@@ -48,7 +48,7 @@ export const WORK_ITEMS = [
     ],
     tags: ['Brand Identity', 'Sales Page', 'Web Development', 'Ad Strategy'],
     thumbBg:
-      'linear-gradient(135deg, #2a1f1a 0%, #3d2820 40%, #1e1a1f 100%)',
+      'linear-gradient(135deg, rgba(245, 238, 222, 0.96) 0%, rgba(228, 215, 192, 0.88) 45%, rgba(210, 198, 175, 0.8) 100%)',
     thumbSvg: 'lustre',
   },
 ]

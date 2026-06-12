@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import '../styles/tekueiHero.css'
 import '../styles/tekueiHome.css'
+import '../styles/tekueiNavOverlay.css'
 import { CustomCursor } from './CustomCursor.jsx'
-import { DiagonalGrid } from './DiagonalGrid.jsx'
-import { InkTrailCanvas } from './InkTrailCanvas.jsx'
+import { NavOverlay, NavToggle } from './NavOverlay.jsx'
+import { SiteNavLinks } from './SiteNavLinks.jsx'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
+import { SuminagashiBackground } from './SuminagashiBackground.jsx'
 import {
   HOME_APPROACH,
   HOME_CTA,
@@ -20,24 +22,22 @@ import {
 import { useHeroContentParallax, useScrollParallax } from '../hooks/useScrollParallax.js'
 
 function HomeNav({ scrolled }) {
+  const [open, setOpen] = useState(false)
+  const close = () => setOpen(false)
+
   return (
     <nav className={['home-nav', scrolled ? 'is-scrolled' : ''].filter(Boolean).join(' ')}>
-      <Link to="/" className="home-nav__brand">
+      <Link to="/" className="home-nav__brand" onClick={close}>
         T E K U E I
         <span className="home-nav__brand-sub">德 溎</span>
       </Link>
-      <div className="home-nav__menu">
-        <NavLink to="/about" className={({ isActive }) => (isActive ? 'is-active' : '')}>
-          About
-        </NavLink>
-        <NavLink to="/work" className={({ isActive }) => (isActive ? 'is-active' : '')}>
-          Work
-        </NavLink>
-        <NavLink to="/journal" className={({ isActive }) => (isActive ? 'is-active' : '')}>
-          Journal
-        </NavLink>
-        <a href="#contact">Contact</a>
+      <div className="home-nav__menu home-nav__menu--desktop">
+        <SiteNavLinks />
       </div>
+      {!open && <NavToggle onToggle={() => setOpen(true)} />}
+      <NavOverlay open={open} onClose={close} id="home-nav-overlay">
+        <SiteNavLinks variant="overlay" onNavigate={close} />
+      </NavOverlay>
     </nav>
   )
 }
@@ -51,7 +51,6 @@ function imgVariantClass(variant) {
 export default function TekueiHero() {
   const [navScrolled, setNavScrolled] = useState(false)
   const watermarkRef = useScrollParallax(0.18)
-  const glowRef = useScrollParallax(0.1)
   const vlineRef = useScrollParallax(0.06)
   const contentRef = useHeroContentParallax()
   const ctaWatermarkRef = useScrollParallax(0.12)
@@ -71,16 +70,15 @@ export default function TekueiHero() {
 
   return (
     <div className="tekuei-hero-root tekuei-home">
-      <CustomCursor interactiveSelector="a" />
-      <InkTrailCanvas />
-      <DiagonalGrid extent="document" />
+      <SuminagashiBackground />
 
-      <HomeNav scrolled={navScrolled} />
+      <div className="home-ink-content">
+        <CustomCursor interactiveSelector="a" />
+        <HomeNav scrolled={navScrolled} />
 
-      <main>
+        <main>
         <section className="home-hero" aria-label="首頁主視覺">
           <div className="home-hero__vline" ref={vlineRef} aria-hidden />
-          <div className="home-hero__glow" ref={glowRef} aria-hidden />
           <div className="home-hero__watermark" ref={watermarkRef} aria-hidden>
             tekuei
           </div>
@@ -321,6 +319,7 @@ export default function TekueiHero() {
           <div>EST. 2026 · TAIPEI</div>
         </div>
       </footer>
+      </div>
     </div>
   )
 }

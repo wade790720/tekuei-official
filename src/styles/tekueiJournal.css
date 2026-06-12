@@ -1,29 +1,28 @@
-/* Journal · 留白 × 水墨 · 品牌色 v3.2（石墨深藍 × 霧金 × 暖白） */
+/* Journal · 和紙上的 6:3:1（60% 紙 / 30% 墨 / 10% 金） */
 
 .tekuei-journal-page {
-  --j-ink-deep: #131218;
-  --j-ink-main: #1c1b20;
-  --j-ink-mid: #272530;
-  --j-page: #ebe5d8;
-  --j-warm-white: #f4efe6;
-  --j-lamp: #b0976a;
-  --j-lamp-dim: #8a7450;
-  --j-lamp-glow: #c8ae84;
-  --j-stone: #7a7888;
-  --j-parchment: #b8b4c4;
-  --j-cold: #7a8fa0;
-  --j-text-dim: rgba(235, 229, 216, 0.58);
-  --j-text-ghost: rgba(138, 126, 118, 0.75);
-  --j-line: rgba(138, 116, 80, 0.18);
-  --j-line-bright: rgba(176, 151, 106, 0.42);
+  --j-ink-main: transparent;
+  --j-page: var(--ink-30-head, #2a2622);
+  --j-warm-white: var(--ink-30-head, #2a2622);
+  --j-lamp: var(--gold-10, #8a7450);
+  --j-lamp-dim: var(--gold-10-soft, #a38658);
+  --j-lamp-glow: #b0976a;
+  --j-stone: var(--ink-30-faint, rgba(42, 38, 34, 0.36));
+  --j-parchment: var(--ink-30-muted, rgba(42, 38, 34, 0.58));
+  --j-text-dim: var(--ink-30-muted, rgba(42, 38, 34, 0.58));
+  --j-text-ghost: var(--ink-30-faint, rgba(42, 38, 34, 0.36));
+  --j-line: var(--gold-10-whisper, rgba(138, 116, 80, 0.14));
+  --j-line-bright: var(--gold-10-line, rgba(138, 116, 80, 0.28));
+  --j-panel: var(--paper-60-wash, rgba(255, 252, 245, 0.48));
   --j-fd: 'Instrument Serif', serif;
-  --j-fc: 'Noto Serif TC', serif;
+  --j-fc: 'Noto Serif TC', 'Shippori Mincho', serif;
   --j-ease: cubic-bezier(0.23, 0.1, 0.25, 1);
 
   position: relative;
+  z-index: 1;
   min-height: 100vh;
   background: var(--j-ink-main);
-  color: var(--j-page);
+  color: var(--ink-30, #3a3834);
   font-family: var(--j-fc);
   font-weight: 300;
   letter-spacing: 0.04em;
@@ -224,15 +223,18 @@
   padding: 72px 0;
   text-decoration: none;
   color: inherit;
-  transition: opacity 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    background 0.45s ease;
 }
 
 .journal-card:hover {
   opacity: 1;
+  background: var(--j-panel);
 }
 
 .journal-card:hover .journal-card__title {
-  color: var(--j-warm-white);
+  color: var(--j-lamp);
 }
 
 .journal-card:hover .journal-card__arrow-line {
@@ -289,7 +291,7 @@
   font-size: clamp(26px, 3.5vw, 40px);
   letter-spacing: 0.08em;
   line-height: 1.35;
-  color: rgba(244, 239, 230, 0.88);
+  color: var(--j-warm-white);
   transition: color 0.5s ease;
 }
 
@@ -394,7 +396,7 @@
   font-size: clamp(64px, 12vw, 120px);
   line-height: 1;
   letter-spacing: 0.05em;
-  color: rgba(176, 151, 106, 0.08);
+  color: var(--j-line);
   margin-bottom: -24px;
   user-select: none;
   pointer-events: none;
@@ -437,7 +439,7 @@
   font-weight: 300;
   line-height: 1.9;
   letter-spacing: 0.05em;
-  color: rgba(244, 239, 230, 0.9);
+  color: var(--j-page);
 }
 
 .journal-post__h2 {
@@ -458,8 +460,9 @@
 
 .journal-post__quote {
   margin: 56px 0;
-  padding: 40px 0 40px 32px;
-  border-left: 1px solid var(--j-line-bright);
+  padding: 40px 24px 40px 32px;
+  border-left: 0.5px solid var(--j-line-bright);
+  background: var(--j-panel);
 }
 
 .journal-post__quote p {
@@ -578,7 +581,7 @@
 .journal-not-found__num {
   font-family: var(--j-fd);
   font-size: 80px;
-  color: rgba(176, 151, 106, 0.08);
+  color: var(--j-line);
 }
 
 .journal-not-found h1 {

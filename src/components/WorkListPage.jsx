@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CustomCursor } from './CustomCursor.jsx'
-import { DiagonalGrid } from './DiagonalGrid.jsx'
 import { TekueiSiteNav } from './TekueiSiteNav.jsx'
 import { WORK_ITEMS } from '../data/works.js'
 import '../styles/tekueiWork.css'
@@ -19,10 +18,10 @@ function WorkThumbGraphic({ thumbSvg }) {
   if (thumbSvg === 'lustre') {
     return (
       <svg {...svgProps}>
-        <circle cx="60" cy="60" r="40" stroke="#f0e8df" strokeWidth="0.5" />
-        <circle cx="60" cy="60" r="20" stroke="#f0e8df" strokeWidth="0.3" />
-        <line x1="60" y1="20" x2="60" y2="100" stroke="#f0e8df" strokeWidth="0.3" />
-        <line x1="20" y1="60" x2="100" y2="60" stroke="#f0e8df" strokeWidth="0.3" />
+        <circle cx="60" cy="60" r="40" stroke="currentColor" strokeWidth="0.5" />
+        <circle cx="60" cy="60" r="20" stroke="currentColor" strokeWidth="0.3" />
+        <line x1="60" y1="20" x2="60" y2="100" stroke="currentColor" strokeWidth="0.3" />
+        <line x1="20" y1="60" x2="100" y2="60" stroke="currentColor" strokeWidth="0.3" />
       </svg>
     )
   }
@@ -30,9 +29,9 @@ function WorkThumbGraphic({ thumbSvg }) {
   if (thumbSvg === 'matsu') {
     return (
       <svg {...svgProps}>
-        <rect x="30" y="30" width="60" height="60" stroke="#f0e8df" strokeWidth="0.5" />
-        <rect x="40" y="40" width="40" height="40" stroke="#f0e8df" strokeWidth="0.3" />
-        <line x1="30" y1="30" x2="90" y2="90" stroke="#f0e8df" strokeWidth="0.3" />
+        <rect x="30" y="30" width="60" height="60" stroke="currentColor" strokeWidth="0.5" />
+        <rect x="40" y="40" width="40" height="40" stroke="currentColor" strokeWidth="0.3" />
+        <line x1="30" y1="30" x2="90" y2="90" stroke="currentColor" strokeWidth="0.3" />
       </svg>
     )
   }
@@ -41,11 +40,11 @@ function WorkThumbGraphic({ thumbSvg }) {
     <svg {...svgProps}>
       <polygon
         points="60,20 95,80 25,80"
-        stroke="#f0e8df"
+        stroke="currentColor"
         strokeWidth="0.5"
         fill="none"
       />
-      <circle cx="60" cy="58" r="15" stroke="#f0e8df" strokeWidth="0.3" />
+      <circle cx="60" cy="58" r="15" stroke="currentColor" strokeWidth="0.3" />
     </svg>
   )
 }
@@ -128,7 +127,6 @@ export default function WorkListPage() {
 
   return (
     <div className="tekuei-work-page">
-      <DiagonalGrid extent="document" className="tekuei-work-page__grid" />
       <CustomCursor interactiveSelector="a" />
 
       <TekueiSiteNav />

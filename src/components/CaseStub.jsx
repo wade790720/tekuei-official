@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { CustomCursor } from './CustomCursor.jsx'
-import { DiagonalGrid } from './DiagonalGrid.jsx'
 import { TekueiSiteNav } from './TekueiSiteNav.jsx'
 import { WORK_ITEMS } from '../data/works.js'
 import '../styles/tekueiWork.css'
@@ -26,7 +25,6 @@ export default function CaseStub() {
 
   return (
     <div className="tekuei-work-page">
-      <DiagonalGrid extent="document" className="tekuei-work-page__grid" />
       <CustomCursor interactiveSelector="a" />
 
       <TekueiSiteNav highlightWorkSection />

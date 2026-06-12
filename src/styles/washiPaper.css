@@ -1,0 +1,13 @@
+/* 和紙 WebGL canvas · z-index: 0 */
+
+.washi-paper-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  background: #f2ede3;
+}

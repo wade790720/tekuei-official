@@ -6,8 +6,8 @@
 }
 
 :root {
-  --bg: #212026;
-  --text: #f0e8df;
+  --bg: #f2ede3;
+  --text: #2a2622;
   --fd: 'Instrument Serif', serif;
   --fc: 'Noto Serif TC', serif;
   --ease-haunt: cubic-bezier(0.23, 0.1, 0.25, 1);
@@ -42,7 +42,8 @@
   font-family: var(--fc);
 }
 
-nav {
+/* 僅限舊版 hero UI，避免污染全站 <nav>（含 overlay 選單） */
+.tekuei-hero-root .ui nav {
   position: absolute;
   top: 0;
   left: 0;
@@ -73,14 +74,14 @@ nav {
   font-family: var(--fd);
   font-size: clamp(13px, 1vw, 15px);
   letter-spacing: 0.09em;
-  color: rgba(138, 126, 118, 0.75);
+  color: rgba(42, 38, 34, 0.36);
   text-decoration: none;
   transition: color 0.5s;
   pointer-events: all;
 }
 
 .nav-links a:hover {
-  color: rgba(240, 232, 223, 0.9);
+  color: #2a2622;
 }
 
 .vl {
@@ -92,8 +93,8 @@ nav {
   background: linear-gradient(
     to bottom,
     transparent,
-    rgba(240, 232, 223, 0.07) 30%,
-    rgba(240, 232, 223, 0.07) 70%,
+    rgba(138, 116, 80, 0.18) 30%,
+    rgba(138, 116, 80, 0.18) 70%,
     transparent
   );
   opacity: 0;
@@ -116,7 +117,7 @@ nav {
   font-family: var(--fd);
   font-size: 9px;
   letter-spacing: 0.35em;
-  color: rgba(240, 232, 223, 0.25);
+  color: #8a7450;
   margin-bottom: 28px;
   opacity: 0;
   animation: tekuei-fade-up 0.9s var(--ease-haunt) 2.2s forwards;
@@ -138,7 +139,7 @@ nav {
   font-weight: 200;
   font-size: clamp(13px, 1.4vw, 16px);
   letter-spacing: 0.38em;
-  color: rgba(240, 232, 223, 0.55);
+  color: rgba(42, 38, 34, 0.58);
   margin-bottom: 36px;
   opacity: 0;
   animation: tekuei-fade-up 1s var(--ease-haunt) 2.8s forwards;
@@ -147,7 +148,7 @@ nav {
 .h-div {
   width: 36px;
   height: 0.3px;
-  background: rgba(240, 232, 223, 0.16);
+  background: rgba(138, 116, 80, 0.35);
   margin-bottom: 28px;
   opacity: 0;
   animation: tekuei-fade-in 1s ease 3.1s forwards;
@@ -158,7 +159,7 @@ nav {
   font-weight: 200;
   font-size: clamp(13px, 1.4vw, 15px);
   line-height: 2.15;
-  color: rgba(240, 232, 223, 0.8);
+  color: #2a2622;
   letter-spacing: 0.06em;
   margin-bottom: 18px;
   opacity: 0;
@@ -170,7 +171,7 @@ nav {
   font-weight: 300;
   font-size: clamp(11px, 1.1vw, 12.5px);
   line-height: 2.1;
-  color: rgba(240, 232, 223, 0.4);
+  color: rgba(42, 38, 34, 0.58);
   letter-spacing: 0.04em;
   opacity: 0;
   animation: tekuei-fade-up 1s var(--ease-haunt) 3.8s forwards;
@@ -190,7 +191,7 @@ nav {
 .scroll-hint-line {
   width: 40px;
   height: 1px;
-  background: rgba(240, 232, 223, 0.35);
+  background: rgba(138, 116, 80, 0.45);
 }
 
 .scroll-hint span {
@@ -198,8 +199,8 @@ nav {
   font-size: clamp(11px, 0.95vw, 13px);
   font-weight: 400;
   letter-spacing: 0.32em;
-  color: rgba(240, 232, 223, 0.58);
-  text-shadow: 0 0 24px rgba(240, 232, 223, 0.12);
+  color: rgba(42, 38, 34, 0.58);
+  text-shadow: none;
 }
 
 .year {
@@ -209,7 +210,7 @@ nav {
   font-family: var(--fd);
   font-size: 9px;
   letter-spacing: 0.2em;
-  color: rgba(240, 232, 223, 0.18);
+  color: rgba(42, 38, 34, 0.22);
   opacity: 0;
   animation: tekuei-fade-in 1.5s ease 2.5s forwards;
 }

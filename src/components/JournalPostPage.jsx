@@ -1,9 +1,7 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { CustomCursor } from './CustomCursor.jsx'
-import { DiagonalGrid } from './DiagonalGrid.jsx'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
-import { InkWashLayer } from './InkWashLayer.jsx'
 import { TekueiSiteNav } from './TekueiSiteNav.jsx'
 import {
   getAdjacentPosts,
@@ -48,8 +46,6 @@ export default function JournalPostPage() {
   if (!post || !content) {
     return (
       <div className="tekuei-journal-page tekuei-journal-page--post">
-        <DiagonalGrid extent="document" className="tekuei-journal-page__grid" />
-        <InkWashLayer />
         <CustomCursor interactiveSelector="a" />
         <TekueiSiteNav highlightJournal />
         <div className="journal-not-found">
@@ -63,8 +59,6 @@ export default function JournalPostPage() {
 
   return (
     <div className="tekuei-journal-page tekuei-journal-page--post">
-      <DiagonalGrid extent="document" className="tekuei-journal-page__grid" />
-      <InkWashLayer variant={post.heroInk} />
       <CustomCursor interactiveSelector="a" />
       <TekueiSiteNav highlightJournal />
 
