@@ -11,4 +11,4 @@ export const CHECKIN_LIFF_ID = '2010388258-lu3PdhFT'
  */
 export const CHECKIN_WORKER_URL =
   import.meta.env.VITE_CHECKIN_WORKER_URL ||
-  'https://tekuei-checkin.YOUR_SUBDOMAIN.workers.dev/checkin'
+  'https://tekuei-checkin.tekuei-xx.workers.dev/checkin'
