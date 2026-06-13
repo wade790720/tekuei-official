@@ -142,7 +142,7 @@ export default function CheckinPage() {
                   id="checkin-phone"
                   type="tel"
                   className="tekuei-checkin-input"
-                  placeholder="09xx-xxx-xxx"
+                  placeholder="請輸入您的手機號碼"
                   maxLength={10}
                   inputMode="numeric"
                   pattern="[0-9]*"
