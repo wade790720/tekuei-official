@@ -1,170 +1,299 @@
-/* Check-in · 隱藏路由，獨立 LIFF 表單頁 */
+/* Check-in · 隱藏路由 · 和紙 × 墨 × 燼 */
 
 .tekuei-checkin-page {
+  --checkin-fd: 'Instrument Serif', serif;
+  --checkin-fc: 'Noto Serif TC', 'Shippori Mincho', serif;
+  --checkin-border: rgba(122, 104, 69, 0.22);
+  --checkin-border-soft: rgba(122, 104, 69, 0.14);
+  --checkin-muted: rgba(30, 27, 24, 0.52);
+  --checkin-hint: rgba(30, 27, 24, 0.38);
+
+  position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px 16px;
-  background: #f0f4f8;
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  padding: 40px 24px;
+  overflow: hidden;
+  font-family: var(--checkin-fc);
+  font-weight: 300;
+  letter-spacing: var(--ls-body);
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+.tekuei-checkin-page::before,
+.tekuei-checkin-page::after {
+  content: '';
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 60% 40% 50% 70%;
+}
+
+.tekuei-checkin-page::before {
+  top: -10%;
+  right: -15%;
+  width: 55vw;
+  height: 55vw;
+  max-width: 360px;
+  max-height: 360px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(122, 104, 69, 0.14) 0%,
+    rgba(122, 104, 69, 0.06) 42%,
+    transparent 72%
+  );
+}
+
+.tekuei-checkin-page::after {
+  bottom: 5%;
+  left: -10%;
+  width: 45vw;
+  height: 45vw;
+  max-width: 280px;
+  max-height: 280px;
+  border-radius: 40% 60% 70% 40%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(143, 122, 90, 0.1) 0%,
+    rgba(122, 104, 69, 0.04) 52%,
+    transparent 76%
+  );
+}
+
+.tekuei-checkin-wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 360px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.55s var(--ease-touch),
+    transform 0.55s var(--ease-touch);
+}
+
+.tekuei-checkin-wrap.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tekuei-checkin-brand {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.tekuei-checkin-brand-name {
+  font-family: var(--checkin-fd);
+  font-size: 13px;
+  letter-spacing: 0.35em;
+  color: var(--ember);
+  text-transform: uppercase;
+}
+
+.tekuei-checkin-brand-divider {
+  width: 32px;
+  height: 0.5px;
+  background: var(--ember-line);
+  margin: 12px auto 0;
 }
 
 .tekuei-checkin-card {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 40px 28px 36px;
-  width: 100%;
-  max-width: 380px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 252, 245, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 0.5px solid var(--checkin-border);
+  border-radius: 1px;
+  padding: 40px 32px 36px;
 }
 
-.tekuei-checkin-logo {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: #aaa;
+.tekuei-checkin-eyebrow {
+  font-family: var(--checkin-fd);
+  font-size: 11px;
+  letter-spacing: var(--ls-label);
+  color: var(--ember-soft);
   text-transform: uppercase;
-  margin-bottom: 28px;
+  margin-bottom: 12px;
 }
 
 .tekuei-checkin-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1a1a1a;
-  line-height: 1.3;
-  margin-bottom: 8px;
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1.5;
+  letter-spacing: var(--ls-title);
+  margin-bottom: 10px;
 }
 
 .tekuei-checkin-subtitle {
-  font-size: 14px;
-  color: #888;
-  margin-bottom: 32px;
-  line-height: 1.6;
+  font-size: 13px;
+  color: var(--checkin-muted);
+  line-height: 1.8;
+  margin-bottom: 36px;
+  letter-spacing: var(--ls-body);
 }
 
 .tekuei-checkin-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #555;
-  letter-spacing: 0.05em;
-  margin-bottom: 8px;
+  font-family: var(--checkin-fd);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--checkin-muted);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: block;
 }
 
 .tekuei-checkin-phone-row {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .tekuei-checkin-country {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: #f5f5f5;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 12px;
+  gap: 5px;
+  background: transparent;
+  border: 0.5px solid var(--checkin-border);
+  border-radius: 1px;
   padding: 0 14px;
+  font-family: var(--checkin-fd);
   font-size: 15px;
-  color: #333;
+  color: var(--ink-70);
   white-space: nowrap;
   min-width: 82px;
-  font-weight: 500;
 }
 
 .tekuei-checkin-country-flag {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .tekuei-checkin-input {
   flex: 1;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 14px 16px;
-  font-size: 16px;
-  color: #1a1a1a;
-  background: #fff;
+  border: 0.5px solid var(--checkin-border);
+  border-radius: 1px;
+  padding: 13px 14px;
+  font-family: var(--checkin-fc);
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--ink);
+  background: transparent;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.3s var(--ease-touch);
+  letter-spacing: var(--ls-title);
   -webkit-appearance: none;
   appearance: none;
 }
 
 .tekuei-checkin-input:focus {
-  border-color: #4a7cf7;
+  border-color: var(--ember);
 }
 
 .tekuei-checkin-input::placeholder {
-  color: #ccc;
+  color: var(--checkin-hint);
+  font-size: 13px;
 }
 
 .tekuei-checkin-error {
-  font-size: 12px;
-  color: #e74c3c;
-  margin-top: -10px;
+  font-size: 11px;
+  color: #8a5048;
+  margin-top: -4px;
   margin-bottom: 16px;
+  letter-spacing: var(--ls-body);
 }
 
 .tekuei-checkin-hint {
-  font-size: 12px;
-  color: #bbb;
-  margin-bottom: 28px;
-  line-height: 1.5;
+  font-size: 11px;
+  color: var(--checkin-hint);
+  margin-bottom: 32px;
+  letter-spacing: var(--ls-body);
+  line-height: 1.6;
 }
 
 .tekuei-checkin-submit {
   width: 100%;
-  padding: 16px;
-  background: #4a7cf7;
-  color: #fff;
+  padding: 15px;
+  background: var(--ink);
+  color: var(--paper);
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: 1px;
+  font-family: var(--checkin-fd);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-  letter-spacing: 0.03em;
+  transition:
+    background 0.35s var(--ease-touch),
+    opacity 0.2s ease;
 }
 
 .tekuei-checkin-submit:hover:not(:disabled) {
-  background: #3a6ce0;
+  background: var(--ember-deep);
 }
 
 .tekuei-checkin-submit:active:not(:disabled) {
-  transform: scale(0.98);
+  opacity: 0.85;
 }
 
 .tekuei-checkin-submit:disabled {
-  background: #c5d3f5;
+  background: rgba(122, 104, 69, 0.28);
   cursor: not-allowed;
 }
 
 .tekuei-checkin-loading {
   text-align: center;
-  color: #aaa;
-  font-size: 14px;
-  padding: 40px 0;
+  color: var(--checkin-hint);
+  font-size: 13px;
+  padding: 48px 0;
+  letter-spacing: var(--ls-body);
 }
 
-.tekuei-checkin-success {
+.tekuei-checkin-state {
   text-align: center;
-  padding: 20px 0;
+  padding: 24px 0;
 }
 
-.tekuei-checkin-success-icon {
-  font-size: 56px;
+.tekuei-checkin-state-mark {
+  font-family: var(--checkin-fd);
+  font-size: 36px;
+  color: var(--ember);
   margin-bottom: 20px;
+  line-height: 1;
 }
 
-.tekuei-checkin-success h2 {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 10px;
+.tekuei-checkin-state-mark--muted {
+  font-size: 28px;
+  color: var(--ember-soft);
+  letter-spacing: 0.2em;
 }
 
-.tekuei-checkin-success p {
-  font-size: 14px;
-  color: #888;
-  line-height: 1.7;
+.tekuei-checkin-state h2 {
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--ink);
+  letter-spacing: var(--ls-title);
+  margin-bottom: 14px;
+}
+
+.tekuei-checkin-state-line {
+  width: 24px;
+  height: 0.5px;
+  background: var(--ember-line);
+  margin: 16px auto;
+}
+
+.tekuei-checkin-state p {
+  font-size: 13px;
+  color: var(--checkin-muted);
+  line-height: 1.9;
+  letter-spacing: var(--ls-body);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tekuei-checkin-wrap {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
