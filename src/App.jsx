@@ -7,14 +7,30 @@ import JournalListPage from './components/JournalListPage.jsx'
 import JournalPostPage from './components/JournalPostPage.jsx'
 import CaseRouter from './components/CaseRouter.jsx'
 import { PaperSiteBackground } from './components/PaperSiteBackground.jsx'
+import { TekueiSiteNav } from './components/TekueiSiteNav.jsx'
 
 function ScrollClasses() {
   const { pathname } = useLocation()
   useEffect(() => {
     document.documentElement.classList.add('tekuei-has-scroll-document')
-    window.scrollTo(0, 0)
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [pathname])
   return null
+}
+
+function SiteNav() {
+  const { pathname } = useLocation()
+  const isCase = pathname.startsWith('/cases/')
+
+  if (isCase) return null
+
+  return (
+    <TekueiSiteNav
+      scrollAware={pathname === '/'}
+      highlightJournal={pathname.startsWith('/journal')}
+      highlightWorkSection={pathname.startsWith('/work') || pathname.startsWith('/cases')}
+    />
+  )
 }
 
 export default function App() {
@@ -22,6 +38,7 @@ export default function App() {
     <BrowserRouter>
       <ScrollClasses />
       <PaperSiteBackground />
+      <SiteNav />
       <Routes>
         <Route path="/" element={<TekueiHero />} />
         <Route path="/about" element={<AboutPage />} />

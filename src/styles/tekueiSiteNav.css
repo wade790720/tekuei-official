@@ -1,0 +1,104 @@
+/* 全站固定導覽 · 首頁與內頁共用 */
+
+.tekuei-site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 44px;
+}
+
+.tekuei-site-nav--scroll-aware {
+  transition:
+    background 0.4s var(--ease-touch),
+    padding 0.4s var(--ease-touch);
+}
+
+.tekuei-site-nav--scroll-aware.is-scrolled {
+  background: rgba(242, 237, 227, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.tekuei-site-nav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 44px;
+  right: 44px;
+  height: 0.3px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--ember-line) 20%,
+    var(--ember-line) 80%,
+    transparent
+  );
+}
+
+.tekuei-site-nav__logo {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(14px, 1.05vw, 17px);
+  letter-spacing: 0.38em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.tekuei-site-nav__links {
+  display: flex;
+  gap: 32px;
+}
+
+.tekuei-site-nav__links a {
+  position: relative;
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(13px, 1vw, 15px);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--ink-68);
+  text-decoration: none;
+  transition: color 0.4s var(--ease-touch);
+}
+
+.tekuei-site-nav__links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 100%;
+  height: 0.5px;
+  background: var(--ember);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease-touch);
+}
+
+.tekuei-site-nav__links a:hover {
+  color: var(--ink);
+}
+
+.tekuei-site-nav__links a:hover::after,
+.tekuei-site-nav__links a.is-active::after {
+  transform: scaleX(1);
+}
+
+.tekuei-site-nav__links a.is-active {
+  color: var(--ember);
+}
+
+@media (max-width: 900px) {
+  .tekuei-site-nav {
+    padding: 20px 28px;
+  }
+
+  .tekuei-site-nav::after {
+    left: 28px;
+    right: 28px;
+  }
+}

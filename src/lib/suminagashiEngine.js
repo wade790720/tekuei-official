@@ -17,16 +17,35 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matc
 
 /* ── 墨色（顯示色 → 吸收係數） ── */
 const INKS = [
-  {hex:[0x33,0x2e,0x28]}, // 墨黑
-  {hex:[0x2c,0x48,0x78]}, // 深藍
-  {hex:[0xb3,0x40,0x2a]}, // 朱紅
-  {hex:[0x3f,0x60,0x48]}, // 松葉綠
+  {hex:[0x33,0x2e,0x28]}, // 墨黑 · 主墨
+  {hex:[0x2c,0x48,0x78]}, // 深藍（保留，低機率點綴）
+  {hex:[0xb3,0x40,0x2a]}, // 朱紅 · 點睛 #b3402a
+  {hex:[0x3f,0x60,0x48]}, // 松葉綠（保留，低機率點綴）
 ];
+const INK_PRIMARY = 0;
+const INK_ACCENT = 2; // #b3402a
+const ENCOUNTER_CHANCE = 0.14; // 兩色各自落墨後，偶爾相近相碰才自然混合
+
 INKS.forEach(i=>{
   const c = i.hex.map(v=>v/255);
   // pigment absorption per RGB channel（越深的色吸收越多）
   i.absorb = c.map(v=>Math.pow(1.0 - v, 1.15));
 });
+
+function randomSpot(){
+  return {
+    x: 0.14 + Math.random() * 0.72,
+    y: 0.18 + Math.random() * 0.62,
+  };
+}
+
+function addInkDrop(inkIdx, x, y, scale){
+  addDrop(x, y, inkIdx, scale);
+  if (Math.random() < 0.55){
+    const a = Math.random() * Math.PI * 2;
+    splatVelocity(x, y, Math.cos(a) * 48, Math.sin(a) * 48, 0.0038);
+  }
+}
 
 const state = {
   ink: 0,
@@ -124,7 +143,7 @@ const FRAG_ADVECT = `
 precision highp float; varying vec2 vUv;
 uniform sampler2D uVelocity, uSource;
 uniform vec2 texelSize, dyeTexelSize;
-uniform float dt, dissipation;
+uniform float dt, dissipation, uFeather;
 #ifdef MANUAL_FILTER
 vec4 bilerp(sampler2D s, vec2 uv, vec2 tsize){
   vec2 st = uv/tsize - 0.5;
@@ -144,7 +163,13 @@ void main(){
   vec2 coord = vUv - dt * texture2D(uVelocity, vUv).xy * texelSize;
   vec4 result = texture2D(uSource, coord);
 #endif
-  float decay = 1.0 + dissipation*dt;
+  float rate = 1.0;
+  if (uFeather > 0.5) {
+    float density = dot(result.rgb, vec3(0.34));
+    // 淡邊先向紙暈化，濃心慢褪 — 避免整片被推向一側
+    rate = mix(2.4, 0.22, smoothstep(0.012, 0.26, density));
+  }
+  float decay = 1.0 + dissipation * rate * dt;
   gl_FragColor = result/decay;
 }`;
 
@@ -287,6 +312,14 @@ void main(){
   /* 濃墨處微微偏暖，像滲進纖維 */
   float density = clamp(dC*0.8, 0.0, 1.0);
   col = mix(col, col*vec3(1.012,1.0,0.985), density*0.5);
+
+  /* 朱紅墨：綠藍吸收較強時略帶暖赭點綴 */
+  float accent = smoothstep(0.018, 0.11, a.g + a.b - a.r * 0.42);
+  col = mix(col, col * vec3(1.06, 0.97, 0.94), accent * 0.42);
+
+  /* 極淡殘墨向和紙暈化，收尾更乾淨 */
+  float ghost = 1.0 - smoothstep(0.0, 0.09, dC);
+  col = mix(col, paper * vig, ghost * 0.42);
 
   gl_FragColor = vec4(col, 1.0);
 }`;
@@ -453,6 +486,16 @@ function updateDrops(dt){
 
 /* ════════════════ pointer ════════════════ */
 const pointer = {down:false, moved:false, x:0, y:0, px:0, py:0, downX:0, downY:0, downT:0};
+let dragInkSet = false;
+let dragInkIdx = INK_PRIMARY;
+
+function currentlyDraggingInk(){
+  if (!dragInkSet){
+    dragInkIdx = state.ink === INK_ACCENT ? INK_ACCENT : INK_PRIMARY;
+    dragInkSet = true;
+  }
+  return dragInkIdx;
+}
 
 function toUV(e){
   const rect = canvas.getBoundingClientRect();
@@ -514,27 +557,44 @@ window.addEventListener('pointerup', onPointerUp);
 window.addEventListener('pointercancel', onPointerUp);
 
 /* ════════════════ 自動演出 ════════════════ */
-let autoTimer = 2.2;
+let primaryTimer = 2.4;
+let accentTimer = 5.8;
+const encounterTimers = [];
+
+/** 另一色在附近稍後落墨 — 不疊同一點，靠水流自然相碰 */
+function maybeEncounter(otherInk, baseX, baseY){
+  if (Math.random() > ENCOUNTER_CHANCE) return;
+  const spread = 0.04 + Math.random() * 0.08;
+  const ang = Math.random() * Math.PI * 2;
+  const ox = Math.min(0.92, Math.max(0.08, baseX + Math.cos(ang) * spread));
+  const oy = Math.min(0.88, Math.max(0.12, baseY + Math.sin(ang) * spread));
+  const delay = 120 + Math.random() * 480;
+  const id = setTimeout(() => {
+    if (disposed) return;
+    addInkDrop(otherInk, ox, oy, 0.38 + Math.random() * 0.52);
+  }, delay);
+  encounterTimers.push(id);
+}
+
 function autoPerform(dt, now){
   if (!state.auto || reducedMotion) return;
   if (now - state.lastInput < 3000) return;  // 使用者在玩的時候安靜
-  autoTimer -= dt;
-  if (autoTimer <= 0){
-    autoTimer = 3.5 + Math.random()*5.5;
-    const x = 0.18 + Math.random()*0.64;
-    const y = 0.22 + Math.random()*0.56;
-    const ink = state.rotate ? Math.floor(Math.random()*INKS.length) : state.ink;
-    addDrop(x, y, ink, 0.6+Math.random()*0.7);
-    // 偶爾加一道輕微水流
-    if (Math.random()<0.6){
-      const a = Math.random()*Math.PI*2;
-      splatVelocity(x, y, Math.cos(a)*55, Math.sin(a)*55, 0.004);
-    }
+  primaryTimer -= dt;
+  accentTimer -= dt;
+
+  if (primaryTimer <= 0){
+    primaryTimer = 3.6 + Math.random() * 5.8;
+    const { x, y } = randomSpot();
+    addInkDrop(INK_PRIMARY, x, y, 0.58 + Math.random() * 0.82);
+    maybeEncounter(INK_ACCENT, x, y);
   }
-  // 持續極輕微的環境水流，墨面才像活水
-  const t = now*0.0001;
-  const cx = 0.5+Math.sin(t*1.3)*0.3, cy = 0.5+Math.cos(t*0.9)*0.3;
-  splatVelocity(cx, cy, Math.sin(t*2.1)*2.2, Math.cos(t*1.7)*2.2, 0.012);
+
+  if (accentTimer <= 0){
+    accentTimer = 6.2 + Math.random() * 9.5;
+    const { x, y } = randomSpot();
+    addInkDrop(INK_ACCENT, x, y, 0.32 + Math.random() * 0.55);
+    maybeEncounter(INK_PRIMARY, x, y);
+  }
 }
 
 /* ════════════════ simulation step ════════════════ */
@@ -591,7 +651,8 @@ function step(dt){
   gl.uniform1i(progAdvect.u.uVelocity, velocity.read.attach(0));
   gl.uniform1i(progAdvect.u.uSource,   velocity.read.attach(0));
   gl.uniform1f(progAdvect.u.dt, dt);
-  gl.uniform1f(progAdvect.u.dissipation, 1.4);   // 水的阻尼，流動慢慢靜下來
+  gl.uniform1f(progAdvect.u.dissipation, 2.8);   // 水流快速平息，墨不再被推向一側
+  gl.uniform1f(progAdvect.u.uFeather, 0.0);
   blit(velocity.write); velocity.swap();
 
   // advect dye（墨）
@@ -599,7 +660,8 @@ function step(dt){
   gl.uniform1i(progAdvect.u.uVelocity, velocity.read.attach(0));
   gl.uniform1i(progAdvect.u.uSource,   dye.read.attach(1));
   if (!supportLinear) gl.uniform2f(progAdvect.u.dyeTexelSize, dye.texelSizeX, dye.texelSizeY);
-  gl.uniform1f(progAdvect.u.dissipation, 0.012 + washDecay);  // 平常幾乎不褪，洗い流す時加速
+  gl.uniform1f(progAdvect.u.dissipation, 0.016 + washDecay);  // 邊緣先褪、向紙暈化
+  gl.uniform1f(progAdvect.u.uFeather, 1.0);
   blit(dye.write); dye.swap();
 }
 
@@ -641,11 +703,11 @@ function updateWash(dt){
 resizeCanvas();
 if (velocity && dye) render(performance.now());
 
-/* 開場：紙上先暈開一滴墨，安靜地自我介紹 */
+/* 開場：主墨先暈開，朱紅在另一處各自落墨 */
 let t0, t1, rafId, paused = false, disposed = false;
 if (!reducedMotion){
-  t0 = setTimeout(()=> addDrop(0.5, 0.55, 0, 1.3), 600);
-  t1 = setTimeout(()=> addDrop(0.62, 0.42, 0, 0.7), 2400);
+  t0 = setTimeout(()=> addInkDrop(INK_PRIMARY, 0.5, 0.55, 1.3), 600);
+  t1 = setTimeout(()=> addInkDrop(INK_ACCENT, 0.28, 0.38, 0.55), 3200);
 }
 
 function frame(now){
@@ -675,10 +737,11 @@ rafId = requestAnimationFrame(frame);
       window.removeEventListener('pointerup', onPointerUp);
       window.removeEventListener('pointercancel', onPointerUp);
       clearTimeout(t0); clearTimeout(t1);
+      encounterTimers.forEach(clearTimeout);
     },
     wash: startWash,
     pause() { paused = true; },
     resume() { paused = false; lastT = performance.now(); },
-    drop: (x, y, idx) => addDrop(x ?? Math.random(), y ?? Math.random(), idx ?? 0, 1),
+    drop: (x, y, idx) => addDrop(x ?? Math.random(), y ?? Math.random(), idx ?? INK_PRIMARY, 1),
   };
 }

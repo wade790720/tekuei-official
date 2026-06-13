@@ -7,10 +7,10 @@
 
 :root {
   --bg: #f2ede3;
-  --text: #2a2622;
+  --text: #1e1b18;
   --fd: 'Instrument Serif', serif;
   --fc: 'Noto Serif TC', serif;
-  --ease-haunt: cubic-bezier(0.23, 0.1, 0.25, 1);
+  --ease-haunt: var(--ease-touch);
 }
 
 .tekuei-hero-root,
@@ -74,14 +74,14 @@
   font-family: var(--fd);
   font-size: clamp(13px, 1vw, 15px);
   letter-spacing: 0.09em;
-  color: rgba(42, 38, 34, 0.36);
+  color: var(--ink-65);
   text-decoration: none;
   transition: color 0.5s;
   pointer-events: all;
 }
 
 .nav-links a:hover {
-  color: #2a2622;
+  color: var(--ink);
 }
 
 .vl {
@@ -117,7 +117,7 @@
   font-family: var(--fd);
   font-size: 9px;
   letter-spacing: 0.35em;
-  color: #8a7450;
+  color: var(--ember);
   margin-bottom: 28px;
   opacity: 0;
   animation: tekuei-fade-up 0.9s var(--ease-haunt) 2.2s forwards;
@@ -139,7 +139,7 @@
   font-weight: 200;
   font-size: clamp(13px, 1.4vw, 16px);
   letter-spacing: 0.38em;
-  color: rgba(42, 38, 34, 0.58);
+  color: var(--ink-70);
   margin-bottom: 36px;
   opacity: 0;
   animation: tekuei-fade-up 1s var(--ease-haunt) 2.8s forwards;
@@ -159,7 +159,7 @@
   font-weight: 200;
   font-size: clamp(13px, 1.4vw, 15px);
   line-height: 2.15;
-  color: #2a2622;
+  color: var(--ink);
   letter-spacing: 0.06em;
   margin-bottom: 18px;
   opacity: 0;
@@ -171,7 +171,7 @@
   font-weight: 300;
   font-size: clamp(11px, 1.1vw, 12.5px);
   line-height: 2.1;
-  color: rgba(42, 38, 34, 0.58);
+  color: var(--ink-70);
   letter-spacing: 0.04em;
   opacity: 0;
   animation: tekuei-fade-up 1s var(--ease-haunt) 3.8s forwards;
@@ -199,7 +199,7 @@
   font-size: clamp(11px, 0.95vw, 13px);
   font-weight: 400;
   letter-spacing: 0.32em;
-  color: rgba(42, 38, 34, 0.58);
+  color: var(--ink-70);
   text-shadow: none;
 }
 
@@ -210,7 +210,7 @@
   font-family: var(--fd);
   font-size: 9px;
   letter-spacing: 0.2em;
-  color: rgba(42, 38, 34, 0.22);
+  color: var(--ink-22);
   opacity: 0;
   animation: tekuei-fade-in 1.5s ease 2.5s forwards;
 }

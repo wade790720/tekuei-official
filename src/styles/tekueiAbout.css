@@ -4,24 +4,11 @@
   /*
    * 60% 主域 — 和紙底色透出（透明區、紙調面板）
    * 30% 次域 — 墨色閱讀（標題、內文、線條）
-   * 10% 點睛 — 霧金 accent（標籤、關鍵字、CTA）
+   * 10% 點睛 — 燼色 accent（標籤、關鍵字、CTA）
    */
-  --paper: #f2ede3;
-  --ink-30: #3a3834;
-  --ink-30-head: #2a2622;
-  --ink-30-muted: rgba(42, 38, 34, 0.58);
-  --ink-30-faint: rgba(42, 38, 34, 0.36);
-  --ink-30-whisper: rgba(42, 38, 34, 0.22);
-  --paper-60-wash: rgba(255, 252, 245, 0.48);
-  --paper-60-edge: rgba(210, 198, 178, 0.55);
-  --gold-10: #8a7450;
-  --gold-10-soft: #a38658;
-  --gold-10-line: rgba(138, 116, 80, 0.28);
-  --gold-10-whisper: rgba(138, 116, 80, 0.14);
-
   --fd: 'Instrument Serif', serif;
   --fc: 'Noto Serif TC', 'Shippori Mincho', serif;
-  --ease: cubic-bezier(0.23, 0.1, 0.25, 1);
+  --ease: var(--ease-touch);
   --phi-inv: 38.2%;
   --wrap: min(1140px, calc(100% - 48px));
 

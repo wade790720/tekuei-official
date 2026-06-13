@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CustomCursor } from './CustomCursor.jsx'
-import { TekueiSiteNav } from './TekueiSiteNav.jsx'
 import { WORK_ITEMS } from '../data/works.js'
 import '../styles/tekueiWork.css'
 
@@ -127,9 +125,6 @@ export default function WorkListPage() {
 
   return (
     <div className="tekuei-work-page">
-      <CustomCursor interactiveSelector="a" />
-
-      <TekueiSiteNav />
 
       <header className="work-page-header">
         <div className="work-page-header-inner">

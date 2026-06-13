@@ -2,27 +2,27 @@
 
 .tekuei-journal-page {
   --j-ink-main: transparent;
-  --j-page: var(--ink-30-head, #2a2622);
-  --j-warm-white: var(--ink-30-head, #2a2622);
-  --j-lamp: var(--gold-10, #8a7450);
-  --j-lamp-dim: var(--gold-10-soft, #a38658);
-  --j-lamp-glow: #b0976a;
-  --j-stone: var(--ink-30-faint, rgba(42, 38, 34, 0.36));
-  --j-parchment: var(--ink-30-muted, rgba(42, 38, 34, 0.58));
-  --j-text-dim: var(--ink-30-muted, rgba(42, 38, 34, 0.58));
-  --j-text-ghost: var(--ink-30-faint, rgba(42, 38, 34, 0.36));
-  --j-line: var(--gold-10-whisper, rgba(138, 116, 80, 0.14));
-  --j-line-bright: var(--gold-10-line, rgba(138, 116, 80, 0.28));
-  --j-panel: var(--paper-60-wash, rgba(255, 252, 245, 0.48));
+  --j-page: var(--ink);
+  --j-warm-white: var(--ink);
+  --j-lamp: var(--ember);
+  --j-lamp-dim: var(--ember-soft);
+  --j-lamp-glow: var(--ember-soft);
+  --j-stone: var(--ink-65);
+  --j-parchment: var(--ink-70);
+  --j-text-dim: var(--ink-70);
+  --j-text-ghost: var(--ink-65);
+  --j-line: var(--ember-whisper);
+  --j-line-bright: var(--ember-line);
+  --j-panel: var(--paper-warm);
   --j-fd: 'Instrument Serif', serif;
   --j-fc: 'Noto Serif TC', 'Shippori Mincho', serif;
-  --j-ease: cubic-bezier(0.23, 0.1, 0.25, 1);
+  --j-ease: var(--ease-touch);
 
   position: relative;
   z-index: 1;
   min-height: 100vh;
   background: var(--j-ink-main);
-  color: var(--ink-30, #3a3834);
+  color: var(--ink);
   font-family: var(--j-fc);
   font-weight: 300;
   letter-spacing: 0.04em;

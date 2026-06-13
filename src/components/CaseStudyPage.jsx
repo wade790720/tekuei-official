@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getNextCase } from '../data/cases/index.js'
 import { CaseSiteNav } from './CaseSiteNav.jsx'
-import { CustomCursor } from './CustomCursor.jsx'
 import { Reveal } from './Reveal.jsx'
 import '../styles/tekueiCase.css'
 
@@ -61,7 +60,6 @@ export default function CaseStudyPage({ data }) {
 
   return (
     <div className="tekuei-case-page">
-      <CustomCursor interactiveSelector="a" />
 
       <CaseSiteNav />
 

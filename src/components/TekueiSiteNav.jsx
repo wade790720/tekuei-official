@@ -1,18 +1,44 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { NavOverlay, NavToggle } from './NavOverlay.jsx'
 import { SiteNavLinks } from './SiteNavLinks.jsx'
+import '../styles/tekueiSiteNav.css'
 import '../styles/tekueiNavOverlay.css'
 
 /**
- * @param {{ highlightWorkSection?: boolean, highlightJournal?: boolean }} props
+ * @param {{
+ *   highlightWorkSection?: boolean
+ *   highlightJournal?: boolean
+ *   scrollAware?: boolean
+ * }} props
  */
-export function TekueiSiteNav({ highlightWorkSection = false, highlightJournal = false }) {
+export function TekueiSiteNav({
+  highlightWorkSection = false,
+  highlightJournal = false,
+  scrollAware = false,
+}) {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const close = () => setOpen(false)
 
+  useEffect(() => {
+    if (!scrollAware) return undefined
+    const onScroll = () => setScrolled(window.scrollY > 80)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [scrollAware])
+
+  const navClass = [
+    'tekuei-site-nav',
+    scrollAware ? 'tekuei-site-nav--scroll-aware' : '',
+    scrollAware && scrolled ? 'is-scrolled' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <nav className="tekuei-site-nav">
+    <nav className={navClass}>
       <NavLink end to="/" className="tekuei-site-nav__logo" onClick={close}>
         T E K U E I
       </NavLink>

@@ -20,7 +20,7 @@
   left: 11px;
   right: 11px;
   height: 1px;
-  background: var(--ink-30-head, #2a2622);
+  background: var(--ink);
   transition:
     transform 0.45s var(--nav-overlay-ease, cubic-bezier(0.23, 0.1, 0.25, 1)),
     opacity 0.3s ease,
@@ -48,7 +48,6 @@ html.tekuei-nav-overlay-open body {
   overflow: hidden;
 }
 
-html.tekuei-nav-overlay-open .home-nav,
 html.tekuei-nav-overlay-open .tekuei-site-nav {
   visibility: hidden;
   pointer-events: none;
@@ -57,7 +56,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
 /* ── 全屏 Overlay（portal 至 body）── */
 
 .tekuei-nav-overlay {
-  --nav-overlay-ease: cubic-bezier(0.23, 0.1, 0.25, 1);
+  --nav-overlay-ease: var(--ease-touch);
   --nav-overlay-ms: 460ms;
 
   position: fixed;
@@ -110,7 +109,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   padding: 16px max(20px, env(safe-area-inset-right)) 16px
     max(20px, env(safe-area-inset-left));
   padding-top: max(16px, env(safe-area-inset-top));
-  border-bottom: 0.5px solid var(--gold-10-whisper, rgba(138, 116, 80, 0.14));
+  border-bottom: 0.5px solid var(--ember-whisper);
   box-sizing: border-box;
 }
 
@@ -118,7 +117,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   font-family: 'Instrument Serif', serif;
   font-size: 14px;
   letter-spacing: 0.38em;
-  color: var(--ink-30-head, #2a2622);
+  color: var(--ink);
   white-space: nowrap;
   opacity: 0;
   transform: translateY(-10px);
@@ -154,7 +153,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   right: 11px;
   top: 50%;
   height: 1px;
-  background: var(--ink-30-head, #2a2622);
+  background: var(--ink);
   transform-origin: center;
 }
 
@@ -193,7 +192,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   min-height: clamp(60px, 11vh, 76px);
   padding: 18px 16px;
   padding-right: calc(16px + 0.1em);
-  border-bottom: 0.5px solid var(--gold-10-whisper, rgba(138, 116, 80, 0.14));
+  border-bottom: 0.5px solid var(--ember-whisper);
   font-family: 'Instrument Serif', serif;
   font-size: clamp(1.2rem, 4.8vw, 1.5rem);
   font-weight: 400;
@@ -202,7 +201,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  color: var(--ink-30-head, #2a2622);
+  color: var(--ink);
   box-sizing: border-box;
   opacity: 0;
   transform: translateY(14px);
@@ -236,12 +235,12 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
 }
 
 .tekuei-nav-overlay__link:first-child {
-  border-top: 0.5px solid var(--gold-10-whisper, rgba(138, 116, 80, 0.14));
+  border-top: 0.5px solid var(--ember-whisper);
 }
 
 .tekuei-nav-overlay__link.is-active,
 .tekuei-nav-overlay__link:hover {
-  color: var(--gold-10, #8a7450);
+  color: var(--ember);
 }
 
 @keyframes tekuei-nav-overlay-in {
@@ -300,8 +299,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
     display: block;
   }
 
-  .tekuei-site-nav__links--desktop,
-  .home-nav__menu--desktop {
+  .tekuei-site-nav__links--desktop {
     display: none !important;
   }
 }

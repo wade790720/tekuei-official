@@ -1,9 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { AboutLine, AboutParts } from './AboutRichText.jsx'
-import { CustomCursor } from './CustomCursor.jsx'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
-import { TekueiSiteNav } from './TekueiSiteNav.jsx'
 import {
   ABOUT_APPROACH,
   ABOUT_BELIEFS,
@@ -38,8 +36,6 @@ export default function AboutPage() {
 
   return (
     <div className="tekuei-about-page">
-      <CustomCursor interactiveSelector="a" />
-      <TekueiSiteNav />
 
       <div className="about-content">
         <header className="about-header">

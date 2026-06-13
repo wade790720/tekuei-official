@@ -1,30 +1,6 @@
-/* 和紙站點 · 6:3:1 共用色票（60% 紙 / 30% 墨 / 10% 金） */
+/* 和紙站點 · 共用覆寫（token 見 tekueiTokens.css） */
 
 html.tekuei-paper-site {
-  --paper: #f2ede3;
-  --ink-30: #3a3834;
-  --ink-30-head: #2a2622;
-  --ink-30-muted: rgba(42, 38, 34, 0.58);
-  --ink-30-faint: rgba(42, 38, 34, 0.36);
-  --ink-30-whisper: rgba(42, 38, 34, 0.22);
-  --paper-60-wash: rgba(255, 252, 245, 0.48);
-  --paper-60-deep: rgba(235, 228, 214, 0.68);
-  --paper-60-edge: rgba(210, 198, 178, 0.55);
-  --gold-10: #8a7450;
-  --gold-10-soft: #a38658;
-  --gold-10-line: rgba(138, 116, 80, 0.28);
-  --gold-10-whisper: rgba(138, 116, 80, 0.14);
-
-  /* 相容舊別名 */
-  --ink: var(--ink-30-head);
-  --ink-soft: var(--ink-30-muted);
-  --ink-faint: var(--ink-30-faint);
-  --ink-muted: var(--ink-30-whisper);
-  --paper-panel: var(--paper-60-wash);
-  --paper-panel-deep: var(--paper-60-deep);
-  --paper-border: var(--gold-10-whisper);
-  --paper-border-gold: var(--gold-10-line);
-
   background: var(--paper);
 }
 
@@ -41,36 +17,10 @@ html.tekuei-paper-site .tekuei-case-page {
   position: relative;
   z-index: 1;
   background: transparent;
-  color: var(--ink-30);
+  color: var(--ink);
 }
 
-/* ── 導覽 ── */
-
-html.tekuei-paper-site .tekuei-site-nav__logo {
-  color: var(--ink-30-head);
-}
-
-html.tekuei-paper-site .tekuei-site-nav__links a {
-  color: var(--ink-30-faint);
-}
-
-html.tekuei-paper-site .tekuei-site-nav__links a:hover {
-  color: var(--ink-30-head);
-}
-
-html.tekuei-paper-site .tekuei-site-nav__links a.is-active {
-  color: var(--gold-10);
-}
-
-html.tekuei-paper-site .tekuei-site-nav::after {
-  background: linear-gradient(
-    to right,
-    transparent,
-    var(--gold-10-line) 20%,
-    var(--gold-10-line) 80%,
-    transparent
-  );
-}
+/* ── Case 導覽 ── */
 
 html.tekuei-paper-site .case-site-nav {
   background: rgba(242, 237, 227, 0.78);
@@ -79,27 +29,27 @@ html.tekuei-paper-site .case-site-nav {
 }
 
 html.tekuei-paper-site .case-site-nav__logo {
-  color: var(--ink-30-head);
+  color: var(--ink);
 }
 
 html.tekuei-paper-site .case-site-nav__back {
-  color: var(--ink-30-faint);
+  color: var(--ink-68);
 }
 
 html.tekuei-paper-site .case-site-nav__back:hover {
-  color: var(--gold-10);
+  color: var(--ember);
 }
 
 html.tekuei-paper-site .case-site-nav__back-line {
-  background: var(--gold-10-line);
+  background: var(--ember-line);
 }
 
 html.tekuei-paper-site .case-site-nav::after {
   background: linear-gradient(
     to right,
     transparent,
-    var(--gold-10-line) 20%,
-    var(--gold-10-line) 80%,
+    var(--ember-line) 20%,
+    var(--ember-line) 80%,
     transparent
   );
 }

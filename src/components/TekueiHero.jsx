@@ -1,11 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import '../styles/tekueiHero.css'
 import '../styles/tekueiHome.css'
-import '../styles/tekueiNavOverlay.css'
-import { CustomCursor } from './CustomCursor.jsx'
-import { NavOverlay, NavToggle } from './NavOverlay.jsx'
-import { SiteNavLinks } from './SiteNavLinks.jsx'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
 import { SuminagashiBackground } from './SuminagashiBackground.jsx'
 import {
@@ -21,27 +17,6 @@ import {
 } from '../data/homepage.js'
 import { useHeroContentParallax, useScrollParallax } from '../hooks/useScrollParallax.js'
 
-function HomeNav({ scrolled }) {
-  const [open, setOpen] = useState(false)
-  const close = () => setOpen(false)
-
-  return (
-    <nav className={['home-nav', scrolled ? 'is-scrolled' : ''].filter(Boolean).join(' ')}>
-      <Link to="/" className="home-nav__brand" onClick={close}>
-        T E K U E I
-        <span className="home-nav__brand-sub">德 溎</span>
-      </Link>
-      <div className="home-nav__menu home-nav__menu--desktop">
-        <SiteNavLinks />
-      </div>
-      {!open && <NavToggle onToggle={() => setOpen(true)} />}
-      <NavOverlay open={open} onClose={close} id="home-nav-overlay">
-        <SiteNavLinks variant="overlay" onNavigate={close} />
-      </NavOverlay>
-    </nav>
-  )
-}
-
 function imgVariantClass(variant) {
   if (variant === 'alt') return 'home-work__item-img home-work__item-img--alt'
   if (variant === 'alt2') return 'home-work__item-img home-work__item-img--alt2'
@@ -49,7 +24,6 @@ function imgVariantClass(variant) {
 }
 
 export default function TekueiHero() {
-  const [navScrolled, setNavScrolled] = useState(false)
   const watermarkRef = useScrollParallax(0.18)
   const vlineRef = useScrollParallax(0.06)
   const contentRef = useHeroContentParallax()
@@ -61,20 +35,11 @@ export default function TekueiHero() {
     if (meta) meta.setAttribute('content', HOME_META.description)
   }, [])
 
-  useEffect(() => {
-    const onScroll = () => setNavScrolled(window.scrollY > 80)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
   return (
     <div className="tekuei-hero-root tekuei-home">
       <SuminagashiBackground />
 
       <div className="home-ink-content">
-        <CustomCursor interactiveSelector="a" />
-        <HomeNav scrolled={navScrolled} />
 
         <main>
         <section className="home-hero" aria-label="首頁主視覺">
@@ -241,11 +206,12 @@ export default function TekueiHero() {
         </section>
 
         <section className="home-final-cta" id="contact">
+          <div className="home-final-cta__vline" aria-hidden />
           <div className="home-final-cta__watermark" ref={ctaWatermarkRef} aria-hidden>
             begin
           </div>
           <HomeFadeIn className="home-final-cta__content">
-            <div className="home-section-label home-section-label--center">{HOME_CTA.label}</div>
+            <div className="home-section-label">{HOME_CTA.label}</div>
             <h2 className="home-final-cta__title">
               {HOME_CTA.title.map((line) => (
                 <span key={line}>

@@ -1,0 +1,56 @@
+/* TEKUEI · 亞麻紙色彩系統（Paper / Ink / Ember） */
+
+:root {
+  /* ── Paper tonal system ── */
+  --paper: #f2ede3;
+  --paper-warm: #ede8dc;
+  --paper-cool: #edeae4;
+
+  /* ── Ink hierarchy · base #1e1b18 ── */
+  --ink: #1e1b18;
+  --ink-90: rgba(30, 27, 24, 0.9);
+  --ink-70: rgba(30, 27, 24, 0.7);
+  --ink-68: rgba(30, 27, 24, 0.68);
+  --ink-65: rgba(30, 27, 24, 0.65);
+  --ink-62: rgba(30, 27, 24, 0.62);
+  --ink-50: rgba(30, 27, 24, 0.5);
+  --ink-40: rgba(30, 27, 24, 0.4);
+  --ink-22: rgba(30, 27, 24, 0.22);
+  --ink-04: rgba(30, 27, 24, 0.04);
+
+  /* ── Ember accent ── */
+  --ember: #7a6845;
+  --ember-soft: #8f7a5a;
+  --ember-deep: #625337;
+  --ember-line: rgba(122, 104, 69, 0.28);
+  --ember-whisper: rgba(122, 104, 69, 0.14);
+  --ember-50: rgba(122, 104, 69, 0.5);
+
+  /* ── Motion & typography rhythm ── */
+  --ease-touch: cubic-bezier(0.16, 0.08, 0.12, 1);
+  --ls-title: 0.05em;
+  --ls-label: 0.46em;
+  --ls-body: 0.025em;
+
+  /* ── Legacy aliases（內頁相容） ── */
+  --ink-30: #3a3834;
+  --ink-30-head: var(--ink);
+  --ink-30-muted: var(--ink-70);
+  --ink-30-faint: var(--ink-65);
+  --ink-30-whisper: var(--ink-22);
+  --paper-60-wash: var(--paper-warm);
+  --paper-60-deep: var(--paper-cool);
+  --paper-60-edge: #d4cfc4;
+  --gold-10: var(--ember);
+  --gold-10-soft: var(--ember-soft);
+  --gold-10-line: var(--ember-line);
+  --gold-10-whisper: var(--ember-whisper);
+  --ink-soft: var(--ink-70);
+  --ink-faint: var(--ink-65);
+  --ink-muted: var(--ink-22);
+  --paper-panel: var(--paper-warm);
+  --paper-panel-deep: var(--paper-cool);
+  --paper-border: var(--ember-whisper);
+  --paper-border-gold: var(--ember-line);
+  --ease-haunt: var(--ease-touch);
+}

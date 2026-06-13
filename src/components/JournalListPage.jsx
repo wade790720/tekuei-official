@@ -1,8 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { CustomCursor } from './CustomCursor.jsx'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
-import { TekueiSiteNav } from './TekueiSiteNav.jsx'
 import { JOURNAL_META, JOURNAL_POSTS } from '../data/journal.js'
 import '../styles/tekueiWork.css'
 import '../styles/tekueiJournal.css'
@@ -16,9 +14,6 @@ export default function JournalListPage() {
 
   return (
     <div className="tekuei-journal-page">
-      <CustomCursor interactiveSelector="a" />
-      <TekueiSiteNav highlightJournal />
-
       <header className="journal-header">
         <div className="journal-header__inner">
           <HomeFadeIn>

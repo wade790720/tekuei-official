@@ -1,8 +1,6 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { CustomCursor } from './CustomCursor.jsx'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
-import { TekueiSiteNav } from './TekueiSiteNav.jsx'
 import {
   getAdjacentPosts,
   getJournalPost,
@@ -46,8 +44,6 @@ export default function JournalPostPage() {
   if (!post || !content) {
     return (
       <div className="tekuei-journal-page tekuei-journal-page--post">
-        <CustomCursor interactiveSelector="a" />
-        <TekueiSiteNav highlightJournal />
         <div className="journal-not-found">
           <div className="journal-not-found__num">—</div>
           <h1>文章不存在</h1>
@@ -59,8 +55,6 @@ export default function JournalPostPage() {
 
   return (
     <div className="tekuei-journal-page tekuei-journal-page--post">
-      <CustomCursor interactiveSelector="a" />
-      <TekueiSiteNav highlightJournal />
 
       <article className="journal-post">
         <header className="journal-post__header">

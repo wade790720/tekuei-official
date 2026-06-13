@@ -4,18 +4,18 @@
   --bg: transparent;
   --bg-deep: rgba(225, 215, 198, 0.55);
   --bg-light: var(--paper-60-wash, rgba(255, 252, 245, 0.48));
-  --text: var(--ink-30-head, #2a2622);
-  --accent: var(--gold-10, #8a7450);
-  --accent-line: var(--gold-10-line, rgba(138, 116, 80, 0.28));
-  --text-muted: var(--ink-30-muted, rgba(42, 38, 34, 0.58));
-  --text-faint: var(--ink-30-faint, rgba(42, 38, 34, 0.36));
-  --text-whisper: var(--ink-30-whisper, rgba(42, 38, 34, 0.22));
-  --ink-on-light: var(--ink-30-head, #2a2622);
-  --ink-on-light-muted: var(--ink-30-muted, rgba(42, 38, 34, 0.58));
-  --ink-on-light-faint: var(--ink-30-faint, rgba(42, 38, 34, 0.36));
+  --text: var(--ink);
+  --accent: var(--ember);
+  --accent-line: var(--ember-line);
+  --text-muted: var(--ink-70);
+  --text-faint: var(--ink-65);
+  --text-whisper: var(--ink-22);
+  --ink-on-light: var(--ink);
+  --ink-on-light-muted: var(--ink-70);
+  --ink-on-light-faint: var(--ink-65);
   --fd: 'Instrument Serif', serif;
   --fc: 'Noto Serif TC', 'Shippori Mincho', serif;
-  --ease-haunt: cubic-bezier(0.23, 0.1, 0.25, 1);
+  --ease-haunt: var(--ease-touch);
   --col: 880px;
 
   position: relative;

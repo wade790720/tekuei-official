@@ -3,16 +3,16 @@
 .tekuei-work-page {
   --bg: transparent;
   --bg-deep: rgba(225, 215, 198, 0.55);
-  --text: var(--ink-30-head, #2a2622);
-  --accent: var(--gold-10, #8a7450);
-  --accent-line: var(--gold-10-line, rgba(138, 116, 80, 0.28));
-  --text-muted: var(--ink-30-muted, rgba(42, 38, 34, 0.58));
-  --text-faint: var(--ink-30-faint, rgba(42, 38, 34, 0.36));
-  --text-whisper: var(--ink-30-whisper, rgba(42, 38, 34, 0.22));
-  --panel: var(--paper-60-wash, rgba(255, 252, 245, 0.48));
+  --text: var(--ink);
+  --accent: var(--ember);
+  --accent-line: var(--ember-line);
+  --text-muted: var(--ink-70);
+  --text-faint: var(--ink-65);
+  --text-whisper: var(--ink-22);
+  --panel: var(--paper-warm);
   --fd: 'Instrument Serif', serif;
   --fc: 'Noto Serif TC', 'Shippori Mincho', serif;
-  --ease-haunt: cubic-bezier(0.23, 0.1, 0.25, 1);
+  --ease-haunt: var(--ease-touch);
 
   position: relative;
   z-index: 1;
@@ -39,7 +39,8 @@ html.tekuei-has-scroll-document {
   min-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
+  scrollbar-gutter: stable;
 }
 
 html.tekuei-has-scroll-document body,
@@ -48,61 +49,7 @@ html.tekuei-has-scroll-document #root {
   min-height: 100vh;
 }
 
-/* ── Fixed nav ── */
-
-.tekuei-site-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 28px 44px;
-  opacity: 0;
-  animation: tekuei-work-fade-up 1s var(--ease-haunt) 0.3s forwards;
-}
-
-.tekuei-site-nav::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 44px;
-  right: 44px;
-  height: 0.3px;
-  background: var(--accent-line);
-}
-
-.tekuei-site-nav__logo {
-  font-family: var(--fd);
-  font-size: clamp(14px, 1.05vw, 17px);
-  letter-spacing: 0.38em;
-  color: var(--text);
-  text-decoration: none;
-}
-
-.tekuei-site-nav__links {
-  display: flex;
-  gap: 32px;
-}
-
-.tekuei-site-nav__links a {
-  font-family: var(--fd);
-  font-size: clamp(13px, 1vw, 15px);
-  letter-spacing: 0.09em;
-  color: var(--text-faint);
-  text-decoration: none;
-  transition: color 0.5s;
-}
-
-.tekuei-site-nav__links a:hover {
-  color: var(--text);
-}
-
-.tekuei-site-nav__links a.is-active {
-  color: var(--accent);
-}
+/* ── Fixed nav：見 tekueiSiteNav.css ── */
 
 /* ── Header ── */
 
@@ -484,19 +431,6 @@ html.tekuei-has-scroll-document #root {
 }
 
 @media (max-width: 900px) {
-  .tekuei-site-nav {
-    padding: 20px 28px;
-  }
-
-  .tekuei-site-nav::after {
-    left: 28px;
-    right: 28px;
-  }
-
-  .tekuei-site-nav__links {
-    gap: 20px;
-  }
-
   .work-page-header-inner {
     padding: 0 28px;
     flex-direction: column;
