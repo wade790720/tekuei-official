@@ -6,6 +6,7 @@ import WorkListPage from './components/WorkListPage.jsx'
 import JournalListPage from './components/JournalListPage.jsx'
 import JournalPostPage from './components/JournalPostPage.jsx'
 import CaseRouter from './components/CaseRouter.jsx'
+import CheckinPage from './components/CheckinPage.jsx'
 import { PaperSiteBackground } from './components/PaperSiteBackground.jsx'
 import { TekueiSiteNav } from './components/TekueiSiteNav.jsx'
 
@@ -21,8 +22,9 @@ function ScrollClasses() {
 function SiteNav() {
   const { pathname } = useLocation()
   const isCase = pathname.startsWith('/cases/')
+  const isCheckin = pathname === '/checkin'
 
-  if (isCase) return null
+  if (isCase || isCheckin) return null
 
   return (
     <TekueiSiteNav
@@ -46,6 +48,7 @@ export default function App() {
         <Route path="/journal" element={<JournalListPage />} />
         <Route path="/journal/:slug" element={<JournalPostPage />} />
         <Route path="/cases/:slug" element={<CaseRouter />} />
+        <Route path="/checkin" element={<CheckinPage />} />
       </Routes>
     </BrowserRouter>
   )

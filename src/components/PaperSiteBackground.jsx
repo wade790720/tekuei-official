@@ -6,12 +6,13 @@ import { WashiPaperBackground } from './WashiPaperBackground.jsx'
 export function PaperSiteBackground() {
   const { pathname } = useLocation()
   const isHome = pathname === '/'
+  const isCheckin = pathname === '/checkin'
 
   useEffect(() => {
-    document.documentElement.classList.toggle('tekuei-paper-site', !isHome)
+    document.documentElement.classList.toggle('tekuei-paper-site', !isHome && !isCheckin)
     return () => document.documentElement.classList.remove('tekuei-paper-site')
-  }, [isHome])
+  }, [isHome, isCheckin])
 
-  if (isHome) return null
+  if (isHome || isCheckin) return null
   return <WashiPaperBackground />
 }
