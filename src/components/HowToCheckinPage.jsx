@@ -90,6 +90,11 @@ export default function HowToCheckinPage() {
     if (meta) meta.setAttribute('content', HOW_TO_CHECKIN_META.description)
   }, [])
 
+  // 頁面載入觸發 Lead
+  useEffect(() => {
+    window.zaraz?.track('Lead')
+  }, [])
+
   return (
     <div className="tekuei-howto-checkin-page">
       <div className="howto-checkin-content">
@@ -139,6 +144,7 @@ export default function HowToCheckinPage() {
                         href={item.cta.href}
                         target={item.cta.external ? '_blank' : undefined}
                         rel={item.cta.external ? 'noopener noreferrer' : undefined}
+                        onClick={() => window.zaraz?.track('Contact')}
                       >
                         {item.cta.label}
                         <span className="howto-checkin-step__cta-arrow" aria-hidden>

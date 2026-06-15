@@ -6,7 +6,7 @@ export const HOW_TO_CHECKIN_META = {
 export const HOW_TO_CHECKIN_LINE_URL = 'https://tekuei.com/line'
 
 export const HOW_TO_CHECKIN_HERO = {
-  title: ['恭喜！', '您已成功報名活動'],
+  title: ['恭喜', '您已成功報名活動'],
   subtitle: '上課前請先完成以下報到手續（只須 1 分鐘）',
 }
 
@@ -45,9 +45,8 @@ export const HOW_TO_CHECKIN_STEPS = [
     step: '04',
     title: '確認號碼是否正確',
     body: [
-      '確認號碼是否正確，再點擊「確認無誤」。',
-      ['若未於 LINE 報到，將', { em: '無法收到' }, '正式連結與通知；'],
-      ['有任何操作問題，都可以在', { em: 'LINE 詢問助教' }, '唷！'],
+      '確認號碼是否正確，再點擊「確認無誤」',
+      ['若未於 LINE 報到，將', { em: '無法收到' }, '正式連結與通知；有任何操作問題，都可以在', { em: 'LINE 詢問助教' }, '唷！'],
     ],
     image: '/how-to-checkin/step-04.png',
     imageAlt: 'LINE 確認手機號碼與報到完成畫面',
