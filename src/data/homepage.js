@@ -81,38 +81,39 @@ export const HOME_APPROACH = {
       num: '01',
       title: ['人格挖掘', 'Identity Discovery'],
       desc:
-        '深度訪談，找到你的核心信念、worldview、敘事弧，讓你第一次真正看見自己',
+        '深度訪談，找到你的核心信念、世界觀、敘事弧，讓你第一次真正看見自己',
     },
     {
       num: '02',
       title: ['品牌建構', 'Brand Architecture'],
       desc:
-        '從你的性格長出品牌手冊、視覺語言、文案風格，每一個細節都是你的延伸，不是公版套用',
+        '從你的性格萃取出品牌手冊、視覺語言、文案風格，每一個細節都是你的延伸',
     },
     {
       num: '03',
       title: ['系統延伸', 'System Extension'],
       desc:
-        '社群、官網、影像，所有對外溝通的介面，都從同一個源頭長出來，保持一致的氣質',
+        '社群、官網、影像，所有對外溝通的介面，都從同一個源頭長出來，保持一致的調性與氣質',
     },
   ],
 }
 
+// 當你創造出一個有力量的女性角色時，現實生活中可能會有一萬個這樣的女性出現
 export const HOME_QUOTE = {
   lines: [
-    '當你成為一個有力量的角色，',
-    '現實裡會有一萬個人，',
-    '想跟你擁有一樣的能量。',
+    '當你',
+    '成為一個有力量的人時',
+    '現實中可能會有一萬個',
+    '想成為像你一樣的人出現',
   ],
-  en: 'Let your power be the proof.',
+  en: 'Let your strength be a light to others.',
 }
 
 export const HOME_CTA = {
   label: 'START YOUR BRAND · 開始你的品牌',
-  title: ['如果你準備好', '被世界正確看見'],
+  title: ['如果你準備好', '想被世界看見你的光'],
   desc: [
-    'TEKUEI 不是顧問服務，是一段旅程',
-    '我陪你從模糊走向清晰，從表演走向真實',
+    '我陪你從模糊走向清晰，從想像走向真實',
   ],
   email: 'hello@tekuei.com',
 }

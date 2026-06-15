@@ -7,6 +7,7 @@ import JournalListPage from './components/JournalListPage.jsx'
 import JournalPostPage from './components/JournalPostPage.jsx'
 import CaseRouter from './components/CaseRouter.jsx'
 import CheckinPage from './components/CheckinPage.jsx'
+import HowToCheckinPage from './components/HowToCheckinPage.jsx'
 import { PaperSiteBackground } from './components/PaperSiteBackground.jsx'
 import { TekueiSiteNav } from './components/TekueiSiteNav.jsx'
 
@@ -49,6 +50,7 @@ export default function App() {
         <Route path="/journal/:slug" element={<JournalPostPage />} />
         <Route path="/cases/:slug" element={<CaseRouter />} />
         <Route path="/checkin" element={<CheckinPage />} />
+        <Route path="/how-to-checkin" element={<HowToCheckinPage />} />
       </Routes>
     </BrowserRouter>
   )

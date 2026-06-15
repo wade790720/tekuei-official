@@ -1,0 +1,513 @@
+/* How-to Check-in · 報到教學頁 · mobile-first */
+
+.tekuei-howto-checkin-page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  background: transparent;
+  color: var(--ink-68);
+  font-weight: 400;
+  font-family: var(--fc);
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+
+  --fd: 'Instrument Serif', serif;
+  --fc: 'Noto Serif TC', 'Shippori Mincho', serif;
+  --ease: var(--ease-touch);
+  --wrap: min(1080px, calc(100% - 40px));
+  --page-pad: 20px;
+  --text-max: 36em;
+}
+
+.howto-checkin-content {
+  position: relative;
+  z-index: 1;
+}
+
+.tekuei-howto-checkin-page .home-fade-in {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.85s var(--ease),
+    transform 0.85s var(--ease);
+}
+
+.tekuei-howto-checkin-page .home-fade-in.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Hero ── */
+
+.howto-checkin-hero {
+  padding: 96px 0 36px;
+}
+
+.howto-checkin-hero__inner {
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+  max-width: var(--wrap);
+  text-align: left;
+}
+
+.howto-checkin-hero__eyebrow {
+  margin-bottom: 16px;
+  color: var(--ember);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 11px;
+  font-family: var(--fd);
+  opacity: 0;
+  animation: howto-rise 0.9s var(--ease) 0.35s forwards;
+}
+
+.howto-checkin-hero__title {
+  margin: 0;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  font-size: 1.625rem;
+  font-family: var(--fc);
+  line-height: 1.5;
+  opacity: 0;
+  animation: howto-rise 1s var(--ease) 0.48s forwards;
+}
+
+.howto-checkin-hero__subtitle {
+  margin: 16px 0 0;
+  max-width: var(--text-max);
+  color: var(--ink-68);
+  letter-spacing: 0.03em;
+  font-size: 1rem;
+  line-height: 1.75;
+  opacity: 0;
+  animation: howto-rise 1s var(--ease) 0.62s forwards;
+}
+
+@keyframes howto-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Rule ── */
+
+.howto-checkin-rule {
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+  max-width: var(--wrap);
+}
+
+.howto-checkin-rule__line {
+  height: 0.5px;
+  background: var(--ember-line);
+}
+
+/* ── Steps ── */
+
+.howto-checkin-steps {
+  padding: 40px 0 48px;
+}
+
+.howto-checkin-steps__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+  max-width: var(--wrap);
+  list-style: none;
+  gap: 48px;
+}
+
+.howto-checkin-step__layout {
+  display: grid;
+  align-items: start;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.howto-checkin-step__copy {
+  max-width: var(--text-max);
+}
+
+.howto-checkin-step__label {
+  margin: 0 0 8px;
+  color: var(--ink);
+  letter-spacing: 0.03em;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  font-family: var(--fc);
+  line-height: 1.4;
+}
+
+.howto-checkin-step__title {
+  margin: 0 0 12px;
+  color: var(--ink);
+  letter-spacing: 0.03em;
+  font-weight: 500;
+  font-size: 1.1875rem;
+  font-family: var(--fc);
+  line-height: 1.6;
+}
+
+.howto-checkin-step__body {
+  margin: 0;
+  color: var(--ink-68);
+  letter-spacing: 0.02em;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.howto-checkin-step__body + .howto-checkin-step__body {
+  margin-top: 0.5em;
+}
+
+.howto-checkin-step__em {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.howto-checkin-step__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 16px 24px;
+  min-height: 48px;
+  width: 100%;
+  border: 0.5px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  font-family: var(--fc);
+  line-height: 1.4;
+  transition:
+    background 0.4s var(--ease),
+    color 0.4s var(--ease),
+    border-color 0.4s var(--ease);
+  gap: 8px;
+}
+
+.howto-checkin-step__cta:hover {
+  border-color: var(--ember-deep);
+  background: var(--ember-deep);
+}
+
+.howto-checkin-step__cta-arrow {
+  letter-spacing: 0;
+  font-style: italic;
+}
+
+.howto-checkin-step__figure {
+  margin: 0;
+  width: 100%;
+  max-width: 280px;
+  justify-self: center;
+}
+
+.howto-checkin-step__figures {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  width: 100%;
+  gap: 16px;
+}
+
+.howto-checkin-step__figures .howto-checkin-step__img,
+.howto-checkin-step__img {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  border: 0.5px solid var(--ember-whisper);
+  border-radius: 12px;
+  box-shadow:
+    0 2px 8px rgba(30, 27, 24, 0.06),
+    0 12px 40px rgba(30, 27, 24, 0.08);
+}
+
+/* ── Perks ── */
+
+.howto-checkin-perks {
+  padding: 48px 0;
+  border-top: 0.5px solid var(--ember-line);
+}
+
+.howto-checkin-perks__inner {
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+  max-width: var(--wrap);
+}
+
+.howto-checkin-perks__label {
+  margin-bottom: 8px;
+}
+
+.howto-checkin-perks__title {
+  margin: 0 0 28px;
+  max-width: var(--text-max);
+  color: var(--ink);
+  letter-spacing: 0.03em;
+  font-weight: 500;
+  font-size: 1.1875rem;
+  font-family: var(--fc);
+  line-height: 1.6;
+}
+
+.howto-checkin-perks__list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.howto-checkin-perk__card {
+  padding: 20px;
+  height: 100%;
+  border: 0.5px solid var(--ember-whisper);
+  background: var(--paper-warm);
+}
+
+.howto-checkin-perk__num {
+  margin-bottom: 10px;
+  color: var(--ember);
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  font-size: 0.875rem;
+  font-family: var(--fc);
+}
+
+.howto-checkin-perk__title {
+  margin: 0 0 8px;
+  color: var(--ink);
+  letter-spacing: 0.03em;
+  font-weight: 500;
+  font-size: 1.0625rem;
+  font-family: var(--fc);
+  line-height: 1.5;
+}
+
+.howto-checkin-perk__body {
+  margin: 0;
+  color: var(--ink-68);
+  letter-spacing: 0.02em;
+  font-size: 0.9375rem;
+  line-height: 1.75;
+}
+
+/* ── Final ── */
+
+.howto-checkin-final {
+  padding: 48px 0 72px;
+  border-top: 0.5px solid var(--ember-line);
+}
+
+.howto-checkin-final__inner {
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+  max-width: var(--text-max);
+  text-align: left;
+}
+
+.howto-checkin-final__lead {
+  margin: 0 0 10px;
+  color: var(--ink);
+  letter-spacing: 0.03em;
+  font-weight: 500;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.howto-checkin-final__body {
+  margin: 0 0 24px;
+  color: var(--ink-68);
+  letter-spacing: 0.02em;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.howto-checkin-final__closing {
+  margin: 0;
+  color: var(--ember-deep);
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  font-size: 1.125rem;
+  font-family: var(--fc);
+  line-height: 1.6;
+}
+
+/* ── Desktop ── */
+
+@media (min-width: 769px) {
+  .tekuei-howto-checkin-page {
+    --page-pad: 24px;
+  }
+
+  .howto-checkin-hero {
+    padding: clamp(120px, 18vw, 160px) 0 clamp(40px, 7vw, 64px);
+  }
+
+  .howto-checkin-hero__inner {
+    text-align: center;
+  }
+
+  .howto-checkin-hero__eyebrow {
+    letter-spacing: 0.38em;
+    font-size: 11px;
+  }
+
+  .howto-checkin-hero__title {
+    font-weight: 400;
+    font-size: clamp(1.75rem, 5.5vw, 2.5rem);
+    letter-spacing: 0.06em;
+    line-height: 1.45;
+  }
+
+  .howto-checkin-hero__subtitle {
+    margin-inline: auto;
+    text-align: center;
+    letter-spacing: 0.06em;
+    font-size: clamp(0.9375rem, 2vw, 1rem);
+  }
+
+  .howto-checkin-steps {
+    padding: clamp(48px, 8vw, 80px) 0;
+  }
+
+  .howto-checkin-steps__list {
+    gap: clamp(56px, 10vw, 80px);
+  }
+
+  .howto-checkin-step__layout:not(.howto-checkin-step__layout--no-media) {
+    align-items: center;
+    grid-template-columns: minmax(0, 1fr) min(220px, 28%);
+    gap: clamp(20px, 2.5vw, 28px);
+  }
+
+  .howto-checkin-step__layout--dual {
+    grid-template-columns: minmax(0, 1fr) min(460px, 44%);
+  }
+
+  .howto-checkin-step__label {
+    font-weight: 500;
+    font-size: clamp(1rem, 1.8vw, 1.125rem);
+  }
+
+  .howto-checkin-step__title {
+    font-weight: 400;
+    font-size: clamp(1.125rem, 2.4vw, 1.375rem);
+    letter-spacing: 0.05em;
+  }
+
+  .howto-checkin-step__body {
+    font-size: clamp(0.9375rem, 1.8vw, 1rem);
+  }
+
+  .howto-checkin-step__cta {
+    display: inline-flex;
+    width: auto;
+    min-height: auto;
+    padding: 14px 28px;
+    font-weight: 400;
+    font-size: 0.875rem;
+    letter-spacing: 0.12em;
+  }
+
+  .howto-checkin-step__figure {
+    max-width: 220px;
+    justify-self: start;
+  }
+
+  .howto-checkin-step__figures {
+    flex-direction: row;
+    align-items: flex-start;
+    width: fit-content;
+    justify-self: start;
+    gap: clamp(10px, 1.5vw, 16px);
+  }
+
+  .howto-checkin-step__figures .howto-checkin-step__img,
+  .howto-checkin-step__img {
+    width: auto;
+    max-width: 220px;
+  }
+
+  .howto-checkin-perks {
+    padding: clamp(48px, 8vw, 72px) 0;
+  }
+
+  .howto-checkin-perks__title {
+    margin-bottom: clamp(32px, 5vw, 48px);
+    font-weight: 400;
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    letter-spacing: 0.06em;
+  }
+
+  .howto-checkin-perks__list {
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(16px, 3vw, 28px);
+  }
+
+  .howto-checkin-perk__card {
+    padding: clamp(24px, 4vw, 32px) clamp(20px, 3vw, 28px);
+  }
+
+  .howto-checkin-perk__num {
+    font-weight: 400;
+    font-size: 11px;
+    font-family: var(--fd);
+    letter-spacing: 0.2em;
+  }
+
+  .howto-checkin-perk__title {
+    font-weight: 400;
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+  }
+
+  .howto-checkin-perk__body {
+    font-size: 0.875rem;
+  }
+
+  .howto-checkin-final {
+    padding: clamp(56px, 10vw, 96px) 0 clamp(80px, 14vw, 120px);
+  }
+
+  .howto-checkin-final__inner {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .howto-checkin-final__lead {
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    font-size: clamp(1rem, 2.2vw, 1.125rem);
+  }
+
+  .howto-checkin-final__body {
+    letter-spacing: 0.04em;
+    font-size: 0.9375rem;
+  }
+
+  .howto-checkin-final__closing {
+    font-weight: 400;
+    font-style: italic;
+    font-family: var(--fd);
+    letter-spacing: 0.08em;
+    font-size: clamp(1.125rem, 2.8vw, 1.375rem);
+    color: var(--ember);
+  }
+}
