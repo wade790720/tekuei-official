@@ -3,13 +3,13 @@
 export const ABOUT_META = {
   title: 'About · TEKUEI 德溎',
   description:
-    'TEKUEI 是一套人格品牌系統。德溎結合工程思維與策展美學，協助創作者從模糊人設走向清晰而真實的品牌呈現。',
+    'TEKUEI 是一套人格品牌系統，德溎結合工程思維與策展美學，協助創作者從模糊人設走向清晰而真實的品牌呈現。',
 }
 
 export const ABOUT_HERO = {
   pre: 'A B O U T · 關 於',
   title: 'TEKUEI',
-  subtitle: '得 跪 · 德 溎',
+  subtitle: '德 溎',
   tagline: 'Personal Brand Architect',
   belief: {
     parts: [
@@ -30,7 +30,6 @@ export const ABOUT_INTRO = {
       parts: [
         { t: '是讓你被看見' },
         { t: '原本的樣子', accent: true },
-        { t: '。' },
       ],
     },
   ],
@@ -39,18 +38,18 @@ export const ABOUT_INTRO = {
       parts: [
         { t: 'TEKUEI 是一套' },
         { t: '人格品牌系統', accent: true },
-        { t: '。我們相信，真正高級的品牌不是精心設計的人設，而是把一個人的' },
-        { t: '靈魂', accent: true },
-        { t: '、價值觀、審美與生命經歷，系統化地呈現出來。' },
+        { t: '，我相信真正高級的品牌不是精心設計的人設，而是把一個人' },
+        { t: '最真實的故事', accent: true },
+        { t: '、價值觀、審美與生命經歷，被細膩的系統化萃取呈現出來。' },
       ],
     },
     {
       parts: [
-        { t: '大部分人不是沒有價值，而是從未真正理解自己。當你開始看見自己的' },
-        { t: '核心', accent: true },
+        { t: '大部分人從未真正理解自己，當你開始看見自己的' },
+        { t: '內在核心', accent: true },
         { t: '，世界才會開始' },
-        { t: '看見你', accent: true },
-        { t: '——這也是 TEKUEI 存在的原因。' },
+        { t: '看見你的光', accent: true },
+        { t: '，這也是 TEKUEI 存在的原因。' },
       ],
     },
   ],
@@ -60,19 +59,19 @@ export const ABOUT_FOUNDER = {
   label: 'F O U N D E R',
   title: '為什麼是我',
   name: 'WADE．德溎',
-  role: '品牌架構師 · TEKUEI 得跪',
+  role: '品牌架構師 · TEKUEI 德溎',
   paragraphs: [
     '我是一個寫了 10 年程式的軟體工程師，同時也在 2 年內從 0 到 1 創立了策展團隊，策畫過大大小小超過 10 檔的展覽。',
     {
       parts: [
-        { t: '策展那幾年，身邊有很多有才華的創作者，作品很好，卻在「怎麼讓人看見」這件事上耗掉了大部分的力氣。作品有厚度、有溫度，卻一直' },
+        { t: '策展那幾年，身邊有很多有才華的創作者，作品很好，卻在「怎麼讓人看見」這件事上耗掉了大部分的力氣，作品有厚度、有溫度，卻一直' },
         { t: '沒有被看見', accent: true },
-        { t: '——因為問題從來不在作品本身。' },
+        { t: '，因為問題從來不在作品本身。' },
       ],
     },
     {
       parts: [
-        { t: '我同時有工程師的' },
+        { t: '我同時具備工程師的' },
         { t: '系統思維', accent: true },
         { t: '，以及策展人的' },
         { t: '美學語言', accent: true },
@@ -83,7 +82,7 @@ export const ABOUT_FOUNDER = {
       parts: [
         { t: '於是 TEKUEI 誕生了：把「做」的能量，轉換成「' },
         { t: '被看見', accent: true },
-        { t: '」的力量。讓每一個需要用作品說話的人，都能有一個 24 小時替自己發聲的地方。' },
+        { t: '」的力量，讓每一個需要用作品說話的人，都能有一個 24 小時替自己發聲的地方。' },
       ],
     },
   ],
@@ -94,10 +93,10 @@ export const ABOUT_APPROACH = {
   label: 'A P P R O A C H',
   title: [
     {
-      parts: [{ t: '從模糊走向' }, { t: '清晰', accent: true }, { t: '，' }],
+      parts: [{ t: '從模糊走向' }, { t: '清晰', accent: true }, { t: '' }],
     },
     {
-      parts: [{ t: '從表演走向' }, { t: '真實', accent: true }, { t: '。' }],
+      parts: [{ t: '從表演走向' }, { t: '真實', accent: true }, { t: '' }],
     },
   ],
   items: [
@@ -111,7 +110,7 @@ export const ABOUT_APPROACH = {
       num: '02',
       title: '品牌建構',
       en: 'Brand Architecture',
-      desc: '從你的性格長出品牌手冊、視覺語言與文案風格——每一個細節都是你的延伸，不是公版套用。',
+      desc: '從你的性格長出品牌手冊、視覺語言與文案風格，每一個細節都是你的延伸，不是公版套用。',
     },
     {
       num: '03',
