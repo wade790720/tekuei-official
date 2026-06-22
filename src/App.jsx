@@ -22,15 +22,17 @@ function ScrollClasses() {
 
 function SiteNav() {
   const { pathname } = useLocation()
-  const isCase = pathname.startsWith('/cases/')
   const isCheckin = pathname === '/checkin'
 
-  if (isCase || isCheckin) return null
+  if (isCheckin) return null
+
+  const isCase = pathname.startsWith('/cases/')
 
   return (
     <TekueiSiteNav
+      variant={isCase ? 'case' : 'default'}
       highlightJournal={pathname.startsWith('/journal')}
-      highlightWorkSection={pathname.startsWith('/work') || pathname.startsWith('/cases')}
+      highlightWorkSection={pathname.startsWith('/work') || isCase}
     />
   )
 }

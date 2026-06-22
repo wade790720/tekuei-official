@@ -18,7 +18,7 @@ export const MATSU_BIENNIAL_CASE = {
       },
       {
         label: 'Year',
-        lines: ['待補'],
+        lines: ['2025'],
       },
       {
         label: 'Link',

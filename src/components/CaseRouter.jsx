@@ -5,11 +5,10 @@ import CaseStub from './CaseStub.jsx'
 
 export default function CaseRouter() {
   const { slug } = useParams()
-  const data = CASE_BY_SLUG[slug]
 
-  if (data) {
-    return <CaseStudyPage data={data} />
+  if (!CASE_BY_SLUG[slug]) {
+    return <CaseStub />
   }
 
-  return <CaseStub />
+  return <CaseStudyPage />
 }

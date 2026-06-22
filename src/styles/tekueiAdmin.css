@@ -1,9 +1,15 @@
 /* Admin · 全站後台編輯 UI */
 
+.is-admin-editing .tekuei-site-nav,
+.is-admin-editing .case-site-nav,
+.is-admin-editing .tekuei-nav-overlay {
+  z-index: 50 !important;
+}
+
 .admin-gate {
   position: fixed;
   inset: 0;
-  z-index: 10000;
+  z-index: 25002;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,7 +66,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 9998;
+  z-index: 25001;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -122,7 +128,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 9997;
+  z-index: 25000;
   width: min(100%, 400px);
   height: 100%;
   padding: 72px 16px 120px;
@@ -152,11 +158,35 @@
   cursor: pointer;
 }
 
+.admin-section__heading {
+  padding: 12px 14px;
+  background: var(--paper-warm);
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-bottom: 0.5px solid var(--ember-whisper);
+}
+
 .admin-section__body {
   padding: 12px 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.admin-section--nested {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 0.5px solid var(--ember-line);
+}
+
+.work-loading,
+.case-loading,
+.about-loading {
+  padding: 48px 24px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--ink-65);
 }
 
 .admin-field {
@@ -175,6 +205,11 @@
   font-size: 0.75rem;
   line-height: 1.5;
   color: var(--ink-65);
+}
+
+.admin-field__hint--size {
+  color: var(--ink);
+  font-weight: 500;
 }
 
 .admin-field__input,
@@ -243,6 +278,11 @@
 
 @media (min-width: 769px) {
   .tekuei-about-page.is-admin-editing .about-content {
+    margin-right: min(400px, 38vw);
+  }
+
+  .tekuei-work-page.is-admin-editing,
+  .tekuei-case-page.is-admin-editing {
     margin-right: min(400px, 38vw);
   }
 
