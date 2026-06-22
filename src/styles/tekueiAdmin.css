@@ -1,0 +1,267 @@
+/* Admin · 全站後台編輯 UI */
+
+.admin-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.admin-gate__backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: rgba(30, 27, 24, 0.45);
+  cursor: pointer;
+}
+
+.admin-gate__panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 360px;
+  padding: 28px 24px;
+  background: var(--paper);
+  border: 0.5px solid var(--ember-line);
+  box-shadow: 0 16px 48px rgba(30, 27, 24, 0.12);
+}
+
+.admin-gate__title {
+  margin: 0 0 8px;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.admin-gate__hint {
+  margin: 0 0 20px;
+  font-size: 0.8125rem;
+  color: var(--ink-65);
+}
+
+.admin-gate__error {
+  margin: 12px 0 0;
+  font-size: 0.875rem;
+  color: #9a3b2e;
+}
+
+.admin-gate__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.admin-toolbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: var(--paper-warm);
+  border-top: 0.5px solid var(--ember-line);
+  box-shadow: 0 -4px 24px rgba(30, 27, 24, 0.06);
+}
+
+.admin-toolbar__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-toolbar__badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ember-deep);
+}
+
+.admin-toolbar__error {
+  font-size: 0.8125rem;
+  color: #9a3b2e;
+}
+
+.admin-toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-btn {
+  padding: 10px 16px;
+  min-height: 44px;
+  border: 0.5px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.admin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--ember-line);
+}
+
+.admin-edit-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9997;
+  width: min(100%, 400px);
+  height: 100%;
+  padding: 72px 16px 120px;
+  overflow-y: auto;
+  background: var(--paper);
+  border-left: 0.5px solid var(--ember-line);
+  box-shadow: -8px 0 32px rgba(30, 27, 24, 0.06);
+}
+
+.admin-section {
+  margin-bottom: 8px;
+  border: 0.5px solid var(--ember-whisper);
+}
+
+.admin-section__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  background: var(--paper-warm);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-section__body {
+  padding: 12px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-field__label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.admin-field__hint {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--ink-65);
+}
+
+.admin-field__input,
+.admin-field__textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 0.5px solid var(--ember-line);
+  background: #fff;
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.admin-field__textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.admin-subgroup {
+  padding: 12px;
+  background: var(--paper-warm);
+  border: 0.5px solid var(--ember-whisper);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-subgroup__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ember);
+}
+
+.admin-image-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-image-field__preview {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  border-radius: 4px;
+  border: 0.5px solid var(--ember-whisper);
+}
+
+.admin-image-field__placeholder {
+  padding: 24px;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--ink-65);
+  background: var(--paper-warm);
+  border: 0.5px dashed var(--ember-line);
+}
+
+.admin-image-field__input {
+  display: none;
+}
+
+.tekuei-about-page.is-admin-editing .about-content {
+  padding-right: 0;
+}
+
+@media (min-width: 769px) {
+  .tekuei-about-page.is-admin-editing .about-content {
+    margin-right: min(400px, 38vw);
+  }
+
+  .admin-toolbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-edit-panel {
+    width: 100%;
+    border-left: none;
+    border-top: 0.5px solid var(--ember-line);
+    top: auto;
+    bottom: 72px;
+    height: min(55vh, 480px);
+    padding-top: 16px;
+  }
+}

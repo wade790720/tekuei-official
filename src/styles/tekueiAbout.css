@@ -28,6 +28,16 @@
   z-index: 1;
 }
 
+.about-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  color: var(--ink-65);
+  font-size: 0.9375rem;
+  letter-spacing: 0.06em;
+}
+
 /* ── 10% 點睛字 ── */
 
 .about-accent {
@@ -276,6 +286,28 @@
   );
   border: 0.5px solid var(--paper-60-edge);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  overflow: hidden;
+}
+
+.about-founder__frame--has-image {
+  padding: 0;
+}
+
+.about-founder__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.about-founder__frame--has-image .about-founder__name {
+  position: relative;
+  z-index: 1;
+  margin: 24px;
+  padding: 8px 12px;
+  background: rgba(242, 237, 227, 0.88);
 }
 
 .about-founder__name {

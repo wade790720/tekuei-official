@@ -1,0 +1,19 @@
+name = "tekuei-admin"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Workers KV（TEKUEI_CMS）
+[[kv_namespaces]]
+binding = "CMS_KV"
+id = "5e5370a21bf8471396cc0080cfaee340"
+
+# R2 bucket: tekuei-cms
+[[r2_buckets]]
+binding = "CMS_R2"
+bucket_name = "tekuei-cms"
+
+[vars]
+# 公開圖片基底 URL：請用 R2「Public bucket」的 r2.dev 或自訂網域（勿用 S3 API 網址）
+MEDIA_PUBLIC_BASE_URL = "https://pub-04b9cbba0b3d4c9a90fc0065af58750f.r2.dev"
+ALLOWED_ORIGINS = "https://tekuei.com,http://localhost:5173"
+JWT_EXPIRES_HOURS = "12"

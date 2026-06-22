@@ -81,7 +81,7 @@ export const HOME_APPROACH = {
       num: '01',
       title: ['人格挖掘', 'Identity Discovery'],
       desc:
-        '深度訪談，找到你的核心信念、世界觀、敘事弧，讓你第一次真正看見自己',
+        '深度訪談，找到你的核心信念、世界觀、敘事弧，讓你清晰看見自己的特質',
     },
     {
       num: '02',
@@ -93,7 +93,7 @@ export const HOME_APPROACH = {
       num: '03',
       title: ['系統延伸', 'System Extension'],
       desc:
-        '社群、官網、影像，所有對外溝通的介面，都從同一個源頭長出來，保持一致的調性與氣質',
+        '社群、官網、影像，所有對外溝通的介面，都是來自同一個源頭，保持一致的氣質',
     },
   ],
 }
@@ -113,9 +113,9 @@ export const HOME_CTA = {
   label: 'START YOUR BRAND · 開始你的品牌',
   title: ['如果你準備好', '想被世界看見你的光'],
   desc: [
-    '我陪你從模糊走向清晰，從想像走向真實',
+    '我陪你從模糊走向清晰，從創作走向商業',
   ],
-  email: 'hello@tekuei.com',
+  email: 'tekuei.xx@gmail.com',
 }
 
 export const HOME_FOOTER = {

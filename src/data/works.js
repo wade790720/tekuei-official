@@ -9,7 +9,7 @@ export const WORK_ITEMS = [
     titleEm: true,
     subtitle: '藝 術 島 嶼 策 展',
     descriptionLines: [
-      '第三屆馬祖國際藝術島——在離島與藝術之間，',
+      '第三屆馬祖國際藝術島 - 在離島與藝術之間，',
       '建構一座連結土地記憶與當代創作的數位入口。',
     ],
     tags: ['Web Design', 'Exhibition', 'Art Direction'],
@@ -26,7 +26,7 @@ export const WORK_ITEMS = [
     titleEm: false,
     subtitle: '情 緒 生 態 系 · 藝 術 場 域',
     descriptionLines: [
-      '共構情緒生態系的藝術場域——生成式藝術策展、',
+      '共構情緒生態系的藝術場域 - 生成式藝術策展、',
       '沉浸式體驗與數位藝術創作的交匯點。',
     ],
     tags: ['Generative Art', 'Exhibition Curation', 'Immersive Experience'],
