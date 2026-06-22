@@ -57,9 +57,13 @@ Dashboard → **Workers & Pages** → **tekuei-official** → **Settings** → *
 npx wrangler pages secret put ADMIN_SECRET --project-name=tekuei-official
 ```
 
-（執行後輸入你要的管理密碼，用於 Ctrl+Space 登入）
+（執行後輸入你要的管理密碼；**Ctrl+Space 登入時就打這串**，沒有另外的帳號系統）
+
+設完 Secret 後請 **重新部署**（Retry deployment），Functions 才讀得到。
 
 ### 4. 種子 data.json
+
+在**本機專案根目錄**執行：
 
 ```bash
 npm run seed
@@ -71,13 +75,21 @@ npm run seed
 
 Deployments → **Retry deployment**
 
+### 後台登入疑難排解
+
+| 狀況 | 處理 |
+|------|------|
+| 正式站密碼錯誤 | 確認 `ADMIN_SECRET` 設在 **Pages** 專案（不是舊 Worker），且已重新部署 |
+| 本機 `npm run dev` 登入失敗 | 本機無 `/api`；改用 `npm run dev:pages` 或設 `VITE_DEV_PROXY_TARGET` |
+| 驗證 API | `curl -X POST https://你的網域/api/admin/verify -H "Authorization: Bearer 你的密碼"` 應回 `200` |
+
 ---
 
 ## Cloudflare 設定（摘要）
 
 ### Pages 建置設定（重要）
 
-到 **Cloudflare Dashboard → Workers & Pages → 你的專案 → Settings → Builds**：
+到 **Cloudflare Dashboard → Workers & Pages → tekuei-official → Settings → Builds**：
 
 | 欄位 | 值 |
 |------|-----|
