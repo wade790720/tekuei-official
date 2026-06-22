@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import {
   CHECKIN_LIFF_ID,
   CHECKIN_META,
   CHECKIN_WORKER_URL,
 } from '../data/checkin.js'
-import '../styles/tekueiCheckin.css'
+import '../styles/checkin.css'
 
 const LIFF_SDK = 'https://static.line-scdn.net/liff/edge/2/sdk.js'
 

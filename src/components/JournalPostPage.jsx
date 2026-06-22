@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+﻿import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
 import {
@@ -6,8 +6,8 @@ import {
   getJournalPost,
   JOURNAL_CONTENT,
 } from '../data/journal.js'
-import '../styles/tekueiWork.css'
-import '../styles/tekueiJournal.css'
+import '../styles/work.css'
+import '../styles/journal.css'
 
 function PostBlock({ block }) {
   if (block.type === 'lead') {

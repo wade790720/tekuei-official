@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+﻿import { useCallback, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getNextCase } from '../data/cases/index.js'
 import { useCaseCms } from '../hooks/useCmsSection.js'
@@ -7,8 +7,8 @@ import { AdminEditToolbar } from './admin/AdminEditToolbar.jsx'
 import { AdminLoginGate } from './admin/AdminLoginGate.jsx'
 import { CaseEditPanel } from './case/CaseEditPanel.jsx'
 import { Reveal } from './Reveal.jsx'
-import '../styles/tekueiCase.css'
-import '../styles/tekueiAdmin.css'
+import '../styles/case.css'
+import '../styles/admin.css'
 
 function DelGrid({ items }) {
   return (

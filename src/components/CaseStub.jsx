@@ -1,7 +1,7 @@
-import { useEffect, useMemo } from 'react'
+﻿import { useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { WORK_ITEMS } from '../data/works.js'
-import '../styles/tekueiWork.css'
+import { WORK_ITEMS } from '../data/work.js'
+import '../styles/work.css'
 
 export default function CaseStub() {
   const { slug } = useParams()

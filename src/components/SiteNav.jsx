@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { NavOverlay, NavToggle } from './NavOverlay.jsx'
 import { SiteNavLinks } from './SiteNavLinks.jsx'
-import '../styles/tekueiSiteNav.css'
-import '../styles/tekueiNavOverlay.css'
+import '../styles/siteNav.css'
+import '../styles/navOverlay.css'
 
 /**
  * @param {{
@@ -12,7 +12,7 @@ import '../styles/tekueiNavOverlay.css'
  *   variant?: 'default' | 'case'
  * }} props
  */
-export function TekueiSiteNav({
+export function SiteNav({
   highlightWorkSection = false,
   highlightJournal = false,
   variant = 'default',

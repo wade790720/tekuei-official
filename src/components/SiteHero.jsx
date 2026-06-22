@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+﻿import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import '../styles/tekueiHero.css'
-import '../styles/tekueiHome.css'
+import '../styles/hero.css'
+import '../styles/home.css'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
 import { SuminagashiBackground } from './SuminagashiBackground.jsx'
 import {
@@ -23,7 +23,7 @@ function imgVariantClass(variant) {
   return 'home-work__item-img'
 }
 
-export default function TekueiHero() {
+export default function SiteHero() {
   const watermarkRef = useScrollParallax(0.18)
   const vlineRef = useScrollParallax(0.06)
   const contentRef = useHeroContentParallax()
