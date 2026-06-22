@@ -1,0 +1,15 @@
+# Cloudflare Pages：建置目錄 dist，並綁 R2（與 nectar-official 相同）
+# 1) Dashboard 建立 R2 bucket（名稱需與下方 bucket_name 一致）
+# 2) Pages 專案 > Settings > Functions > R2 bucket bindings，Binding 填 BUCKET
+# 3) 設定祕密：npx wrangler pages secret put ADMIN_SECRET --project-name=<你的專案名>
+# 4) 首次上傳 data.json：npm run seed
+#
+# 本機跑 Functions：複製 .dev.vars.example → .dev.vars，再執行 npm run dev:pages
+
+name = "tekuei-official"
+compatibility_date = "2024-11-01"
+pages_build_output_dir = "dist"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "tekuei-site-data"

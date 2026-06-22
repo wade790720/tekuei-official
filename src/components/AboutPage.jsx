@@ -5,7 +5,7 @@ import { AboutLine, AboutParts } from './AboutRichText.jsx'
 import { AdminEditToolbar } from './admin/AdminEditToolbar.jsx'
 import { AdminLoginGate } from './admin/AdminLoginGate.jsx'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
-import { downloadAboutJson, useAboutContent } from '../hooks/useAboutContent.js'
+import { downloadDataJson, useAboutContent } from '../hooks/useAboutContent.js'
 import { useSiteAdmin } from '../hooks/useSiteAdmin.js'
 import '../styles/tekueiWork.css'
 import '../styles/tekueiAbout.css'
@@ -25,6 +25,7 @@ function AboutCopy({ value, className }) {
 export default function AboutPage() {
   const {
     content,
+    siteData,
     draft,
     loading,
     saving,
@@ -78,7 +79,7 @@ export default function AboutPage() {
   }
 
   function handleDownload() {
-    downloadAboutJson(draft ?? content)
+    downloadDataJson(siteData, draft ?? content)
   }
 
   function handleLogout() {
