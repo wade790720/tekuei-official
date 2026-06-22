@@ -38,15 +38,20 @@ tekuei-site-data（R2）
 
 ### Pages 建置設定（重要）
 
+到 **Cloudflare Dashboard → Workers & Pages → 你的專案 → Settings → Builds**：
+
 | 欄位 | 值 |
 |------|-----|
 | Build command | `npm run build` |
 | Build output directory | `dist` |
-| **Deploy command** | **留空**（刪除 `npx wrangler deploy`） |
+| **Deploy command** | **`npm run deploy`**（或完全留空） |
 
-本專案是 **Pages + Functions**，不是獨立 Worker。`wrangler deploy` 會失敗；Git push 後 Pages 會自動發佈 `dist` 與 `functions/`。
+**請勿使用** `npx wrangler deploy`——那是獨立 Worker 指令，會導致你看到的錯誤。
 
-若曾設過 Deploy command，到 Dashboard → Pages → 專案 → **Settings → Builds** → 清空 **Deploy command** 後重新部署。
+- **留空**：Git 建置完自動發佈 `dist` + `functions/`（nectar 做法）
+- **`npm run deploy`**：若 Dashboard 強制要填 Deploy command，改填這個（內部是 `wrangler pages deploy dist`）
+
+改完後到 **Deployments → Retry deployment**。
 
 ## API（同網域）
 
