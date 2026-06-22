@@ -1,6 +1,13 @@
 /* Work 列表頁 · 對應 TEKUEI_Work_List.html，根節點請包在 .tekuei-work-page */
 
 .tekuei-work-page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--fc);
+
   --bg: transparent;
   --bg-deep: rgba(225, 215, 198, 0.55);
   --text: var(--ink);
@@ -13,40 +20,33 @@
   --fd: 'Instrument Serif', serif;
   --fc: 'Noto Serif TC', 'Shippori Mincho', serif;
   --ease-haunt: var(--ease-touch);
-
-  position: relative;
-  z-index: 1;
-  min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--fc);
 }
 
-.tekuei-work-page,
-.tekuei-work-page * {
+.tekuei-work-page, .tekuei-work-page * {
   box-sizing: border-box;
 }
 
 .tekuei-work-page__grid {
   position: fixed;
-  inset: 0;
   z-index: 0;
   pointer-events: none;
+
+  inset: 0;
 }
 
 html.tekuei-has-scroll-document {
-  height: auto;
-  min-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+  min-height: 100%;
+  height: auto;
+
   scroll-behavior: auto;
   scrollbar-gutter: stable;
 }
 
-html.tekuei-has-scroll-document body,
-html.tekuei-has-scroll-document #root {
-  height: auto;
+html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
   min-height: 100vh;
+  height: auto;
 }
 
 /* ── Fixed nav：見 tekueiSiteNav.css ── */
@@ -54,91 +54,91 @@ html.tekuei-has-scroll-document #root {
 /* ── Header ── */
 
 .work-page-header {
-  padding: 160px 0 80px;
   position: relative;
   z-index: 2;
+  padding: 160px 0 80px;
 }
 
 .work-page-header-inner {
-  max-width: 1200px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
   margin: 0 auto;
   padding: 0 52px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  max-width: 1200px;
 }
 
 .work-page-header .pre {
-  font-family: var(--fd);
-  font-size: 9px;
-  letter-spacing: 0.35em;
-  color: var(--accent);
   margin-bottom: 20px;
+  color: var(--accent);
+  letter-spacing: 0.35em;
+  font-size: 9px;
+  font-family: var(--fd);
   opacity: 0;
   animation: tekuei-work-fade-up 0.9s var(--ease-haunt) 0.6s forwards;
 }
 
 .work-page-header h1 {
-  font-family: var(--fd);
+  color: var(--text);
   font-weight: 400;
   font-size: clamp(36px, 5vw, 56px);
+  font-family: var(--fd);
   line-height: 1.06;
-  color: var(--text);
   opacity: 0;
   animation: tekuei-work-fade-up 1s var(--ease-haunt) 0.8s forwards;
 }
 
 .work-page-header .count {
-  font-family: var(--fd);
-  font-size: 11px;
-  letter-spacing: 0.15em;
   color: var(--text-whisper);
+  letter-spacing: 0.15em;
+  font-size: 11px;
+  font-family: var(--fd);
   opacity: 0;
   animation: tekuei-work-fade-in 1.5s ease 1.2s forwards;
 }
 
 .work-header-rule {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 52px;
-  opacity: 0;
-  animation: tekuei-work-fade-in 1.5s ease 1s forwards;
   position: relative;
   z-index: 2;
+  margin: 0 auto;
+  padding: 0 52px;
+  max-width: 1200px;
+  opacity: 0;
+  animation: tekuei-work-fade-in 1.5s ease 1s forwards;
 }
 
 .work-header-rule-line {
   height: 0.3px;
   background: linear-gradient(
-    to right,
-    transparent,
-    var(--accent-line) 22%,
-    var(--accent-line) 78%,
-    transparent
+  to right,
+  transparent,
+  var(--accent-line) 22%,
+  var(--accent-line) 78%,
+  transparent
   );
 }
 
 /* ── Work grid ── */
 
 .work-grid {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 60px 52px 120px;
   position: relative;
   z-index: 2;
+  margin: 0 auto;
+  padding: 60px 52px 120px;
+  max-width: 1200px;
 }
 
 .work-grid__item {
+  position: relative;
   display: grid;
+  margin-bottom: 1px;
+  opacity: 0;
+  transition: opacity 0.8s var(--ease-haunt),
+  transform 0.8s var(--ease-haunt);
+  transform: translateY(40px);
+
   grid-template-columns: 1fr 1fr;
   gap: 0;
-  margin-bottom: 1px;
-  position: relative;
-  opacity: 0;
-  transform: translateY(40px);
-  transition:
-    opacity 0.8s var(--ease-haunt),
-    transform 0.8s var(--ease-haunt);
 }
 
 .work-grid__item.is-visible {
@@ -150,63 +150,90 @@ html.tekuei-has-scroll-document #root {
   display: contents;
   margin: 0;
   padding: 0;
-  text-decoration: none;
   color: inherit;
+  text-decoration: none;
 }
 
 .work-thumb {
   position: relative;
-  aspect-ratio: 16 / 10;
   overflow: hidden;
+  border: 0.5px solid var(--accent-line);
   background: var(--bg-deep);
+  transition: border-color 0.6s var(--ease-haunt);
+
+  aspect-ratio: 16 / 10;
+}
+
+.work-grid__item:hover .work-thumb {
+  border-color: var(--accent);
 }
 
 .work-thumb-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.7;
-  transition:
-    opacity 0.8s var(--ease-haunt),
-    transform 1.2s var(--ease-haunt),
-    filter 0.8s var(--ease-haunt);
-  filter: saturate(0.85);
+  position: relative;
   display: flex;
+  overflow: hidden;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
+  transition: transform 1.2s var(--ease-haunt);
 }
 
-.work-grid__item:hover .work-thumb-img {
-  opacity: 0.95;
+.work-thumb-img--has-photo {
+  background: var(--bg-deep);
+}
+
+.work-thumb-photo {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: transform 1.2s var(--ease-haunt);
+
+  inset: 0;
+  object-fit: fill;
+}
+
+.work-grid__item:hover .work-thumb-photo {
   transform: scale(1.03);
-  filter: saturate(1);
+}
+
+.work-thumb-mark {
+  color: var(--accent);
+  opacity: 0.55;
+  transition: opacity 0.6s var(--ease-haunt),
+  transform 0.8s var(--ease-haunt);
+}
+
+.work-grid__item:hover .work-thumb-mark {
+  opacity: 0.85;
+  transform: scale(1.04);
 }
 
 .work-thumb .num {
   position: absolute;
   top: 24px;
   left: 28px;
-  font-family: var(--fd);
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  color: var(--accent);
   z-index: 2;
+  color: var(--accent);
+  letter-spacing: 0.3em;
+  font-size: 9px;
+  font-family: var(--fd);
 }
 
 .work-info {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 48px 52px;
-  background: var(--panel);
-  position: relative;
   border-left: 0.5px solid var(--accent-line);
+  background: var(--panel);
 }
 
 .work-grid__item:nth-child(even) .work-info {
   order: -1;
-  border-left: none;
   border-right: 0.5px solid var(--accent-line);
+  border-left: none;
 }
 
 .work-grid__item:nth-child(even) .work-thumb {
@@ -214,21 +241,21 @@ html.tekuei-has-scroll-document #root {
 }
 
 .work-info .client {
-  font-family: var(--fd);
-  font-size: 9px;
-  letter-spacing: 0.35em;
-  color: var(--accent);
   margin-bottom: 20px;
+  color: var(--accent);
   text-transform: uppercase;
+  letter-spacing: 0.35em;
+  font-size: 9px;
+  font-family: var(--fd);
 }
 
 .work-info .title {
-  font-family: var(--fd);
+  margin-bottom: 8px;
+  color: var(--text);
   font-weight: 400;
   font-size: clamp(22px, 2.8vw, 34px);
+  font-family: var(--fd);
   line-height: 1.15;
-  color: var(--text);
-  margin-bottom: 8px;
   transition: color 0.5s;
 }
 
@@ -242,50 +269,50 @@ html.tekuei-has-scroll-document #root {
 }
 
 .work-info .subtitle {
-  font-family: var(--fc);
+  margin-bottom: 32px;
+  color: var(--text-faint);
+  letter-spacing: 0.2em;
   font-weight: 200;
   font-size: clamp(12px, 1.2vw, 14px);
-  letter-spacing: 0.2em;
-  color: var(--text-faint);
-  margin-bottom: 32px;
+  font-family: var(--fc);
 }
 
 .work-info .divider {
+  margin-bottom: 24px;
   width: 28px;
   height: 0.5px;
   background: var(--accent);
   opacity: 0.45;
-  margin-bottom: 24px;
 }
 
 .work-info .desc {
-  font-family: var(--fc);
-  font-weight: 200;
-  font-size: clamp(11px, 1.1vw, 13px);
-  line-height: 2.1;
+  margin-bottom: 32px;
   color: var(--text-muted);
   letter-spacing: 0.04em;
-  margin-bottom: 32px;
+  font-weight: 200;
+  font-size: clamp(11px, 1.1vw, 13px);
+  font-family: var(--fc);
+  line-height: 2.1;
 }
 
 .work-info .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
   margin-bottom: 32px;
+
+  gap: 8px;
 }
 
 .work-info .tag {
-  font-family: var(--fd);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  color: var(--accent);
   padding: 4px 12px;
   border: 0.5px solid var(--accent-line);
   background: rgba(255, 252, 245, 0.35);
-  transition:
-    border-color 0.5s,
-    color 0.5s;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  font-size: 9px;
+  font-family: var(--fd);
+  transition: border-color 0.5s,
+  color 0.5s;
 }
 
 .work-grid__item:hover .tag {
@@ -294,29 +321,29 @@ html.tekuei-has-scroll-document #root {
 }
 
 .work-info .arrow {
-  font-family: var(--fd);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--text-faint);
   display: flex;
   align-items: center;
+  color: var(--text-faint);
+  letter-spacing: 0.2em;
+  font-size: 10px;
+  font-family: var(--fd);
+  transition: color 0.5s,
+  gap 0.5s;
+
   gap: 10px;
-  transition:
-    color 0.5s,
-    gap 0.5s;
 }
 
 .work-info .arrow-line {
   width: 20px;
   height: 0.5px;
   background: var(--accent-line);
-  transition:
-    width 0.5s,
-    background 0.5s;
+  transition: width 0.5s,
+  background 0.5s;
 }
 
 .work-grid__item:hover .arrow {
   color: var(--accent);
+
   gap: 14px;
 }
 
@@ -326,13 +353,13 @@ html.tekuei-has-scroll-document #root {
 }
 
 .work-grid__item + .work-grid__item::before {
-  content: '';
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
+  left: 0;
   height: 0.3px;
   background: var(--accent-line);
+  content: '';
 }
 
 .work-thumb-mark {
@@ -341,68 +368,69 @@ html.tekuei-has-scroll-document #root {
 }
 
 .work-page-footer {
-  padding: 80px 52px 48px;
-  text-align: center;
-  border-top: 0.5px solid var(--accent-line);
   position: relative;
   z-index: 2;
+  padding: 80px 52px 48px;
+  border-top: 0.5px solid var(--accent-line);
+  text-align: center;
 }
 
 .work-page-footer .belief {
-  font-family: var(--fc);
-  font-weight: 200;
-  font-size: 13px;
-  line-height: 2.2;
+  margin-bottom: 48px;
   color: var(--text-faint);
   letter-spacing: 0.06em;
-  margin-bottom: 48px;
+  font-weight: 200;
+  font-size: 13px;
+  font-family: var(--fc);
+  line-height: 2.2;
 }
 
 .work-page-footer .mark {
-  font-family: var(--fd);
-  font-size: 10px;
-  letter-spacing: 0.4em;
   color: var(--text-whisper);
+  letter-spacing: 0.4em;
+  font-size: 10px;
+  font-family: var(--fd);
 }
 
 /* ── Case stub ── */
 
 .tekuei-case-stub {
-  min-height: calc(100vh - 140px);
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
+  flex-direction: column;
   justify-content: center;
-  gap: 1.25rem;
-  padding: clamp(140px, 22vh, 200px) 52px clamp(72px, 12vh, 120px);
-  max-width: 720px;
   margin: 0 auto;
+  padding: clamp(140px, 22vh, 200px) 52px clamp(72px, 12vh, 120px);
+  min-height: calc(100vh - 140px);
+  max-width: 720px;
+
+  gap: 1.25rem;
 }
 
 .tekuei-case-stub h1 {
-  font-family: var(--fd);
+  color: var(--text);
   font-weight: 400;
   font-size: clamp(28px, 4vw, 40px);
-  color: var(--text);
+  font-family: var(--fd);
   line-height: 1.15;
 }
 
 .tekuei-case-stub p {
-  font-family: var(--fc);
-  font-weight: 200;
-  font-size: 14px;
   color: var(--text-muted);
   letter-spacing: 0.06em;
+  font-weight: 200;
+  font-size: 14px;
+  font-family: var(--fc);
   line-height: 2;
 }
 
 .tekuei-case-stub__back {
-  font-family: var(--fd);
-  font-size: 11px;
-  letter-spacing: 0.2em;
+  margin-top: 1rem;
   color: var(--accent);
   text-decoration: none;
-  margin-top: 1rem;
+  letter-spacing: 0.2em;
+  font-size: 11px;
+  font-family: var(--fd);
   transition: color 0.4s ease;
 }
 
@@ -415,6 +443,7 @@ html.tekuei-has-scroll-document #root {
     opacity: 0;
     transform: translateY(16px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -425,6 +454,7 @@ html.tekuei-has-scroll-document #root {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -432,9 +462,10 @@ html.tekuei-has-scroll-document #root {
 
 @media (max-width: 900px) {
   .work-page-header-inner {
-    padding: 0 28px;
-    flex-direction: column;
     align-items: flex-start;
+    flex-direction: column;
+    padding: 0 28px;
+
     gap: 12px;
   }
 

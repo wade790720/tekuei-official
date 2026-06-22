@@ -1,9 +1,14 @@
-import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback, useEffect } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { getNextCase } from '../data/cases/index.js'
-import { CaseSiteNav } from './CaseSiteNav.jsx'
+import { useCaseCms } from '../hooks/useCmsSection.js'
+import { useSiteAdmin } from '../hooks/useSiteAdmin.js'
+import { AdminEditToolbar } from './admin/AdminEditToolbar.jsx'
+import { AdminLoginGate } from './admin/AdminLoginGate.jsx'
+import { CaseEditPanel } from './case/CaseEditPanel.jsx'
 import { Reveal } from './Reveal.jsx'
 import '../styles/tekueiCase.css'
+import '../styles/tekueiAdmin.css'
 
 function DelGrid({ items }) {
   return (
@@ -49,26 +54,107 @@ function NextCaseTitle({ titleEm, titleRest }) {
   )
 }
 
-export default function CaseStudyPage({ data }) {
-  const { hero, sections, media } = data
-  const nextCase = getNextCase(data.slug)
+export default function CaseStudyPage() {
+  const { slug } = useParams()
+  const {
+    content: data,
+    workItems,
+    draft,
+    loading,
+    saving,
+    error,
+    setError,
+    isEditing,
+    startEditing,
+    cancelEditing,
+    updateDraft,
+    saveDraft,
+  } = useCaseCms(slug)
+
+  const handleEnterEdit = useCallback(() => {
+    if (!isEditing && data) startEditing()
+  }, [isEditing, data, startEditing])
+
+  const admin = useSiteAdmin({ onEnterEdit: handleEnterEdit })
+
+  const hero = data?.hero
+  const sections = data?.sections
+  const media = data?.media
+  const nextCase = data ? getNextCase(data.slug, workItems) : null
 
   useEffect(() => {
+    if (!data) return
     document.title = data.documentTitle
     window.scrollTo(0, 0)
-  }, [data.documentTitle])
+  }, [data?.documentTitle, data])
+
+  async function handleSave() {
+    const token = admin.getToken()
+    if (!token) {
+      setError('請先登入')
+      admin.openLogin()
+      return
+    }
+    try {
+      await saveDraft(token)
+    } catch {
+      /* error set in hook */
+    }
+  }
+
+  function handleLogout() {
+    admin.logout()
+    cancelEditing()
+  }
+
+  if (loading || !data || !hero || !sections || !media) {
+    return <div className="site-loading-bar" />
+  }
 
   return (
-    <div className="tekuei-case-page">
+    <div
+      className={['tekuei-case-page', isEditing ? 'is-admin-editing' : '']
+        .filter(Boolean)
+        .join(' ')}
+    >
+      <AdminLoginGate
+        open={admin.showLogin}
+        error={admin.loginError}
+        loggingIn={admin.loggingIn}
+        onClose={admin.closeLogin}
+        onLogin={admin.login}
+      />
 
-      <CaseSiteNav />
+      {isEditing && draft && (
+        <>
+          <CaseEditPanel draft={draft} updateDraft={updateDraft} getToken={admin.getToken} />
+          <AdminEditToolbar
+            saving={saving}
+            error={error}
+            onSave={handleSave}
+            onLogout={handleLogout}
+          />
+        </>
+      )}
 
-      <header className="case-hero">
-        <div
-          className="case-hero-bg"
-          style={hero.bg ? { background: hero.bg } : undefined}
-          aria-hidden
-        />
+      <header
+        className={['case-hero', hero.image?.url ? 'case-hero--has-photo' : '']
+          .filter(Boolean)
+          .join(' ')}
+      >
+        {hero.image?.url ? (
+          <div
+            className="case-hero-bg case-hero-bg--photo"
+            style={{ backgroundImage: `url(${hero.image.url})` }}
+            aria-hidden
+          />
+        ) : (
+          <div
+            className="case-hero-bg"
+            style={hero.bg ? { background: hero.bg } : undefined}
+            aria-hidden
+          />
+        )}
         <div className="case-hero-content">
           <div className="case-hero-left">
             <div className="case-num">{hero.num}</div>
@@ -122,9 +208,14 @@ export default function CaseStudyPage({ data }) {
 
       <Reveal
         className="case-img-full"
-        style={media?.fullWidthBg ? { background: media.fullWidthBg } : undefined}
+        style={!media.fullWidthImage?.url && media.fullWidthBg ? { background: media.fullWidthBg } : undefined}
       >
-        <span className="case-img-label">{media.fullWidthLabel}</span>
+        {media.fullWidthImage?.url ? (
+          <img className="case-img-photo" src={media.fullWidthImage.url} alt="" />
+        ) : null}
+        {!media.fullWidthImage?.url ? (
+          <span className="case-img-label">{media.fullWidthLabel}</span>
+        ) : null}
       </Reveal>
 
       <Reveal as="section" className="case-section case-section--light">
@@ -162,8 +253,15 @@ export default function CaseStudyPage({ data }) {
       </Reveal>
 
       <div className="case-wrap">
-        <Reveal className="case-img">
-          <span className="case-img-label">{media.inlineLabel}</span>
+        <Reveal
+          className="case-img"
+          style={!media.inlineImage?.url ? undefined : { background: 'transparent', border: 'none' }}
+        >
+          {media.inlineImage?.url ? (
+            <img className="case-img-photo" src={media.inlineImage.url} alt="" />
+          ) : (
+            <span className="case-img-label">{media.inlineLabel}</span>
+          )}
         </Reveal>
       </div>
 

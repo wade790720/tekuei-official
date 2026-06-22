@@ -26,6 +26,12 @@
   padding-bottom: 20px;
 }
 
+.tekuei-site-nav--case {
+  background: rgba(242, 237, 227, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
 .tekuei-site-nav::after {
   content: '';
   position: absolute;

@@ -10,6 +10,9 @@ export const ABOUT_IMAGE_SLOTS = {
   },
   founderSignature: {
     label: '簽名圖',
+    width: 480,
+    height: 160,
+    aspectRatio: '約 3:1',
     maxSizeMB: 1,
     hint: '透明底 PNG，疊於照片右下角；可略微超出外框',
     accept: 'image/png',

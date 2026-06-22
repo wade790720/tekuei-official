@@ -9,7 +9,7 @@ export const MONOLAB_CASE = {
     meta: [
       {
         label: 'Client',
-        lines: ['MONOLAB', '墨語'],
+        lines: ['MONOLAB', '墨雨互動設計'],
       },
       {
         label: 'Scope',
@@ -17,7 +17,7 @@ export const MONOLAB_CASE = {
       },
       {
         label: 'Year',
-        lines: ['待補'],
+        lines: ['2024'],
       },
       {
         label: 'Link',

@@ -1,7 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { WORK_ITEMS } from '../data/works.js'
+import { AdminEditToolbar } from './admin/AdminEditToolbar.jsx'
+import { AdminLoginGate } from './admin/AdminLoginGate.jsx'
+import { WorkEditPanel } from './work/WorkEditPanel.jsx'
+import { useWorkContent } from '../hooks/useWorkContent.js'
+import { useSiteAdmin } from '../hooks/useSiteAdmin.js'
 import '../styles/tekueiWork.css'
+import '../styles/tekueiAdmin.css'
 
 function WorkThumbGraphic({ thumbSvg }) {
   const svgProps = {
@@ -76,8 +81,20 @@ function WorkCard({ item }) {
       <Link className="work-grid__card" to={item.caseHref}>
         <div className="work-thumb">
           <div className="num">{item.num}</div>
-          <div className="work-thumb-img" style={{ background: item.thumbBg }}>
-            <WorkThumbGraphic thumbSvg={item.thumbSvg} />
+          <div
+            className={[
+              'work-thumb-img',
+              item.thumbImage?.url ? 'work-thumb-img--has-photo' : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
+            style={!item.thumbImage?.url ? { background: item.thumbBg } : undefined}
+          >
+            {item.thumbImage?.url ? (
+              <img className="work-thumb-photo" src={item.thumbImage.url} alt="" />
+            ) : (
+              <WorkThumbGraphic thumbSvg={item.thumbSvg} />
+            )}
           </div>
         </div>
         <div className="work-info">
@@ -119,41 +136,116 @@ function WorkCard({ item }) {
 }
 
 export default function WorkListPage() {
+  const {
+    content,
+    draft,
+    loading,
+    saving,
+    error,
+    setError,
+    isEditing,
+    startEditing,
+    cancelEditing,
+    updateDraft,
+    saveDraft,
+  } = useWorkContent()
+
+  const handleEnterEdit = useCallback(() => {
+    if (!isEditing) startEditing()
+  }, [isEditing, startEditing])
+
+  const admin = useSiteAdmin({ onEnterEdit: handleEnterEdit })
+
+  const { meta, header, footer, items } = content
+
   useEffect(() => {
-    document.title = 'TEKUEI · Work'
-  }, [])
+    document.title = meta.title
+  }, [meta.title])
+
+  async function handleSave() {
+    const token = admin.getToken()
+    if (!token) {
+      setError('請先登入')
+      admin.openLogin()
+      return
+    }
+    try {
+      await saveDraft(token)
+    } catch {
+      /* error set in hook */
+    }
+  }
+
+  function handleLogout() {
+    admin.logout()
+    cancelEditing()
+  }
 
   return (
-    <div className="tekuei-work-page">
+    <div
+      className={['tekuei-work-page', isEditing ? 'is-admin-editing' : '']
+        .filter(Boolean)
+        .join(' ')}
+    >
+      <AdminLoginGate
+        open={admin.showLogin}
+        error={admin.loginError}
+        loggingIn={admin.loggingIn}
+        onClose={admin.closeLogin}
+        onLogin={admin.login}
+      />
 
-      <header className="work-page-header">
-        <div className="work-page-header-inner">
-          <div>
-            <div className="pre">S E L E C T E D &nbsp;&nbsp;W O R K</div>
-            <h1>Work</h1>
+      {isEditing && draft && (
+        <>
+          <WorkEditPanel draft={draft} updateDraft={updateDraft} getToken={admin.getToken} />
+          <AdminEditToolbar
+            saving={saving}
+            error={error}
+            onSave={handleSave}
+            onLogout={handleLogout}
+          />
+        </>
+      )}
+
+      {loading ? (
+        <div className="site-loading-bar" />
+      ) : (
+        <>
+          <header className="work-page-header">
+            <div className="work-page-header-inner">
+              <div>
+                <div className="pre">{header.pre}</div>
+                <h1>{header.title}</h1>
+              </div>
+              <div className="count">
+                0{items.length} {header.countSuffix}
+              </div>
+            </div>
+          </header>
+
+          <div className="work-header-rule">
+            <div className="work-header-rule-line" />
           </div>
-          <div className="count">0{WORK_ITEMS.length} Projects</div>
-        </div>
-      </header>
 
-      <div className="work-header-rule">
-        <div className="work-header-rule-line" />
-      </div>
+          <section className="work-grid" aria-label="作品列表">
+            {items.map((item) => (
+              <WorkCard key={item.id} item={item} />
+            ))}
+          </section>
 
-      <section className="work-grid" aria-label="作品列表">
-        {WORK_ITEMS.map((item) => (
-          <WorkCard key={item.id} item={item} />
-        ))}
-      </section>
-
-      <footer className="work-page-footer">
-        <div className="belief">
-          為創作者建構美學語言，
-          <br />
-          讓每一束光照到它該照的地方。
-        </div>
-        <div className="mark">T E K U E I · 2 0 2 6</div>
-      </footer>
+          <footer className="work-page-footer">
+            <div className="belief">
+              {footer.belief.map((line, i) => (
+                <span key={line}>
+                  {i > 0 ? <br /> : null}
+                  {line}
+                </span>
+              ))}
+            </div>
+            <div className="mark">{footer.mark}</div>
+          </footer>
+        </>
+      )}
     </div>
   )
 }

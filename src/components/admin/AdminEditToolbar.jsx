@@ -1,11 +1,4 @@
-export function AdminEditToolbar({
-  saving,
-  error,
-  onSave,
-  onCancel,
-  onLogout,
-  onDownload,
-}) {
+export function AdminEditToolbar({ saving, error, onSave, onLogout }) {
   return (
     <div className="admin-toolbar">
       <div className="admin-toolbar__status">
@@ -17,14 +10,8 @@ export function AdminEditToolbar({
         )}
       </div>
       <div className="admin-toolbar__actions">
-        <button type="button" className="admin-btn admin-btn--ghost" onClick={onDownload}>
-          下載 JSON
-        </button>
         <button type="button" className="admin-btn admin-btn--ghost" onClick={onLogout}>
           登出
-        </button>
-        <button type="button" className="admin-btn admin-btn--ghost" onClick={onCancel}>
-          取消
         </button>
         <button type="button" className="admin-btn" onClick={onSave} disabled={saving}>
           {saving ? '儲存中…' : '儲存'}

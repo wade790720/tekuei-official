@@ -1,23 +1,20 @@
-import { WORK_ITEMS } from '../works.js'
-import { LUSTRE_YELLOW_CASE } from './lustreYellow.js'
 import { MATSU_BIENNIAL_CASE } from './matsuBiennial.js'
 import { MONOLAB_CASE } from './monolab.js'
+import { LUSTRE_YELLOW_CASE } from './lustreYellow.js'
+import { WORK_ITEMS } from '../work.js'
 
-export const CASE_BY_SLUG = {
+export const LOCAL_CASES = {
   'matsu-biennial': MATSU_BIENNIAL_CASE,
   monolab: MONOLAB_CASE,
   'lustre-yellow': LUSTRE_YELLOW_CASE,
 }
 
-/**
- * @param {string} slug
- * @returns {{ href: string, titleEm?: string, titleRest: string, subtitle: string } | null}
- */
-export function getNextCase(slug) {
-  const idx = WORK_ITEMS.findIndex((w) => w.id === slug)
-  if (idx === -1) return null
+export { LOCAL_CASES as CASE_BY_SLUG }
 
-  const next = WORK_ITEMS[(idx + 1) % WORK_ITEMS.length]
+export function getNextCase(slug, items = WORK_ITEMS) {
+  const idx = items.findIndex((w) => w.id === slug)
+  if (idx === -1) return null
+  const next = items[(idx + 1) % items.length]
   return {
     href: next.caseHref,
     titleEm: next.titleEmWord,

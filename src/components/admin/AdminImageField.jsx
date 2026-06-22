@@ -1,6 +1,17 @@
 import { useRef, useState } from 'react'
 import { ABOUT_IMAGE_MAX_BYTES } from '../../data/aboutImageSlots.js'
 
+function formatBestSize(slotConfig) {
+  if (slotConfig.width && slotConfig.height) {
+    const ratio = slotConfig.aspectRatio ? `（${slotConfig.aspectRatio}）` : ''
+    return `最佳尺寸 ${slotConfig.width}×${slotConfig.height}px${ratio}`
+  }
+  if (slotConfig.aspectRatio) {
+    return `建議比例 ${slotConfig.aspectRatio}`
+  }
+  return null
+}
+
 export function AdminImageField({ slotConfig, currentUrl, onUpload, uploading }) {
   const inputRef = useRef(null)
   const [localError, setLocalError] = useState('')
@@ -31,6 +42,9 @@ export function AdminImageField({ slotConfig, currentUrl, onUpload, uploading })
   return (
     <div className="admin-image-field">
       <div className="admin-field__label">{slotConfig.label}</div>
+      {formatBestSize(slotConfig) ? (
+        <p className="admin-field__hint admin-field__hint--size">{formatBestSize(slotConfig)}</p>
+      ) : null}
       <p className="admin-field__hint">{slotConfig.hint}</p>
       {currentUrl ? (
         <img

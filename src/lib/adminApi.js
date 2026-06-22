@@ -59,13 +59,17 @@ export async function fetchSiteData() {
 }
 
 export async function saveAboutContent(content, token) {
+  return saveSitePatch({ about: content }, token)
+}
+
+export async function saveSitePatch(patch, token) {
   const res = await fetch(apiPath('/api/data'), {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       ...authHeader(token),
     },
-    body: JSON.stringify({ about: content }),
+    body: JSON.stringify(patch),
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
@@ -74,7 +78,7 @@ export async function saveAboutContent(content, token) {
   return data
 }
 
-export async function uploadAboutImage(slot, file, token) {
+export async function uploadSiteImage(slot, file, token) {
   const form = new FormData()
   form.append('file', file)
   form.append('slot', slot)
@@ -89,3 +93,5 @@ export async function uploadAboutImage(slot, file, token) {
   }
   return data
 }
+
+export const uploadAboutImage = uploadSiteImage

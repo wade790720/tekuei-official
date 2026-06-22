@@ -9,11 +9,13 @@ import '../styles/tekueiNavOverlay.css'
  * @param {{
  *   highlightWorkSection?: boolean
  *   highlightJournal?: boolean
+ *   variant?: 'default' | 'case'
  * }} props
  */
 export function TekueiSiteNav({
   highlightWorkSection = false,
   highlightJournal = false,
+  variant = 'default',
 }) {
   const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
@@ -33,7 +35,7 @@ export function TekueiSiteNav({
 
   const navClass = [
     'tekuei-site-nav',
-    'tekuei-site-nav--scroll-aware',
+    variant === 'case' ? 'tekuei-site-nav--case' : 'tekuei-site-nav--scroll-aware',
     scrolled ? 'is-scrolled' : '',
   ]
     .filter(Boolean)

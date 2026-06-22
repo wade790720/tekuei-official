@@ -5,7 +5,7 @@ import { AboutLine, AboutParts } from './AboutRichText.jsx'
 import { AdminEditToolbar } from './admin/AdminEditToolbar.jsx'
 import { AdminLoginGate } from './admin/AdminLoginGate.jsx'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
-import { downloadDataJson, useAboutContent } from '../hooks/useAboutContent.js'
+import { useAboutContent } from '../hooks/useAboutContent.js'
 import { useSiteAdmin } from '../hooks/useSiteAdmin.js'
 import '../styles/tekueiWork.css'
 import '../styles/tekueiAbout.css'
@@ -25,7 +25,6 @@ function AboutCopy({ value, className }) {
 export default function AboutPage() {
   const {
     content,
-    siteData,
     draft,
     loading,
     saving,
@@ -79,10 +78,6 @@ export default function AboutPage() {
     }
   }
 
-  function handleDownload() {
-    downloadDataJson(siteData, draft ?? content)
-  }
-
   function handleLogout() {
     admin.logout()
     cancelEditing()
@@ -116,15 +111,13 @@ export default function AboutPage() {
             saving={saving}
             error={error}
             onSave={handleSave}
-            onCancel={cancelEditing}
             onLogout={handleLogout}
-            onDownload={handleDownload}
           />
         </>
       )}
 
       {loading ? (
-        <div className="about-loading">載入中⋯</div>
+        <div className="site-loading-bar" />
       ) : (
         <div className="about-content">
           <header className="about-header">

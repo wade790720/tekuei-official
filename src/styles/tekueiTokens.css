@@ -54,3 +54,23 @@
   --paper-border-gold: var(--ember-line);
   --ease-haunt: var(--ease-touch);
 }
+
+/* ── Site-wide loading bar ── */
+
+.site-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  height: 2px;
+  background: var(--ember);
+  animation: site-loading-progress 2.8s cubic-bezier(0.1, 0, 0.25, 1) forwards;
+}
+
+@keyframes site-loading-progress {
+  0%   { width: 0%; }
+  25%  { width: 50%; }
+  55%  { width: 72%; }
+  80%  { width: 83%; }
+  100% { width: 89%; }
+}

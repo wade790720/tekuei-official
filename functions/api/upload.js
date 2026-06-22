@@ -1,5 +1,5 @@
 const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/webp'])
-const FIXED_SLOTS = new Set(['founder', 'founder-signature'])
+const ABOUT_SLOTS = new Set(['founder', 'founder-signature'])
 const MAX_BYTES = 1024 * 1024
 
 function j(body, status = 200) {
@@ -13,6 +13,48 @@ function extFromMime(ct) {
   if (ct === 'image/png') return 'png'
   if (ct === 'image/webp') return 'webp'
   return 'jpg'
+}
+
+function resolveSlot(slot, ext) {
+  if (ABOUT_SLOTS.has(slot)) {
+    return {
+      key: `about/images/${slot}.${ext}`,
+      prefix: `about/images/${slot}.`,
+    }
+  }
+  const workThumb = slot.match(/^work-thumb-(.+)$/)
+  if (workThumb) {
+    const id = workThumb[1]
+    return {
+      key: `work/images/${id}-thumb.${ext}`,
+      prefix: `work/images/${id}-thumb.`,
+    }
+  }
+  const caseHero = slot.match(/^case-(.+)-hero$/)
+  if (caseHero) {
+    const slug = caseHero[1]
+    return {
+      key: `cases/${slug}/hero.${ext}`,
+      prefix: `cases/${slug}/hero.`,
+    }
+  }
+  const caseMediaFull = slot.match(/^case-(.+)-media-full$/)
+  if (caseMediaFull) {
+    const slug = caseMediaFull[1]
+    return {
+      key: `cases/${slug}/media-full.${ext}`,
+      prefix: `cases/${slug}/media-full.`,
+    }
+  }
+  const caseMediaInline = slot.match(/^case-(.+)-media-inline$/)
+  if (caseMediaInline) {
+    const slug = caseMediaInline[1]
+    return {
+      key: `cases/${slug}/media-inline.${ext}`,
+      prefix: `cases/${slug}/media-inline.`,
+    }
+  }
+  return null
 }
 
 export async function onRequestPost({ request, env }) {
@@ -39,13 +81,15 @@ export async function onRequestPost({ request, env }) {
 
   const ext = extFromMime(ct)
   const slot = typeof form.get('slot') === 'string' ? form.get('slot') : ''
+  const resolved = slot ? resolveSlot(slot, ext) : null
   let key
 
-  if (slot && FIXED_SLOTS.has(slot)) {
-    key = `about/images/${slot}.${ext}`
+  if (resolved) {
+    key = resolved.key
     const altExts = ['jpg', 'png', 'webp'].filter((e) => e !== ext)
     for (const alt of altExts) {
-      await env.BUCKET.delete(`about/images/${slot}.${alt}`).catch(() => {})
+      const altKey = resolved.prefix + alt
+      await env.BUCKET.delete(altKey).catch(() => {})
     }
   } else {
     key = `images/${crypto.randomUUID()}.${ext}`
