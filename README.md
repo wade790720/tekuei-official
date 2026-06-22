@@ -35,7 +35,18 @@ tekuei-site-data（R2）
 2. Pages 專案綁 R2：binding 名稱 **`BUCKET`**
 3. 設定 secret：`npx wrangler pages secret put ADMIN_SECRET --project-name=<專案名>`
 4. 首次種子：`npm run seed`
-5. 部署：`npm run build` 後由 Pages 發佈 `dist`
+
+### Pages 建置設定（重要）
+
+| 欄位 | 值 |
+|------|-----|
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| **Deploy command** | **留空**（刪除 `npx wrangler deploy`） |
+
+本專案是 **Pages + Functions**，不是獨立 Worker。`wrangler deploy` 會失敗；Git push 後 Pages 會自動發佈 `dist` 與 `functions/`。
+
+若曾設過 Deploy command，到 Dashboard → Pages → 專案 → **Settings → Builds** → 清空 **Deploy command** 後重新部署。
 
 ## API（同網域）
 
