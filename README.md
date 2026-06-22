@@ -21,7 +21,7 @@ npm run dev:pages                # http://localhost:8788
 ## CMS 架構（R2 一桶）
 
 ```
-tekuei-site-data（R2）
+tekuei-cms（R2）
 ├── data.json              ← 全站文案（目前含 about）
 └── about/images/
     └── founder.jpg        ← 創辦人照片（固定檔名覆寫）
@@ -29,12 +29,51 @@ tekuei-site-data（R2）
 
 圖片經同網域 `/api/file/...` 讀取，不需 r2.dev。
 
-## Cloudflare 設定
+## 首次部署檢查清單（依序）
 
-1. 建立 R2 bucket `tekuei-site-data`（或改 `wrangler.toml` 的 `bucket_name`）
-2. Pages 專案綁 R2：binding 名稱 **`BUCKET`**
-3. 設定 secret：`npx wrangler pages secret put ADMIN_SECRET --project-name=<專案名>`
-4. 首次種子：`npm run seed`
+部署 **Functions 前** 必須先建好 R2，否則會出現：
+
+`R2 bucket 'tekuei-cms' not found`
+
+### 1. 確認 R2 bucket 存在
+
+Dashboard → **R2 Object Storage** → bucket **`tekuei-cms`**
+
+（名稱須與 `wrangler.toml` 的 `bucket_name` 一致）
+
+**不需要**開啟 r2.dev 公開網址。
+
+### 2. Pages 綁定 R2
+
+Dashboard → **Workers & Pages** → **tekuei-official** → **Settings** → **Bindings**
+
+- **Add** → R2 bucket
+- Variable name：`BUCKET`（必須大寫，與程式一致）
+- Bucket：`tekuei-cms`
+
+### 3. 設定管理密碼
+
+```bash
+npx wrangler pages secret put ADMIN_SECRET --project-name=tekuei-official
+```
+
+（執行後輸入你要的管理密碼，用於 Ctrl+Space 登入）
+
+### 4. 種子 data.json
+
+```bash
+npm run seed
+```
+
+（需已登入 `npx wrangler login`）
+
+### 5. 重新部署
+
+Deployments → **Retry deployment**
+
+---
+
+## Cloudflare 設定（摘要）
 
 ### Pages 建置設定（重要）
 
