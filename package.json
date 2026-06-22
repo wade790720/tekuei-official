@@ -7,6 +7,7 @@
     "dev": "vite",
     "dev:pages": "npm run build && npx wrangler pages dev dist --compatibility-date=2024-11-01",
     "build": "vite build",
+    "deploy": "wrangler pages deploy dist --commit-dirty=true",
     "lint": "eslint .",
     "preview": "vite preview",
     "seed": "node scripts/seed-data.mjs"

@@ -7,7 +7,7 @@
 # Pages 建置設定（Git 連動）：
 #   Build command:     npm run build
 #   Build output:      dist
-#   Deploy command:    （留空，勿用 npx wrangler deploy）
+#   Deploy command:    npm run deploy（或留空；勿用 npx wrangler deploy）
 # Git push 後 Pages 會自動發佈 dist + functions/，不需額外 deploy 指令。
 #
 # 本機跑 Functions：複製 .dev.vars.example → .dev.vars，再執行 npm run dev:pages
