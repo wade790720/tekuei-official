@@ -29,7 +29,6 @@ function SiteNav() {
 
   return (
     <TekueiSiteNav
-      scrollAware={pathname === '/'}
       highlightJournal={pathname.startsWith('/journal')}
       highlightWorkSection={pathname.startsWith('/work') || pathname.startsWith('/cases')}
     />

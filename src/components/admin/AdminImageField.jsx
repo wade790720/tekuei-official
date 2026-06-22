@@ -5,6 +5,9 @@ export function AdminImageField({ slotConfig, currentUrl, onUpload, uploading })
   const inputRef = useRef(null)
   const [localError, setLocalError] = useState('')
 
+  const accept = slotConfig.accept || 'image/jpeg,image/png,image/webp'
+  const acceptList = accept.split(',').map((s) => s.trim())
+
   async function handleFile(file) {
     setLocalError('')
     if (!file) return
@@ -12,8 +15,10 @@ export function AdminImageField({ slotConfig, currentUrl, onUpload, uploading })
       setLocalError(`檔案超過 ${slotConfig.maxSizeMB}MB 限制`)
       return
     }
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      setLocalError('僅支援 JPG、PNG、WEBP')
+    if (!acceptList.includes(file.type)) {
+      setLocalError(acceptList.length === 1 && acceptList[0] === 'image/png'
+        ? '僅支援 PNG'
+        : '僅支援 JPG、PNG、WEBP')
       return
     }
     try {
@@ -39,7 +44,7 @@ export function AdminImageField({ slotConfig, currentUrl, onUpload, uploading })
       <input
         ref={inputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept={accept}
         className="admin-image-field__input"
         onChange={(e) => handleFile(e.target.files?.[0])}
       />

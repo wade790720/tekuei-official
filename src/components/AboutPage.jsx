@@ -57,6 +57,7 @@ export default function AboutPage() {
   } = content
 
   const founderImageUrl = founder.image?.url || ''
+  const founderSignatureUrl = founder.signature?.url || ''
 
   useEffect(() => {
     document.title = meta.title
@@ -178,18 +179,31 @@ export default function AboutPage() {
                   className={[
                     'about-founder__frame',
                     founderImageUrl ? 'about-founder__frame--has-image' : '',
+                    founderSignatureUrl ? 'about-founder__frame--has-signature' : '',
                   ]
                     .filter(Boolean)
                     .join(' ')}
                 >
                   {founderImageUrl ? (
+                    <div className="about-founder__media">
+                      <img
+                        className="about-founder__photo"
+                        src={founderImageUrl}
+                        alt={founder.name}
+                      />
+                    </div>
+                  ) : null}
+                  {founderSignatureUrl ? (
                     <img
-                      className="about-founder__photo"
-                      src={founderImageUrl}
-                      alt={founder.name}
+                      className="about-founder__signature"
+                      src={founderSignatureUrl}
+                      alt=""
+                      aria-hidden="true"
                     />
                   ) : null}
-                  <div className="about-founder__name">{founder.name}</div>
+                  {!founderImageUrl ? (
+                    <div className="about-founder__name">{founder.name}</div>
+                  ) : null}
                 </div>
               </HomeFadeIn>
               <div className="about-founder__copy">
