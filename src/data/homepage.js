@@ -1,4 +1,4 @@
-import { WORK_ITEMS } from './works.js'
+﻿import { WORK_ITEMS } from './work.js'
 
 export const HOME_META = {
   title: 'TEKUEI 德溎 — 讓有價值的人，被世界正確看見',

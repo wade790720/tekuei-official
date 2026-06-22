@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+﻿import { useEffect } from 'react'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
 import {
   HOW_TO_CHECKIN_FINAL,
@@ -7,7 +7,7 @@ import {
   HOW_TO_CHECKIN_PERKS,
   HOW_TO_CHECKIN_STEPS,
 } from '../data/howToCheckin.js'
-import '../styles/tekueiHowToCheckin.css'
+import '../styles/howToCheckin.css'
 
 function renderBodyContent(line) {
   if (typeof line === 'string') return line

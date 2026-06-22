@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import TekueiHero from './components/TekueiHero.jsx'
+import SiteHero from './components/SiteHero.jsx'
 import AboutPage from './components/AboutPage.jsx'
 import WorkListPage from './components/WorkListPage.jsx'
 import JournalListPage from './components/JournalListPage.jsx'
@@ -9,7 +9,7 @@ import CaseRouter from './components/CaseRouter.jsx'
 import CheckinPage from './components/CheckinPage.jsx'
 import HowToCheckinPage from './components/HowToCheckinPage.jsx'
 import { PaperSiteBackground } from './components/PaperSiteBackground.jsx'
-import { TekueiSiteNav } from './components/TekueiSiteNav.jsx'
+import { SiteNav } from './components/SiteNav.jsx'
 
 function ScrollClasses() {
   const { pathname } = useLocation()
@@ -20,7 +20,7 @@ function ScrollClasses() {
   return null
 }
 
-function SiteNav() {
+function AppNav() {
   const { pathname } = useLocation()
   const isCheckin = pathname === '/checkin'
 
@@ -29,7 +29,7 @@ function SiteNav() {
   const isCase = pathname.startsWith('/cases/')
 
   return (
-    <TekueiSiteNav
+    <SiteNav
       variant={isCase ? 'case' : 'default'}
       highlightJournal={pathname.startsWith('/journal')}
       highlightWorkSection={pathname.startsWith('/work') || isCase}
@@ -42,9 +42,9 @@ export default function App() {
     <BrowserRouter>
       <ScrollClasses />
       <PaperSiteBackground />
-      <SiteNav />
+      <AppNav />
       <Routes>
-        <Route path="/" element={<TekueiHero />} />
+        <Route path="/" element={<SiteHero />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/work" element={<WorkListPage />} />
         <Route path="/journal" element={<JournalListPage />} />

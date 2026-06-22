@@ -1,9 +1,9 @@
-import { useEffect } from 'react'
+﻿import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
 import { JOURNAL_META, JOURNAL_POSTS } from '../data/journal.js'
-import '../styles/tekueiWork.css'
-import '../styles/tekueiJournal.css'
+import '../styles/work.css'
+import '../styles/journal.css'
 
 export default function JournalListPage() {
   useEffect(() => {

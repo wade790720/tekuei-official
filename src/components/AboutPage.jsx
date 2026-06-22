@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+﻿import { useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { AboutEditPanel } from './about/AboutEditPanel.jsx'
 import { AboutLine, AboutParts } from './AboutRichText.jsx'
@@ -7,9 +7,9 @@ import { AdminLoginGate } from './admin/AdminLoginGate.jsx'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
 import { useAboutContent } from '../hooks/useAboutContent.js'
 import { useSiteAdmin } from '../hooks/useSiteAdmin.js'
-import '../styles/tekueiWork.css'
-import '../styles/tekueiAbout.css'
-import '../styles/tekueiAdmin.css'
+import '../styles/work.css'
+import '../styles/about.css'
+import '../styles/admin.css'
 
 function AboutCopy({ value, className }) {
   if (typeof value === 'string') {

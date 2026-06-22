@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AdminEditToolbar } from './admin/AdminEditToolbar.jsx'
 import { AdminLoginGate } from './admin/AdminLoginGate.jsx'
 import { WorkEditPanel } from './work/WorkEditPanel.jsx'
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { useSiteAdmin } from '../hooks/useSiteAdmin.js'
-import '../styles/tekueiWork.css'
-import '../styles/tekueiAdmin.css'
+import '../styles/work.css'
+import '../styles/admin.css'
 
 function WorkThumbGraphic({ thumbSvg }) {
   const svgProps = {
