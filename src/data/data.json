@@ -101,6 +101,10 @@
         "slot": "founder",
         "url": ""
       },
+      "signature": {
+        "slot": "founder-signature",
+        "url": ""
+      },
       "paragraphs": [
         "我是一個寫了 10 年程式的軟體工程師，同時也在 2 年內從 0 到 1 創立了策展團隊，策畫過大大小小超過 10 檔的展覽。",
         {

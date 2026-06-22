@@ -32,21 +32,39 @@ function Section({ title, children, defaultOpen = false }) {
 }
 
 export function AboutEditPanel({ draft, updateDraft, getToken }) {
-  const [uploading, setUploading] = useState(false)
+  const [uploadingPortrait, setUploadingPortrait] = useState(false)
+  const [uploadingSignature, setUploadingSignature] = useState(false)
 
   if (!draft) return null
 
-  async function handleImageUpload(file) {
+  async function handlePortraitUpload(file) {
     const token = getToken()
     if (!token) throw new Error('請先登入')
-    setUploading(true)
+    setUploadingPortrait(true)
     try {
       const { url } = await uploadAboutImage('founder', file, token)
       updateDraft((c) => {
         c.founder.image.url = `${url}?t=${Date.now()}`
       })
     } finally {
-      setUploading(false)
+      setUploadingPortrait(false)
+    }
+  }
+
+  async function handleSignatureUpload(file) {
+    const token = getToken()
+    if (!token) throw new Error('請先登入')
+    setUploadingSignature(true)
+    try {
+      const { url } = await uploadAboutImage('founder-signature', file, token)
+      updateDraft((c) => {
+        if (!c.founder.signature) {
+          c.founder.signature = { slot: 'founder-signature', url: '' }
+        }
+        c.founder.signature.url = `${url}?t=${Date.now()}`
+      })
+    } finally {
+      setUploadingSignature(false)
     }
   }
 
@@ -134,8 +152,14 @@ export function AboutEditPanel({ draft, updateDraft, getToken }) {
         <AdminImageField
           slotConfig={ABOUT_IMAGE_SLOTS.founder}
           currentUrl={draft.founder.image?.url || ''}
-          onUpload={handleImageUpload}
-          uploading={uploading}
+          onUpload={handlePortraitUpload}
+          uploading={uploadingPortrait}
+        />
+        <AdminImageField
+          slotConfig={ABOUT_IMAGE_SLOTS.founderSignature}
+          currentUrl={draft.founder.signature?.url || ''}
+          onUpload={handleSignatureUpload}
+          uploading={uploadingSignature}
         />
         <AdminField
           label="Label"

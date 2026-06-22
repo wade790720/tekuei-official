@@ -1,5 +1,5 @@
 const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/webp'])
-const FIXED_SLOTS = new Set(['founder'])
+const FIXED_SLOTS = new Set(['founder', 'founder-signature'])
 const MAX_BYTES = 1024 * 1024
 
 function j(body, status = 200) {
