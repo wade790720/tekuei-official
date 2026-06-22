@@ -5,7 +5,7 @@
  *   npm run seed
  *
  * 或手動：
- *   npx wrangler r2 object put tekuei-cms/data.json --file=src/data/data.json --content-type=application/json
+ *   npx wrangler r2 object put tekuei-cms/data.json --file=src/data/data.json --content-type=application/json --remote
  */
 
 import { readFileSync } from 'node:fs'
@@ -20,7 +20,7 @@ const bucket = process.env.R2_BUCKET || 'tekuei-cms'
 readFileSync(dataPath, 'utf8')
 JSON.parse(readFileSync(dataPath, 'utf8'))
 
-console.log(`Uploading data.json to R2 bucket ${bucket} ...`)
+console.log(`Uploading data.json to remote R2 bucket ${bucket} ...`)
 const result = spawnSync(
   'npx',
   [
@@ -31,6 +31,7 @@ const result = spawnSync(
     `${bucket}/data.json`,
     `--file=${dataPath}`,
     '--content-type=application/json',
+    '--remote',
   ],
   { stdio: 'inherit', shell: true },
 )

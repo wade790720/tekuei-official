@@ -69,7 +69,7 @@ npx wrangler pages secret put ADMIN_SECRET --project-name=tekuei-official
 npm run seed
 ```
 
-（需已登入 `npx wrangler login`）
+（需已登入 `npx wrangler login`；會上傳到**雲端** R2，非本機模擬）
 
 ### 5. 重新部署
 
