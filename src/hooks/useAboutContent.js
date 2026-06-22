@@ -1,8 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
-import { cloneAboutContent, DEFAULT_ABOUT_CONTENT } from '../data/about.js'
-import { fetchAboutContent, saveAboutContent } from '../lib/adminApi.js'
+import {
+  cloneAboutContent,
+  cloneSiteData,
+  DEFAULT_ABOUT_CONTENT,
+} from '../data/about.js'
+import siteDefaults from '../data/data.json'
+import {
+  fetchSiteData,
+  isRemoteSync,
+  saveAboutContent,
+} from '../lib/adminApi.js'
 
 export function useAboutContent() {
+  const [siteData, setSiteData] = useState(() => cloneSiteData())
   const [content, setContent] = useState(() => cloneAboutContent())
   const [draft, setDraft] = useState(null)
   const [source, setSource] = useState('default')
@@ -15,14 +25,25 @@ export function useAboutContent() {
     async function load() {
       setLoading(true)
       setError('')
-      try {
-        const remote = await fetchAboutContent()
+      if (!isRemoteSync()) {
         if (!cancelled) {
-          setContent(remote)
+          setSiteData(cloneSiteData())
+          setContent(cloneAboutContent(DEFAULT_ABOUT_CONTENT))
+          setSource('bundled')
+          setLoading(false)
+        }
+        return
+      }
+      try {
+        const remote = await fetchSiteData()
+        if (!cancelled) {
+          setSiteData(remote)
+          setContent(remote.about ?? cloneAboutContent(DEFAULT_ABOUT_CONTENT))
           setSource('api')
         }
       } catch {
         if (!cancelled) {
+          setSiteData(cloneSiteData())
           setContent(cloneAboutContent(DEFAULT_ABOUT_CONTENT))
           setSource('fallback')
         }
@@ -58,6 +79,9 @@ export function useAboutContent() {
     setError('')
     try {
       await saveAboutContent(draft, token)
+      const nextSite = cloneSiteData(siteData)
+      nextSite.about = cloneAboutContent(draft)
+      setSiteData(nextSite)
       setContent(cloneAboutContent(draft))
       setSource('api')
       setDraft(null)
@@ -67,12 +91,13 @@ export function useAboutContent() {
     } finally {
       setSaving(false)
     }
-  }, [draft])
+  }, [draft, siteData])
 
   const displayContent = draft ?? content
 
   return {
     content: displayContent,
+    siteData,
     draft,
     source,
     loading,
@@ -87,8 +112,10 @@ export function useAboutContent() {
   }
 }
 
-export function downloadAboutJson(content, filename = 'about.json') {
-  const blob = new Blob([JSON.stringify(content, null, 2)], {
+export function downloadDataJson(siteData, aboutContent, filename = 'data.json') {
+  const payload = cloneSiteData(siteData ?? siteDefaults)
+  payload.about = cloneAboutContent(aboutContent)
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {
     type: 'application/json',
   })
   const url = URL.createObjectURL(blob)

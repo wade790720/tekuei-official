@@ -1,16 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ADMIN_EXPIRES_KEY, ADMIN_SESSION_KEY } from '../data/admin.js'
-import { loginAdmin } from '../lib/adminApi.js'
+import { ADMIN_SESSION_KEY } from '../data/admin.js'
+import { getAdminToken, loginAdmin } from '../lib/adminApi.js'
 
 function readSession() {
-  const token = sessionStorage.getItem(ADMIN_SESSION_KEY)
-  const expiresAt = Number(sessionStorage.getItem(ADMIN_EXPIRES_KEY) || 0)
-  if (!token || !expiresAt || Date.now() > expiresAt) {
-    sessionStorage.removeItem(ADMIN_SESSION_KEY)
-    sessionStorage.removeItem(ADMIN_EXPIRES_KEY)
-    return null
-  }
-  return { token, expiresAt }
+  const token = getAdminToken()
+  return token ? { token } : null
 }
 
 export function useSiteAdmin({ onEnterEdit } = {}) {
@@ -23,7 +17,6 @@ export function useSiteAdmin({ onEnterEdit } = {}) {
 
   const logout = useCallback(() => {
     sessionStorage.removeItem(ADMIN_SESSION_KEY)
-    sessionStorage.removeItem(ADMIN_EXPIRES_KEY)
     setSession(null)
   }, [])
 
@@ -33,10 +26,9 @@ export function useSiteAdmin({ onEnterEdit } = {}) {
     setLoggingIn(true)
     setLoginError('')
     try {
-      const { token, expiresAt } = await loginAdmin(password)
+      const { token } = await loginAdmin(password)
       sessionStorage.setItem(ADMIN_SESSION_KEY, token)
-      sessionStorage.setItem(ADMIN_EXPIRES_KEY, String(expiresAt))
-      setSession({ token, expiresAt })
+      setSession({ token })
       setShowLogin(false)
       onEnterEdit?.()
       return true

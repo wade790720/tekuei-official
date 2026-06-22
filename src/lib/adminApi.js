@@ -1,40 +1,71 @@
-import { ADMIN_API_URL } from '../data/admin.js'
+import { ADMIN_SESSION_KEY } from '../data/admin.js'
 
-function getAuthHeaders(token) {
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
+export function apiPath(path) {
+  const base = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '')
+  return path.startsWith('/') ? `${base}${path}` : `${base}/${path}`
+}
+
+/**
+ * production 預設走同網域 /api（Pages Functions + R2）；
+ * 開發預設用 bundled data.json，除非 VITE_USE_REMOTE=true。
+ */
+export function isRemoteSync() {
+  const v = import.meta.env.VITE_USE_REMOTE
+  if (v === 'false') return false
+  if (v === 'true') return true
+  return import.meta.env.PROD
+}
+
+export function getAdminToken() {
+  try {
+    if (typeof window !== 'undefined') {
+      const ss = sessionStorage.getItem(ADMIN_SESSION_KEY)
+      if (ss) return ss
+    }
+  } catch {
+    /* ignore */
   }
+  if (import.meta.env.DEV && import.meta.env.VITE_ADMIN_KEY) {
+    return import.meta.env.VITE_ADMIN_KEY
+  }
+  return ''
+}
+
+function authHeader(token) {
+  if (!token) return {}
+  return { Authorization: `Bearer ${token}` }
 }
 
 export async function loginAdmin(password) {
-  const res = await fetch(`${ADMIN_API_URL}/api/admin/login`, {
+  const trimmed = password.trim()
+  const res = await fetch(apiPath('/api/admin/verify'), {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password }),
+    headers: authHeader(trimmed),
   })
-  const data = await res.json().catch(() => ({}))
   if (!res.ok) {
-    throw new Error(data.error || '登入失敗')
+    throw new Error('密碼錯誤')
   }
-  return data
+  return { token: trimmed }
 }
 
-export async function fetchAboutContent() {
-  const res = await fetch(`${ADMIN_API_URL}/api/content/about`, {
+export async function fetchSiteData() {
+  const res = await fetch(apiPath('/api/data'), {
     headers: { Accept: 'application/json' },
   })
   if (!res.ok) {
-    throw new Error('Failed to fetch about content')
+    throw new Error('Failed to fetch site data')
   }
   return res.json()
 }
 
 export async function saveAboutContent(content, token) {
-  const res = await fetch(`${ADMIN_API_URL}/api/admin/content/about`, {
+  const res = await fetch(apiPath('/api/data'), {
     method: 'PUT',
-    headers: getAuthHeaders(token),
-    body: JSON.stringify(content),
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeader(token),
+    },
+    body: JSON.stringify({ about: content }),
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
@@ -46,9 +77,10 @@ export async function saveAboutContent(content, token) {
 export async function uploadAboutImage(slot, file, token) {
   const form = new FormData()
   form.append('file', file)
-  const res = await fetch(`${ADMIN_API_URL}/api/admin/media/about/${slot}`, {
-    method: 'PUT',
-    headers: { Authorization: `Bearer ${token}` },
+  form.append('slot', slot)
+  const res = await fetch(apiPath('/api/upload'), {
+    method: 'POST',
+    headers: authHeader(token),
     body: form,
   })
   const data = await res.json().catch(() => ({}))
