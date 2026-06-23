@@ -1,4 +1,4 @@
-.tekuei-hero-root {
+﻿.hero-root {
   position: relative;
   width: 100%;
   height: 100%;
@@ -13,21 +13,21 @@
   --ease-haunt: var(--ease-touch);
 }
 
-.tekuei-hero-root,
-.tekuei-hero-root *,
-.tekuei-hero-root *::before,
-.tekuei-hero-root *::after {
+.hero-root,
+.hero-root *,
+.hero-root *::before,
+.hero-root *::after {
   box-sizing: border-box;
 }
 
-.tekuei-hero-root .ink-canvas {
+.hero-root .ink-canvas {
   position: fixed;
   inset: 0;
   z-index: 1;
   pointer-events: none;
 }
 
-.tekuei-hero-root .grid-svg {
+.hero-root .grid-svg {
   position: fixed;
   inset: 0;
   z-index: 2;
@@ -43,7 +43,7 @@
 }
 
 /* 僅限舊版 hero UI，避免污染全站 <nav>（含 overlay 選單） */
-.tekuei-hero-root .ui nav {
+.hero-root .ui nav {
   position: absolute;
   top: 0;
   left: 0;
@@ -54,7 +54,7 @@
   padding: 28px 44px;
   pointer-events: all;
   opacity: 0;
-  animation: tekuei-fade-up 1s var(--ease-haunt) 0.5s forwards;
+  animation: fade-up 1s var(--ease-haunt) 0.5s forwards;
 }
 
 .logo {
@@ -98,7 +98,7 @@
     transparent
   );
   opacity: 0;
-  animation: tekuei-fade-in 3s ease 2s forwards;
+  animation: fade-in 3s ease 2s forwards;
 }
 
 .content {
@@ -120,7 +120,7 @@
   color: var(--ember);
   margin-bottom: 28px;
   opacity: 0;
-  animation: tekuei-fade-up 0.9s var(--ease-haunt) 2.2s forwards;
+  animation: fade-up 0.9s var(--ease-haunt) 2.2s forwards;
 }
 
 .h-name {
@@ -131,7 +131,7 @@
   color: var(--text);
   margin-bottom: 6px;
   opacity: 0;
-  animation: tekuei-fade-up 1s var(--ease-haunt) 2.5s forwards;
+  animation: fade-up 1s var(--ease-haunt) 2.5s forwards;
 }
 
 .h-kanji {
@@ -142,7 +142,7 @@
   color: var(--ink-70);
   margin-bottom: 36px;
   opacity: 0;
-  animation: tekuei-fade-up 1s var(--ease-haunt) 2.8s forwards;
+  animation: fade-up 1s var(--ease-haunt) 2.8s forwards;
 }
 
 .h-div {
@@ -151,7 +151,7 @@
   background: rgba(138, 116, 80, 0.35);
   margin-bottom: 28px;
   opacity: 0;
-  animation: tekuei-fade-in 1s ease 3.1s forwards;
+  animation: fade-in 1s ease 3.1s forwards;
 }
 
 .h-belief {
@@ -163,7 +163,7 @@
   letter-spacing: 0.06em;
   margin-bottom: 18px;
   opacity: 0;
-  animation: tekuei-fade-up 1s var(--ease-haunt) 3.3s forwards;
+  animation: fade-up 1s var(--ease-haunt) 3.3s forwards;
 }
 
 .h-mission {
@@ -174,7 +174,7 @@
   color: var(--ink-70);
   letter-spacing: 0.04em;
   opacity: 0;
-  animation: tekuei-fade-up 1s var(--ease-haunt) 3.8s forwards;
+  animation: fade-up 1s var(--ease-haunt) 3.8s forwards;
 }
 
 .scroll-hint {
@@ -185,7 +185,7 @@
   align-items: center;
   gap: 14px;
   opacity: 0;
-  animation: tekuei-fade-up 0.8s ease 4.5s forwards;
+  animation: fade-up 0.8s ease 4.5s forwards;
 }
 
 .scroll-hint-line {
@@ -212,10 +212,10 @@
   letter-spacing: 0.2em;
   color: var(--ink-22);
   opacity: 0;
-  animation: tekuei-fade-in 1.5s ease 2.5s forwards;
+  animation: fade-in 1.5s ease 2.5s forwards;
 }
 
-@keyframes tekuei-fade-up {
+@keyframes fade-up {
   from {
     opacity: 0;
     transform: translateY(16px);
@@ -226,7 +226,7 @@
   }
 }
 
-@keyframes tekuei-fade-in {
+@keyframes fade-in {
   from {
     opacity: 0;
   }

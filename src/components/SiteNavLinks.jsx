@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+﻿import { NavLink } from 'react-router-dom'
 
 /**
  * @param {{
@@ -17,7 +17,7 @@ export function SiteNavLinks({
   const overlay = variant === 'overlay'
 
   const linkClass = (active) =>
-    [overlay ? 'tekuei-nav-overlay__link' : '', active ? 'is-active' : '']
+    [overlay ? 'nav-overlay__link' : '', active ? 'is-active' : '']
       .filter(Boolean)
       .join(' ')
 
@@ -50,7 +50,7 @@ export function SiteNavLinks({
       </NavLink>
       <a
         href="/#contact"
-        className={overlay ? 'tekuei-nav-overlay__link' : undefined}
+        className={overlay ? 'nav-overlay__link' : undefined}
         onClick={onNavigate}
       >
         Contact

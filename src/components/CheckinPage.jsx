@@ -106,34 +106,34 @@ export default function CheckinPage() {
   }
 
   return (
-    <div className="tekuei-checkin-page">
+    <div className="checkin-page">
       <div
-        className={['tekuei-checkin-wrap', visible ? 'is-visible' : ''].filter(Boolean).join(' ')}
+        className={['checkin-wrap', visible ? 'is-visible' : ''].filter(Boolean).join(' ')}
       >
-        <header className="tekuei-checkin-brand">
-          <div className="tekuei-checkin-brand-name">TEKUEI</div>
-          <div className="tekuei-checkin-brand-divider" aria-hidden />
+        <header className="checkin-brand">
+          <div className="checkin-brand-name">TEKUEI</div>
+          <div className="checkin-brand-divider" aria-hidden />
         </header>
 
-        <div className="tekuei-checkin-card">
+        <div className="checkin-card">
           {phase === 'loading' && (
-            <div className="tekuei-checkin-loading">初始化中⋯</div>
+            <div className="checkin-loading">初始化中⋯</div>
           )}
 
           {phase === 'form' && (
             <form onSubmit={handleSubmit}>
-              <div className="tekuei-checkin-eyebrow">Check-in</div>
-              <h1 className="tekuei-checkin-title">完成報到手續</h1>
-              <p className="tekuei-checkin-subtitle">
+              <div className="checkin-eyebrow">Check-in</div>
+              <h1 className="checkin-title">完成報到手續</h1>
+              <p className="checkin-subtitle">
                 輸入手機號碼，讓我們在課前透過簡訊與 LINE 通知您課程資訊。
               </p>
 
-              <label className="tekuei-checkin-label" htmlFor="checkin-phone">
+              <label className="checkin-label" htmlFor="checkin-phone">
                 手機號碼
               </label>
-              <div className="tekuei-checkin-phone-row">
-                <div className="tekuei-checkin-country">
-                  <span className="tekuei-checkin-country-flag" aria-hidden>
+              <div className="checkin-phone-row">
+                <div className="checkin-country">
+                  <span className="checkin-country-flag" aria-hidden>
                     🇹🇼
                   </span>
                   <span>+886</span>
@@ -141,7 +141,7 @@ export default function CheckinPage() {
                 <input
                   id="checkin-phone"
                   type="tel"
-                  className="tekuei-checkin-input"
+                  className="checkin-input"
                   placeholder="請輸入您的手機號碼"
                   maxLength={10}
                   inputMode="numeric"
@@ -153,18 +153,18 @@ export default function CheckinPage() {
               </div>
 
               {errorText && (
-                <div className="tekuei-checkin-error" role="alert">
+                <div className="checkin-error" role="alert">
                   {errorText}
                 </div>
               )}
 
-              <p className="tekuei-checkin-hint">
+              <p className="checkin-hint">
                 僅用於課程通知，不會用於其他用途。
               </p>
 
               <button
                 type="submit"
-                className="tekuei-checkin-submit"
+                className="checkin-submit"
                 disabled={submitting}
               >
                 {submitting ? 'Sending ...' : '提交資料'}
@@ -173,12 +173,12 @@ export default function CheckinPage() {
           )}
 
           {phase === 'success' && (
-            <div className="tekuei-checkin-state">
-              <div className="tekuei-checkin-state-mark" aria-hidden>
+            <div className="checkin-state">
+              <div className="checkin-state-mark" aria-hidden>
                 ✦
               </div>
               <h2>報到完成</h2>
-              <div className="tekuei-checkin-state-line" aria-hidden />
+              <div className="checkin-state-line" aria-hidden />
               <p>
                 我們已收到您的資料
                 <br />
@@ -190,15 +190,15 @@ export default function CheckinPage() {
           )}
 
           {phase === 'error' && (
-            <div className="tekuei-checkin-state">
+            <div className="checkin-state">
               <div
-                className="tekuei-checkin-state-mark tekuei-checkin-state-mark--muted"
+                className="checkin-state-mark checkin-state-mark--muted"
                 aria-hidden
               >
                 — —
               </div>
               <h2>無法開啟報到頁面</h2>
-              <div className="tekuei-checkin-state-line" aria-hidden />
+              <div className="checkin-state-line" aria-hidden />
               <p>
                 請關閉此視窗後
                 <br />

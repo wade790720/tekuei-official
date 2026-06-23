@@ -1,6 +1,6 @@
-/* Work 列表頁 · 對應 TEKUEI_Work_List.html，根節點請包在 .tekuei-work-page */
+﻿/* Work 列表頁 · 對應 TEKUEI_Work_List.html，根節點請包在 .work-page */
 
-.tekuei-work-page {
+.work-page {
   position: relative;
   z-index: 1;
   min-height: 100vh;
@@ -22,11 +22,11 @@
   --ease-haunt: var(--ease-touch);
 }
 
-.tekuei-work-page, .tekuei-work-page * {
+.work-page, .work-page * {
   box-sizing: border-box;
 }
 
-.tekuei-work-page__grid {
+.work-page__grid {
   position: fixed;
   z-index: 0;
   pointer-events: none;
@@ -34,7 +34,7 @@
   inset: 0;
 }
 
-html.tekuei-has-scroll-document {
+html.has-scroll-document {
   overflow-x: hidden;
   overflow-y: auto;
   min-height: 100%;
@@ -44,7 +44,7 @@ html.tekuei-has-scroll-document {
   scrollbar-gutter: stable;
 }
 
-html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
+html.has-scroll-document body, html.has-scroll-document #root {
   min-height: 100vh;
   height: auto;
 }
@@ -75,7 +75,7 @@ html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
   font-size: 9px;
   font-family: var(--fd);
   opacity: 0;
-  animation: tekuei-work-fade-up 0.9s var(--ease-haunt) 0.6s forwards;
+  animation: work-fade-up 0.9s var(--ease-haunt) 0.6s forwards;
 }
 
 .work-page-header h1 {
@@ -85,7 +85,7 @@ html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
   font-family: var(--fd);
   line-height: 1.06;
   opacity: 0;
-  animation: tekuei-work-fade-up 1s var(--ease-haunt) 0.8s forwards;
+  animation: work-fade-up 1s var(--ease-haunt) 0.8s forwards;
 }
 
 .work-page-header .count {
@@ -94,7 +94,7 @@ html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
   font-size: 11px;
   font-family: var(--fd);
   opacity: 0;
-  animation: tekuei-work-fade-in 1.5s ease 1.2s forwards;
+  animation: work-fade-in 1.5s ease 1.2s forwards;
 }
 
 .work-header-rule {
@@ -104,7 +104,7 @@ html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
   padding: 0 52px;
   max-width: 1200px;
   opacity: 0;
-  animation: tekuei-work-fade-in 1.5s ease 1s forwards;
+  animation: work-fade-in 1.5s ease 1s forwards;
 }
 
 .work-header-rule-line {
@@ -394,7 +394,7 @@ html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
 
 /* ── Case stub ── */
 
-.tekuei-case-stub {
+.case-stub {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -407,7 +407,7 @@ html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
   gap: 1.25rem;
 }
 
-.tekuei-case-stub h1 {
+.case-stub h1 {
   color: var(--text);
   font-weight: 400;
   font-size: clamp(28px, 4vw, 40px);
@@ -415,7 +415,7 @@ html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
   line-height: 1.15;
 }
 
-.tekuei-case-stub p {
+.case-stub p {
   color: var(--text-muted);
   letter-spacing: 0.06em;
   font-weight: 200;
@@ -424,7 +424,7 @@ html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
   line-height: 2;
 }
 
-.tekuei-case-stub__back {
+.case-stub__back {
   margin-top: 1rem;
   color: var(--accent);
   text-decoration: none;
@@ -434,11 +434,11 @@ html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
   transition: color 0.4s ease;
 }
 
-.tekuei-case-stub__back:hover {
+.case-stub__back:hover {
   color: var(--text);
 }
 
-@keyframes tekuei-work-fade-up {
+@keyframes work-fade-up {
   from {
     opacity: 0;
     transform: translateY(16px);
@@ -450,7 +450,7 @@ html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
   }
 }
 
-@keyframes tekuei-work-fade-in {
+@keyframes work-fade-in {
   from {
     opacity: 0;
   }
@@ -512,7 +512,7 @@ html.tekuei-has-scroll-document body, html.tekuei-has-scroll-document #root {
     padding: 60px 28px 40px;
   }
 
-  .tekuei-case-stub {
+  .case-stub {
     padding-inline: 28px;
   }
 }

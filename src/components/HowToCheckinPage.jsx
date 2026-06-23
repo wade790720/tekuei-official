@@ -96,7 +96,7 @@ export default function HowToCheckinPage() {
   }, [])
 
   return (
-    <div className="tekuei-howto-checkin-page">
+    <div className="howto-checkin-page">
       <div className="howto-checkin-content">
         <header className="howto-checkin-hero">
           <div className="howto-checkin-hero__inner">

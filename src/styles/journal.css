@@ -1,6 +1,6 @@
-/* Journal · 和紙上的 6:3:1（60% 紙 / 30% 墨 / 10% 金） */
+﻿/* Journal · 和紙上的 6:3:1（60% 紙 / 30% 墨 / 10% 金） */
 
-.tekuei-journal-page {
+.journal-page {
   --j-ink-main: transparent;
   --j-page: var(--ink);
   --j-warm-white: var(--ink);
@@ -29,7 +29,7 @@
   line-height: 1.85;
 }
 
-.tekuei-journal-page__grid {
+.journal-page__grid {
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -111,7 +111,7 @@
   );
 }
 
-.tekuei-journal-page .home-fade-in {
+.journal-page .home-fade-in {
   opacity: 0;
   transform: translateY(24px);
   transition:
@@ -119,7 +119,7 @@
     transform 0.9s var(--j-ease);
 }
 
-.tekuei-journal-page .home-fade-in.is-visible {
+.journal-page .home-fade-in.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -647,7 +647,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tekuei-journal-page .home-fade-in {
+  .journal-page .home-fade-in {
     opacity: 1;
     transform: none;
     transition: none;

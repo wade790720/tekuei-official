@@ -86,7 +86,7 @@ export default function AboutPage() {
   return (
     <div
       className={[
-        'tekuei-about-page',
+        'about-page',
         isEditing ? 'is-admin-editing' : '',
       ]
         .filter(Boolean)

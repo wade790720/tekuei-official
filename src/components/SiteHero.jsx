@@ -36,7 +36,7 @@ export default function SiteHero() {
   }, [])
 
   return (
-    <div className="tekuei-hero-root tekuei-home">
+    <div className="hero-root home">
       <SuminagashiBackground />
 
       <div className="home-ink-content">

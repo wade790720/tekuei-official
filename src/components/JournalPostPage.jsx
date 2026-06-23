@@ -43,7 +43,7 @@ export default function JournalPostPage() {
 
   if (!post || !content) {
     return (
-      <div className="tekuei-journal-page tekuei-journal-page--post">
+      <div className="journal-page journal-page--post">
         <div className="journal-not-found">
           <div className="journal-not-found__num">—</div>
           <h1>文章不存在</h1>
@@ -54,7 +54,7 @@ export default function JournalPostPage() {
   }
 
   return (
-    <div className="tekuei-journal-page tekuei-journal-page--post">
+    <div className="journal-page journal-page--post">
 
       <article className="journal-post">
         <header className="journal-post__header">

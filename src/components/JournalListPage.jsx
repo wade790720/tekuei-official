@@ -13,7 +13,7 @@ export default function JournalListPage() {
   }, [])
 
   return (
-    <div className="tekuei-journal-page">
+    <div className="journal-page">
       <header className="journal-header">
         <div className="journal-header__inner">
           <HomeFadeIn>

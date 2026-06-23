@@ -183,7 +183,7 @@ export default function WorkListPage() {
 
   return (
     <div
-      className={['tekuei-work-page', isEditing ? 'is-admin-editing' : '']
+      className={['work-page', isEditing ? 'is-admin-editing' : '']
         .filter(Boolean)
         .join(' ')}
     >

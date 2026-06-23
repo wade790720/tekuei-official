@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+﻿import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { WashiPaperBackground } from './WashiPaperBackground.jsx'
 
@@ -9,8 +9,8 @@ export function PaperSiteBackground() {
   const isCheckin = pathname === '/checkin'
 
   useEffect(() => {
-    document.documentElement.classList.toggle('tekuei-paper-site', !isHome && !isCheckin)
-    return () => document.documentElement.classList.remove('tekuei-paper-site')
+    document.documentElement.classList.toggle('paper-site', !isHome && !isCheckin)
+    return () => document.documentElement.classList.remove('paper-site')
   }, [isHome, isCheckin])
 
   if (isHome || isCheckin) return null
