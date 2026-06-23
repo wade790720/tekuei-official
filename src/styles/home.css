@@ -1,6 +1,6 @@
-/* Homepage · TEKUEI_homepage.html — 疊在既有水墨 / 斜線網格之上 */
+﻿/* Homepage · TEKUEI_homepage.html — 疊在既有水墨 / 斜線網格之上 */
 
-.tekuei-home {
+.home {
   --home-paper: var(--paper);
   --home-paper-warm: var(--paper-warm);
   --home-paper-cool: var(--paper-cool);
@@ -36,7 +36,7 @@
   z-index: 1;
 }
 
-.tekuei-home main {
+.home main {
   position: relative;
 }
 

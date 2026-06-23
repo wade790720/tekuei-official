@@ -113,7 +113,7 @@ export default function CaseStudyPage() {
 
   return (
     <div
-      className={['tekuei-case-page', isEditing ? 'is-admin-editing' : '']
+      className={['case-page', isEditing ? 'is-admin-editing' : '']
         .filter(Boolean)
         .join(' ')}
     >

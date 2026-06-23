@@ -1,19 +1,19 @@
-/* 和紙站點 · 共用覆寫（token 見 tekueiTokens.css） */
+﻿/* 和紙站點 · 共用覆寫（token 見 tekueiTokens.css） */
 
-html.tekuei-paper-site {
+html.paper-site {
   background: var(--paper);
 }
 
-html.tekuei-paper-site body {
+html.paper-site body {
   background: var(--paper);
 }
 
 /* ── 頁面根節點 ── */
 
-html.tekuei-paper-site .tekuei-about-page,
-html.tekuei-paper-site .tekuei-work-page,
-html.tekuei-paper-site .tekuei-journal-page,
-html.tekuei-paper-site .tekuei-case-page {
+html.paper-site .about-page,
+html.paper-site .work-page,
+html.paper-site .journal-page,
+html.paper-site .case-page {
   position: relative;
   z-index: 1;
   background: transparent;
@@ -22,29 +22,29 @@ html.tekuei-paper-site .tekuei-case-page {
 
 /* ── Case 導覽 ── */
 
-html.tekuei-paper-site .case-site-nav {
+html.paper-site .case-site-nav {
   background: rgba(242, 237, 227, 0.78);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
 
-html.tekuei-paper-site .case-site-nav__logo {
+html.paper-site .case-site-nav__logo {
   color: var(--ink);
 }
 
-html.tekuei-paper-site .case-site-nav__back {
+html.paper-site .case-site-nav__back {
   color: var(--ink-68);
 }
 
-html.tekuei-paper-site .case-site-nav__back:hover {
+html.paper-site .case-site-nav__back:hover {
   color: var(--ember);
 }
 
-html.tekuei-paper-site .case-site-nav__back-line {
+html.paper-site .case-site-nav__back-line {
   background: var(--ember-line);
 }
 
-html.tekuei-paper-site .case-site-nav::after {
+html.paper-site .case-site-nav::after {
   background: linear-gradient(
     to right,
     transparent,
@@ -55,6 +55,6 @@ html.tekuei-paper-site .case-site-nav::after {
 }
 
 /* Journal 深色氛圍層在和紙上關閉 */
-html.tekuei-paper-site .journal-atmosphere {
+html.paper-site .journal-atmosphere {
   display: none;
 }

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+﻿import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import SiteHero from './components/SiteHero.jsx'
 import AboutPage from './components/AboutPage.jsx'
@@ -14,7 +14,7 @@ import { SiteNav } from './components/SiteNav.jsx'
 function ScrollClasses() {
   const { pathname } = useLocation()
   useEffect(() => {
-    document.documentElement.classList.add('tekuei-has-scroll-document')
+    document.documentElement.classList.add('has-scroll-document')
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [pathname])
   return null

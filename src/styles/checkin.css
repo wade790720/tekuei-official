@@ -1,6 +1,6 @@
-/* Check-in · 隱藏路由 · 和紙 × 墨 × 燼 */
+﻿/* Check-in · 隱藏路由 · 和紙 × 墨 × 燼 */
 
-.tekuei-checkin-page {
+.checkin-page {
   --checkin-fd: 'Instrument Serif', serif;
   --checkin-fc: 'Noto Serif TC', 'Shippori Mincho', serif;
   --checkin-border: rgba(122, 104, 69, 0.22);
@@ -22,8 +22,8 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
 }
 
-.tekuei-checkin-page::before,
-.tekuei-checkin-page::after {
+.checkin-page::before,
+.checkin-page::after {
   content: '';
   position: fixed;
   pointer-events: none;
@@ -31,7 +31,7 @@
   border-radius: 60% 40% 50% 70%;
 }
 
-.tekuei-checkin-page::before {
+.checkin-page::before {
   top: -10%;
   right: -15%;
   width: 55vw;
@@ -46,7 +46,7 @@
   );
 }
 
-.tekuei-checkin-page::after {
+.checkin-page::after {
   bottom: 5%;
   left: -10%;
   width: 45vw;
@@ -62,7 +62,7 @@
   );
 }
 
-.tekuei-checkin-wrap {
+.checkin-wrap {
   position: relative;
   z-index: 1;
   width: 100%;
@@ -74,17 +74,17 @@
     transform 0.55s var(--ease-touch);
 }
 
-.tekuei-checkin-wrap.is-visible {
+.checkin-wrap.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-.tekuei-checkin-brand {
+.checkin-brand {
   text-align: center;
   margin-bottom: 40px;
 }
 
-.tekuei-checkin-brand-name {
+.checkin-brand-name {
   font-family: var(--checkin-fd);
   font-size: 13px;
   letter-spacing: 0.35em;
@@ -92,14 +92,14 @@
   text-transform: uppercase;
 }
 
-.tekuei-checkin-brand-divider {
+.checkin-brand-divider {
   width: 32px;
   height: 0.5px;
   background: var(--ember-line);
   margin: 12px auto 0;
 }
 
-.tekuei-checkin-card {
+.checkin-card {
   background: rgba(255, 252, 245, 0.88);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -109,11 +109,11 @@
   overflow: hidden;
 }
 
-.tekuei-checkin-card form {
+.checkin-card form {
   min-width: 0;
 }
 
-.tekuei-checkin-eyebrow {
+.checkin-eyebrow {
   font-family: var(--checkin-fd);
   font-size: 11px;
   letter-spacing: var(--ls-label);
@@ -122,7 +122,7 @@
   margin-bottom: 12px;
 }
 
-.tekuei-checkin-title {
+.checkin-title {
   font-size: 22px;
   font-weight: 300;
   color: var(--ink);
@@ -131,7 +131,7 @@
   margin-bottom: 10px;
 }
 
-.tekuei-checkin-subtitle {
+.checkin-subtitle {
   font-size: 13px;
   color: var(--checkin-muted);
   line-height: 1.8;
@@ -139,7 +139,7 @@
   letter-spacing: var(--ls-body);
 }
 
-.tekuei-checkin-label {
+.checkin-label {
   font-family: var(--checkin-fd);
   font-size: 11px;
   letter-spacing: 0.25em;
@@ -149,7 +149,7 @@
   display: block;
 }
 
-.tekuei-checkin-phone-row {
+.checkin-phone-row {
   display: flex;
   gap: 8px;
   margin-bottom: 8px;
@@ -157,7 +157,7 @@
   min-width: 0;
 }
 
-.tekuei-checkin-country {
+.checkin-country {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -173,11 +173,11 @@
   min-width: 82px;
 }
 
-.tekuei-checkin-country-flag {
+.checkin-country-flag {
   font-size: 16px;
 }
 
-.tekuei-checkin-input {
+.checkin-input {
   flex: 1 1 0;
   min-width: 0;
   width: 100%;
@@ -198,17 +198,17 @@
   appearance: none;
 }
 
-.tekuei-checkin-input:focus {
+.checkin-input:focus {
   border-color: var(--ember);
 }
 
-.tekuei-checkin-input::placeholder {
+.checkin-input::placeholder {
   color: var(--checkin-hint);
   font-size: 12px;
   letter-spacing: 0;
 }
 
-.tekuei-checkin-error {
+.checkin-error {
   font-size: 11px;
   color: #8a5048;
   margin-top: -4px;
@@ -216,7 +216,7 @@
   letter-spacing: var(--ls-body);
 }
 
-.tekuei-checkin-hint {
+.checkin-hint {
   font-size: 11px;
   color: var(--checkin-hint);
   margin-bottom: 32px;
@@ -224,7 +224,7 @@
   line-height: 1.6;
 }
 
-.tekuei-checkin-submit {
+.checkin-submit {
   width: 100%;
   padding: 15px;
   background: var(--ink);
@@ -241,20 +241,20 @@
     opacity 0.2s ease;
 }
 
-.tekuei-checkin-submit:hover:not(:disabled) {
+.checkin-submit:hover:not(:disabled) {
   background: var(--ember-deep);
 }
 
-.tekuei-checkin-submit:active:not(:disabled) {
+.checkin-submit:active:not(:disabled) {
   opacity: 0.85;
 }
 
-.tekuei-checkin-submit:disabled {
+.checkin-submit:disabled {
   background: rgba(122, 104, 69, 0.28);
   cursor: not-allowed;
 }
 
-.tekuei-checkin-loading {
+.checkin-loading {
   text-align: center;
   color: var(--checkin-hint);
   font-size: 13px;
@@ -262,12 +262,12 @@
   letter-spacing: var(--ls-body);
 }
 
-.tekuei-checkin-state {
+.checkin-state {
   text-align: center;
   padding: 24px 0;
 }
 
-.tekuei-checkin-state-mark {
+.checkin-state-mark {
   font-family: var(--checkin-fd);
   font-size: 36px;
   color: var(--ember);
@@ -275,13 +275,13 @@
   line-height: 1;
 }
 
-.tekuei-checkin-state-mark--muted {
+.checkin-state-mark--muted {
   font-size: 28px;
   color: var(--ember-soft);
   letter-spacing: 0.2em;
 }
 
-.tekuei-checkin-state h2 {
+.checkin-state h2 {
   font-size: 18px;
   font-weight: 300;
   color: var(--ink);
@@ -289,14 +289,14 @@
   margin-bottom: 14px;
 }
 
-.tekuei-checkin-state-line {
+.checkin-state-line {
   width: 24px;
   height: 0.5px;
   background: var(--ember-line);
   margin: 16px auto;
 }
 
-.tekuei-checkin-state p {
+.checkin-state p {
   font-size: 13px;
   color: var(--checkin-muted);
   line-height: 1.9;
@@ -304,7 +304,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tekuei-checkin-wrap {
+  .checkin-wrap {
     opacity: 1;
     transform: none;
     transition: none;

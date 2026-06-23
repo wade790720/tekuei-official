@@ -1,6 +1,6 @@
-/* About · 和紙上的 6:3:1 配色（60% 紙 / 30% 墨 / 10% 金） */
+﻿/* About · 和紙上的 6:3:1 配色（60% 紙 / 30% 墨 / 10% 金） */
 
-.tekuei-about-page {
+.about-page {
   position: relative;
   z-index: 1;
   min-height: 100vh;
@@ -48,14 +48,14 @@
   font-style: normal;
 }
 
-.tekuei-about-page .home-fade-in {
+.about-page .home-fade-in {
   opacity: 0;
   transition: opacity 0.85s var(--ease),
   transform 0.85s var(--ease);
   transform: translateY(16px);
 }
 
-.tekuei-about-page .home-fade-in.is-visible {
+.about-page .home-fade-in.is-visible {
   opacity: 1;
   transform: translateY(0);
 }

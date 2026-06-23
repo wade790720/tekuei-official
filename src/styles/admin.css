@@ -1,8 +1,8 @@
-/* Admin · 全站後台編輯 UI */
+﻿/* Admin · 全站後台編輯 UI */
 
-.is-admin-editing .tekuei-site-nav,
+.is-admin-editing .site-nav,
 .is-admin-editing .case-site-nav,
-.is-admin-editing .tekuei-nav-overlay {
+.is-admin-editing .nav-overlay {
   z-index: 50 !important;
 }
 
@@ -272,17 +272,17 @@
   display: none;
 }
 
-.tekuei-about-page.is-admin-editing .about-content {
+.about-page.is-admin-editing .about-content {
   padding-right: 0;
 }
 
 @media (min-width: 769px) {
-  .tekuei-about-page.is-admin-editing .about-content {
+  .about-page.is-admin-editing .about-content {
     margin-right: min(400px, 38vw);
   }
 
-  .tekuei-work-page.is-admin-editing,
-  .tekuei-case-page.is-admin-editing {
+  .work-page.is-admin-editing,
+  .case-page.is-admin-editing {
     margin-right: min(400px, 38vw);
   }
 

@@ -22,11 +22,11 @@ export default function CaseStub() {
   }, [item, title])
 
   return (
-    <div className="tekuei-work-page">
-      <main className="tekuei-case-stub">
+    <div className="work-page">
+      <main className="case-stub">
         <h1>{item ? `${title}` : `Case · ${slug}`}</h1>
         <p>案例詳情頁面尚未接上；將由獨立專題頁承接此路由。</p>
-        <Link className="tekuei-case-stub__back" to="/work">
+        <Link className="case-stub__back" to="/work">
           ← 返回 Work
         </Link>
       </main>

@@ -34,8 +34,8 @@ export function SiteNav({
   }, [pathname])
 
   const navClass = [
-    'tekuei-site-nav',
-    variant === 'case' ? 'tekuei-site-nav--case' : 'tekuei-site-nav--scroll-aware',
+    'site-nav',
+    variant === 'case' ? 'site-nav--case' : 'site-nav--scroll-aware',
     scrolled ? 'is-scrolled' : '',
   ]
     .filter(Boolean)
@@ -43,17 +43,17 @@ export function SiteNav({
 
   return (
     <nav className={navClass}>
-      <NavLink end to="/" className="tekuei-site-nav__logo" onClick={close}>
+      <NavLink end to="/" className="site-nav__logo" onClick={close}>
         T E K U E I
       </NavLink>
-      <div className="tekuei-site-nav__links tekuei-site-nav__links--desktop">
+      <div className="site-nav__links site-nav__links--desktop">
         <SiteNavLinks
           highlightWorkSection={highlightWorkSection}
           highlightJournal={highlightJournal}
         />
       </div>
       {!open && <NavToggle onToggle={() => setOpen(true)} />}
-      <NavOverlay open={open} onClose={close} id="tekuei-site-nav-overlay">
+      <NavOverlay open={open} onClose={close} id="site-nav-overlay">
         <SiteNavLinks
           variant="overlay"
           onNavigate={close}

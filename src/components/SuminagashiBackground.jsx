@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+﻿import { useEffect, useRef } from 'react'
 import { mountSuminagashi } from '../lib/suminagashiEngine.js'
 import '../styles/suminagashiBackground.css'
 
@@ -13,7 +13,7 @@ export function SuminagashiBackground() {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    document.documentElement.classList.add('tekuei-home-ink')
+    document.documentElement.classList.add('home-ink')
 
     let engine = null
     const start = () => {
@@ -29,7 +29,7 @@ export function SuminagashiBackground() {
       cancelAnimationFrame(raf)
       engine?.dispose()
       engineRef.current = null
-      document.documentElement.classList.remove('tekuei-home-ink')
+      document.documentElement.classList.remove('home-ink')
     }
   }, [])
 

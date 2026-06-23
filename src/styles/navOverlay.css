@@ -1,6 +1,6 @@
-/* 手機版全屏 overlay 選單 · 和紙 6:3:1 */
+﻿/* 手機版全屏 overlay 選單 · 和紙 6:3:1 */
 
-.tekuei-nav-toggle {
+.nav-toggle {
   display: none;
   position: relative;
   z-index: 110;
@@ -15,7 +15,7 @@
   pointer-events: all;
 }
 
-.tekuei-nav-toggle__line {
+.nav-toggle__line {
   position: absolute;
   left: 11px;
   right: 11px;
@@ -27,35 +27,35 @@
     top 0.45s var(--nav-overlay-ease, cubic-bezier(0.23, 0.1, 0.25, 1));
 }
 
-.tekuei-nav-toggle__line:nth-child(1) {
+.nav-toggle__line:nth-child(1) {
   top: 16px;
 }
 
-.tekuei-nav-toggle__line:nth-child(2) {
+.nav-toggle__line:nth-child(2) {
   top: 22px;
 }
 
-.tekuei-nav-toggle__line:nth-child(3) {
+.nav-toggle__line:nth-child(3) {
   top: 28px;
 }
 
 /* 開啟時隱藏底層 nav，避免 TEKUEI 與選單重疊 */
-html.tekuei-nav-overlay-open {
+html.nav-overlay-open {
   overflow: hidden;
 }
 
-html.tekuei-nav-overlay-open body {
+html.nav-overlay-open body {
   overflow: hidden;
 }
 
-html.tekuei-nav-overlay-open .tekuei-site-nav {
+html.nav-overlay-open .site-nav {
   visibility: hidden;
   pointer-events: none;
 }
 
 /* ── 全屏 Overlay（portal 至 body）── */
 
-.tekuei-nav-overlay {
+.nav-overlay {
   --nav-overlay-ease: var(--ease-touch);
   --nav-overlay-ms: 460ms;
 
@@ -74,23 +74,23 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   pointer-events: none;
 }
 
-.tekuei-nav-overlay.is-active,
-.tekuei-nav-overlay.is-closing {
+.nav-overlay.is-active,
+.nav-overlay.is-closing {
   visibility: visible;
   pointer-events: auto;
 }
 
-.tekuei-nav-overlay.is-active {
-  animation: tekuei-nav-overlay-in var(--nav-overlay-ms) var(--nav-overlay-ease) forwards;
+.nav-overlay.is-active {
+  animation: nav-overlay-in var(--nav-overlay-ms) var(--nav-overlay-ease) forwards;
 }
 
-.tekuei-nav-overlay.is-closing {
-  animation: tekuei-nav-overlay-out calc(var(--nav-overlay-ms) * 0.82) var(--nav-overlay-ease) forwards;
+.nav-overlay.is-closing {
+  animation: nav-overlay-out calc(var(--nav-overlay-ms) * 0.82) var(--nav-overlay-ease) forwards;
   pointer-events: none;
 }
 
 /* 防禦性重置：不受其他頁面 nav 規則影響 */
-.tekuei-nav-overlay nav {
+.nav-overlay nav {
   position: static;
   inset: auto;
   opacity: 1;
@@ -100,7 +100,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   pointer-events: auto;
 }
 
-.tekuei-nav-overlay__bar {
+.nav-overlay__bar {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
@@ -113,7 +113,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   box-sizing: border-box;
 }
 
-.tekuei-nav-overlay__mark {
+.nav-overlay__mark {
   font-family: 'Instrument Serif', serif;
   font-size: 14px;
   letter-spacing: 0.38em;
@@ -123,17 +123,17 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   transform: translateY(-10px);
 }
 
-.tekuei-nav-overlay.is-active .tekuei-nav-overlay__mark {
-  animation: tekuei-nav-fade-down 0.55s var(--nav-overlay-ease) 0.06s forwards;
+.nav-overlay.is-active .nav-overlay__mark {
+  animation: nav-fade-down 0.55s var(--nav-overlay-ease) 0.06s forwards;
 }
 
-.tekuei-nav-overlay.is-active .tekuei-nav-overlay__close {
-  animation: tekuei-nav-fade-down 0.55s var(--nav-overlay-ease) 0.1s forwards;
+.nav-overlay.is-active .nav-overlay__close {
+  animation: nav-fade-down 0.55s var(--nav-overlay-ease) 0.1s forwards;
   opacity: 0;
   transform: translateY(-10px);
 }
 
-.tekuei-nav-overlay__close {
+.nav-overlay__close {
   position: relative;
   width: 44px;
   height: 44px;
@@ -147,7 +147,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   transform: translateY(-10px);
 }
 
-.tekuei-nav-overlay__close-line {
+.nav-overlay__close-line {
   position: absolute;
   left: 11px;
   right: 11px;
@@ -157,15 +157,15 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   transform-origin: center;
 }
 
-.tekuei-nav-overlay__close-line:first-child {
+.nav-overlay__close-line:first-child {
   transform: translateY(-50%) rotate(45deg);
 }
 
-.tekuei-nav-overlay__close-line:last-child {
+.nav-overlay__close-line:last-child {
   transform: translateY(-50%) rotate(-45deg);
 }
 
-.tekuei-nav-overlay__body {
+.nav-overlay__body {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -177,14 +177,14 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   overflow-y: auto;
 }
 
-.tekuei-nav-overlay__menu {
+.nav-overlay__menu {
   display: flex;
   flex-direction: column;
   width: min(100%, 300px);
   margin: 0;
 }
 
-.tekuei-nav-overlay__link {
+.nav-overlay__link {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -208,42 +208,42 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   transition: color 0.35s ease;
 }
 
-.tekuei-nav-overlay.is-active .tekuei-nav-overlay__link {
-  animation: tekuei-nav-fade-up 0.62s var(--nav-overlay-ease) forwards;
+.nav-overlay.is-active .nav-overlay__link {
+  animation: nav-fade-up 0.62s var(--nav-overlay-ease) forwards;
 }
 
-.tekuei-nav-overlay.is-active .tekuei-nav-overlay__link:nth-child(1) {
+.nav-overlay.is-active .nav-overlay__link:nth-child(1) {
   animation-delay: 0.12s;
 }
 
-.tekuei-nav-overlay.is-active .tekuei-nav-overlay__link:nth-child(2) {
+.nav-overlay.is-active .nav-overlay__link:nth-child(2) {
   animation-delay: 0.18s;
 }
 
-.tekuei-nav-overlay.is-active .tekuei-nav-overlay__link:nth-child(3) {
+.nav-overlay.is-active .nav-overlay__link:nth-child(3) {
   animation-delay: 0.24s;
 }
 
-.tekuei-nav-overlay.is-active .tekuei-nav-overlay__link:nth-child(4) {
+.nav-overlay.is-active .nav-overlay__link:nth-child(4) {
   animation-delay: 0.3s;
 }
 
-.tekuei-nav-overlay.is-closing .tekuei-nav-overlay__mark,
-.tekuei-nav-overlay.is-closing .tekuei-nav-overlay__close,
-.tekuei-nav-overlay.is-closing .tekuei-nav-overlay__link {
-  animation: tekuei-nav-fade-out 0.34s var(--nav-overlay-ease) forwards;
+.nav-overlay.is-closing .nav-overlay__mark,
+.nav-overlay.is-closing .nav-overlay__close,
+.nav-overlay.is-closing .nav-overlay__link {
+  animation: nav-fade-out 0.34s var(--nav-overlay-ease) forwards;
 }
 
-.tekuei-nav-overlay__link:first-child {
+.nav-overlay__link:first-child {
   border-top: 0.5px solid var(--ember-whisper);
 }
 
-.tekuei-nav-overlay__link.is-active,
-.tekuei-nav-overlay__link:hover {
+.nav-overlay__link.is-active,
+.nav-overlay__link:hover {
   color: var(--ember);
 }
 
-@keyframes tekuei-nav-overlay-in {
+@keyframes nav-overlay-in {
   from {
     opacity: 0;
   }
@@ -252,7 +252,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   }
 }
 
-@keyframes tekuei-nav-overlay-out {
+@keyframes nav-overlay-out {
   from {
     opacity: 1;
   }
@@ -261,7 +261,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   }
 }
 
-@keyframes tekuei-nav-fade-up {
+@keyframes nav-fade-up {
   from {
     opacity: 0;
     transform: translateY(14px);
@@ -272,7 +272,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   }
 }
 
-@keyframes tekuei-nav-fade-down {
+@keyframes nav-fade-down {
   from {
     opacity: 0;
     transform: translateY(-10px);
@@ -283,7 +283,7 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
   }
 }
 
-@keyframes tekuei-nav-fade-out {
+@keyframes nav-fade-out {
   from {
     opacity: 1;
     transform: translateY(0);
@@ -295,31 +295,31 @@ html.tekuei-nav-overlay-open .tekuei-site-nav {
 }
 
 @media (max-width: 900px) {
-  .tekuei-nav-toggle {
+  .nav-toggle {
     display: block;
   }
 
-  .tekuei-site-nav__links--desktop {
+  .site-nav__links--desktop {
     display: none !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tekuei-nav-overlay,
-  .tekuei-nav-overlay.is-active,
-  .tekuei-nav-overlay.is-closing,
-  .tekuei-nav-overlay.is-active .tekuei-nav-overlay__mark,
-  .tekuei-nav-overlay.is-active .tekuei-nav-overlay__close,
-  .tekuei-nav-overlay.is-active .tekuei-nav-overlay__link,
-  .tekuei-nav-overlay.is-closing .tekuei-nav-overlay__mark,
-  .tekuei-nav-overlay.is-closing .tekuei-nav-overlay__close,
-  .tekuei-nav-overlay.is-closing .tekuei-nav-overlay__link {
+  .nav-overlay,
+  .nav-overlay.is-active,
+  .nav-overlay.is-closing,
+  .nav-overlay.is-active .nav-overlay__mark,
+  .nav-overlay.is-active .nav-overlay__close,
+  .nav-overlay.is-active .nav-overlay__link,
+  .nav-overlay.is-closing .nav-overlay__mark,
+  .nav-overlay.is-closing .nav-overlay__close,
+  .nav-overlay.is-closing .nav-overlay__link {
     animation: none;
     opacity: 1;
     transform: none;
   }
 
-  .tekuei-nav-toggle__line {
+  .nav-toggle__line {
     transition: none;
   }
 }
