@@ -1,5 +1,6 @@
 export const CHECKIN_META = {
-  title: 'TEKUEI 報到手續',
+  zh: { title: 'TEKUEI 報到手續' },
+  en: { title: 'TEKUEI Check-In' },
 }
 
 /** LINE LIFF ID */

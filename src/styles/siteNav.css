@@ -98,6 +98,30 @@
   color: var(--ember);
 }
 
+.site-nav__lang {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ink-70);
+  cursor: pointer;
+  padding: 4px 8px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.site-nav__lang:hover {
+  opacity: 1;
+  color: var(--ember);
+}
+
+.site-nav__lang--overlay {
+  font-size: 13px;
+  margin-top: 32px;
+  opacity: 0.5;
+}
+
 @media (max-width: 900px) {
   .site-nav {
     padding: 20px 28px;

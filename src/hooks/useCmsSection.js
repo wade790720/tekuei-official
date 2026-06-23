@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { cloneSiteData, siteDefaults } from '../lib/siteData.js'
 import { fetchSiteData, isRemoteSync, saveSitePatch } from '../lib/adminApi.js'
 import { LOCAL_CASES } from '../data/cases/index.js'
+import { useLang } from '../i18n'
 
 /**
  * @param {string} sectionKey
@@ -128,7 +129,8 @@ function extractAssets(caseData) {
 }
 
 export function useCaseCms(slug) {
-  const staticCase = LOCAL_CASES[slug] ?? null
+  const { lang } = useLang()
+  const staticCase = LOCAL_CASES[slug]?.[lang] ?? null
   const [siteData, setSiteData] = useState(() => cloneSiteData())
   const [content, setContent] = useState(() =>
     staticCase ? mergeAssets(staticCase, siteDefaults.cases?.[slug]) : null,
@@ -168,7 +170,7 @@ export function useCaseCms(slug) {
     return () => {
       cancelled = true
     }
-  }, [slug])
+  }, [slug, lang])
 
   const startEditing = useCallback(() => {
     if (content) setDraft(structuredClone(content))

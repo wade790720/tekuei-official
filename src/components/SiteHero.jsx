@@ -1,4 +1,4 @@
-﻿import { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import '../styles/hero.css'
 import '../styles/home.css'
@@ -16,6 +16,7 @@ import {
   HOME_WORK,
 } from '../data/homepage.js'
 import { useHeroContentParallax, useScrollParallax } from '../hooks/useScrollParallax.js'
+import { useLang } from '../i18n'
 
 function imgVariantClass(variant) {
   if (variant === 'alt') return 'home-work__item-img home-work__item-img--alt'
@@ -24,16 +25,27 @@ function imgVariantClass(variant) {
 }
 
 export default function SiteHero() {
+  const { lang } = useLang()
   const watermarkRef = useScrollParallax(0.18)
   const vlineRef = useScrollParallax(0.06)
   const contentRef = useHeroContentParallax()
   const ctaWatermarkRef = useScrollParallax(0.12)
 
+  const meta = HOME_META[lang]
+  const hero = HOME_HERO[lang]
+  const philosophy = HOME_PHILOSOPHY[lang]
+  const work = HOME_WORK[lang]
+  const featuredWorks = HOME_FEATURED_WORKS[lang]
+  const approach = HOME_APPROACH[lang]
+  const quote = HOME_QUOTE[lang]
+  const cta = HOME_CTA[lang]
+  const footer = HOME_FOOTER[lang]
+
   useEffect(() => {
-    document.title = HOME_META.title
-    const meta = document.querySelector('meta[name="description"]')
-    if (meta) meta.setAttribute('content', HOME_META.description)
-  }, [])
+    document.title = meta.title
+    const metaEl = document.querySelector('meta[name="description"]')
+    if (metaEl) metaEl.setAttribute('content', meta.description)
+  }, [meta])
 
   return (
     <div className="hero-root home">
@@ -49,9 +61,9 @@ export default function SiteHero() {
           </div>
 
           <div className="home-hero__content" ref={contentRef}>
-            <div className="home-hero__label">{HOME_HERO.label}</div>
+            <div className="home-hero__label">{hero.label}</div>
             <h1 className="home-hero__headline">
-              {HOME_HERO.headline.map((line) => (
+              {hero.headline.map((line) => (
                 <span key={line}>
                   {line}
                   <br />
@@ -59,11 +71,11 @@ export default function SiteHero() {
               ))}
             </h1>
             <div className="home-hero__sub-en">
-              <em>{HOME_HERO.subEn}</em>
+              <em>{hero.subEn}</em>
             </div>
             <div className="home-hero__rule" aria-hidden />
             <p className="home-hero__tagline">
-              {HOME_HERO.tagline.map((line, i) => (
+              {hero.tagline.map((line, i) => (
                 <span key={line}>
                   {i > 0 ? <br /> : null}
                   {line}
@@ -75,7 +87,7 @@ export default function SiteHero() {
                 BEGIN <span className="home-cta__arrow">→</span>
               </a>
               <Link to="/about" className="home-cta home-cta--ghost">
-                了解更多
+                {lang === 'zh' ? '了解更多' : 'Learn More'}
               </Link>
             </div>
           </div>
@@ -98,8 +110,8 @@ export default function SiteHero() {
 
         <section className="home-philosophy" id="philosophy">
           <HomeFadeIn className="home-philosophy__inner">
-            <div className="home-section-label">{HOME_PHILOSOPHY.label}</div>
-            {HOME_PHILOSOPHY.lines.map((item, i) => {
+            <div className="home-section-label">{philosophy.label}</div>
+            {philosophy.lines.map((item, i) => {
               if (item.type === 'divider') {
                 return <div key={`div-${i}`} className="home-philosophy__divider" aria-hidden />
               }
@@ -115,15 +127,15 @@ export default function SiteHero() {
                 </div>
               )
             })}
-            <div className="home-philosophy__sig">{HOME_PHILOSOPHY.signature}</div>
+            <div className="home-philosophy__sig">{philosophy.signature}</div>
           </HomeFadeIn>
         </section>
 
         <section className="home-work" id="work">
           <HomeFadeIn>
-            <div className="home-section-label">{HOME_WORK.label}</div>
+            <div className="home-section-label">{work.label}</div>
             <h2 className="home-section-title">
-              {HOME_WORK.title.map((line) => (
+              {work.title.map((line) => (
                 <span key={line}>
                   {line}
                   <br />
@@ -133,7 +145,7 @@ export default function SiteHero() {
           </HomeFadeIn>
 
           <div className="home-work__grid">
-            {HOME_FEATURED_WORKS.map((item) => (
+            {featuredWorks.map((item) => (
               <HomeFadeIn key={item.caseHref} as={Link} to={item.caseHref} className="home-work__item">
                 <div
                   className={imgVariantClass(item.variant)}
@@ -160,9 +172,9 @@ export default function SiteHero() {
 
         <section className="home-approach" id="approach">
           <HomeFadeIn>
-            <div className="home-section-label">{HOME_APPROACH.label}</div>
+            <div className="home-section-label">{approach.label}</div>
             <h2 className="home-section-title">
-              {HOME_APPROACH.title.map((line) => (
+              {approach.title.map((line) => (
                 <span key={line}>
                   {line}
                   <br />
@@ -172,7 +184,7 @@ export default function SiteHero() {
           </HomeFadeIn>
 
           <div className="home-approach__grid">
-            {HOME_APPROACH.items.map((item) => (
+            {approach.items.map((item) => (
               <HomeFadeIn key={item.num} className="home-approach__item">
                 <div className="home-approach__num">{item.num}</div>
                 <h3 className="home-approach__title">
@@ -192,7 +204,7 @@ export default function SiteHero() {
         <section className="home-quote">
           <HomeFadeIn className="home-quote__inner">
             <div className="home-quote__text">
-              {HOME_QUOTE.lines.map((line) => (
+              {quote.lines.map((line) => (
                 <span key={line}>
                   {line}
                   <br />
@@ -200,7 +212,7 @@ export default function SiteHero() {
               ))}
             </div>
             <div className="home-quote__en">
-              <em>{HOME_QUOTE.en}</em>
+              <em>{quote.en}</em>
             </div>
           </HomeFadeIn>
         </section>
@@ -211,9 +223,9 @@ export default function SiteHero() {
             begin
           </div>
           <HomeFadeIn className="home-final-cta__content">
-            <div className="home-section-label">{HOME_CTA.label}</div>
+            <div className="home-section-label">{cta.label}</div>
             <h2 className="home-final-cta__title">
-              {HOME_CTA.title.map((line) => (
+              {cta.title.map((line) => (
                 <span key={line}>
                   {line}
                   <br />
@@ -221,14 +233,14 @@ export default function SiteHero() {
               ))}
             </h2>
             <p className="home-final-cta__desc">
-              {HOME_CTA.desc.map((line, i) => (
+              {cta.desc.map((line, i) => (
                 <span key={line}>
                   {i > 0 ? <br /> : null}
                   {line}
                 </span>
               ))}
             </p>
-            <a href={`mailto:${HOME_CTA.email}`} className="home-cta">
+            <a href={`mailto:${cta.email}`} className="home-cta">
               BEGIN THE JOURNEY <span className="home-cta__arrow">→</span>
             </a>
           </HomeFadeIn>
@@ -241,7 +253,7 @@ export default function SiteHero() {
             <div className="home-footer__brand-name">T E K U E I</div>
             <div className="home-footer__brand-sub">德 溎</div>
             <p className="home-footer__brand-tagline">
-              {HOME_FOOTER.tagline.map((line, i) => (
+              {footer.tagline.map((line, i) => (
                 <span key={line}>
                   {i > 0 ? <br /> : null}
                   {line}
@@ -251,7 +263,7 @@ export default function SiteHero() {
           </div>
           <div className="home-footer__col">
             <div className="home-footer__col-title">EXPLORE</div>
-            {HOME_FOOTER.explore.map((link) =>
+            {footer.explore.map((link) =>
               link.href.startsWith('/') ? (
                 <Link key={link.href} to={link.href}>
                   {link.label}
@@ -265,7 +277,7 @@ export default function SiteHero() {
           </div>
           <div className="home-footer__col">
             <div className="home-footer__col-title">SERVICES</div>
-            {HOME_FOOTER.services.map((s) => (
+            {footer.services.map((s) => (
               <a key={s} href="#contact">
                 {s}
               </a>
@@ -273,7 +285,7 @@ export default function SiteHero() {
           </div>
           <div className="home-footer__col">
             <div className="home-footer__col-title">CONTACT</div>
-            {HOME_FOOTER.contact.map((c) => (
+            {footer.contact.map((c) => (
               <a key={c.label} href={c.href}>
                 {c.label}
               </a>
