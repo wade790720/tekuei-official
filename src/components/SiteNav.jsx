@@ -1,7 +1,8 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { NavOverlay, NavToggle } from './NavOverlay.jsx'
 import { SiteNavLinks } from './SiteNavLinks.jsx'
+import { useLang } from '../i18n'
 import '../styles/siteNav.css'
 import '../styles/navOverlay.css'
 
@@ -20,6 +21,7 @@ export function SiteNav({
   const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { lang, toggle } = useLang()
   const close = () => setOpen(false)
 
   useEffect(() => {
@@ -51,6 +53,9 @@ export function SiteNav({
           highlightWorkSection={highlightWorkSection}
           highlightJournal={highlightJournal}
         />
+        <button className="site-nav__lang" onClick={toggle} aria-label="Switch language">
+          {lang === 'zh' ? 'EN' : '中'}
+        </button>
       </div>
       {!open && <NavToggle onToggle={() => setOpen(true)} />}
       <NavOverlay open={open} onClose={close} id="site-nav-overlay">
@@ -60,6 +65,9 @@ export function SiteNav({
           highlightWorkSection={highlightWorkSection}
           highlightJournal={highlightJournal}
         />
+        <button className="site-nav__lang site-nav__lang--overlay" onClick={() => { toggle(); close() }} aria-label="Switch language">
+          {lang === 'zh' ? 'EN' : '中文'}
+        </button>
       </NavOverlay>
     </nav>
   )

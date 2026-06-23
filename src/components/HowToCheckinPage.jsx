@@ -1,12 +1,14 @@
-﻿import { useEffect } from 'react'
+import { useEffect } from 'react'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
 import {
   HOW_TO_CHECKIN_FINAL,
   HOW_TO_CHECKIN_HERO,
   HOW_TO_CHECKIN_META,
   HOW_TO_CHECKIN_PERKS,
+  HOW_TO_CHECKIN_PERKS_LABEL,
   HOW_TO_CHECKIN_STEPS,
 } from '../data/howToCheckin.js'
+import { useLang } from '../i18n'
 import '../styles/howToCheckin.css'
 
 function renderBodyContent(line) {
@@ -53,7 +55,7 @@ function StepBody({ body }) {
 function StepMedia({ item }) {
   if (item.images?.length) {
     return (
-      <figure className="howto-checkin-step__figures" aria-label="教學截圖">
+      <figure className="howto-checkin-step__figures" aria-label="tutorial screenshots">
         {item.images.map((img) => (
           <img
             key={img.src}
@@ -84,13 +86,20 @@ function StepMedia({ item }) {
 }
 
 export default function HowToCheckinPage() {
-  useEffect(() => {
-    document.title = HOW_TO_CHECKIN_META.title
-    const meta = document.querySelector('meta[name="description"]')
-    if (meta) meta.setAttribute('content', HOW_TO_CHECKIN_META.description)
-  }, [])
+  const { lang } = useLang()
+  const meta = HOW_TO_CHECKIN_META[lang]
+  const hero = HOW_TO_CHECKIN_HERO[lang]
+  const steps = HOW_TO_CHECKIN_STEPS[lang]
+  const perks = HOW_TO_CHECKIN_PERKS[lang]
+  const perksLabel = HOW_TO_CHECKIN_PERKS_LABEL[lang]
+  const final = HOW_TO_CHECKIN_FINAL[lang]
 
-  // 頁面載入觸發 Lead
+  useEffect(() => {
+    document.title = meta.title
+    const metaEl = document.querySelector('meta[name="description"]')
+    if (metaEl) metaEl.setAttribute('content', meta.description)
+  }, [meta])
+
   useEffect(() => {
     window.zaraz?.track('Lead')
   }, [])
@@ -102,14 +111,14 @@ export default function HowToCheckinPage() {
           <div className="howto-checkin-hero__inner">
             <div className="howto-checkin-hero__eyebrow">Check-in Guide</div>
             <h1 className="howto-checkin-hero__title">
-              {HOW_TO_CHECKIN_HERO.title.map((line) => (
+              {hero.title.map((line) => (
                 <span key={line}>
                   {line}
                   <br />
                 </span>
               ))}
             </h1>
-            <p className="howto-checkin-hero__subtitle">{HOW_TO_CHECKIN_HERO.subtitle}</p>
+            <p className="howto-checkin-hero__subtitle">{hero.subtitle}</p>
           </div>
         </header>
 
@@ -117,9 +126,9 @@ export default function HowToCheckinPage() {
           <div className="howto-checkin-rule__line" />
         </div>
 
-        <section className="howto-checkin-steps" aria-label="報到教學步驟">
+        <section className="howto-checkin-steps" aria-label="check-in steps">
           <ol className="howto-checkin-steps__list">
-            {HOW_TO_CHECKIN_STEPS.map((item) => {
+            {steps.map((item) => {
               const hasMedia = Boolean(item.images?.length || item.image)
               const layoutClass = [
                 'howto-checkin-step__layout',
@@ -164,13 +173,13 @@ export default function HowToCheckinPage() {
         <section className="howto-checkin-perks" aria-labelledby="howto-checkin-perks-title">
           <div className="howto-checkin-perks__inner">
             <HomeFadeIn>
-              <p className="howto-checkin-step__label howto-checkin-perks__label">說明會當日</p>
+              <p className="howto-checkin-step__label howto-checkin-perks__label">{perksLabel.eyebrow}</p>
               <h2 className="howto-checkin-perks__title" id="howto-checkin-perks-title">
-                完成報到後，您將收到
+                {perksLabel.heading}
               </h2>
             </HomeFadeIn>
             <ul className="howto-checkin-perks__list">
-              {HOW_TO_CHECKIN_PERKS.map((perk) => (
+              {perks.map((perk) => (
                 <li key={perk.num} className="howto-checkin-perk">
                   <HomeFadeIn className="howto-checkin-perk__card">
                     <div className="howto-checkin-perk__num" aria-hidden>
@@ -187,9 +196,9 @@ export default function HowToCheckinPage() {
 
         <footer className="howto-checkin-final">
           <HomeFadeIn className="howto-checkin-final__inner">
-            <p className="howto-checkin-final__lead">{HOW_TO_CHECKIN_FINAL.lead}</p>
-            <p className="howto-checkin-final__body">{HOW_TO_CHECKIN_FINAL.body}</p>
-            <p className="howto-checkin-final__closing">{HOW_TO_CHECKIN_FINAL.closing}</p>
+            <p className="howto-checkin-final__lead">{final.lead}</p>
+            <p className="howto-checkin-final__body">{final.body}</p>
+            <p className="howto-checkin-final__closing">{final.closing}</p>
           </HomeFadeIn>
         </footer>
       </div>

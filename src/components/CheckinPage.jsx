@@ -1,9 +1,10 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   CHECKIN_LIFF_ID,
   CHECKIN_META,
   CHECKIN_WORKER_URL,
 } from '../data/checkin.js'
+import { useLang } from '../i18n'
 import '../styles/checkin.css'
 
 const LIFF_SDK = 'https://static.line-scdn.net/liff/edge/2/sdk.js'
@@ -30,7 +31,46 @@ function loadLiffSdk() {
   })
 }
 
+const UI = {
+  zh: {
+    loading: '初始化中⋯',
+    eyebrow: 'Check-in',
+    formTitle: '完成報到手續',
+    formSubtitle: '輸入手機號碼，讓我們在課前透過簡訊與 LINE 通知您課程資訊。',
+    label: '手機號碼',
+    placeholder: '請輸入您的手機號碼',
+    hint: '僅用於課程通知，不會用於其他用途。',
+    submitIdle: '提交資料',
+    submitBusy: 'Sending ...',
+    invalidPhone: '請輸入正確的手機號碼（09 開頭，10 碼）',
+    submitFailed: '提交失敗，請稍後再試。',
+    successTitle: '報到完成',
+    successBody: ['我們已收到您的資料', '課程前會透過 LINE 與簡訊通知您', '期待和您在課程中相見'],
+    errorTitle: '無法開啟報到頁面',
+    errorBody: ['請關閉此視窗後', '從 LINE 訊息重新點選連結', '', '若問題持續發生', '請聯絡客服協助處理'],
+  },
+  en: {
+    loading: 'Initializing...',
+    eyebrow: 'Check-in',
+    formTitle: 'Complete Your Check-In',
+    formSubtitle: 'Enter your phone number so we can notify you before class via SMS and LINE.',
+    label: 'Phone Number',
+    placeholder: 'Enter your phone number',
+    hint: 'Used only for class notifications.',
+    submitIdle: 'Submit',
+    submitBusy: 'Sending ...',
+    invalidPhone: 'Please enter a valid number (must start with 09, 10 digits).',
+    submitFailed: 'Submission failed. Please try again.',
+    successTitle: 'Check-In Complete',
+    successBody: ['We have received your information.', 'You will be notified before class via LINE and SMS.', 'Looking forward to seeing you!'],
+    errorTitle: 'Unable to Open Check-In',
+    errorBody: ['Please close this window', 'and tap the link from the LINE message again.', '', 'If the issue persists,', 'please contact support.'],
+  },
+}
+
 export default function CheckinPage() {
+  const { lang } = useLang()
+  const ui = UI[lang]
   const [phase, setPhase] = useState('loading')
   const [phone, setPhone] = useState('')
   const [errorText, setErrorText] = useState('')
@@ -40,8 +80,8 @@ export default function CheckinPage() {
   const visible = phase !== 'loading'
 
   useEffect(() => {
-    document.title = CHECKIN_META.title
-  }, [])
+    document.title = CHECKIN_META[lang].title
+  }, [lang])
 
   useEffect(() => {
     let cancelled = false
@@ -77,7 +117,7 @@ export default function CheckinPage() {
     const rawPhone = phone.replace(/-/g, '').trim()
 
     if (!validatePhone(rawPhone)) {
-      setErrorText('請輸入正確的手機號碼（09 開頭，10 碼）')
+      setErrorText(ui.invalidPhone)
       return
     }
 
@@ -99,7 +139,7 @@ export default function CheckinPage() {
       setPhase('success')
     } catch (err) {
       console.error(err)
-      setErrorText('提交失敗，請稍後再試。')
+      setErrorText(ui.submitFailed)
     } finally {
       setSubmitting(false)
     }
@@ -117,19 +157,17 @@ export default function CheckinPage() {
 
         <div className="checkin-card">
           {phase === 'loading' && (
-            <div className="checkin-loading">初始化中⋯</div>
+            <div className="checkin-loading">{ui.loading}</div>
           )}
 
           {phase === 'form' && (
             <form onSubmit={handleSubmit}>
-              <div className="checkin-eyebrow">Check-in</div>
-              <h1 className="checkin-title">完成報到手續</h1>
-              <p className="checkin-subtitle">
-                輸入手機號碼，讓我們在課前透過簡訊與 LINE 通知您課程資訊。
-              </p>
+              <div className="checkin-eyebrow">{ui.eyebrow}</div>
+              <h1 className="checkin-title">{ui.formTitle}</h1>
+              <p className="checkin-subtitle">{ui.formSubtitle}</p>
 
               <label className="checkin-label" htmlFor="checkin-phone">
-                手機號碼
+                {ui.label}
               </label>
               <div className="checkin-phone-row">
                 <div className="checkin-country">
@@ -142,7 +180,7 @@ export default function CheckinPage() {
                   id="checkin-phone"
                   type="tel"
                   className="checkin-input"
-                  placeholder="請輸入您的手機號碼"
+                  placeholder={ui.placeholder}
                   maxLength={10}
                   inputMode="numeric"
                   pattern="[0-9]*"
@@ -158,16 +196,14 @@ export default function CheckinPage() {
                 </div>
               )}
 
-              <p className="checkin-hint">
-                僅用於課程通知，不會用於其他用途。
-              </p>
+              <p className="checkin-hint">{ui.hint}</p>
 
               <button
                 type="submit"
                 className="checkin-submit"
                 disabled={submitting}
               >
-                {submitting ? 'Sending ...' : '提交資料'}
+                {submitting ? ui.submitBusy : ui.submitIdle}
               </button>
             </form>
           )}
@@ -177,14 +213,15 @@ export default function CheckinPage() {
               <div className="checkin-state-mark" aria-hidden>
                 ✦
               </div>
-              <h2>報到完成</h2>
+              <h2>{ui.successTitle}</h2>
               <div className="checkin-state-line" aria-hidden />
               <p>
-                我們已收到您的資料
-                <br />
-                課程前會透過 LINE 與簡訊通知您
-                <br />
-                期待和您在課程中相見
+                {ui.successBody.map((line, i) => (
+                  <span key={line}>
+                    {i > 0 ? <br /> : null}
+                    {line}
+                  </span>
+                ))}
               </p>
             </div>
           )}
@@ -197,17 +234,17 @@ export default function CheckinPage() {
               >
                 — —
               </div>
-              <h2>無法開啟報到頁面</h2>
+              <h2>{ui.errorTitle}</h2>
               <div className="checkin-state-line" aria-hidden />
               <p>
-                請關閉此視窗後
-                <br />
-                從 LINE 訊息重新點選連結
-                <br />
-                <br />
-                若問題持續發生
-                <br />
-                請聯絡客服協助處理
+                {ui.errorBody.map((line, i) =>
+                  line === '' ? <br key={`br-${i}`} /> : (
+                    <span key={line}>
+                      {i > 0 && ui.errorBody[i - 1] !== '' ? <br /> : null}
+                      {line}
+                    </span>
+                  )
+                )}
               </p>
             </div>
           )}
