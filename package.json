@@ -10,9 +10,12 @@
     "deploy": "wrangler pages deploy dist --commit-dirty=true",
     "lint": "eslint .",
     "preview": "vite preview",
-    "seed": "node scripts/seed-data.mjs"
+    "seed": "node scripts/seed-data.mjs",
+    "test": "node --test scripts/phoneE164.test.mjs",
+    "test:phone": "node --test scripts/phoneE164.test.mjs"
   },
   "dependencies": {
+    "libphonenumber-js": "^1.13.9",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-phone-input-2": "^2.15.1",

@@ -155,6 +155,11 @@
   min-width: 0;
 }
 
+.checkin-phone-field.is-invalid .form-control.checkin-phone-input,
+.checkin-phone-field.is-invalid .flag-dropdown.checkin-phone-button {
+  border-color: #8a5048;
+}
+
 .checkin-phone-container.react-tel-input {
   width: 100%;
   font-family: var(--checkin-fc);
