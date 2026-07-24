@@ -149,63 +149,142 @@
   display: block;
 }
 
-.checkin-phone-row {
-  display: flex;
-  gap: 8px;
+.checkin-phone-field {
   margin-bottom: 8px;
   width: 100%;
   min-width: 0;
 }
 
-.checkin-country {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex-shrink: 0;
-  background: transparent;
-  border: 0.5px solid var(--checkin-border);
-  border-radius: 1px;
-  padding: 0 14px;
-  font-family: var(--checkin-fd);
-  font-size: 15px;
-  color: var(--ink-70);
-  white-space: nowrap;
-  min-width: 82px;
-}
-
-.checkin-country-flag {
-  font-size: 16px;
-}
-
-.checkin-input {
-  flex: 1 1 0;
-  min-width: 0;
+.checkin-phone-container.react-tel-input {
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
+  font-family: var(--checkin-fc);
+}
+
+.checkin-phone-container .form-control.checkin-phone-input {
+  width: 100% !important;
+  height: 46px;
   border: 0.5px solid var(--checkin-border);
   border-radius: 1px;
-  padding: 13px 14px;
+  padding-left: 58px !important;
   font-family: var(--checkin-fc);
   font-size: 15px;
   font-weight: 300;
   color: var(--ink);
   background: transparent;
-  outline: none;
-  transition: border-color 0.3s var(--ease-touch);
   letter-spacing: var(--ls-title);
-  -webkit-appearance: none;
-  appearance: none;
+  box-shadow: none;
 }
 
-.checkin-input:focus {
+.checkin-phone-container .form-control.checkin-phone-input:focus {
   border-color: var(--ember);
+  box-shadow: none;
 }
 
-.checkin-input::placeholder {
-  color: var(--checkin-hint);
+.checkin-phone-container .flag-dropdown.checkin-phone-button {
+  border: 0.5px solid var(--checkin-border);
+  border-radius: 1px 0 0 1px;
+  background: transparent;
+}
+
+.checkin-phone-container .flag-dropdown.checkin-phone-button.open,
+.checkin-phone-container .flag-dropdown.checkin-phone-button:hover {
+  background: rgba(255, 252, 245, 0.95);
+}
+
+.checkin-phone-container .selected-flag {
+  width: 48px;
+  padding: 0 0 0 10px;
+  background: transparent;
+}
+
+.checkin-phone-container .selected-flag:hover,
+.checkin-phone-container .selected-flag:focus,
+.checkin-phone-container .flag-dropdown.open .selected-flag {
+  background: transparent;
+}
+
+.checkin-phone-dropdown.country-list {
+  width: min(320px, 85vw);
+  max-height: 260px;
+  margin: 4px 0 0;
+  border: 0.5px solid var(--checkin-border);
+  border-radius: 1px;
+  background: rgba(255, 252, 245, 0.98);
+  box-shadow: 0 12px 32px rgba(30, 27, 24, 0.1);
+  font-family: var(--checkin-fc);
+  z-index: 20;
+}
+
+.checkin-phone-dropdown .country {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.checkin-phone-dropdown .country:hover,
+.checkin-phone-dropdown .country.highlight {
+  background: rgba(196, 106, 58, 0.08);
+}
+
+.checkin-phone-dropdown .dial-code {
+  color: var(--checkin-muted);
+}
+
+.checkin-phone-search {
+  width: calc(100% - 20px) !important;
+  margin: 10px !important;
+  padding: 10px 12px !important;
+  border: 0.5px solid var(--checkin-border) !important;
+  border-radius: 1px !important;
+  font-family: var(--checkin-fc) !important;
+  font-size: 13px !important;
+  background: #fff !important;
+}
+
+.checkin-phone-search:focus {
+  border-color: var(--ember) !important;
+  outline: none;
+}
+
+.checkin-preview {
+  font-size: 11px;
+  color: var(--checkin-muted);
+  margin: 0 0 12px;
+  letter-spacing: var(--ls-body);
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.checkin-preview code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 12px;
-  letter-spacing: 0;
+  color: var(--ember-deep);
+}
+
+.checkin-dev-badge {
+  margin: -8px 0 20px;
+  padding: 8px 10px;
+  border: 0.5px dashed var(--ember-line);
+  font-size: 11px;
+  letter-spacing: var(--ls-body);
+  color: var(--ember-deep);
+  background: rgba(196, 106, 58, 0.06);
+}
+
+.checkin-dev-payload {
+  margin-top: 20px;
+  font-size: 11px;
+  color: var(--checkin-muted);
+  word-break: break-all;
+  line-height: 1.6;
+}
+
+.checkin-dev-payload code {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  color: var(--ink);
 }
 
 .checkin-error {
