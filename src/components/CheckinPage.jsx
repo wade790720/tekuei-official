@@ -11,7 +11,7 @@ import {
   isCheckinDevBypass,
   isCheckinLiveSubmit,
 } from '../data/checkin.js'
-import { digitsToE164, isValidE164 } from '../lib/phoneE164.js'
+import { digitsToE164, validateCheckinPhone } from '../lib/phoneE164.js'
 import { useLang } from '../i18n'
 import '../styles/checkin.css'
 
@@ -51,6 +51,7 @@ const UI = {
     submitIdle: '提交資料',
     submitBusy: 'Sending ...',
     invalidPhone: '請輸入正確的手機號碼',
+    emptyPhone: '請輸入手機號碼',
     submitFailed: '提交失敗，請稍後再試。',
     successTitle: '報到完成',
     successBody: ['我們已收到您的資料', '課程前會透過 LINE 與簡訊通知您', '期待和您在課程中相見'],
@@ -72,7 +73,8 @@ const UI = {
     preview: 'Will send',
     submitIdle: 'Submit',
     submitBusy: 'Sending ...',
-    invalidPhone: 'Please enter a valid phone number.',
+    invalidPhone: 'Please enter a valid mobile number.',
+    emptyPhone: 'Please enter your phone number.',
     submitFailed: 'Submission failed. Please try again.',
     successTitle: 'Check-In Complete',
     successBody: ['We have received your information.', 'You will be notified before class via LINE and SMS.', 'Looking forward to seeing you!'],
@@ -96,7 +98,10 @@ export default function CheckinPage() {
   const [lastPayload, setLastPayload] = useState(null)
 
   const visible = phase !== 'loading'
-  const e164Preview = useMemo(() => digitsToE164(phone), [phone])
+  const e164Preview = useMemo(
+    () => digitsToE164(phone, countryMeta),
+    [phone, countryMeta],
+  )
 
   useEffect(() => {
     document.title = CHECKIN_META[lang].title
@@ -146,18 +151,18 @@ export default function CheckinPage() {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    const phoneE164 = digitsToE164(phone)
+    const result = validateCheckinPhone(phone, countryMeta)
 
-    if (!isValidE164(phoneE164)) {
-      console.warn(LOG, 'invalid phone', { phone, phoneE164, countryMeta })
-      setErrorText(ui.invalidPhone)
+    if (!result.ok) {
+      console.warn(LOG, 'invalid phone', { phone, ...result, countryMeta })
+      setErrorText(result.reason === 'empty' ? ui.emptyPhone : ui.invalidPhone)
       return
     }
 
     const payload = {
       userId: userProfile.userId,
       displayName: userProfile.displayName,
-      phone: phoneE164,
+      phone: result.e164,
     }
 
     console.info(LOG, 'submit payload', payload)
@@ -165,7 +170,7 @@ export default function CheckinPage() {
       expectedExample: '+886912869565',
       actual: payload.phone,
       country: countryMeta,
-      matchesPattern: isValidE164(payload.phone),
+      valid: true,
     })
 
     setErrorText('')
@@ -229,17 +234,29 @@ export default function CheckinPage() {
                 {ui.label}
               </label>
 
-              <div className="checkin-phone-field">
+              <div
+                className={[
+                  'checkin-phone-field',
+                  errorText ? 'is-invalid' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+              >
                 <PhoneInput
                   country={DEFAULT_PHONE_COUNTRY}
                   preferredCountries={PREFERRED_PHONE_COUNTRIES}
                   value={phone}
                   onChange={(value, data) => {
-                    setPhone(value)
+                    const digitsOnly = String(value || '').replace(/\D/g, '')
+                    setPhone(digitsOnly)
                     setCountryMeta(data)
+                    const result = validateCheckinPhone(digitsOnly, data)
+                    if (result.ok) setErrorText('')
                     console.debug(LOG, 'phone change', {
-                      value,
-                      e164: digitsToE164(value),
+                      value: digitsOnly,
+                      e164: result.e164,
+                      ok: result.ok,
+                      reason: result.reason,
                       country: data?.countryCode,
                       dialCode: data?.dialCode,
                       name: data?.name,
@@ -250,12 +267,23 @@ export default function CheckinPage() {
                   searchPlaceholder={ui.searchPlaceholder}
                   searchNotFound={ui.searchNotFound}
                   countryCodeEditable={false}
+                  autoFormat={false}
+                  disableCountryGuess
                   enableLongNumbers
                   inputProps={{
                     id: 'checkin-phone',
                     name: 'phone',
                     required: true,
                     autoComplete: 'tel',
+                    inputMode: 'numeric',
+                    onBlur: () => {
+                      const result = validateCheckinPhone(phone, countryMeta)
+                      if (!result.ok) {
+                        setErrorText(
+                          result.reason === 'empty' ? ui.emptyPhone : ui.invalidPhone,
+                        )
+                      }
+                    },
                   }}
                   placeholder={ui.placeholder}
                   containerClass="checkin-phone-container"
@@ -266,7 +294,7 @@ export default function CheckinPage() {
                 />
               </div>
 
-              {e164Preview ? (
+              {devMode && e164Preview ? (
                 <p className="checkin-preview" data-testid="checkin-e164-preview">
                   {ui.preview}：<code>{e164Preview}</code>
                 </p>
