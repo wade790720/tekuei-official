@@ -1,17 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 import {
+  CHECKIN_DEV_PROFILE,
   CHECKIN_LIFF_ID,
   CHECKIN_META,
   CHECKIN_WORKER_URL,
+  DEFAULT_PHONE_COUNTRY,
+  PREFERRED_PHONE_COUNTRIES,
+  isCheckinDevBypass,
+  isCheckinLiveSubmit,
 } from '../data/checkin.js'
+import { digitsToE164, isValidE164 } from '../lib/phoneE164.js'
 import { useLang } from '../i18n'
 import '../styles/checkin.css'
 
 const LIFF_SDK = 'https://static.line-scdn.net/liff/edge/2/sdk.js'
-
-function validatePhone(phone) {
-  return /^09\d{8}$/.test(phone)
-}
+const LOG = '[checkin]'
 
 function loadLiffSdk() {
   if (window.liff) return Promise.resolve(window.liff)
@@ -39,15 +44,20 @@ const UI = {
     formSubtitle: '輸入手機號碼，讓我們在課前透過簡訊與 LINE 通知您課程資訊。',
     label: '手機號碼',
     placeholder: '請輸入您的手機號碼',
+    searchPlaceholder: '搜尋國碼或國家（例如 88、Taiwan）',
+    searchNotFound: '找不到符合的國家',
     hint: '僅用於課程通知，不會用於其他用途。',
+    preview: '將送出',
     submitIdle: '提交資料',
     submitBusy: 'Sending ...',
-    invalidPhone: '請輸入正確的手機號碼（09 開頭，10 碼）',
+    invalidPhone: '請輸入正確的手機號碼',
     submitFailed: '提交失敗，請稍後再試。',
     successTitle: '報到完成',
     successBody: ['我們已收到您的資料', '課程前會透過 LINE 與簡訊通知您', '期待和您在課程中相見'],
     errorTitle: '無法開啟報到頁面',
     errorBody: ['請關閉此視窗後', '從 LINE 訊息重新點選連結', '', '若問題持續發生', '請聯絡客服協助處理'],
+    devBadge: '本機開發模式（略過 LIFF）',
+    dryRunNote: 'Dry-run：未打 Worker，請看 Console',
   },
   en: {
     loading: 'Initializing...',
@@ -56,15 +66,20 @@ const UI = {
     formSubtitle: 'Enter your phone number so we can notify you before class via SMS and LINE.',
     label: 'Phone Number',
     placeholder: 'Enter your phone number',
+    searchPlaceholder: 'Search code or country (e.g. 88, Taiwan)',
+    searchNotFound: 'No countries found',
     hint: 'Used only for class notifications.',
+    preview: 'Will send',
     submitIdle: 'Submit',
     submitBusy: 'Sending ...',
-    invalidPhone: 'Please enter a valid number (must start with 09, 10 digits).',
+    invalidPhone: 'Please enter a valid phone number.',
     submitFailed: 'Submission failed. Please try again.',
     successTitle: 'Check-In Complete',
     successBody: ['We have received your information.', 'You will be notified before class via LINE and SMS.', 'Looking forward to seeing you!'],
     errorTitle: 'Unable to Open Check-In',
     errorBody: ['Please close this window', 'and tap the link from the LINE message again.', '', 'If the issue persists,', 'please contact support.'],
+    devBadge: 'Local dev mode (LIFF bypassed)',
+    dryRunNote: 'Dry-run: Worker not called — check Console',
   },
 }
 
@@ -73,11 +88,15 @@ export default function CheckinPage() {
   const ui = UI[lang]
   const [phase, setPhase] = useState('loading')
   const [phone, setPhone] = useState('')
+  const [countryMeta, setCountryMeta] = useState(null)
   const [errorText, setErrorText] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [userProfile, setUserProfile] = useState(null)
+  const [devMode, setDevMode] = useState(false)
+  const [lastPayload, setLastPayload] = useState(null)
 
   const visible = phase !== 'loading'
+  const e164Preview = useMemo(() => digitsToE164(phone), [phone])
 
   useEffect(() => {
     document.title = CHECKIN_META[lang].title
@@ -87,7 +106,20 @@ export default function CheckinPage() {
     let cancelled = false
 
     async function init() {
+      const bypass = isCheckinDevBypass()
+      if (bypass) {
+        console.info(LOG, 'mode=dev-bypass', {
+          tip: 'Open /checkin · dry-run by default · add ?live=1 to POST Worker · ?liff=1 to force LIFF',
+        })
+        if (cancelled) return
+        setDevMode(true)
+        setUserProfile(CHECKIN_DEV_PROFILE)
+        setPhase('form')
+        return
+      }
+
       try {
+        console.info(LOG, 'mode=liff')
         const liff = await loadLiffSdk()
         await liff.init({ liffId: CHECKIN_LIFF_ID })
 
@@ -101,7 +133,7 @@ export default function CheckinPage() {
         setUserProfile(profile)
         setPhase('form')
       } catch (err) {
-        console.error(err)
+        console.error(LOG, 'liff init failed', err)
         if (!cancelled) setPhase('error')
       }
     }
@@ -114,31 +146,52 @@ export default function CheckinPage() {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    const rawPhone = phone.replace(/-/g, '').trim()
+    const phoneE164 = digitsToE164(phone)
 
-    if (!validatePhone(rawPhone)) {
+    if (!isValidE164(phoneE164)) {
+      console.warn(LOG, 'invalid phone', { phone, phoneE164, countryMeta })
       setErrorText(ui.invalidPhone)
       return
     }
 
+    const payload = {
+      userId: userProfile.userId,
+      displayName: userProfile.displayName,
+      phone: phoneE164,
+    }
+
+    console.info(LOG, 'submit payload', payload)
+    console.info(LOG, 'phone format check', {
+      expectedExample: '+886912869565',
+      actual: payload.phone,
+      country: countryMeta,
+      matchesPattern: isValidE164(payload.phone),
+    })
+
     setErrorText('')
     setSubmitting(true)
+    setLastPayload(payload)
 
     try {
+      const live = isCheckinLiveSubmit()
+      if (devMode && !live) {
+        console.info(LOG, 'dry-run (no Worker). Add ?live=1 or VITE_CHECKIN_LIVE=true to POST.')
+        setPhase('success')
+        return
+      }
+
+      console.info(LOG, 'POST', CHECKIN_WORKER_URL)
       const res = await fetch(CHECKIN_WORKER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: userProfile.userId,
-          displayName: userProfile.displayName,
-          phone: '+886' + rawPhone.slice(1),
-        }),
+        body: JSON.stringify(payload),
       })
 
-      if (!res.ok) throw new Error('Server error')
+      console.info(LOG, 'response', res.status, res.statusText)
+      if (!res.ok) throw new Error(`Server error ${res.status}`)
       setPhase('success')
     } catch (err) {
-      console.error(err)
+      console.error(LOG, 'submit failed', err)
       setErrorText(ui.submitFailed)
     } finally {
       setSubmitting(false)
@@ -156,6 +209,12 @@ export default function CheckinPage() {
         </header>
 
         <div className="checkin-card">
+          {devMode && phase === 'form' ? (
+            <div className="checkin-dev-badge" role="status">
+              {ui.devBadge}
+            </div>
+          ) : null}
+
           {phase === 'loading' && (
             <div className="checkin-loading">{ui.loading}</div>
           )}
@@ -169,26 +228,49 @@ export default function CheckinPage() {
               <label className="checkin-label" htmlFor="checkin-phone">
                 {ui.label}
               </label>
-              <div className="checkin-phone-row">
-                <div className="checkin-country">
-                  <span className="checkin-country-flag" aria-hidden>
-                    🇹🇼
-                  </span>
-                  <span>+886</span>
-                </div>
-                <input
-                  id="checkin-phone"
-                  type="tel"
-                  className="checkin-input"
-                  placeholder={ui.placeholder}
-                  maxLength={10}
-                  inputMode="numeric"
-                  pattern="[0-9]*"
+
+              <div className="checkin-phone-field">
+                <PhoneInput
+                  country={DEFAULT_PHONE_COUNTRY}
+                  preferredCountries={PREFERRED_PHONE_COUNTRIES}
                   value={phone}
-                  onChange={(ev) => setPhone(ev.target.value)}
-                  autoComplete="tel"
+                  onChange={(value, data) => {
+                    setPhone(value)
+                    setCountryMeta(data)
+                    console.debug(LOG, 'phone change', {
+                      value,
+                      e164: digitsToE164(value),
+                      country: data?.countryCode,
+                      dialCode: data?.dialCode,
+                      name: data?.name,
+                    })
+                  }}
+                  enableSearch
+                  disableSearchIcon={false}
+                  searchPlaceholder={ui.searchPlaceholder}
+                  searchNotFound={ui.searchNotFound}
+                  countryCodeEditable={false}
+                  enableLongNumbers
+                  inputProps={{
+                    id: 'checkin-phone',
+                    name: 'phone',
+                    required: true,
+                    autoComplete: 'tel',
+                  }}
+                  placeholder={ui.placeholder}
+                  containerClass="checkin-phone-container"
+                  buttonClass="checkin-phone-button"
+                  inputClass="checkin-phone-input"
+                  dropdownClass="checkin-phone-dropdown"
+                  searchClass="checkin-phone-search"
                 />
               </div>
+
+              {e164Preview ? (
+                <p className="checkin-preview" data-testid="checkin-e164-preview">
+                  {ui.preview}：<code>{e164Preview}</code>
+                </p>
+              ) : null}
 
               {errorText && (
                 <div className="checkin-error" role="alert">
@@ -223,6 +305,13 @@ export default function CheckinPage() {
                   </span>
                 ))}
               </p>
+              {devMode && lastPayload ? (
+                <p className="checkin-dev-payload" data-testid="checkin-last-payload">
+                  {ui.dryRunNote}
+                  <br />
+                  <code>{JSON.stringify(lastPayload)}</code>
+                </p>
+              ) : null}
             </div>
           )}
 
