@@ -194,6 +194,15 @@ export default function CheckinPage() {
 
       console.info(LOG, 'response', res.status, res.statusText)
       if (!res.ok) throw new Error(`Server error ${res.status}`)
+
+      // 正式 LIFF：成功後直接關窗，不顯示完成頁
+      if (!devMode && window.liff?.closeWindow) {
+        console.info(LOG, 'closing LIFF window')
+        window.liff.closeWindow()
+        return
+      }
+
+      // 本機無 LIFF 視窗可關，仍顯示完成狀態方便驗證
       setPhase('success')
     } catch (err) {
       console.error(LOG, 'submit failed', err)
