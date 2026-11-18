@@ -1,4 +1,4 @@
-﻿/* Journal · 和紙上的 6:3:1（60% 紙 / 30% 墨 / 10% 金） */
+﻿/* Journal */
 
 .journal-page {
   --j-ink-main: transparent;
@@ -14,8 +14,8 @@
   --j-line: var(--ember-whisper);
   --j-line-bright: var(--ember-line);
   --j-panel: var(--paper-warm);
-  --j-fd: 'Instrument Serif', serif;
-  --j-fc: 'Noto Serif TC', 'Shippori Mincho', serif;
+  --j-fd: var(--font-serif);
+  --j-fc: var(--font-serif);
   --j-ease: var(--ease-touch);
 
   position: relative;
@@ -557,34 +557,144 @@
 
 /* ── Footer / 404 ── */
 
+/* Engraved sea that assembles from fragments (src/lib/shatterImage.js) */
 .journal-footer {
   position: relative;
   z-index: 2;
+  margin-top: 80px;
+  overflow: hidden;
+  border-top: 0.5px dashed var(--j-line-bright);
+}
+
+/* Columns, rules and sea stop at --page-max; past that the sides extend. */
+.journal-footer__rules {
+  position: absolute;
+  inset: 0 var(--page-gutter);
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  pointer-events: none;
+}
+
+.journal-footer__rules span + span {
+  border-left: 0.5px dashed var(--j-line);
+}
+
+.journal-footer__cols {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 64px var(--page-gutter) 0;
+}
+
+.journal-footer__col {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: 48px 64px 64px;
-  border-top: 0.5px solid var(--j-line);
+  gap: 10px;
+  padding: 0 24px;
+  text-align: center;
 }
 
-.journal-footer__mark {
+.journal-footer__brand {
   font-family: var(--j-fd);
-  font-size: 10px;
-  letter-spacing: 0.35em;
-  color: var(--j-stone);
+  font-size: 22px;
+  letter-spacing: 0.4em;
+  margin-right: -0.4em; /* letter-spacing trails the last glyph; keep it centred */
+  color: var(--ink);
+  text-decoration: none;
 }
 
-.journal-footer__back {
+.journal-footer__sub,
+.journal-footer__title {
   font-family: var(--j-fd);
   font-size: 11px;
-  letter-spacing: 0.15em;
-  color: var(--j-text-ghost);
-  text-decoration: none;
-  transition: color 0.4s ease;
+  letter-spacing: 0.3em;
+  color: var(--j-lamp);
+  text-transform: uppercase;
 }
 
-.journal-footer__back:hover {
+.journal-footer__title {
+  margin-bottom: 6px;
+}
+
+.journal-footer__tagline {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--j-text-dim);
+}
+
+.journal-footer__copy {
+  font-family: var(--j-fd);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--j-text-ghost);
+}
+
+.journal-footer__link {
+  font-size: 13px;
+  color: var(--j-text-dim);
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 50% 100% / 0 0.5px no-repeat;
+  transition:
+    color 0.3s var(--j-ease),
+    background-size 0.3s var(--j-ease),
+    opacity 0.6s var(--j-ease),
+    transform 0.6s var(--j-ease);
+}
+
+.journal-footer__link:hover {
   color: var(--j-lamp);
+  background-size: 100% 0.5px;
+}
+
+/* Text fades in one item after another when the sea starts to assemble */
+.journal-footer__r,
+.journal-footer__link {
+  opacity: 0;
+  transform: translateY(6px);
+  transition-delay: calc(var(--i) * 70ms);
+}
+
+.journal-footer__r {
+  transition:
+    opacity 0.6s var(--j-ease),
+    transform 0.6s var(--j-ease);
+  transition-delay: calc(var(--i) * 70ms);
+}
+
+.journal-footer.is-in .journal-footer__r,
+.journal-footer.is-in .journal-footer__link {
+  opacity: 1;
+  transform: none;
+}
+
+.journal-footer.is-in .journal-footer__link:hover {
+  transition-delay: 0s;
+}
+
+/* Source crop is 1280 x 470 */
+.journal-footer__sea {
+  display: block;
+  width: min(100%, var(--page-max));
+  aspect-ratio: 1280 / 470;
+  margin: 48px auto 0;
+}
+
+/* Wider than --page-max: fade the sea's cut edges into the extended sides */
+@media (min-width: 1921px) {
+  .journal-footer__sea {
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journal-footer__r,
+  .journal-footer__link {
+    transition: none;
+  }
 }
 
 .journal-not-found {
@@ -624,10 +734,22 @@
 @media (max-width: 900px) {
   .journal-header__inner,
   .journal-header__slash,
-  .journal-list,
-  .journal-footer {
+  .journal-list {
     padding-left: 28px;
     padding-right: 28px;
+  }
+
+  .journal-footer__cols {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 40px;
+  }
+
+  .journal-footer__rules {
+    display: none;
+  }
+
+  .journal-footer__col {
+    padding: 0 16px;
   }
 
   .journal-header__inner {

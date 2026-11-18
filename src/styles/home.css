@@ -1,4 +1,4 @@
-﻿/* Homepage · TEKUEI_homepage.html — 疊在既有水墨 / 斜線網格之上 */
+﻿/* Homepage */
 
 .home {
   --home-paper: var(--paper);
@@ -17,8 +17,8 @@
   --home-ember-deep: var(--ember-deep);
   --home-ember-line: var(--ember-line);
   --home-ease: var(--ease-touch);
-  --home-fd: 'Instrument Serif', serif;
-  --home-fc: 'Noto Serif TC', 'Shippori Mincho', serif;
+  --home-fd: var(--font-serif);
+  --home-fc: var(--font-serif);
 
   position: relative;
   z-index: 1;
@@ -579,6 +579,8 @@
   background: transparent;
   position: relative;
   overflow: hidden;
+  /* Past --page-max, cut the watermark at the content edge, as the viewport does below it */
+  clip-path: inset(0 var(--page-gutter));
   text-align: left;
   min-height: 72vh;
   display: flex;
@@ -589,7 +591,7 @@
   position: absolute;
   top: 0;
   bottom: 12%;
-  left: clamp(64px, 20vw, 280px);
+  left: calc(var(--page-gutter) + clamp(64px, 20vw, 280px));
   width: 0.5px;
   background: linear-gradient(
     to bottom,
@@ -605,7 +607,7 @@
 .home-final-cta__watermark {
   position: absolute;
   top: 50%;
-  right: -4%;
+  right: calc(var(--page-gutter) - min(100vw, var(--page-max)) * 0.04);
   left: auto;
   transform: translateY(-50%);
   font-family: var(--home-fd);

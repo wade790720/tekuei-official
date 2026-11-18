@@ -17,8 +17,8 @@
   --text-faint: var(--ink-65);
   --text-whisper: var(--ink-22);
   --panel: var(--paper-warm);
-  --fd: 'Instrument Serif', serif;
-  --fc: 'Noto Serif TC', 'Shippori Mincho', serif;
+  --fd: var(--font-serif);
+  --fc: var(--font-serif);
   --ease-haunt: var(--ease-touch);
 }
 

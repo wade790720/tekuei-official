@@ -49,7 +49,7 @@
 }
 
 .site-nav__logo {
-  font-family: 'Instrument Serif', serif;
+  font-family: var(--font-serif);
   font-size: clamp(14px, 1.05vw, 17px);
   letter-spacing: 0.38em;
   color: var(--ink);
@@ -63,7 +63,7 @@
 
 .site-nav__links a {
   position: relative;
-  font-family: 'Instrument Serif', serif;
+  font-family: var(--font-serif);
   font-size: clamp(13px, 1vw, 15px);
   letter-spacing: var(--ls-label);
   text-transform: uppercase;
