@@ -1,13 +1,9 @@
-﻿import { useCallback, useEffect } from 'react'
+﻿import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getNextCase } from '../data/cases/index.js'
 import { useCaseCms } from '../hooks/useCmsSection.js'
-import { useSiteAdmin } from '../hooks/useSiteAdmin.js'
-import { AdminEditToolbar } from './admin/AdminEditToolbar.jsx'
-import { CaseEditPanel } from './case/CaseEditPanel.jsx'
 import { Reveal } from './Reveal.jsx'
 import '../styles/case.css'
-import '../styles/admin.css'
 
 function DelGrid({ items }) {
   return (
@@ -55,26 +51,7 @@ function NextCaseTitle({ titleEm, titleRest }) {
 
 export default function CaseStudyPage() {
   const { slug } = useParams()
-  const {
-    content: data,
-    workItems,
-    draft,
-    loading,
-    saving,
-    error,
-    setError,
-    isEditing,
-    startEditing,
-    cancelEditing,
-    updateDraft,
-    saveDraft,
-  } = useCaseCms(slug)
-
-  const handleEnterEdit = useCallback(() => {
-    if (!isEditing && data) startEditing()
-  }, [isEditing, data, startEditing])
-
-  const admin = useSiteAdmin({ onEnterEdit: handleEnterEdit, onSave: handleSave })
+  const { content: data, workItems, loading } = useCaseCms(slug)
 
   const hero = data?.hero
   const sections = data?.sections
@@ -87,48 +64,12 @@ export default function CaseStudyPage() {
     window.scrollTo(0, 0)
   }, [data?.documentTitle, data])
 
-  async function handleSave() {
-    const token = admin.getToken()
-    if (!token) {
-      setError('請先登入')
-      admin.openLogin()
-      return
-    }
-    try {
-      await saveDraft(token)
-    } catch {
-      /* error set in hook */
-    }
-  }
-
-  function handleLogout() {
-    admin.logout()
-    cancelEditing()
-  }
-
   if (loading || !data || !hero || !sections || !media) {
     return <div className="site-loading-bar" />
   }
 
   return (
-    <div
-      className={['case-page', isEditing ? 'is-admin-editing' : '']
-        .filter(Boolean)
-        .join(' ')}
-    >
-
-      {isEditing && draft && (
-        <>
-          <CaseEditPanel draft={draft} updateDraft={updateDraft} getToken={admin.getToken} />
-          <AdminEditToolbar
-            saving={saving}
-            error={error}
-            onSave={handleSave}
-            onLogout={handleLogout}
-          />
-        </>
-      )}
-
+    <div className="case-page">
       <header
         className={['case-hero', hero.image?.url ? 'case-hero--has-photo' : '']
           .filter(Boolean)

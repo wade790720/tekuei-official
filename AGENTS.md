@@ -36,7 +36,7 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 
 | 路徑 | 放什麼 |
 |---|---|
-| `src/components/` | 頁面元件，一頁一檔（`XxxPage.jsx`）。編輯面板在 `admin/`、`case/`、`work/` |
+| `src/components/` | 頁面元件，一頁一檔（`XxxPage.jsx`）。編輯模式的元件在 `admin/` 和 `journal/` |
 | `src/data/` | 所有文案與內容。雙語內容的形狀是 `{ zh: …, en: … }` |
 | `src/data/cases/` | 案例內容，一個案例一檔 |
 | `src/styles/` | CSS，一頁一檔。`tokens.css` 是全站 token |

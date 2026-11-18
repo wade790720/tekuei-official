@@ -119,16 +119,7 @@ function mergeAssets(staticCase, assets) {
   }
 }
 
-function extractAssets(caseData) {
-  return {
-    hero: { image: caseData?.hero?.image ?? { url: '' } },
-    media: {
-      fullWidthImage: caseData?.media?.fullWidthImage ?? { url: '' },
-      inlineImage: caseData?.media?.inlineImage ?? { url: '' },
-    },
-  }
-}
-
+/** Case page content: static text from src/data/cases plus the images stored in R2. Read only. */
 export function useCaseCms(slug) {
   const { lang } = useLang()
   const staticCase = LOCAL_CASES[slug]?.[lang] ?? null
@@ -136,16 +127,12 @@ export function useCaseCms(slug) {
   const [content, setContent] = useState(() =>
     staticCase ? mergeAssets(staticCase, siteDefaults.cases?.[slug]) : null,
   )
-  const [draft, setDraft] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     let cancelled = false
     async function load() {
       setLoading(true)
-      setError('')
       const apply = (data) => {
         const bundled = cloneSiteData(data)
         setSiteData(bundled)
@@ -173,59 +160,7 @@ export function useCaseCms(slug) {
     }
   }, [slug, lang])
 
-  const startEditing = useCallback(() => {
-    if (content) setDraft(structuredClone(content))
-  }, [content])
-
-  const cancelEditing = useCallback(() => {
-    setDraft(null)
-  }, [])
-
-  const updateDraft = useCallback((updater) => {
-    setDraft((prev) => {
-      if (!prev) return prev
-      const next = structuredClone(prev)
-      updater(next)
-      return next
-    })
-  }, [])
-
-  const saveDraft = useCallback(async (token) => {
-    if (!draft) return
-    setSaving(true)
-    setError('')
-    try {
-      const assetPatch = extractAssets(draft)
-      const cases = { ...(siteData.cases || {}), [slug]: assetPatch }
-      await saveSitePatch({ cases }, token)
-      const nextSite = cloneSiteData(siteData)
-      nextSite.cases = cases
-      setSiteData(nextSite)
-      setContent(mergeAssets(staticCase, assetPatch))
-      setDraft(structuredClone(draft))
-    } catch (err) {
-      setError(err.message || '儲存失敗')
-      throw err
-    } finally {
-      setSaving(false)
-    }
-  }, [draft, siteData, slug, staticCase])
-
   const workItems = siteData.work?.items ?? siteDefaults.work.items
 
-  return {
-    content: draft ?? content,
-    siteData,
-    workItems,
-    draft,
-    loading,
-    saving,
-    error,
-    setError,
-    isEditing: Boolean(draft),
-    startEditing,
-    cancelEditing,
-    updateDraft,
-    saveDraft,
-  }
+  return { content, workItems, loading }
 }

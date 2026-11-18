@@ -10,9 +10,6 @@ export function useWorkContent() {
     return {
       ...result,
       content: mergeWorkImages(WORK_EN, result.content),
-      draft: null,
-      isEditing: false,
-      startEditing: () => {},
     }
   }
   return result

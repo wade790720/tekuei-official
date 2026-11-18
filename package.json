@@ -11,10 +11,16 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "seed": "node scripts/seed-data.mjs",
-    "test": "node --test scripts/phoneE164.test.mjs scripts/highlight.test.mjs",
+    "test": "node --test scripts/phoneE164.test.mjs scripts/highlight.test.mjs scripts/postDoc.test.mjs",
     "test:phone": "node --test scripts/phoneE164.test.mjs"
   },
   "dependencies": {
+    "@tiptap/extension-blockquote": "^3.34.0",
+    "@tiptap/extension-code-block": "^3.34.0",
+    "@tiptap/extensions": "^3.34.0",
+    "@tiptap/pm": "^3.34.0",
+    "@tiptap/react": "^3.34.0",
+    "@tiptap/starter-kit": "^3.34.0",
     "lenis": "^1.1.13",
     "libphonenumber-js": "^1.13.9",
     "react": "^19.2.5",

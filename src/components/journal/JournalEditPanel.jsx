@@ -1,35 +1,21 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { CmsInput, CmsPanel, CmsRow, CmsSection, CmsSwitch, CmsTextarea } from '../admin/CmsPanel.jsx'
+import { CmsInput, CmsPanel, CmsRow, CmsSection, CmsTextarea } from '../admin/CmsPanel.jsx'
 import { useAdmin, useAdminSave } from '../../context/admin.js'
 import { useJournal } from '../../context/journal.js'
 import { CMS_LABELS as T } from '../../data/admin.js'
 import { useLang } from '../../i18n'
 import { uploadSiteImage } from '../../lib/adminApi.js'
+import { emptyDoc, getPostDoc } from '../../lib/postDoc.js'
+
+// Tiptap is large; load it only when Wade opens a post in edit mode, not for every visitor.
+const PostEditor = lazy(() => import('./editor/PostEditor.jsx').then((m) => ({ default: m.PostEditor })))
 
 const LANGS = ['zh', 'en']
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
-const MAX_IMAGE_BYTES = 1024 * 1024 // functions/api/upload.js rejects larger files
-
-const BLOCK_TYPES = [
-  ['p', '段落'],
-  ['lead', '前言'],
-  ['h2', '小標題'],
-  ['quote', '引言'],
-  ['code', '程式碼'],
-  ['image', '圖片'],
-  ['video', '影片'],
-]
-const BLOCK_LABEL = Object.fromEntries(BLOCK_TYPES)
-
-const NEW_BLOCK = {
-  p: () => ({ type: 'p', text: '' }),
-  lead: () => ({ type: 'lead', text: '' }),
-  h2: () => ({ type: 'h2', text: '' }),
-  quote: () => ({ type: 'quote', text: '', attr: '' }),
-  code: () => ({ type: 'code', lang: 'ts', filename: '', code: '' }),
-  image: () => ({ type: 'image', src: '', alt: '', caption: '', frame: false }),
-  video: () => ({ type: 'video', src: '', poster: '', caption: '', loop: false }),
+// The number shown on the site (01, 02 …) follows the list order.
+const renumber = (d) => {
+  for (const l of LANGS) d.posts[l]?.forEach((p, i) => (p.num = String(i + 1).padStart(2, '0')))
 }
 
 // Local date, not toISOString (UTC): in Taipei that would be yesterday until 08:00.
@@ -62,7 +48,7 @@ function useJournalEditing() {
   useAdminSave(admin.editing ? save : null)
 
   const leave = (then) => {
-    if (dirty && !window.confirm(T.exitConfirm)) return
+    if (dirty && !window.confirm(T.logoutConfirm)) return
     cms.cancelEditing()
     then()
   }
@@ -76,7 +62,6 @@ function useJournalEditing() {
       saving: cms.saving,
       error: cms.error,
       onSave: save,
-      onExit: () => leave(() => admin.setEditing(false)),
       onLogout: () => leave(admin.logout),
     },
   }
@@ -105,194 +90,45 @@ export function JournalPostEditPanel({ slug }) {
         if (p) p[key] = value
       }
     })
-  const editBlocks = (fn) =>
+  // The editor saves its own document; the old block list goes away on the first edit.
+  const setDoc = (doc) =>
     cms.updateDraft((d) => {
-      fn(d.content[lang][slug].blocks)
+      d.content[lang][slug] = { doc }
     })
+  const upload = async (file) => (await uploadSiteImage('journal', file, admin.getToken())).url
 
   return (
     <CmsPanel title="編輯文章" subtitle={`/journal/${slug} · ${lang === 'zh' ? '中文' : 'English'}`} {...panelProps}>
-      <CmsSection title="文章資訊">
-        <CmsRow label="標題" htmlFor="cms-title">
-          <CmsInput id="cms-title" value={post.title} onChange={(v) => setPost('title', v)} />
-        </CmsRow>
-        <CmsRow label="英文副標" htmlFor="cms-title-en">
-          <CmsInput id="cms-title-en" value={post.titleEn} onChange={(v) => setPost('titleEn', v)} />
-        </CmsRow>
-        <CmsRow label="摘要" htmlFor="cms-excerpt" hint="顯示在列表和首頁。">
-          <CmsTextarea id="cms-excerpt" value={post.excerpt} onChange={(v) => setPost('excerpt', v)} />
-        </CmsRow>
-        <CmsRow label="分類" htmlFor="cms-category" hint="中英文共用。">
-          <CmsInput id="cms-category" value={post.category} onChange={(v) => setShared('category', v.toUpperCase())} />
-        </CmsRow>
-        <CmsRow label="日期" htmlFor="cms-date" hint="格式 2026.11.19，中英文共用。">
-          <CmsInput id="cms-date" value={post.date} onChange={(v) => setShared('date', v)} />
-        </CmsRow>
-        <CmsRow label="閱讀時間" htmlFor="cms-read" hint="分鐘，中英文共用。">
-          <CmsInput
-            id="cms-read"
-            type="number"
-            min="1"
-            value={post.readMin}
-            onChange={(v) => setShared('readMin', Math.max(1, Number(v) || 1))}
-          />
-        </CmsRow>
-      </CmsSection>
-
-      <CmsSection title={`內容 · ${body.blocks.length} 個區塊`}>
-        {body.blocks.map((block, i) => (
-          <BlockRow
-            key={i}
-            block={block}
-            index={i}
-            count={body.blocks.length}
-            getToken={admin.getToken}
-            onChange={(next) => editBlocks((b) => (b[i] = next))}
-            onMove={(dir) => editBlocks((b) => b.splice(i + dir, 0, b.splice(i, 1)[0]))}
-            onRemove={() => editBlocks((b) => b.splice(i, 1))}
-            onType={(type) => editBlocks((b) => (b[i] = { ...NEW_BLOCK[type](), text: block.text ?? '' }))}
-          />
-        ))}
-        <div className="cms-add">
-          <span className="cms-add__label">新增區塊</span>
-          {BLOCK_TYPES.map(([type, label]) => (
-            <button key={type} type="button" className="cms-chip" onClick={() => editBlocks((b) => b.push(NEW_BLOCK[type]()))}>
-              ＋ {label}
-            </button>
-          ))}
-        </div>
-      </CmsSection>
-    </CmsPanel>
-  )
-}
-
-function BlockRow({ block, index, count, getToken, onChange, onMove, onRemove, onType }) {
-  const set = (key, value) => onChange({ ...block, [key]: value })
-  const id = `cms-block-${index}`
-
-  return (
-    <div className="cms-row cms-block">
-      <div className="cms-row__label">
-        <select
-          className="cms-select"
-          value={block.type}
-          onChange={(e) => onType(e.target.value)}
-          aria-label={`第 ${index + 1} 個區塊的類型`}
-        >
-          {BLOCK_TYPES.map(([type, label]) => (
-            <option key={type} value={type}>
-              {label}
-            </option>
-          ))}
-        </select>
-        <div className="cms-block__tools">
-          <button type="button" className="cms-icon" onClick={() => onMove(-1)} disabled={index === 0} aria-label="往上移">
-            ↑
-          </button>
-          <button type="button" className="cms-icon" onClick={() => onMove(1)} disabled={index === count - 1} aria-label="往下移">
-            ↓
-          </button>
-          <button
-            type="button"
-            className="cms-icon cms-icon--danger"
-            onClick={() => window.confirm(`刪除這個${BLOCK_LABEL[block.type] ?? '區塊'}？`) && onRemove()}
-            aria-label="刪除區塊"
-          >
-            ✕
-          </button>
-        </div>
-      </div>
-      <div className="cms-row__value cms-block__fields">
-        <BlockFields block={block} id={id} set={set} getToken={getToken} />
-      </div>
-    </div>
-  )
-}
-
-function BlockFields({ block, id, set, getToken }) {
-  switch (block.type) {
-    case 'h2':
-      return <CmsInput id={id} value={block.text} onChange={(v) => set('text', v)} placeholder="小標題" />
-    case 'quote':
-      return (
-        <>
-          <CmsTextarea id={id} value={block.text} onChange={(v) => set('text', v)} placeholder="引言" />
-          <CmsInput value={block.attr} onChange={(v) => set('attr', v)} placeholder="出處（選填）" aria-label="引言出處" />
-        </>
-      )
-    case 'code':
-      return (
-        <>
-          <div className="cms-inline">
-            <CmsInput value={block.lang} onChange={(v) => set('lang', v)} placeholder="語言 ts" aria-label="程式語言" />
-            <CmsInput value={block.filename} onChange={(v) => set('filename', v)} placeholder="檔名（選填）" aria-label="檔名" />
-          </div>
-          <CmsTextarea id={id} mono value={block.code} onChange={(v) => set('code', v)} placeholder="程式碼" spellCheck={false} />
-        </>
-      )
-    case 'image':
-      return <ImageFields block={block} set={set} getToken={getToken} />
-    case 'video':
-      return (
-        <>
-          <CmsInput id={id} value={block.src} onChange={(v) => set('src', v)} placeholder="影片網址（mp4）" aria-label="影片網址" />
-          <CmsInput value={block.poster} onChange={(v) => set('poster', v)} placeholder="封面圖網址（選填）" aria-label="封面圖網址" />
-          <CmsInput value={block.caption} onChange={(v) => set('caption', v)} placeholder="說明（選填）" aria-label="影片說明" />
-          <label className="cms-check">
-            <CmsSwitch checked={block.loop} onChange={(v) => set('loop', v)} label="重複播放" />
-            重複播放
-          </label>
-        </>
-      )
-    default:
-      return (
-        <CmsTextarea
-          id={id}
-          value={block.text}
-          onChange={(v) => set('text', v)}
-          placeholder={block.type === 'lead' ? '前言' : '段落'}
+      <CmsRow label="標題" htmlFor="cms-title">
+        <CmsInput id="cms-title" value={post.title} onChange={(v) => setPost('title', v)} placeholder="文章標題" />
+      </CmsRow>
+      <CmsRow label="英文副標" htmlFor="cms-title-en">
+        <CmsInput id="cms-title-en" value={post.titleEn} onChange={(v) => setPost('titleEn', v)} placeholder="English subtitle" />
+      </CmsRow>
+      <CmsRow label="分類" htmlFor="cms-category" hint="中英文共用">
+        <CmsInput id="cms-category" value={post.category} onChange={(v) => setShared('category', v.toUpperCase())} />
+      </CmsRow>
+      <CmsRow label="日期" htmlFor="cms-date" hint="格式 2026.11.19，中英文共用">
+        <CmsInput id="cms-date" value={post.date} onChange={(v) => setShared('date', v)} />
+      </CmsRow>
+      <CmsRow label="閱讀時間" htmlFor="cms-read" hint="分鐘，中英文共用">
+        <CmsInput
+          id="cms-read"
+          type="number"
+          min="1"
+          value={post.readMin}
+          onChange={(v) => setShared('readMin', Math.max(1, Number(v) || 1))}
         />
-      )
-  }
-}
-
-function ImageFields({ block, set, getToken }) {
-  const [busy, setBusy] = useState(false)
-  const [err, setErr] = useState('')
-
-  async function upload(file) {
-    setErr('')
-    if (!file) return
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) return setErr('只支援 JPG、PNG、WEBP')
-    if (file.size > MAX_IMAGE_BYTES) return setErr('檔案超過 1MB')
-    setBusy(true)
-    try {
-      const { url } = await uploadSiteImage('journal', file, getToken())
-      set('src', url)
-    } catch (e) {
-      setErr(e.message || '上傳失敗')
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  return (
-    <>
-      <div className="cms-inline">
-        <CmsInput value={block.src} onChange={(v) => set('src', v)} placeholder="圖片網址" aria-label="圖片網址" />
-        <label className="cms-btn cms-btn--ghost cms-upload">
-          {busy ? '上傳中' : '上傳'}
-          <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => upload(e.target.files?.[0])} hidden />
-        </label>
-      </div>
-      {err ? <div className="cms-row__error">{err}</div> : null}
-      <CmsInput value={block.alt} onChange={(v) => set('alt', v)} placeholder="替代文字（必填，說明圖片內容）" aria-label="替代文字" />
-      <CmsInput value={block.caption} onChange={(v) => set('caption', v)} placeholder="圖說（選填）" aria-label="圖說" />
-      <label className="cms-check">
-        <CmsSwitch checked={block.frame} onChange={(v) => set('frame', v)} label="小圖置中" />
-        小圖置中（手機截圖用）
-      </label>
-    </>
+      </CmsRow>
+      <CmsRow label="摘要" htmlFor="cms-excerpt" hint="顯示在列表和首頁">
+        <CmsTextarea id="cms-excerpt" value={post.excerpt} onChange={(v) => setPost('excerpt', v)} placeholder="一兩句話說明這篇文章" />
+      </CmsRow>
+      <CmsRow label="內文">
+        <Suspense fallback={<div className="cms-ed--loading">載入編輯器…</div>}>
+          <PostEditor key={`${slug}-${lang}`} doc={getPostDoc(body)} onChange={setDoc} upload={upload} />
+        </Suspense>
+      </CmsRow>
+    </CmsPanel>
   )
 }
 
@@ -303,6 +139,8 @@ export function JournalListEditPanel() {
   const navigate = useNavigate()
   const { cms, ready, panelProps } = useJournalEditing()
   const [slug, setSlug] = useState('')
+  const [drag, setDrag] = useState(null) // { from, gap } while a row is dragged; gap = insert before row `gap`
+  const rows = useRef([])
   if (!ready) return null
 
   const posts = cms.draft.posts[lang]
@@ -323,6 +161,7 @@ export function JournalListEditPanel() {
         const j = list.findIndex((p) => p.slug === posts[to].slug)
         if (i >= 0 && j >= 0) list.splice(j, 0, list.splice(i, 1)[0])
       }
+      renumber(d)
     })
 
   const remove = (post) => {
@@ -332,17 +171,44 @@ export function JournalListEditPanel() {
         d.posts[l] = d.posts[l].filter((p) => p.slug !== post.slug)
         delete d.content[l]?.[post.slug]
       }
+      renumber(d)
     })
+  }
+
+  // Drag a row by its handle. Pointer events cover mouse, pen and touch.
+  // gap k (0..n) means "insert before row k"; n is after the last row.
+  const gapAt = (y) => {
+    const k = rows.current.slice(0, posts.length).findIndex((el) => el && y < el.getBoundingClientRect().top + el.offsetHeight / 2)
+    return k < 0 ? posts.length : k
+  }
+  // Removing the dragged row first shifts the rows below it up by one.
+  const target = (d) => (d.gap > d.from ? d.gap - 1 : d.gap)
+  const dragStart = (e, i) => {
+    e.preventDefault()
+    e.currentTarget.setPointerCapture(e.pointerId)
+    setDrag({ from: i, gap: i })
+  }
+  const dragMove = (e) => drag && setDrag({ ...drag, gap: gapAt(e.clientY) })
+  const dragEnd = () => {
+    if (drag && target(drag) !== drag.from) reorder(drag.from, target(drag))
+    setDrag(null)
+  }
+  // Keyboard: focus the handle, then ↑ / ↓ moves the post.
+  const dragKey = (e, i) => {
+    const to = e.key === 'ArrowUp' ? i - 1 : e.key === 'ArrowDown' ? i + 1 : -1
+    if (to < 0 || to >= posts.length) return
+    e.preventDefault()
+    reorder(i, to)
+    requestAnimationFrame(() => rows.current[to]?.querySelector('.cms-drag')?.focus())
   }
 
   const create = () => {
     if (!slug || slugError) return
-    const num = String(posts.length + 1).padStart(2, '0')
     cms.updateDraft((d) => {
       for (const l of LANGS) {
         d.posts[l].unshift({
           slug,
-          num,
+          num: '01',
           category: 'NOTE',
           date: today(),
           readMin: 3,
@@ -350,8 +216,9 @@ export function JournalListEditPanel() {
           titleEn: '',
           excerpt: '',
         })
-        d.content[l] = { ...d.content[l], [slug]: { blocks: [NEW_BLOCK.p()] } }
+        d.content[l] = { ...d.content[l], [slug]: { doc: emptyDoc() } }
       }
+      renumber(d)
     })
     setSlug('')
     navigate(`/journal/${slug}`)
@@ -378,31 +245,55 @@ export function JournalListEditPanel() {
       </CmsSection>
 
       <CmsSection title="文章">
-        {posts.map((post, i) => (
-          <div className="cms-row cms-post" key={post.slug}>
-            <div className="cms-row__label cms-post__num">{post.num}</div>
-            <div className="cms-row__value cms-post__body">
-              <Link to={`/journal/${post.slug}`} className="cms-post__title">
-                {post.title || '（未命名）'}
-              </Link>
-              <div className="cms-post__meta">
-                {post.date} · {post.category} · /{post.slug}
+        <div className="cms-sort" data-dragging={drag ? '' : undefined}>
+          {posts.map((post, i) => {
+            const moved = drag && target(drag) !== drag.from
+            const drop = !moved ? undefined : drag.gap === i ? 'before' : drag.gap === posts.length && i === posts.length - 1 ? 'after' : undefined
+            return (
+              <div
+                className="cms-row cms-post"
+                key={post.slug}
+                ref={(el) => (rows.current[i] = el)}
+                data-dragged={drag?.from === i || undefined}
+                data-drop={drop}
+              >
+                <button
+                  type="button"
+                  className="cms-drag"
+                  aria-label={`拖曳調整「${post.title}」的順序，或用上下鍵`}
+                  onPointerDown={(e) => dragStart(e, i)}
+                  onPointerMove={dragMove}
+                  onPointerUp={dragEnd}
+                  onPointerCancel={() => setDrag(null)}
+                  onKeyDown={(e) => dragKey(e, i)}
+                >
+                  <GripIcon />
+                </button>
+                <div className="cms-post__num">{post.num}</div>
+                <div className="cms-post__body">
+                  <Link to={`/journal/${post.slug}`} className="cms-post__title">
+                    {post.title || '（未命名）'}
+                  </Link>
+                  <div className="cms-post__meta">
+                    {post.date} · {post.category} · /{post.slug}
+                  </div>
+                </div>
+                <button type="button" className="cms-icon cms-icon--danger" onClick={() => remove(post)} aria-label={`刪除 ${post.title}`}>
+                  ✕
+                </button>
               </div>
-            </div>
-            <div className="cms-block__tools">
-              <button type="button" className="cms-icon" onClick={() => reorder(i, i - 1)} disabled={i === 0} aria-label="往上移">
-                ↑
-              </button>
-              <button type="button" className="cms-icon" onClick={() => reorder(i, i + 1)} disabled={i === posts.length - 1} aria-label="往下移">
-                ↓
-              </button>
-              <button type="button" className="cms-icon cms-icon--danger" onClick={() => remove(post)} aria-label={`刪除 ${post.title}`}>
-                ✕
-              </button>
-            </div>
-          </div>
-        ))}
+            )
+          })}
+        </div>
       </CmsSection>
     </CmsPanel>
+  )
+}
+
+function GripIcon() {
+  return (
+    <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden>
+      {[2, 7, 12].flatMap((y) => [<circle key={`a${y}`} cx="2.5" cy={y} r="1.2" />, <circle key={`b${y}`} cx="7.5" cy={y} r="1.2" />])}
+    </svg>
   )
 }

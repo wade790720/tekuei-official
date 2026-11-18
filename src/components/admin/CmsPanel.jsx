@@ -1,5 +1,6 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import { useAdmin } from '../../context/admin.js'
 import { CMS_LABELS as T } from '../../data/admin.js'
 import '../../styles/cms.css'
 
@@ -8,31 +9,33 @@ const SAVE_KEY = isMac ? '⌘S' : 'Ctrl S'
 
 /**
  * Right-side edit panel. It lies over the live page, which re-renders from the draft as you type.
+ * Open by default; once collapsed it stays collapsed across pages until reopened from the dock button.
  * @param {{
  *   title: string, subtitle?: string,
  *   dirty: boolean, saving: boolean, error?: string,
- *   onSave: () => void, onExit: () => void, onLogout: () => void,
+ *   onSave: () => void, onLogout: () => void,
  *   children: import('react').ReactNode,
  * }} props
  */
-export function CmsPanel({ title, subtitle, dirty, saving, error, onSave, onExit, onLogout, children }) {
-  const [collapsed, setCollapsed] = useState(false)
+export function CmsPanel({ title, subtitle, dirty, saving, error, onSave, onLogout, children }) {
+  const { panelOpen, setPanelOpen } = useAdmin()
 
   // html.has-cms-panel moves the page and nav left (cms.css) while the panel is open.
   useLayoutEffect(() => {
     const root = document.documentElement
-    root.classList.toggle('has-cms-panel', !collapsed)
+    root.classList.toggle('has-cms-panel', panelOpen)
     return () => root.classList.remove('has-cms-panel')
-  }, [collapsed])
+  }, [panelOpen])
 
   const status = saving ? T.saving : error ? `${T.saveFailed}：${error}` : dirty ? T.unsaved : T.saved
 
   // Portal to <body>: page roots such as .journal-page set z-index and would trap the panel under the nav.
-  if (collapsed) {
+  if (!panelOpen) {
     return createPortal(
-      <button type="button" className="cms-tab" onClick={() => setCollapsed(false)} aria-label={T.expand}>
-        <span aria-hidden>編輯</span>
-        {dirty ? <span className="cms-tab__dot" aria-hidden /> : null}
+      <button type="button" className="cms-dock" onClick={() => setPanelOpen(true)} aria-label={T.expand}>
+        <PencilIcon />
+        <span>{T.dock}</span>
+        {dirty ? <span className="cms-dock__dot" title={T.unsaved} /> : null}
       </button>,
       document.body,
     )
@@ -46,15 +49,13 @@ export function CmsPanel({ title, subtitle, dirty, saving, error, onSave, onExit
           {subtitle ? <div className="cms-panel__subtitle">{subtitle}</div> : null}
         </div>
         <div className="cms-panel__actions">
-          <button type="button" className="cms-btn cms-btn--ghost" onClick={() => setCollapsed(true)} aria-label={T.collapse}>
+          <button type="button" className="cms-btn cms-btn--ghost" onClick={() => setPanelOpen(false)} aria-label={T.collapse} title={T.collapse}>
             <ChevronIcon />
           </button>
           <button type="button" className="cms-btn cms-btn--ghost" onClick={onLogout}>
             {T.logout}
           </button>
-          <button type="button" className="cms-btn cms-btn--ghost" onClick={onExit}>
-            {T.exit}
-          </button>
+          {/* Lights up only when there is something to save */}
           <button type="button" className="cms-btn" onClick={onSave} disabled={saving || !dirty}>
             {saving ? T.saving : T.save}
             <kbd className="cms-btn__kbd">{SAVE_KEY}</kbd>
@@ -133,6 +134,14 @@ export function CmsSwitch({ checked, onChange, label }) {
     >
       <span className="cms-switch__knob" aria-hidden />
     </button>
+  )
+}
+
+function PencilIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+      <path d="M10.5 2.5l3 3L6 13H3v-3l7.5-7.5z" strokeLinejoin="round" />
+    </svg>
   )
 }
 

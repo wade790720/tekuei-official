@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
 import { JournalPostEditPanel } from './journal/JournalEditPanel.jsx'
-import { PostBlock } from './journal/PostBlock.jsx'
+import { PostDoc } from './journal/PostDoc.jsx'
+import { getPostDoc } from '../lib/postDoc.js'
 import { useJournal } from '../context/journal.js'
 import { getAdjacentPosts, getJournalPost } from '../data/journal.js'
 import { useLang } from '../i18n'
@@ -66,11 +67,7 @@ export default function JournalPostPage() {
         <div className="journal-post__rule" aria-hidden />
 
         <div className="journal-post__body">
-          {content.blocks.map((block, i) => (
-            <HomeFadeIn key={`${block.type}-${i}`}>
-              <PostBlock block={block} />
-            </HomeFadeIn>
-          ))}
+          <PostDoc doc={getPostDoc(content)} />
         </div>
 
         <footer className="journal-post__footer">

@@ -51,9 +51,9 @@ export default function JournalListPage() {
         <div className="journal-header__slash" aria-hidden />
       </header>
 
-      <div className="journal-list" role="list">
+      <div className="journal-list">
         {posts.map((post, index) => (
-          <HomeFadeIn key={post.slug} as={Link} to={`/journal/${post.slug}`} className="journal-card" role="listitem">
+          <HomeFadeIn key={post.slug} as={Link} to={`/journal/${post.slug}`} className="journal-card">
             <div className="journal-card__index">
               <span className="journal-card__num">{post.num}</span>
               <span className="journal-card__line" aria-hidden />

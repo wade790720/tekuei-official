@@ -479,6 +479,64 @@
   color: var(--j-text-dim);
 }
 
+/* Rich text from the editor: small heading, lists, inline code, links, divider */
+.journal-post__h3 {
+  margin: 44px 0 16px;
+  font-family: var(--j-fc);
+  font-weight: 400;
+  font-size: 17px;
+  letter-spacing: 0.08em;
+  color: var(--j-warm-white);
+}
+
+.journal-post__list {
+  margin: 0 0 28px;
+  padding-left: 1.4em;
+  font-size: 16px;
+  line-height: 2.1;
+  color: var(--j-text-dim);
+}
+
+.journal-post__list li::marker {
+  color: var(--j-lamp-dim);
+}
+
+.journal-post__list .journal-post__p {
+  margin: 0;
+}
+
+.journal-post__body strong {
+  font-weight: 500;
+  color: var(--j-warm-white);
+}
+
+.journal-post__body a:not([class]) {
+  color: var(--j-lamp);
+  text-decoration: underline;
+  text-decoration-thickness: 0.5px;
+  text-underline-offset: 3px;
+}
+
+.journal-post__body a:not([class]):hover {
+  color: var(--j-lamp-glow);
+}
+
+.journal-post__code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--paper-warm);
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--code-prop);
+}
+
+.journal-post__hr {
+  margin: 56px auto;
+  width: 48px;
+  border: 0;
+  border-top: 0.5px solid var(--j-line-bright);
+}
+
 .journal-post__quote {
   margin: 56px 0;
   padding: 40px 24px 40px 32px;
