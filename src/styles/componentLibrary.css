@@ -1,0 +1,367 @@
+/* Dev-only component library page (/dev/component-library). Imported only by ComponentLibrary.jsx. */
+
+.cl-page {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 72px;
+  padding: 120px calc(var(--page-gutter) + var(--page-pad)) 160px;
+  font-family: var(--font-serif);
+}
+
+/* ── Table of contents ── */
+
+.cl-toc {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-22) transparent;
+}
+
+.cl-toc__title {
+  margin-bottom: 20px;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--ember);
+}
+
+.cl-toc__group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.cl-toc__group-link {
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.cl-toc__link {
+  padding-left: 12px;
+  border-left: 0.5px solid var(--ember-whisper);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--ink-65);
+  text-decoration: none;
+  transition:
+    color 0.2s var(--ease-touch),
+    border-color 0.2s var(--ease-touch);
+}
+
+.cl-toc__group-link:hover,
+.cl-toc__link:hover {
+  color: var(--ember);
+  border-left-color: var(--ember);
+}
+
+/* ── Main ── */
+
+.cl-main {
+  max-width: 860px;
+  min-width: 0;
+}
+
+.cl-head {
+  margin-bottom: 72px;
+}
+
+.cl-head__pre {
+  margin-bottom: 16px;
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  color: var(--ember);
+}
+
+.cl-head__title {
+  margin: 0 0 20px;
+  font-weight: 400;
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.cl-head__desc,
+.cl-group__intro,
+.cl-item__summary {
+  margin: 0;
+  max-width: 680px;
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--ink-70);
+}
+
+.cl-group {
+  margin-bottom: 96px;
+  scroll-margin-top: 96px;
+}
+
+.cl-group__title {
+  margin: 0 0 12px;
+  padding-bottom: 16px;
+  border-bottom: 0.5px solid var(--ember-line);
+  font-weight: 400;
+  font-size: 32px;
+  letter-spacing: 0.04em;
+}
+
+.cl-group__intro {
+  margin-bottom: 8px;
+}
+
+.cl-item {
+  padding: 56px 0 8px;
+  border-bottom: 0.5px dashed var(--ember-whisper);
+  scroll-margin-top: 96px;
+}
+
+.cl-item__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+}
+
+.cl-item__name {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink);
+}
+
+.cl-item__file {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-50);
+}
+
+/* Live demo area */
+.cl-stage {
+  position: relative;
+  margin: 28px 0 36px;
+  padding: 40px 28px 28px;
+  border: 0.5px dashed var(--ember-line);
+  border-radius: 16px;
+  background: var(--paper);
+}
+
+.cl-stage__label {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ember);
+}
+
+.cl-stage > .post-code:first-of-type,
+.cl-stage > .post-figure:first-of-type {
+  margin-top: 0;
+}
+
+.cl-stage > :last-child .post-code,
+.cl-stage > .post-code:last-child,
+.cl-stage > .post-figure:last-child {
+  margin-bottom: 0;
+}
+
+.cl-replay {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  padding: 4px 12px;
+  border: 0.5px solid var(--ember-line);
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-70);
+  cursor: pointer;
+  transition: color 0.2s var(--ease-touch), border-color 0.2s var(--ease-touch);
+}
+
+.cl-replay:hover {
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
+.cl-box {
+  display: grid;
+  place-items: center;
+  height: 140px;
+  border-radius: 12px;
+  background: var(--paper-warm);
+  box-shadow: 0 0 0 1px rgba(244, 238, 231, 0.08);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--ink-70);
+}
+
+.cl-shatter {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1280 / 470;
+}
+
+.cl-glyph {
+  position: relative;
+  height: 260px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* ── Rules, props, notes ── */
+
+.cl-rules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin: 28px 0 8px;
+}
+
+.cl-rules ul,
+.cl-notes {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink-70);
+}
+
+.cl-rules li + li,
+.cl-notes li + li {
+  margin-top: 6px;
+}
+
+.cl-rules__title,
+.cl-sub {
+  margin: 0 0 12px;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+.cl-rules__title--do {
+  color: var(--ember);
+}
+
+.cl-rules__title--dont {
+  color: var(--taupe);
+}
+
+.cl-sub {
+  margin-top: 36px;
+  color: var(--ember);
+}
+
+.cl-notes li[data-todo] {
+  color: var(--ember-soft);
+}
+
+.cl-table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(244, 238, 231, 0.08);
+}
+
+.cl-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.cl-table th {
+  padding: 10px 14px;
+  background: var(--paper-warm);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-align: left;
+  color: var(--ink-65);
+}
+
+.cl-table td {
+  padding: 12px 14px;
+  border-top: 0.5px solid var(--ink-04);
+  vertical-align: top;
+  color: var(--ink-70);
+}
+
+.cl-table code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--code-prop);
+  white-space: nowrap;
+}
+
+.cl-table td:first-child code {
+  color: var(--ink);
+}
+
+.cl-item > .post-code {
+  margin: 0;
+}
+
+/* ── Narrow ── */
+
+@media (max-width: 900px) {
+  .cl-page {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-top: 100px;
+  }
+
+  .cl-toc {
+    position: static;
+    max-height: none;
+    padding: 20px;
+    border: 0.5px dashed var(--ember-line);
+    border-radius: 12px;
+  }
+
+  .cl-toc__group {
+    flex-flow: row wrap;
+    gap: 4px 12px;
+  }
+
+  .cl-toc__group-link {
+    flex-basis: 100%;
+  }
+
+  .cl-toc__link {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .cl-rules {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .cl-stage {
+    padding: 40px 14px 14px;
+  }
+
+  /* Keep the description column readable; the table scrolls inside its frame */
+  .cl-table {
+    min-width: 560px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cl-toc__link,
+  .cl-replay {
+    transition: none;
+  }
+}

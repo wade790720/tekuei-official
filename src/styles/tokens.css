@@ -48,6 +48,17 @@
   /* Typeface: Latin in Instrument Serif, CJK in Source Han Serif (思源宋體, Google Fonts name Noto Serif TC).
      Instrument Serif has no CJK glyphs, so the browser uses the next font for Chinese. index.html loads both. */
   --font-serif: 'Instrument Serif', 'Noto Serif TC', 'Source Han Serif TC', serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, monospace;
+
+  /* Code highlighting (journal code cards). Muted, warm, readable on --paper-warm. */
+  --code-keyword: var(--gold);
+  --code-fn: var(--amber);
+  --code-prop: #c9b8a6;
+  --code-string: #a9b88f;
+  --code-number: #d39b84;
+  --code-comment: var(--ink-50); /* ink-40 falls under 4.5:1 on charcoal */
+  --code-punct: var(--ink-62);
+  --code-plain: var(--ink-90);
 
   /* ── Motion & typography rhythm ── */
   --ease-touch: cubic-bezier(0.16, 0.08, 0.12, 1);
