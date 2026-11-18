@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
 import { JOURNAL_HEADER, JOURNAL_META, JOURNAL_POSTS } from '../data/journal.js'
 import { useLang } from '../i18n'
+import { mountGlyphField } from '../lib/glyphField.js'
 import '../styles/work.css'
 import '../styles/journal.css'
 
@@ -11,6 +12,9 @@ export default function JournalListPage() {
   const meta = JOURNAL_META[lang]
   const header = JOURNAL_HEADER[lang]
   const posts = JOURNAL_POSTS[lang]
+  const glyphs = useRef(null)
+
+  useEffect(() => mountGlyphField(glyphs.current), [])
 
   useEffect(() => {
     document.title = meta.title
@@ -21,6 +25,7 @@ export default function JournalListPage() {
   return (
     <div className="journal-page">
       <header className="journal-header">
+        <canvas className="journal-header__glyphs" ref={glyphs} aria-hidden />
         <div className="journal-header__inner">
           <HomeFadeIn>
             <div className="journal-header__pre">{header.pre}</div>
