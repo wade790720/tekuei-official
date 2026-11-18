@@ -5,8 +5,8 @@
   --checkin-fc: 'Noto Serif TC', 'Shippori Mincho', serif;
   --checkin-border: rgba(122, 104, 69, 0.22);
   --checkin-border-soft: rgba(122, 104, 69, 0.14);
-  --checkin-muted: rgba(30, 27, 24, 0.52);
-  --checkin-hint: rgba(30, 27, 24, 0.38);
+  --checkin-muted: rgba(244, 238, 231, 0.52);
+  --checkin-hint: rgba(244, 238, 231, 0.38);
 
   position: relative;
   min-height: 100vh;
@@ -100,7 +100,7 @@
 }
 
 .checkin-card {
-  background: rgba(255, 252, 245, 0.88);
+  background: rgba(36, 32, 36, 0.88);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 0.5px solid var(--checkin-border);
@@ -193,7 +193,7 @@
 
 .checkin-phone-container .flag-dropdown.checkin-phone-button.open,
 .checkin-phone-container .flag-dropdown.checkin-phone-button:hover {
-  background: rgba(255, 252, 245, 0.95);
+  background: rgba(36, 32, 36, 0.95);
 }
 
 .checkin-phone-container .selected-flag {
@@ -214,8 +214,8 @@
   margin: 4px 0 0;
   border: 0.5px solid var(--checkin-border);
   border-radius: 1px;
-  background: rgba(255, 252, 245, 0.98);
-  box-shadow: 0 12px 32px rgba(30, 27, 24, 0.1);
+  background: rgba(36, 32, 36, 0.98);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.50);
   font-family: var(--checkin-fc);
   z-index: 20;
 }
@@ -243,7 +243,7 @@
   border-radius: 1px !important;
   font-family: var(--checkin-fc) !important;
   font-size: 13px !important;
-  background: #fff !important;
+  background: var(--paper-warm) !important;
 }
 
 .checkin-phone-search:focus {

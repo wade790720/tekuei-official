@@ -8,12 +8,12 @@ html {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #f2ede3;
+  background: #0b0b0d;
   -webkit-font-smoothing: antialiased;
 }
 
 html.home-ink {
-  background: #f2ede3;
+  background: #0b0b0d;
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
@@ -29,11 +29,11 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #f2ede3;
+  background: #0b0b0d;
 }
 
 html.home-ink body {
-  background: #f2ede3;
+  background: #0b0b0d;
 }
 
 #root {

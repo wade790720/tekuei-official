@@ -6,7 +6,7 @@ const ZH = {
     titleEm: 'Matsu',
     titleRest: 'Biennial',
     subtitle: '藝 術 島 嶼 策 展',
-    bg: 'linear-gradient(135deg, rgba(232, 235, 228, 0.92) 0%, rgba(215, 220, 210, 0.82) 45%, rgba(200, 205, 195, 0.72) 100%)',
+    bg: 'linear-gradient(135deg, rgba(36, 32, 36, 0.92) 0%, rgba(24, 23, 25, 0.82) 45%, rgba(16, 15, 17, 0.72) 100%)',
     meta: [
       { label: 'Client', lines: ['馬祖國際藝術島', 'Matsu Biennial'] },
       { label: 'Scope', lines: ['Web Design', 'Exhibition', 'Art Direction'] },
@@ -16,7 +16,7 @@ const ZH = {
   },
   media: {
     fullWidthLabel: 'M A T S U   B I E N N I A L   ·   D I G I T A L   P O R T A L',
-    fullWidthBg: 'linear-gradient(135deg, rgba(232, 235, 228, 0.94) 0%, rgba(215, 220, 210, 0.84) 50%, rgba(200, 205, 195, 0.76) 100%)',
+    fullWidthBg: 'linear-gradient(135deg, rgba(36, 32, 36, 0.94) 0%, rgba(24, 23, 25, 0.84) 50%, rgba(16, 15, 17, 0.76) 100%)',
     inlineLabel: 'E X H I B I T I O N   ·   W E B   V I E W',
   },
   sections: {

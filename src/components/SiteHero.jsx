@@ -4,7 +4,6 @@ import '../styles/hero.css'
 import '../styles/home.css'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
 import { HomeHero } from './HomeHero.jsx'
-import { SuminagashiBackground } from './SuminagashiBackground.jsx'
 import {
   HOME_APPROACH,
   HOME_CTA,
@@ -45,8 +44,6 @@ export default function SiteHero() {
 
   return (
     <div className="hero-root home">
-      <SuminagashiBackground />
-
       <div className="home-ink-content">
 
         <main>
