@@ -119,14 +119,22 @@ export const JOURNAL_POSTS = {
   ],
 }
 
-/** @param {string} slug */
-export function getJournalPost(slug, lang = 'zh') {
-  return (JOURNAL_POSTS[lang] ?? JOURNAL_POSTS.zh).find((p) => p.slug === slug) ?? null
+/**
+ * The "journal" section in data.json (R2). Same shape as the constants in this file,
+ * which stay as the default until the first save.
+ * @typedef {{ posts: typeof JOURNAL_POSTS, content: typeof JOURNAL_CONTENT }} JournalData
+ */
+export const getDefaultJournal = () => ({ posts: JOURNAL_POSTS, content: JOURNAL_CONTENT })
+export const cloneJournal = (j) => structuredClone(j)
+
+/** @param {JournalData} journal @param {string} slug */
+export function getJournalPost(journal, slug, lang = 'zh') {
+  return (journal.posts[lang] ?? journal.posts.zh).find((p) => p.slug === slug) ?? null
 }
 
-/** @param {string} slug */
-export function getAdjacentPosts(slug, lang = 'zh') {
-  const posts = JOURNAL_POSTS[lang] ?? JOURNAL_POSTS.zh
+/** @param {JournalData} journal @param {string} slug */
+export function getAdjacentPosts(journal, slug, lang = 'zh') {
+  const posts = journal.posts[lang] ?? journal.posts.zh
   const i = posts.findIndex((p) => p.slug === slug)
   if (i < 0) return { prev: null, next: null }
   return {

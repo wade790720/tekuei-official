@@ -204,6 +204,17 @@
   color: var(--ink-70);
 }
 
+.cl-box--row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.cl-replay--inline {
+  position: static;
+}
+
 .cl-shatter {
   display: block;
   width: 100%;

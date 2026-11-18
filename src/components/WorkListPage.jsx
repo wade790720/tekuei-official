@@ -1,7 +1,6 @@
 ﻿import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AdminEditToolbar } from './admin/AdminEditToolbar.jsx'
-import { AdminLoginGate } from './admin/AdminLoginGate.jsx'
 import { WorkEditPanel } from './work/WorkEditPanel.jsx'
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { useSiteAdmin } from '../hooks/useSiteAdmin.js'
@@ -154,7 +153,7 @@ export default function WorkListPage() {
     if (!isEditing) startEditing()
   }, [isEditing, startEditing])
 
-  const admin = useSiteAdmin({ onEnterEdit: handleEnterEdit })
+  const admin = useSiteAdmin({ onEnterEdit: handleEnterEdit, onSave: handleSave })
 
   const { meta, header, footer, items } = content
 
@@ -187,13 +186,6 @@ export default function WorkListPage() {
         .filter(Boolean)
         .join(' ')}
     >
-      <AdminLoginGate
-        open={admin.showLogin}
-        error={admin.loginError}
-        loggingIn={admin.loggingIn}
-        onClose={admin.closeLogin}
-        onLogin={admin.login}
-      />
 
       {isEditing && draft && (
         <>

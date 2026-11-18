@@ -94,7 +94,7 @@ Token 都在 `src/styles/tokens.css`。新程式碼只用語意 token（第二�
 
 ## 文章內的 card
 
-文章內容放在 `src/data/journal.js` 的 `blocks`。`src/components/journal/PostBlock.jsx` 依 `type` 選元件。
+文章存在 R2 `data.json` 的 `journal`，在網站前台的編輯模式修改（見下方「編輯模式」）。`src/data/journal.js` 只是 R2 還沒有資料時的預設值。`src/components/journal/PostBlock.jsx` 依 `type` 選元件。
 
 | type | 元件 | 欄位 |
 |---|---|---|
@@ -106,6 +106,15 @@ Token 都在 `src/styles/tokens.css`。新程式碼只用語意 token（第二�
 - 程式碼字型用 `--font-mono`，顏色用 `--code-*` token。上色由 `src/lib/highlight.js` 處理，只支援類 C 語法。
 - 介面文字（複製、播放等）在 `POST_CARD_LABELS`。
 - 三種 card 的示範和完整規範在 Component Library（見下一節）。
+
+## 編輯模式
+
+- 按 Ctrl+S（Mac 是 ⌘+S）。沒登入時出現密碼框，登入後進入編輯模式，編輯中則是儲存。
+- 密碼框：半透明黑底加模糊（`backdrop-filter`），6 格數字，只顯示圓點。
+- 編輯面板從右側滑出。寬螢幕時頁面往左移，讓編輯中的頁面當成即時預覽。
+- 面板一列一個欄位：左邊欄位名稱，右邊值。值平常是透明的，滑過時微亮，聚焦時出現金色細框。
+- 面板和密碼框只給 Wade 用，介面文字只寫中文。
+- 新的編輯功能一律用 `CmsPanel`。Work 和案例頁還是舊的 `admin-edit-panel`，之後要改。
 
 ## Component Library
 

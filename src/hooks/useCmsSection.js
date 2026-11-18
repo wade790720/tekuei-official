@@ -89,6 +89,7 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
 
   return {
     content: draft ?? content,
+    savedContent: content, // last loaded or saved version; compare with draft for unsaved changes
     siteData,
     draft,
     loading,

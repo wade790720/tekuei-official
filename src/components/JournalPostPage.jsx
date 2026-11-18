@@ -1,12 +1,10 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
+import { JournalPostEditPanel } from './journal/JournalEditPanel.jsx'
 import { PostBlock } from './journal/PostBlock.jsx'
-import {
-  getAdjacentPosts,
-  getJournalPost,
-  JOURNAL_CONTENT,
-} from '../data/journal.js'
+import { useJournal } from '../context/journal.js'
+import { getAdjacentPosts, getJournalPost } from '../data/journal.js'
 import { useLang } from '../i18n'
 import '../styles/work.css'
 import '../styles/journal.css'
@@ -14,21 +12,21 @@ import '../styles/journal.css'
 export default function JournalPostPage() {
   const { slug } = useParams()
   const { lang } = useLang()
-  const post = getJournalPost(slug, lang)
-  const content = slug ? JOURNAL_CONTENT[lang]?.[slug] : null
-  const { prev, next } = getAdjacentPosts(slug ?? '', lang)
+  const { content: journal, loading } = useJournal()
+  const post = getJournalPost(journal, slug, lang)
+  const content = slug ? journal.content[lang]?.[slug] : null
+  const { prev, next } = getAdjacentPosts(journal, slug ?? '', lang)
 
   const sig = lang === 'zh' ? '— 德 溎 · TEKUEI' : '— W A D E · TEKUEI'
   const notFoundText = lang === 'zh' ? '文章不存在' : 'Post not found'
   const backText = lang === 'zh' ? '返回 Journal' : 'Back to Journal'
 
   useEffect(() => {
-    if (content) {
-      document.title = content.documentTitle
-    } else {
-      document.title = 'Not Found · Journal · TEKUEI'
-    }
-  }, [content])
+    document.title = post ? `${post.title} · Journal · TEKUEI` : 'Not Found · Journal · TEKUEI'
+  }, [post])
+
+  // A post that only exists in R2 is missing until the remote data arrives.
+  if ((!post || !content) && loading) return <div className="site-loading-bar" />
 
   if (!post || !content) {
     return (
@@ -97,6 +95,7 @@ export default function JournalPostPage() {
           </nav>
         </footer>
       </article>
+      <JournalPostEditPanel slug={slug} />
     </div>
   )
 }

@@ -9,6 +9,8 @@ import CaseRouter from './components/CaseRouter.jsx'
 import CheckinPage from './components/CheckinPage.jsx'
 import HowToCheckinPage from './components/HowToCheckinPage.jsx'
 import { SiteNav } from './components/SiteNav.jsx'
+import { AdminProvider } from './context/AdminProvider.jsx'
+import { JournalProvider } from './context/JournalProvider.jsx'
 
 // Dev-only preview pages. The production build drops this import.
 const ComponentLibrary = import.meta.env.DEV
@@ -44,6 +46,8 @@ function AppNav() {
 export default function App() {
   return (
     <BrowserRouter>
+      <AdminProvider>
+      <JournalProvider>
       <ScrollClasses />
       <AppNav />
       <Routes>
@@ -66,6 +70,8 @@ export default function App() {
           />
         ) : null}
       </Routes>
+      </JournalProvider>
+      </AdminProvider>
     </BrowserRouter>
   )
 }
