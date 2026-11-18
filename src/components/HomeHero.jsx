@@ -5,7 +5,7 @@ import bgSrc from '../assets/hero/bg.webp'
 import cutSrc from '../assets/hero/cut.webp'
 import altSrc from '../assets/hero/alt.webp'
 import { HOME_HERO } from '../data/homepage.js'
-import { JOURNAL_POSTS } from '../data/journal.js'
+import { useJournal } from '../context/journal.js'
 import { mountHeroFx } from '../lib/heroFx.js'
 import { useLang } from '../i18n'
 
@@ -20,7 +20,7 @@ const lines = (arr) =>
 export function HomeHero() {
   const { lang } = useLang()
   const hero = HOME_HERO[lang]
-  const posts = JOURNAL_POSTS[lang].slice(0, 3)
+  const posts = useJournal().content.posts[lang].slice(0, 3)
   const root = useRef(null)
   const bg = useRef(null)
   const cut = useRef(null)

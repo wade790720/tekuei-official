@@ -57,6 +57,12 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 - 不要新增依賴。真的需要時，先問使用者。
 - 註解只寫程式碼看不出來的原因。
 
+## 編輯模式（前台 CMS）
+
+- Ctrl+S／⌘+S 打開密碼框，密碼是 Cloudflare Pages 的 `ADMIN_SECRET`，必須是 6 位數字。
+- Journal 文章存在 R2 `data.json` 的 `journal`。不要直接改 `src/data/journal.js` 裡的文章，那只是預設值。
+- 本機的 `.env.local` 把 `/api` 代理到正式站。在本機登入或儲存會寫到正式資料。測試時先在瀏覽器裡把 `/api` 換成假的。
+
 ## 內容的規則
 
 - 不可以捏造真實資料：案例圖片、文章、照片、帳號、數字。缺資料時，用明顯的佔位文字，並告訴使用者。

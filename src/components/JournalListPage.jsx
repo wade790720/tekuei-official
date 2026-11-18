@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
-import { JOURNAL_HEADER, JOURNAL_META, JOURNAL_POSTS } from '../data/journal.js'
+import { JOURNAL_HEADER, JOURNAL_META } from '../data/journal.js'
+import { useJournal } from '../context/journal.js'
+import { JournalListEditPanel } from './journal/JournalEditPanel.jsx'
 import { HOME_FOOTER } from '../data/homepage.js'
 import { useLang } from '../i18n'
 import { mountGlyphField } from '../lib/glyphField.js'
@@ -14,7 +16,7 @@ export default function JournalListPage() {
   const { lang } = useLang()
   const meta = JOURNAL_META[lang]
   const header = JOURNAL_HEADER[lang]
-  const posts = JOURNAL_POSTS[lang]
+  const posts = useJournal().content.posts[lang]
   const glyphs = useRef(null)
 
   useEffect(() => mountGlyphField(glyphs.current), [])
@@ -80,6 +82,7 @@ export default function JournalListPage() {
       </div>
 
       <JournalFooter />
+      <JournalListEditPanel />
     </div>
   )
 }

@@ -4,7 +4,6 @@ import { getNextCase } from '../data/cases/index.js'
 import { useCaseCms } from '../hooks/useCmsSection.js'
 import { useSiteAdmin } from '../hooks/useSiteAdmin.js'
 import { AdminEditToolbar } from './admin/AdminEditToolbar.jsx'
-import { AdminLoginGate } from './admin/AdminLoginGate.jsx'
 import { CaseEditPanel } from './case/CaseEditPanel.jsx'
 import { Reveal } from './Reveal.jsx'
 import '../styles/case.css'
@@ -75,7 +74,7 @@ export default function CaseStudyPage() {
     if (!isEditing && data) startEditing()
   }, [isEditing, data, startEditing])
 
-  const admin = useSiteAdmin({ onEnterEdit: handleEnterEdit })
+  const admin = useSiteAdmin({ onEnterEdit: handleEnterEdit, onSave: handleSave })
 
   const hero = data?.hero
   const sections = data?.sections
@@ -117,13 +116,6 @@ export default function CaseStudyPage() {
         .filter(Boolean)
         .join(' ')}
     >
-      <AdminLoginGate
-        open={admin.showLogin}
-        error={admin.loginError}
-        loggingIn={admin.loggingIn}
-        onClose={admin.closeLogin}
-        onLogin={admin.login}
-      />
 
       {isEditing && draft && (
         <>

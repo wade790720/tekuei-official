@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { HomeFadeIn } from '../HomeFadeIn.jsx'
 import { Reveal } from '../Reveal.jsx'
+import { OtpGate } from '../admin/OtpGate.jsx'
 import { CodeCard } from '../journal/CodeCard.jsx'
 import { PostBlock } from '../journal/PostBlock.jsx'
 import { mountGlyphField } from '../../lib/glyphField.js'
@@ -56,6 +57,32 @@ function ShatterDemo() {
   return <canvas ref={canvas} className="cl-shatter" aria-hidden />
 }
 
+// Demo only: 123456 is "correct", nothing is sent anywhere.
+function OtpDemo() {
+  const [open, setOpen] = useState(false)
+  const [result, setResult] = useState('')
+  return (
+    <div className="cl-box cl-box--row">
+      <button type="button" className="cl-replay cl-replay--inline" onClick={() => setOpen(true)}>
+        打開密碼框
+      </button>
+      <span>示範密碼 123456 {result}</span>
+      <OtpGate
+        open={open}
+        onClose={() => setOpen(false)}
+        onVerify={async (code) => {
+          await new Promise((r) => setTimeout(r, 600))
+          return code === '123456'
+        }}
+        onUnlocked={() => {
+          setOpen(false)
+          setResult('· 已解鎖')
+        }}
+      />
+    </div>
+  )
+}
+
 function GlyphDemo() {
   const canvas = useRef(null)
   useEffect(() => mountGlyphField(canvas.current), [])
@@ -96,6 +123,7 @@ const DEMOS = {
     </Replayable>
   ),
   glyph: () => <GlyphDemo />,
+  otp: () => <OtpDemo />,
 }
 
 function Entry({ item }) {

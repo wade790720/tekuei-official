@@ -1,0 +1,660 @@
+/* Edit mode: the code gate (OtpGate) and the right-side panel (CmsPanel). Wade only. */
+
+:root {
+  --cms-panel-w: clamp(420px, 42vw, 640px);
+  --cms-ring: 0 0 0 1px rgba(244, 238, 231, 0.08);
+}
+
+/* ── Code gate ── */
+
+.cms-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 30000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  animation: cms-fade 0.25s var(--ease-touch);
+}
+
+.cms-gate__backdrop {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(6, 6, 8, 0.58);
+  backdrop-filter: blur(14px) saturate(115%);
+  -webkit-backdrop-filter: blur(14px) saturate(115%);
+  cursor: default;
+}
+
+.cms-gate__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  animation: cms-rise 0.35s var(--ease-touch);
+}
+
+.cms-gate__pre {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--ember);
+}
+
+.cms-gate__title {
+  margin: 0 0 8px;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 28px;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+
+.cms-gate__field {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 320px;
+  height: 60px;
+}
+
+.cms-gate__slots {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 18px;
+  background: rgba(24, 23, 25, 0.8);
+  box-shadow: var(--cms-ring);
+}
+
+.cms-gate__slot {
+  position: relative;
+  width: 42px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--paper-cool);
+  box-shadow: inset 0 0 0 1px var(--ink-04);
+  transition: box-shadow 0.15s var(--ease-touch), background-color 0.15s var(--ease-touch);
+}
+
+.cms-gate__slot[data-filled]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--ink);
+  animation: cms-pop 0.18s var(--ease-touch);
+}
+
+/* The slot that takes the next digit, while the input has focus */
+.cms-gate__field:focus-within .cms-gate__slot[data-current] {
+  box-shadow: inset 0 0 0 1.5px var(--ember);
+}
+
+.cms-gate__field:focus-within .cms-gate__slot[data-current]::before {
+  content: '';
+  position: absolute;
+  top: 13px;
+  bottom: 13px;
+  left: 50%;
+  width: 1.5px;
+  background: var(--ember);
+  animation: cms-caret 1s steps(1) infinite;
+}
+
+.cms-gate[data-state='error'] .cms-gate__slots {
+  animation: cms-shake 0.4s var(--ease-touch);
+}
+
+.cms-gate[data-state='error'] .cms-gate__slot {
+  box-shadow: inset 0 0 0 1px rgba(226, 112, 92, 0.6);
+}
+
+/* Covers the slots so a click anywhere on them focuses the real input */
+.cms-gate__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  opacity: 0;
+  cursor: text;
+}
+
+.cms-gate__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--paper-cool);
+  box-shadow: var(--cms-ring);
+  font-size: 14px;
+  color: var(--ink);
+  animation: cms-pop 0.25s var(--ease-touch);
+}
+
+.cms-gate[data-state='unlocked'] .cms-gate__pill {
+  color: var(--ember-soft);
+}
+
+.cms-gate__spin {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--ink-22);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: cms-spin 0.7s linear infinite;
+}
+
+.cms-gate__status {
+  min-height: 1.6em;
+  margin: 0;
+  font-size: 14px;
+  color: #e8907c;
+}
+
+.cms-gate__hint {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-50);
+}
+
+/* ── Panel ── */
+
+/* Wide screens: the page moves left, so it stays visible as a live preview */
+@media (min-width: 1100px) {
+  html.has-cms-panel body {
+    padding-right: var(--cms-panel-w);
+  }
+
+  /* The fixed nav spans the viewport; stop it at the panel's edge */
+  html.has-cms-panel .site-nav {
+    right: var(--cms-panel-w);
+  }
+}
+
+.cms-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20000;
+  display: flex;
+  flex-direction: column;
+  width: var(--cms-panel-w);
+  border-left: 0.5px solid var(--ember-line);
+  background: var(--paper-warm);
+  box-shadow: -24px 0 48px rgba(0, 0, 0, 0.35);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  animation: cms-slide 0.4s var(--ease-touch);
+}
+
+.cms-panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px 12px;
+  border-bottom: 0.5px solid var(--ink-04);
+}
+
+.cms-panel__title {
+  font-size: 17px;
+  letter-spacing: 0.04em;
+}
+
+.cms-panel__subtitle {
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-50);
+}
+
+.cms-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cms-panel__status {
+  padding: 8px 20px;
+  border-bottom: 0.5px solid var(--ink-04);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-50);
+}
+
+.cms-panel__status[data-state='dirty'] {
+  color: var(--ember-soft);
+}
+
+.cms-panel__status[data-state='error'] {
+  color: #e8907c;
+}
+
+.cms-panel__body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px 0 64px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-22) transparent;
+}
+
+.cms-section + .cms-section {
+  margin-top: 20px;
+}
+
+.cms-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 8px;
+}
+
+.cms-section__title {
+  margin: 0;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--ember);
+}
+
+.cms-row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 16px;
+  padding: 10px 20px;
+  border-top: 0.5px solid var(--ink-04);
+}
+
+.cms-row__label {
+  padding-top: 7px;
+  font-size: 14px;
+  color: var(--ink-70);
+}
+
+.cms-row__value {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cms-row__hint {
+  font-size: 12px;
+  color: var(--ink-50);
+}
+
+.cms-row__error {
+  font-size: 13px;
+  color: #e8907c;
+}
+
+.cms-input {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px transparent;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+  transition: background-color 0.15s var(--ease-touch), box-shadow 0.15s var(--ease-touch);
+}
+
+.cms-input::placeholder {
+  color: var(--ink-40);
+}
+
+.cms-input:hover {
+  background: rgba(244, 238, 231, 0.03);
+}
+
+.cms-input:focus {
+  outline: none;
+  background: var(--paper-cool);
+  box-shadow: inset 0 0 0 1px var(--ember-line);
+}
+
+.cms-input[aria-invalid='true'] {
+  box-shadow: inset 0 0 0 1px rgba(226, 112, 92, 0.6);
+}
+
+.cms-textarea {
+  overflow: hidden;
+  resize: none;
+}
+
+.cms-textarea--mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  white-space: pre;
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+.cms-inline {
+  display: flex;
+  gap: 8px;
+}
+
+.cms-select {
+  width: 100%;
+  padding: 5px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--paper-cool);
+  box-shadow: var(--cms-ring);
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.cms-block__tools {
+  display: flex;
+  gap: 2px;
+  margin-top: 8px;
+}
+
+.cms-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 13px;
+  color: var(--ink-65);
+  cursor: pointer;
+}
+
+.cms-icon:hover:not(:disabled) {
+  background: var(--ink-04);
+  color: var(--ink);
+}
+
+.cms-icon:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.cms-icon--danger:hover:not(:disabled) {
+  color: #e8907c;
+}
+
+.cms-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  color: var(--paper);
+  cursor: pointer;
+  transition: opacity 0.15s var(--ease-touch), background-color 0.15s var(--ease-touch);
+}
+
+.cms-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.cms-btn--ghost {
+  background: transparent;
+  box-shadow: var(--cms-ring);
+  color: var(--ink-70);
+}
+
+.cms-btn--ghost:hover {
+  background: var(--ink-04);
+  color: var(--ink);
+}
+
+.cms-btn__kbd {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(11, 11, 13, 0.12);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.cms-upload {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.cms-add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 20px;
+  border-top: 0.5px solid var(--ink-04);
+}
+
+.cms-add__label {
+  margin-right: 6px;
+  font-size: 13px;
+  color: var(--ink-50);
+}
+
+.cms-chip {
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--paper-cool);
+  box-shadow: var(--cms-ring);
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink-70);
+  cursor: pointer;
+}
+
+.cms-chip:hover {
+  color: var(--ember);
+}
+
+.cms-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px;
+  font-size: 14px;
+  color: var(--ink-70);
+}
+
+.cms-switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 34px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink-22);
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease-touch);
+}
+
+.cms-switch[aria-checked='true'] {
+  background: var(--ember);
+}
+
+.cms-switch__knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--ink);
+  transition: transform 0.2s var(--ease-touch);
+}
+
+.cms-switch[aria-checked='true'] .cms-switch__knob {
+  transform: translateX(14px);
+}
+
+.cms-post {
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.cms-post__num {
+  padding-top: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-50);
+}
+
+.cms-post__title {
+  font-size: 15px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.cms-post__title:hover {
+  color: var(--ember);
+}
+
+.cms-post__meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-50);
+}
+
+.cms-post .cms-block__tools {
+  margin-top: 0;
+}
+
+/* Collapsed: a tab on the right edge brings the panel back */
+.cms-tab {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 20000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 8px;
+  border: 0;
+  border-radius: 10px 0 0 10px;
+  background: var(--paper-cool);
+  box-shadow: var(--cms-ring), -8px 0 24px rgba(0, 0, 0, 0.3);
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: var(--ink);
+  writing-mode: vertical-rl;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.cms-tab__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ember-soft);
+}
+
+.cms-panel :focus-visible,
+.cms-tab:focus-visible {
+  outline: 1px solid var(--ember);
+  outline-offset: 1px;
+}
+
+@media (max-width: 768px) {
+  .cms-panel {
+    left: 0;
+    width: auto;
+    border-left: 0;
+  }
+
+  .cms-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .cms-row__label {
+    padding-top: 0;
+  }
+
+  .cms-gate__field {
+    min-width: 0;
+  }
+
+  .cms-gate__slot {
+    width: 38px;
+    height: 44px;
+  }
+}
+
+@keyframes cms-fade {
+  from { opacity: 0; }
+}
+
+@keyframes cms-rise {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+}
+
+@keyframes cms-pop {
+  from { transform: scale(0.6); opacity: 0; }
+}
+
+@keyframes cms-slide {
+  from { transform: translateX(100%); }
+}
+
+@keyframes cms-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes cms-caret {
+  50% { opacity: 0; }
+}
+
+@keyframes cms-shake {
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cms-gate,
+  .cms-gate__panel,
+  .cms-gate__pill,
+  .cms-gate__slot[data-filled]::after,
+  .cms-panel,
+  .cms-gate[data-state='error'] .cms-gate__slots {
+    animation: none;
+  }
+
+  .cms-gate__field:focus-within .cms-gate__slot[data-current]::before {
+    animation: none;
+  }
+}
