@@ -1,0 +1,256 @@
+/* About page: a fixed canvas (figure, slabs, dust) with the acts as scroll sections over it. */
+
+.about-fall {
+  --af-sky: #9db8e8; /* cool accent for this page only; the rest of the site uses gold */
+  position: relative;
+  background: var(--obsidian);
+  color: var(--ivory);
+}
+
+.about-fall__canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.about-fall__main {
+  position: relative;
+  z-index: 1;
+  padding: 0 calc(var(--page-gutter) + var(--page-pad));
+}
+
+/* Each act is a stretch of scroll. Its slab is drawn on the canvas; its text is here for readers and search engines. */
+.about-fall__act {
+  min-height: 180vh;
+}
+
+.about-fall__intro {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+}
+
+.about-fall__intro > div {
+  width: min(380px, 30vw);
+}
+
+.about-fall__label {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 22px;
+  font-family: 'Instrument Serif', serif;
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  color: var(--af-sky);
+}
+
+.about-fall__label::before {
+  content: '';
+  width: 34px;
+  height: 1px;
+  background: var(--af-sky);
+  opacity: 0.6;
+}
+
+.about-fall h1 {
+  margin: 0 0 20px;
+  font-family: 'Instrument Serif', 'Noto Serif TC', serif;
+  font-weight: 400;
+  font-size: clamp(32px, 3.8vw, 58px);
+  line-height: 1.25;
+}
+
+.about-fall__intro p {
+  margin: 0 0 14px;
+  color: var(--taupe);
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.about-fall__hint {
+  font-size: 13px;
+  letter-spacing: 0.2em;
+}
+
+.about-fall__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Corner caption for the act the figure is in. */
+.about-fall__caption {
+  position: fixed;
+  z-index: 2;
+  left: calc(var(--page-gutter) + var(--page-pad));
+  bottom: clamp(20px, 5vh, 48px);
+  max-width: min(440px, calc(100vw - 2 * var(--page-pad)));
+  padding-left: 14px;
+  border-left: 1px solid var(--af-sky);
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+  pointer-events: none;
+}
+
+.about-fall__caption.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+.about-fall__caption-sub {
+  margin: 0 0 8px;
+  font:
+    700 11px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  letter-spacing: 0.22em;
+  color: var(--af-sky);
+}
+
+.about-fall__caption-role {
+  margin: 0 0 6px;
+  font-size: 15px;
+  color: var(--ivory);
+}
+
+.about-fall__caption-line {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--taupe);
+}
+
+/* How far the fall has gone. */
+.about-fall__rail {
+  position: fixed;
+  z-index: 2;
+  right: calc(var(--page-gutter) + clamp(12px, 2.4vw, 40px));
+  top: 24vh;
+  bottom: 24vh;
+  width: 1px;
+  background: rgba(157, 184, 232, 0.22);
+  pointer-events: none;
+}
+
+.about-fall__rail i {
+  position: absolute;
+  top: 0;
+  left: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--af-sky);
+  box-shadow: 0 0 12px rgba(157, 184, 232, 0.8);
+}
+
+.about-fall__rail span {
+  position: absolute;
+  right: 14px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--taupe);
+  white-space: nowrap;
+}
+
+.about-fall__rail span:first-child {
+  top: -6px;
+}
+
+.about-fall__rail span:last-child {
+  bottom: -6px;
+}
+
+.about-fall__sound {
+  position: fixed;
+  z-index: 3;
+  right: calc(var(--page-gutter) + var(--page-pad));
+  bottom: clamp(20px, 5vh, 48px);
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid rgba(157, 184, 232, 0.35);
+  border-radius: 999px;
+  color: var(--ivory);
+  font:
+    700 10px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.about-fall__sound:hover {
+  border-color: var(--af-sky);
+  background: rgba(157, 184, 232, 0.08);
+}
+
+.about-fall__sound:focus-visible {
+  outline: 1px solid var(--af-sky);
+  outline-offset: 3px;
+}
+
+.about-fall__end {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 0 var(--page-pad) 18vh;
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.about-fall__end a {
+  color: var(--ivory);
+  text-decoration: none;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(157, 184, 232, 0.4);
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.about-fall__end a:hover {
+  color: var(--af-sky);
+  border-color: var(--af-sky);
+}
+
+@media (max-width: 899px) {
+  .about-fall__intro {
+    align-items: flex-end;
+    padding-bottom: 9vh;
+  }
+
+  .about-fall__intro > div {
+    width: 100%;
+  }
+
+  .about-fall__rail span {
+    display: none;
+  }
+
+  .about-fall__caption {
+    bottom: 76px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-fall__caption {
+    transition: none;
+  }
+}
