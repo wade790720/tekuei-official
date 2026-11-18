@@ -4,7 +4,7 @@
 
 const IW = 1672
 const IH = 941
-const MAX_W = 1920 // keep in step with --hh-max in homeHero.css
+const MAX_W = 1920 // keep in step with --page-max in tokens.css
 const SW = 418 // images are read at this small size for hit tests and ASCII colour
 const SH = 235
 const CW = 7
@@ -416,7 +416,7 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
     const t0 = performance.now()
     const step = (now) => {
       if (userMoved || dead) return
-      const k = (now - t0) / T
+      const k = Math.max(0, (now - t0) / T) // a frame's timestamp can be a little before t0
       if (k >= 1) {
         ptr = null
         return

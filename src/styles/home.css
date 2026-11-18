@@ -161,7 +161,7 @@
 
 .home-hero .home-cta {
   color: var(--home-ink);
-  border-color: rgba(30, 27, 24, 0.22);
+  border-color: rgba(244, 238, 231, 0.22);
 }
 
 .home-cta {
@@ -330,7 +330,7 @@
   letter-spacing: 0.04em;
   line-height: 2.4;
   font-size: clamp(18px, 2vw, 22px);
-  text-shadow: 0 0 28px rgba(242, 237, 227, 0.72);
+  text-shadow: 0 0 28px rgba(11, 11, 13, 0.72);
 }
 
 .home-philosophy__line--mid {
@@ -394,32 +394,30 @@
 .home-work__item-img {
   position: absolute;
   inset: 0;
-  /* 溫石米 */
+  /* charcoal placeholders until cases have cover images */
   background: linear-gradient(
     145deg,
-    #ebe6dc 0%,
-    #e0dbd0 52%,
-    #d6d0c4 100%
+    #242024 0%,
+    #181719 52%,
+    #121113 100%
   );
 }
 
 .home-work__item-img--alt {
-  /* 海藻灰綠 */
   background: linear-gradient(
     155deg,
-    #e2e6e0 0%,
-    #d6dbd4 55%,
-    #c9d0c8 100%
+    #221f22 0%,
+    #171618 55%,
+    #111012 100%
   );
 }
 
 .home-work__item-img--alt2 {
-  /* 薰衣草礦灰 */
   background: linear-gradient(
     165deg,
-    #e6e4ea 0%,
-    #dad8e0 50%,
-    #ceccd6 100%
+    #262226 0%,
+    #19181a 50%,
+    #131214 100%
   );
 }
 
@@ -654,7 +652,7 @@
 
 .home-final-cta .home-cta {
   color: var(--home-ink);
-  border-color: rgba(30, 27, 24, 0.22);
+  border-color: rgba(244, 238, 231, 0.22);
 }
 
 /* ── Footer ── */
@@ -878,4 +876,15 @@
     flex-direction: column;
     gap: 16px;
   }
+}
+
+/* Same page width as the hero: content stops at --page-max, the sides extend. */
+.home-philosophy,
+.home-work,
+.home-approach,
+.home-quote,
+.home-final-cta,
+.home-footer {
+  padding-left: calc(var(--page-gutter) + var(--page-pad));
+  padding-right: calc(var(--page-gutter) + var(--page-pad));
 }

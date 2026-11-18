@@ -1,5 +1,5 @@
-const BG = 'linear-gradient(135deg, rgba(235, 230, 238, 0.92) 0%, rgba(218, 212, 222, 0.82) 45%, rgba(202, 196, 208, 0.72) 100%)'
-const FULL_BG = 'linear-gradient(135deg, rgba(235, 230, 238, 0.94) 0%, rgba(218, 212, 222, 0.84) 50%, rgba(202, 196, 208, 0.76) 100%)'
+const BG = 'linear-gradient(135deg, rgba(36, 32, 36, 0.92) 0%, rgba(24, 23, 25, 0.82) 45%, rgba(16, 15, 17, 0.72) 100%)'
+const FULL_BG = 'linear-gradient(135deg, rgba(36, 32, 36, 0.94) 0%, rgba(24, 23, 25, 0.84) 50%, rgba(16, 15, 17, 0.76) 100%)'
 
 const ZH = {
   slug: 'monolab',

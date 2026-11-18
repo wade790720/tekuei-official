@@ -343,7 +343,7 @@
           "Exhibition",
           "Art Direction"
         ],
-        "thumbBg": "linear-gradient(135deg, rgba(232, 235, 228, 0.96) 0%, rgba(215, 220, 210, 0.88) 45%, rgba(200, 205, 195, 0.8) 100%)",
+        "thumbBg": "linear-gradient(135deg, rgba(36, 32, 36, 0.96) 0%, rgba(24, 23, 25, 0.88) 45%, rgba(16, 15, 17, 0.8) 100%)",
         "thumbSvg": "matsu",
         "thumbImage": {
           "url": ""
@@ -366,7 +366,7 @@
           "Exhibition Curation",
           "Immersive Experience"
         ],
-        "thumbBg": "linear-gradient(135deg, rgba(235, 230, 238, 0.96) 0%, rgba(218, 212, 222, 0.88) 45%, rgba(202, 196, 208, 0.8) 100%)",
+        "thumbBg": "linear-gradient(135deg, rgba(36, 32, 36, 0.96) 0%, rgba(24, 23, 25, 0.88) 45%, rgba(16, 15, 17, 0.8) 100%)",
         "thumbSvg": "monolab",
         "thumbImage": {
           "url": ""
@@ -390,7 +390,7 @@
           "Web Development",
           "Ad Strategy"
         ],
-        "thumbBg": "linear-gradient(135deg, rgba(245, 238, 222, 0.96) 0%, rgba(228, 215, 192, 0.88) 45%, rgba(210, 198, 175, 0.8) 100%)",
+        "thumbBg": "linear-gradient(135deg, rgba(36, 32, 36, 0.96) 0%, rgba(24, 23, 25, 0.88) 45%, rgba(16, 15, 17, 0.8) 100%)",
         "thumbSvg": "lustre",
         "thumbImage": {
           "url": ""

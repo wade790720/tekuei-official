@@ -19,7 +19,7 @@
 }
 
 .site-nav--scroll-aware.is-scrolled {
-  background: rgba(242, 237, 227, 0.88);
+  background: rgba(11, 11, 13, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding-top: 20px;
@@ -27,7 +27,7 @@
 }
 
 .site-nav--case {
-  background: rgba(242, 237, 227, 0.92);
+  background: rgba(11, 11, 13, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
@@ -133,30 +133,14 @@
   }
 }
 
-/* Over a dark first section (home hero), until the page scrolls. */
-.site-nav--on-dark .site-nav__logo,
-.site-nav--on-dark .site-nav__links a:hover {
-  color: #f4eee7;
+
+/* Same page width as the content below. */
+.site-nav {
+  padding-left: calc(var(--page-gutter) + var(--page-pad));
+  padding-right: calc(var(--page-gutter) + var(--page-pad));
 }
 
-.site-nav--on-dark .site-nav__links a,
-.site-nav--on-dark .site-nav__lang {
-  color: rgba(244, 238, 231, 0.78);
-}
-
-.site-nav--on-dark .site-nav__links a.is-active,
-.site-nav--on-dark .site-nav__lang:hover {
-  color: #c99a63;
-}
-
-.site-nav--on-dark .site-nav__links a::after {
-  background: #c99a63;
-}
-
-.site-nav--on-dark .nav-toggle__line {
-  background: #f4eee7;
-}
-
-.site-nav--on-dark::after {
-  background: rgba(244, 238, 231, 0.16);
+.site-nav::after {
+  left: calc(var(--page-gutter) + var(--page-pad));
+  right: calc(var(--page-gutter) + var(--page-pad));
 }

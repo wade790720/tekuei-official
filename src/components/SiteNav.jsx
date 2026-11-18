@@ -11,14 +11,12 @@ import '../styles/navOverlay.css'
  *   highlightWorkSection?: boolean
  *   highlightJournal?: boolean
  *   variant?: 'default' | 'case'
- *   onDark?: boolean  the page starts with a dark section; use light text until scrolled
  * }} props
  */
 export function SiteNav({
   highlightWorkSection = false,
   highlightJournal = false,
   variant = 'default',
-  onDark = false,
 }) {
   const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
@@ -41,7 +39,6 @@ export function SiteNav({
     'site-nav',
     variant === 'case' ? 'site-nav--case' : 'site-nav--scroll-aware',
     scrolled ? 'is-scrolled' : '',
-    onDark && !scrolled && !open ? 'site-nav--on-dark' : '',
   ]
     .filter(Boolean)
     .join(' ')

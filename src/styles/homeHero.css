@@ -10,9 +10,6 @@
   --hh-gold: #c99a63;
   --hh-amber: #e4b57b;
   --hh-serif: 'Instrument Serif', 'Noto Serif TC', Georgia, serif;
-  --hh-pad: clamp(20px, 4vw, 68px);
-  --hh-max: 1920px; /* content stops growing here; keep in step with MAX_W in heroFx.js */
-  --hh-gutter: max(0px, (100vw - var(--hh-max)) / 2);
   background: var(--hh-bg);
   color: var(--hh-ivory);
 }
@@ -32,7 +29,7 @@
 .home-banner {
   position: relative;
   /* Never taller than the picture at its width (1672 x 941). */
-  height: min(calc(100svh - 172px), calc(min(100vw, var(--hh-max)) * 941 / 1672));
+  height: min(calc(100svh - 172px), calc(min(100vw, var(--page-max)) * 941 / 1672));
   overflow: hidden;
   touch-action: pan-y;
   user-select: none;
@@ -79,7 +76,7 @@
 
 .home-banner__lead {
   position: absolute;
-  left: calc(var(--hh-gutter) + var(--hh-pad) + clamp(0px, 2vw, 32px));
+  left: calc(var(--page-gutter) + var(--page-pad) + clamp(0px, 2vw, 32px));
   top: 31%;
 }
 
@@ -123,7 +120,7 @@
 
 .home-banner__aside {
   position: absolute;
-  right: calc(var(--hh-gutter) + var(--hh-pad) + clamp(0px, 5.6vw, 96px));
+  right: calc(var(--page-gutter) + var(--page-pad) + clamp(0px, 5.6vw, 96px));
   top: 32%;
   margin: 0;
   padding: clamp(22px, 2.6vw, 40px) 0;
@@ -153,7 +150,7 @@
 
 .home-latest {
   position: relative;
-  padding: 0 calc(var(--hh-gutter) + var(--hh-pad)) 72px;
+  padding: 0 calc(var(--page-gutter) + var(--page-pad)) 72px;
 }
 
 .home-latest__bar {
@@ -263,8 +260,8 @@
 /* Wider than the cap: the picture stays put, its side edges fade into the background. */
 @media (min-width: 1921px) {
   .home-banner__scrim {
-    left: var(--hh-gutter);
-    right: var(--hh-gutter);
+    left: var(--page-gutter);
+    right: var(--page-gutter);
     background:
       linear-gradient(90deg, var(--hh-bg) 0%, rgba(11, 11, 13, 0) 9%, rgba(11, 11, 13, 0) 91%, var(--hh-bg) 100%),
       linear-gradient(180deg, rgba(11, 11, 13, 0.55) 0%, rgba(11, 11, 13, 0) 16%),
@@ -289,7 +286,7 @@
   }
 
   .home-banner__lead {
-    left: var(--hh-pad);
+    left: var(--page-pad);
   }
 
   .home-banner__stage img {
@@ -302,7 +299,7 @@
   }
 
   .home-banner__lead {
-    left: var(--hh-pad);
+    left: var(--page-pad);
     top: auto;
     bottom: 28px;
   }

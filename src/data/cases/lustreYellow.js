@@ -1,5 +1,5 @@
-const BG = 'linear-gradient(135deg, rgba(245, 238, 222, 0.92) 0%, rgba(228, 215, 192, 0.82) 45%, rgba(210, 198, 175, 0.72) 100%)'
-const FULL_BG = 'linear-gradient(135deg, rgba(245, 238, 222, 0.94) 0%, rgba(228, 215, 192, 0.84) 50%, rgba(210, 198, 175, 0.76) 100%)'
+const BG = 'linear-gradient(135deg, rgba(36, 32, 36, 0.92) 0%, rgba(24, 23, 25, 0.82) 45%, rgba(16, 15, 17, 0.72) 100%)'
+const FULL_BG = 'linear-gradient(135deg, rgba(36, 32, 36, 0.94) 0%, rgba(24, 23, 25, 0.84) 50%, rgba(16, 15, 17, 0.76) 100%)'
 
 const ZH = {
   slug: 'lustre-yellow',

@@ -10,7 +10,7 @@
 
   --bg: transparent;
   --bg-deep: rgba(225, 215, 198, 0.55);
-  --bg-light: var(--paper-60-wash, rgba(255, 252, 245, 0.48));
+  --bg-light: var(--paper-60-wash, rgba(36, 32, 36, 0.48));
   --text: var(--ink);
   --accent: var(--ember);
   --accent-line: var(--ember-line);
@@ -50,7 +50,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 28px 44px;
-  background: rgba(242, 237, 227, 0.78);
+  background: rgba(11, 11, 13, 0.78);
 
           backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -128,7 +128,7 @@
   background: linear-gradient(
   to bottom,
   transparent 50%,
-  rgba(242, 237, 227, 0.35) 85%,
+  rgba(11, 11, 13, 0.35) 85%,
   transparent 100%
   );
   content: '';
@@ -145,12 +145,12 @@
 .case-hero-bg--photo::after {
   background: linear-gradient(
   to bottom,
-  rgba(30, 27, 24, 0) 0%,
-  rgba(30, 27, 24, 0) 25%,
-  rgba(30, 27, 24, 0.28) 50%,
-  rgba(30, 27, 24, 0.62) 68%,
-  rgba(30, 27, 24, 0.82) 82%,
-  rgba(30, 27, 24, 0.90) 100%
+  rgba(11, 11, 13, 0) 0%,
+  rgba(11, 11, 13, 0) 25%,
+  rgba(11, 11, 13, 0.28) 50%,
+  rgba(11, 11, 13, 0.62) 68%,
+  rgba(11, 11, 13, 0.82) 82%,
+  rgba(11, 11, 13, 0.90) 100%
   );
 }
 
@@ -159,11 +159,11 @@
 }
 
 .case-hero--has-photo .case-title {
-  color: #f2ede3;
+  color: #f4eee7;
 }
 
 .case-hero--has-photo .case-subtitle {
-  color: rgba(242, 237, 227, 0.80);
+  color: rgba(244, 238, 231, 0.80);
 }
 
 .case-hero--has-photo .meta-label {
@@ -172,7 +172,7 @@
 
 .case-hero--has-photo .meta-value, .case-hero--has-photo .meta-value a {
   border-bottom-color: rgba(122, 104, 69, 0.40);
-  color: rgba(242, 237, 227, 0.72);
+  color: rgba(244, 238, 231, 0.72);
 }
 
 .case-hero-content {
@@ -189,7 +189,7 @@
 
 .case-hero .case-num {
   margin-bottom: 24px;
-  color: rgba(242, 237, 227, 0.72);
+  color: rgba(244, 238, 231, 0.72);
   letter-spacing: 0.4em;
   font-size: 9px;
   font-family: var(--fd);
@@ -200,7 +200,7 @@
 
 .case-hero .case-title {
   margin-bottom: 8px;
-  color: rgba(242, 237, 227, 0.72);
+  color: rgba(244, 238, 231, 0.72);
   font-weight: 400;
   font-size: clamp(40px, 6vw, 72px);
   font-family: var(--fd);
@@ -215,7 +215,7 @@
 }
 
 .case-hero .case-subtitle {
-  color: rgba(242, 237, 227, 0.72);
+  color: rgba(244, 238, 231, 0.72);
   letter-spacing: 0.3em;
   font-weight: 200;
   font-size: clamp(13px, 1.4vw, 16px);
@@ -350,7 +350,7 @@
 
 .case-section--light .case-quote {
   border-left-color: var(--accent);
-  background: rgba(255, 252, 245, 0.35);
+  background: rgba(36, 32, 36, 0.35);
 }
 
 .case-quote p {
@@ -410,7 +410,7 @@
 
 .case-section--light .case-del-item {
   border-color: var(--accent-line);
-  background: rgba(255, 252, 245, 0.35);
+  background: rgba(36, 32, 36, 0.35);
 }
 
 .case-del-num {
@@ -486,7 +486,7 @@
   left: -28px;
   width: 5px;
   height: 5px;
-  border: 2px solid var(--paper, #f2ede3);
+  border: 2px solid var(--paper, #0b0b0d);
   border-radius: 50%;
   background: var(--accent);
   content: '';
@@ -550,7 +550,7 @@
   width: 100vw;
   background: linear-gradient(
   135deg,
-  rgba(235, 228, 214, 0.85) 0%,
+  rgba(36, 32, 36, 0.85) 0%,
   rgba(220, 210, 190, 0.75) 50%,
   rgba(210, 198, 178, 0.65) 100%
   );

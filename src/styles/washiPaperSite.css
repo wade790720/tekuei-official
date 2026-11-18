@@ -23,7 +23,7 @@ html.paper-site .case-page {
 /* ── Case 導覽 ── */
 
 html.paper-site .case-site-nav {
-  background: rgba(242, 237, 227, 0.78);
+  background: rgba(11, 11, 13, 0.78);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }

@@ -8,7 +8,6 @@ import JournalPostPage from './components/JournalPostPage.jsx'
 import CaseRouter from './components/CaseRouter.jsx'
 import CheckinPage from './components/CheckinPage.jsx'
 import HowToCheckinPage from './components/HowToCheckinPage.jsx'
-import { PaperSiteBackground } from './components/PaperSiteBackground.jsx'
 import { SiteNav } from './components/SiteNav.jsx'
 
 function ScrollClasses() {
@@ -31,7 +30,6 @@ function AppNav() {
   return (
     <SiteNav
       variant={isCase ? 'case' : 'default'}
-      onDark={pathname === '/'}
       highlightJournal={pathname.startsWith('/journal')}
       highlightWorkSection={pathname.startsWith('/work') || isCase}
     />
@@ -42,7 +40,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollClasses />
-      <PaperSiteBackground />
       <AppNav />
       <Routes>
         <Route path="/" element={<SiteHero />} />
