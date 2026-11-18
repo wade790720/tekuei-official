@@ -14,7 +14,13 @@ const isSaveKey = (e) =>
 export function AdminProvider({ children }) {
   const [token, setToken] = useState(() => getAdminToken() || null)
   const [gateOpen, setGateOpen] = useState(false)
-  const [editing, setEditing] = useState(false)
+  const [editing, setEditingState] = useState(false)
+  // The panel opens with edit mode and stays as Wade leaves it (collapsed or not) across pages.
+  const [panelOpen, setPanelOpen] = useState(true)
+  const setEditing = useCallback((on) => {
+    setEditingState(on)
+    if (on) setPanelOpen(true)
+  }, [])
   const save = useRef(null)
 
   const login = useCallback(async (code) => {
@@ -32,7 +38,7 @@ export function AdminProvider({ children }) {
     sessionStorage.removeItem(ADMIN_SESSION_KEY)
     setToken(null)
     setEditing(false)
-  }, [])
+  }, [setEditing])
 
   useEffect(() => {
     function onKeyDown(e) {
@@ -44,7 +50,7 @@ export function AdminProvider({ children }) {
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [token, editing])
+  }, [token, editing, setEditing])
 
   useEffect(() => {
     document.documentElement.classList.toggle('is-cms-editing', editing)
@@ -56,11 +62,13 @@ export function AdminProvider({ children }) {
       getToken: () => token,
       editing,
       setEditing,
+      panelOpen,
+      setPanelOpen,
       openGate: () => setGateOpen(true),
       logout,
       saveRef: save,
     }),
-    [token, editing, logout],
+    [token, editing, setEditing, panelOpen, logout],
   )
 
   return (

@@ -1,11 +1,7 @@
-﻿import { useCallback, useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { AdminEditToolbar } from './admin/AdminEditToolbar.jsx'
-import { WorkEditPanel } from './work/WorkEditPanel.jsx'
 import { useWorkContent } from '../hooks/useWorkContent.js'
-import { useSiteAdmin } from '../hooks/useSiteAdmin.js'
 import '../styles/work.css'
-import '../styles/admin.css'
 
 function WorkThumbGraphic({ thumbSvg }) {
   const svgProps = {
@@ -135,25 +131,7 @@ function WorkCard({ item }) {
 }
 
 export default function WorkListPage() {
-  const {
-    content,
-    draft,
-    loading,
-    saving,
-    error,
-    setError,
-    isEditing,
-    startEditing,
-    cancelEditing,
-    updateDraft,
-    saveDraft,
-  } = useWorkContent()
-
-  const handleEnterEdit = useCallback(() => {
-    if (!isEditing) startEditing()
-  }, [isEditing, startEditing])
-
-  const admin = useSiteAdmin({ onEnterEdit: handleEnterEdit, onSave: handleSave })
+  const { content, loading } = useWorkContent()
 
   const { meta, header, footer, items } = content
 
@@ -161,44 +139,8 @@ export default function WorkListPage() {
     document.title = meta.title
   }, [meta.title])
 
-  async function handleSave() {
-    const token = admin.getToken()
-    if (!token) {
-      setError('請先登入')
-      admin.openLogin()
-      return
-    }
-    try {
-      await saveDraft(token)
-    } catch {
-      /* error set in hook */
-    }
-  }
-
-  function handleLogout() {
-    admin.logout()
-    cancelEditing()
-  }
-
   return (
-    <div
-      className={['work-page', isEditing ? 'is-admin-editing' : '']
-        .filter(Boolean)
-        .join(' ')}
-    >
-
-      {isEditing && draft && (
-        <>
-          <WorkEditPanel draft={draft} updateDraft={updateDraft} getToken={admin.getToken} />
-          <AdminEditToolbar
-            saving={saving}
-            error={error}
-            onSave={handleSave}
-            onLogout={handleLogout}
-          />
-        </>
-      )}
-
+    <div className="work-page">
       {loading ? (
         <div className="site-loading-bar" />
       ) : (

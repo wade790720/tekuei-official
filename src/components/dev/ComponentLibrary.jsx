@@ -6,7 +6,11 @@ import { HomeFadeIn } from '../HomeFadeIn.jsx'
 import { Reveal } from '../Reveal.jsx'
 import { OtpGate } from '../admin/OtpGate.jsx'
 import { CodeCard } from '../journal/CodeCard.jsx'
-import { PostBlock } from '../journal/PostBlock.jsx'
+import { ImageCard } from '../journal/ImageCard.jsx'
+import { PostDoc } from '../journal/PostDoc.jsx'
+import { VideoCard } from '../journal/VideoCard.jsx'
+import { PostEditor } from '../journal/editor/PostEditor.jsx'
+import { blocksToDoc } from '../../lib/postDoc.js'
 import { mountGlyphField } from '../../lib/glyphField.js'
 import { mountShatterImage } from '../../lib/shatterImage.js'
 import { GROUPS } from './componentLibrary.data.js'
@@ -17,6 +21,7 @@ import demoClip from '../../assets/dev/demo-clip.mp4'
 import '../../styles/work.css'
 import '../../styles/journal.css'
 import '../../styles/case.css'
+import '../../styles/cms.css'
 import '../../styles/componentLibrary.css'
 
 const SAMPLE_CODE = `// Stream a reply and let the model call two tools.
@@ -83,6 +88,29 @@ function OtpDemo() {
   )
 }
 
+// Demo only: edits stay in this page, uploads become local object URLs.
+const EDITOR_SAMPLE = blocksToDoc([
+  { type: 'lead', text: '編輯器的示範。試試選取文字後按工具列。' },
+  { type: 'h2', text: '小標題' },
+  { type: 'p', text: '一般段落。可以加粗、斜體、連結和行內程式碼。' },
+  { type: 'quote', text: '引言放在這裡。', attr: '出處' },
+  { type: 'code', lang: 'ts', filename: 'demo.ts', code: 'const x = 1' },
+])
+
+function EditorDemo() {
+  const [doc, setDoc] = useState(EDITOR_SAMPLE)
+  return (
+    <div className="cl-editor">
+      <div className="cl-editor__pane">
+        <PostEditor doc={EDITOR_SAMPLE} onChange={setDoc} upload={async (file) => URL.createObjectURL(file)} />
+      </div>
+      <div className="journal-post__body cl-editor__preview">
+        <PostDoc doc={doc} />
+      </div>
+    </div>
+  )
+}
+
 function GlyphDemo() {
   const canvas = useRef(null)
   useEffect(() => mountGlyphField(canvas.current), [])
@@ -96,17 +124,18 @@ function GlyphDemo() {
 const DEMOS = {
   code: () => (
     <>
-      <PostBlock block={{ type: 'code', lang: 'ts', filename: 'route.ts', code: SAMPLE_CODE }} />
-      <PostBlock block={{ type: 'code', lang: 'bash', code: '# install and run\nnpm install\nnpm run dev' }} />
+      <CodeCard lang="ts" filename="route.ts" code={SAMPLE_CODE} />
+      <CodeCard lang="bash" code={'# install and run\nnpm install\nnpm run dev'} />
     </>
   ),
   image: () => (
     <>
-      <PostBlock block={{ type: 'image', src: heroImage, alt: '示範：Hero 背景圖', caption: '滿版' }} />
-      <PostBlock block={{ type: 'image', src: cutImage, alt: '示範：人物去背圖', caption: 'frame', frame: true }} />
+      <ImageCard src={heroImage} alt="示範：Hero 背景圖" caption="滿版" />
+      <ImageCard src={cutImage} alt="示範：人物去背圖" caption="frame" frame />
     </>
   ),
-  video: () => <PostBlock block={{ type: 'video', src: demoClip, caption: '示範影片（由 Hero 圖生成）' }} />,
+  video: () => <VideoCard src={demoClip} caption="示範影片（由 Hero 圖生成）" />,
+  editor: () => <EditorDemo />,
   fade: () => (
     <Replayable>
       <HomeFadeIn className="cl-box">HomeFadeIn</HomeFadeIn>

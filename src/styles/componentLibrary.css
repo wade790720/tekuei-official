@@ -376,3 +376,24 @@
     transition: none;
   }
 }
+
+/* Editor demo: editor and rendered result side by side */
+.cl-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+}
+
+.cl-editor__pane {
+  padding: 0;
+}
+
+.cl-editor__preview {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .cl-editor {
+    grid-template-columns: 1fr;
+  }
+}

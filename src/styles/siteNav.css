@@ -54,6 +54,7 @@
   letter-spacing: 0.38em;
   color: var(--ink);
   text-decoration: none;
+  white-space: nowrap; /* the spaced letters wrap when edit mode narrows the page */
 }
 
 .site-nav__links {

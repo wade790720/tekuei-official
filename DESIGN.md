@@ -94,13 +94,15 @@ Token 都在 `src/styles/tokens.css`。新程式碼只用語意 token（第二�
 
 ## 文章內的 card
 
-文章存在 R2 `data.json` 的 `journal`，在網站前台的編輯模式修改（見下方「編輯模式」）。`src/data/journal.js` 只是 R2 還沒有資料時的預設值。`src/components/journal/PostBlock.jsx` 依 `type` 選元件。
+文章存在 R2 `data.json` 的 `journal`，在網站前台的編輯模式修改（見下方「編輯模式」）。`src/data/journal.js` 只是 R2 還沒有資料時的預設值。內文是 Tiptap 文件，由 `PostEditor` 編輯、`PostDoc` 顯示，格式寫在 `src/lib/postDoc.js`。
 
-| type | 元件 | 欄位 |
+| 文件節點 | 元件 | 屬性 |
 |---|---|---|
-| `code` | `CodeCard` | `code`、`lang`（預設 `ts`）、`filename` |
-| `image` | `ImageCard` | `src`、`alt`（必填）、`caption`、`frame`（小圖置中留白）、`width`、`height` |
-| `video` | `VideoCard` | `src`、`poster`、`caption`、`loop` |
+| `codeBlock` | `CodeCard` | 內容是程式碼；`language`（預設 `ts`）、`filename` |
+| `imageCard` | `ImageCard` | `src`、`alt`（必填）、`caption`、`frame`（小圖置中留白） |
+| `videoCard` | `VideoCard` | `src`、`poster`、`caption`、`loop` |
+
+- 文字的部分（段落、前言、小標題、引言、清單）沿用 `journal.css` 的 `journal-post__*` 樣式。
 
 - 外觀：`--paper-warm` 底、圓角 16px、1px 象牙白光環，不用邊框。樣式在 `src/styles/postCards.css`。
 - 程式碼字型用 `--font-mono`，顏色用 `--code-*` token。上色由 `src/lib/highlight.js` 處理，只支援類 C 語法。
@@ -112,9 +114,13 @@ Token 都在 `src/styles/tokens.css`。新程式碼只用語意 token（第二�
 - 按 Ctrl+S（Mac 是 ⌘+S）。沒登入時出現密碼框，登入後進入編輯模式，編輯中則是儲存。
 - 密碼框：半透明黑底加模糊（`backdrop-filter`），6 格數字，只顯示圓點。
 - 編輯面板從右側滑出。寬螢幕時頁面往左移，讓編輯中的頁面當成即時預覽。
-- 面板一列一個欄位：左邊欄位名稱，右邊值。值平常是透明的，滑過時微亮，聚焦時出現金色細框。
+- 面板頂端只有三個按鈕：收合（>）、登出、儲存。儲存只有在有修改時才亮。
+- 收合後右下角留一顆「編輯面板」按鈕，有未儲存的修改時帶一個琥珀色圓點。
+- 清單排序用拖曳（⠿），不用上下箭頭。
+- 面板一列一個欄位：左邊欄位名稱，右邊值。值看起來像一般文字，點進去才能編輯。
 - 面板和密碼框只給 Wade 用，介面文字只寫中文。
-- 新的編輯功能一律用 `CmsPanel`。Work 和案例頁還是舊的 `admin-edit-panel`，之後要改。
+- 只有 Journal 可以編輯。About、Work、案例頁刻意不提供編輯面板，內容改在程式碼裡。
+- 面板沒有聚焦框：文字欄位和編輯器只顯示游標。按鈕保留鍵盤聚焦框。
 
 ## Component Library
 
