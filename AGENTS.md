@@ -52,7 +52,8 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 - 新的 class 用「頁面或區塊前綴 + BEM」，例如 `journal-footer__link`、`is-in`。
 - Canvas 效果寫成 `mountXxx(canvas, opts)`，回傳 cleanup 函式。元件在 `useEffect` 裡呼叫它。參考 `src/lib/glyphField.js`。
 - 每個動畫都要支援 `prefers-reduced-motion`。效果停下後要停止 `requestAnimationFrame`。
-- 先用專案裡已有的東西：`HomeFadeIn`、`Reveal`、`useReveal`、`useCmsSection`。
+- 先用專案裡已有的東西。可重複使用的元件和規範都列在 `/dev/component-library`（開發模式）。
+- 新增或修改元件時，同時更新 `src/components/dev/componentLibrary.data.js`。
 - 不要新增依賴。真的需要時，先問使用者。
 - 註解只寫程式碼看不出來的原因。
 

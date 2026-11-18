@@ -135,6 +135,28 @@ export function getAdjacentPosts(slug, lang = 'zh') {
   }
 }
 
+// Labels for the code, image and video cards in post bodies.
+export const POST_CARD_LABELS = {
+  zh: {
+    copy: '複製程式碼',
+    copied: '已複製',
+    play: '播放',
+    pause: '暫停',
+    seek: '播放進度',
+    speed: '播放速度',
+    fullscreen: '全螢幕',
+  },
+  en: {
+    copy: 'Copy code',
+    copied: 'Copied',
+    play: 'Play',
+    pause: 'Pause',
+    seek: 'Seek',
+    speed: 'Playback speed',
+    fullscreen: 'Full screen',
+  },
+}
+
 export const JOURNAL_CONTENT = {
   zh: {
     'ma-negative-space': {

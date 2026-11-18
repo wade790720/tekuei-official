@@ -1,0 +1,349 @@
+/* Code, image and video cards inside journal posts (src/components/journal/).
+   One card look: charcoal surface, 16px radius, a 1px ivory ring instead of a border. */
+
+.post-card {
+  --post-ring: 0 0 0 1px rgba(244, 238, 231, 0.08), 0 2px 6px rgba(0, 0, 0, 0.35);
+
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--paper-warm);
+  box-shadow: var(--post-ring);
+}
+
+.post-figure,
+.post-code {
+  margin: 40px 0;
+}
+
+.post-figure__caption {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-65);
+}
+
+.post-card__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Code ── */
+
+.post-code__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 4px 4px 0;
+  padding: 6px 6px 6px 12px;
+  border-radius: 12px;
+  background: var(--paper-cool);
+  box-shadow: 0 0 0 1px var(--ink-04);
+}
+
+.post-code__name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink-70);
+}
+
+.post-code__lang {
+  flex-shrink: 0;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--ember-whisper);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: var(--ember);
+}
+
+.post-code__copy {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-65);
+  cursor: pointer;
+  transition:
+    background-color 0.2s var(--ease-touch),
+    color 0.2s var(--ease-touch);
+}
+
+.post-code__copy:hover {
+  background: var(--ink-04);
+  color: var(--ink);
+}
+
+.post-code__copy[data-copied] {
+  color: var(--ember);
+}
+
+.post-code__pre {
+  margin: 0;
+  padding: 12px 16px 16px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.65;
+  letter-spacing: 0;
+  tab-size: 2;
+  color: var(--code-plain);
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-22) transparent;
+}
+
+.post-code__pre code {
+  font: inherit;
+}
+
+.post-code__pre:focus-visible,
+.post-code__copy:focus-visible,
+.post-video__surface:focus-visible,
+.post-video__btn:focus-visible,
+.post-video__seek:focus-visible {
+  outline: 1px solid var(--ember);
+  outline-offset: -2px;
+}
+
+.post-code__tok--keyword { color: var(--code-keyword); }
+.post-code__tok--fn { color: var(--code-fn); }
+.post-code__tok--prop { color: var(--code-prop); }
+.post-code__tok--string { color: var(--code-string); }
+.post-code__tok--number { color: var(--code-number); }
+.post-code__tok--comment { color: var(--code-comment); font-style: italic; }
+.post-code__tok--punct { color: var(--code-punct); }
+
+/* ── Image ── */
+
+.post-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* A small image (phone screenshot) centred on the card */
+.post-image--frame {
+  display: flex;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.post-image--frame img {
+  width: auto;
+  max-width: min(100%, 280px);
+  max-height: 560px;
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px rgba(244, 238, 231, 0.1);
+}
+
+/* ── Video ── */
+
+.post-video {
+  background: #000;
+}
+
+.post-video video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.post-video__surface {
+  position: absolute;
+  inset: 0 0 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.post-video__big {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding-left: 3px; /* optical centre of the triangle */
+  border-radius: 50%;
+  background: rgba(244, 238, 231, 0.2);
+  color: var(--ink);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    opacity 0.25s var(--ease-touch),
+    transform 0.25s var(--ease-touch);
+}
+
+.post-video[data-playing] .post-video__big {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.post-video__bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 28px 10px 8px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+  color: var(--ink);
+  transition: opacity 0.25s var(--ease-touch);
+}
+
+/* While playing, the bar shows on hover or keyboard focus only */
+.post-video[data-playing] .post-video__bar {
+  opacity: 0;
+}
+
+.post-video[data-playing]:hover .post-video__bar,
+.post-video[data-playing]:focus-within .post-video__bar {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .post-video[data-playing] .post-video__bar {
+    opacity: 1;
+  }
+}
+
+.post-video__btn {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease-touch);
+}
+
+.post-video__btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.post-video__time,
+.post-video__rate {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.post-video__rate {
+  min-width: 36px;
+}
+
+.post-video__seek {
+  flex: 1;
+  min-width: 40px;
+  height: 20px;
+  margin: 0 4px;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.post-video__seek::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--ink) var(--progress),
+    rgba(244, 238, 231, 0.28) var(--progress)
+  );
+}
+
+.post-video__seek::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--ink) var(--progress),
+    rgba(244, 238, 231, 0.28) var(--progress)
+  );
+}
+
+.post-video__seek::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: var(--ink);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.post-video__seek::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.post-video:fullscreen {
+  display: flex;
+  align-items: center;
+  border-radius: 0;
+}
+
+.post-video:fullscreen video {
+  max-height: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .post-figure,
+  .post-code {
+    margin: 32px 0;
+  }
+
+  .post-image--frame {
+    padding: 32px 16px;
+  }
+
+  /* Narrow: keep the elapsed time, drop the total */
+  .post-video__time:nth-of-type(2) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-code__copy,
+  .post-video__big,
+  .post-video__bar,
+  .post-video__btn {
+    transition: none;
+  }
+}

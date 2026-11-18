@@ -1,47 +1,75 @@
-﻿import { useEffect, useState } from 'react'
+﻿import { forwardRef, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { NAV_LABELS } from '../data/nav.js'
+import { useLang } from '../i18n'
 
 const OVERLAY_MS = 460
 
-export function NavToggle({ onToggle, className = '' }) {
+// Shown only while the menu is closed (SiteNav unmounts it when the menu opens),
+// so it announces "opens a dialog" instead of a live expanded state.
+export const NavToggle = forwardRef(function NavToggle({ onToggle, className = '' }, ref) {
+  const { lang } = useLang()
   return (
     <button
+      ref={ref}
       type="button"
       className={['nav-toggle', className].filter(Boolean).join(' ')}
       onClick={onToggle}
-      aria-expanded={false}
-      aria-label="開啟選單"
+      aria-haspopup="dialog"
+      aria-label={NAV_LABELS[lang].open}
     >
       <span className="nav-toggle__line" aria-hidden />
       <span className="nav-toggle__line" aria-hidden />
       <span className="nav-toggle__line" aria-hidden />
     </button>
   )
-}
+})
 
-function OverlayClose({ onClose }) {
+const OverlayClose = forwardRef(function OverlayClose({ onClose, label }, ref) {
   return (
     <button
+      ref={ref}
       type="button"
       className="nav-overlay__close"
       onClick={onClose}
-      aria-label="關閉選單"
+      aria-label={label}
     >
       <span className="nav-overlay__close-line" aria-hidden />
       <span className="nav-overlay__close-line" aria-hidden />
     </button>
   )
-}
+})
 
 function overlayDuration() {
   if (typeof window === 'undefined') return OVERLAY_MS
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : OVERLAY_MS
 }
 
-export function NavOverlay({ open, onClose, children, id = 'nav-overlay' }) {
+export function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
+  const { lang } = useLang()
+  const t = NAV_LABELS[lang]
+  const closeBtn = useRef(null)
+  const exited = useRef(onExited)
+  const wasMounted = useRef(open)
   const [mounted, setMounted] = useState(open)
   const [active, setActive] = useState(false)
   const [closing, setClosing] = useState(false)
+
+  useEffect(() => {
+    exited.current = onExited
+  })
+
+  // Fires after the closing animation, once .site-nav is visible again and can take focus.
+  useEffect(() => {
+    if (wasMounted.current && !mounted) exited.current?.()
+    wasMounted.current = mounted
+  }, [mounted])
+
+  // The toggle that opened the menu is gone now; move focus into the dialog.
+  // Wait for is-active: before it the overlay is visibility: hidden and cannot take focus.
+  useEffect(() => {
+    if (active) closeBtn.current?.focus()
+  }, [active])
 
   useEffect(() => {
     if (open) {
@@ -104,12 +132,12 @@ export function NavOverlay({ open, onClose, children, id = 'nav-overlay' }) {
       className={cls}
       role="dialog"
       aria-modal="true"
-      aria-label="網站導覽"
+      aria-label={t.dialog}
       style={{ '--nav-overlay-ms': `${OVERLAY_MS}ms` }}
     >
       <header className="nav-overlay__bar">
         <span className="nav-overlay__mark">T E K U E I</span>
-        <OverlayClose onClose={onClose} />
+        <OverlayClose ref={closeBtn} onClose={onClose} label={t.close} />
       </header>
       <div className="nav-overlay__body">
         <nav className="nav-overlay__menu">{children}</nav>

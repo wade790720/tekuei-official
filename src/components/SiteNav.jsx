@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { NavOverlay, NavToggle } from './NavOverlay.jsx'
 import { SiteNavLinks } from './SiteNavLinks.jsx'
+import { NAV_LABELS } from '../data/nav.js'
 import { useLang } from '../i18n'
 import '../styles/siteNav.css'
 import '../styles/navOverlay.css'
@@ -22,7 +23,11 @@ export function SiteNav({
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { lang, toggle } = useLang()
+  const t = NAV_LABELS[lang]
+  const toggleRef = useRef(null)
   const close = () => setOpen(false)
+  // The toggle unmounts while the menu is open; give it focus back once the menu has gone.
+  const onMenuExited = () => toggleRef.current?.focus()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80)
@@ -53,19 +58,27 @@ export function SiteNav({
           highlightWorkSection={highlightWorkSection}
           highlightJournal={highlightJournal}
         />
-        <button className="site-nav__lang" onClick={toggle} aria-label="Switch language">
+        <button type="button" className="site-nav__lang" onClick={toggle} aria-label={t.lang}>
           {lang === 'zh' ? 'EN' : '中'}
         </button>
       </div>
-      {!open && <NavToggle onToggle={() => setOpen(true)} />}
-      <NavOverlay open={open} onClose={close} id="site-nav-overlay">
+      {!open && <NavToggle ref={toggleRef} onToggle={() => setOpen(true)} />}
+      <NavOverlay open={open} onClose={close} onExited={onMenuExited} id="site-nav-overlay">
         <SiteNavLinks
           variant="overlay"
           onNavigate={close}
           highlightWorkSection={highlightWorkSection}
           highlightJournal={highlightJournal}
         />
-        <button className="site-nav__lang site-nav__lang--overlay" onClick={() => { toggle(); close() }} aria-label="Switch language">
+        <button
+          type="button"
+          className="site-nav__lang site-nav__lang--overlay"
+          onClick={() => {
+            toggle()
+            close()
+          }}
+          aria-label={t.lang}
+        >
           {lang === 'zh' ? 'EN' : '中文'}
         </button>
       </NavOverlay>

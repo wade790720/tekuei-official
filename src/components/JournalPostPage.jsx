@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
+import { PostBlock } from './journal/PostBlock.jsx'
 import {
   getAdjacentPosts,
   getJournalPost,
@@ -9,24 +10,6 @@ import {
 import { useLang } from '../i18n'
 import '../styles/work.css'
 import '../styles/journal.css'
-
-function PostBlock({ block }) {
-  if (block.type === 'lead') {
-    return <p className="journal-post__lead">{block.text}</p>
-  }
-  if (block.type === 'h2') {
-    return <h2 className="journal-post__h2">{block.text}</h2>
-  }
-  if (block.type === 'quote') {
-    return (
-      <blockquote className="journal-post__quote">
-        <p>{block.text}</p>
-        {block.attr ? <cite>{block.attr}</cite> : null}
-      </blockquote>
-    )
-  }
-  return <p className="journal-post__p">{block.text}</p>
-}
 
 export default function JournalPostPage() {
   const { slug } = useParams()

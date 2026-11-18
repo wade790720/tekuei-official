@@ -1,4 +1,4 @@
-﻿import { useEffect } from 'react'
+﻿import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import SiteHero from './components/SiteHero.jsx'
 import AboutPage from './components/AboutPage.jsx'
@@ -9,6 +9,11 @@ import CaseRouter from './components/CaseRouter.jsx'
 import CheckinPage from './components/CheckinPage.jsx'
 import HowToCheckinPage from './components/HowToCheckinPage.jsx'
 import { SiteNav } from './components/SiteNav.jsx'
+
+// Dev-only preview pages. The production build drops this import.
+const ComponentLibrary = import.meta.env.DEV
+  ? lazy(() => import('./components/dev/ComponentLibrary.jsx'))
+  : null
 
 function ScrollClasses() {
   const { pathname } = useLocation()
@@ -50,6 +55,16 @@ export default function App() {
         <Route path="/cases/:slug" element={<CaseRouter />} />
         <Route path="/checkin" element={<CheckinPage />} />
         <Route path="/how-to-checkin" element={<HowToCheckinPage />} />
+        {ComponentLibrary ? (
+          <Route
+            path="/dev/component-library"
+            element={
+              <Suspense fallback={null}>
+                <ComponentLibrary />
+              </Suspense>
+            }
+          />
+        ) : null}
       </Routes>
     </BrowserRouter>
   )

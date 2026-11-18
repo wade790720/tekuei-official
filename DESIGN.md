@@ -92,6 +92,27 @@ Token 都在 `src/styles/tokens.css`。新程式碼只用語意 token（第二�
 
 新效果照同樣的方式寫：`mountXxx(canvas, opts)`，回傳 cleanup。檔案開頭用一兩行說明效果和數字的來源。
 
+## 文章內的 card
+
+文章內容放在 `src/data/journal.js` 的 `blocks`。`src/components/journal/PostBlock.jsx` 依 `type` 選元件。
+
+| type | 元件 | 欄位 |
+|---|---|---|
+| `code` | `CodeCard` | `code`、`lang`（預設 `ts`）、`filename` |
+| `image` | `ImageCard` | `src`、`alt`（必填）、`caption`、`frame`（小圖置中留白）、`width`、`height` |
+| `video` | `VideoCard` | `src`、`poster`、`caption`、`loop` |
+
+- 外觀：`--paper-warm` 底、圓角 16px、1px 象牙白光環，不用邊框。樣式在 `src/styles/postCards.css`。
+- 程式碼字型用 `--font-mono`，顏色用 `--code-*` token。上色由 `src/lib/highlight.js` 處理，只支援類 C 語法。
+- 介面文字（複製、播放等）在 `POST_CARD_LABELS`。
+- 三種 card 的示範和完整規範在 Component Library（見下一節）。
+
+## Component Library
+
+- 開發模式打開 `/dev/component-library`。這一頁列出每個可重複使用的元件：用途、什麼時候用、不要用在哪、Props、用法、注意事項，能示範的附即時示範。
+- 規範文字在 `src/components/dev/componentLibrary.data.js`。這一頁只給開發用，所以只寫中文，不進正式 build。
+- 新增或修改元件時，同一個變更裡更新這份資料。標「待修」的項目是已知問題。
+
 ## 無障礙
 
 - 內文對比至少 4.5:1。內文字級 16px 以上。
