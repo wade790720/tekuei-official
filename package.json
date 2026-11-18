@@ -15,6 +15,7 @@
     "test:phone": "node --test scripts/phoneE164.test.mjs"
   },
   "dependencies": {
+    "lenis": "^1.1.13",
     "libphonenumber-js": "^1.13.9",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
