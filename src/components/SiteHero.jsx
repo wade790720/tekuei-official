@@ -3,19 +3,19 @@ import { Link } from 'react-router-dom'
 import '../styles/hero.css'
 import '../styles/home.css'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
+import { HomeHero } from './HomeHero.jsx'
 import { SuminagashiBackground } from './SuminagashiBackground.jsx'
 import {
   HOME_APPROACH,
   HOME_CTA,
   HOME_FEATURED_WORKS,
   HOME_FOOTER,
-  HOME_HERO,
   HOME_META,
   HOME_PHILOSOPHY,
   HOME_QUOTE,
   HOME_WORK,
 } from '../data/homepage.js'
-import { useHeroContentParallax, useScrollParallax } from '../hooks/useScrollParallax.js'
+import { useScrollParallax } from '../hooks/useScrollParallax.js'
 import { useLang } from '../i18n'
 
 function imgVariantClass(variant) {
@@ -26,13 +26,9 @@ function imgVariantClass(variant) {
 
 export default function SiteHero() {
   const { lang } = useLang()
-  const watermarkRef = useScrollParallax(0.18)
-  const vlineRef = useScrollParallax(0.06)
-  const contentRef = useHeroContentParallax()
   const ctaWatermarkRef = useScrollParallax(0.12)
 
   const meta = HOME_META[lang]
-  const hero = HOME_HERO[lang]
   const philosophy = HOME_PHILOSOPHY[lang]
   const work = HOME_WORK[lang]
   const featuredWorks = HOME_FEATURED_WORKS[lang]
@@ -54,59 +50,7 @@ export default function SiteHero() {
       <div className="home-ink-content">
 
         <main>
-        <section className="home-hero" aria-label="首頁主視覺">
-          <div className="home-hero__vline" ref={vlineRef} aria-hidden />
-          <div className="home-hero__watermark" ref={watermarkRef} aria-hidden>
-            tekuei
-          </div>
-
-          <div className="home-hero__content" ref={contentRef}>
-            <div className="home-hero__label">{hero.label}</div>
-            <h1 className="home-hero__headline">
-              {hero.headline.map((line) => (
-                <span key={line}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </h1>
-            <div className="home-hero__sub-en">
-              <em>{hero.subEn}</em>
-            </div>
-            <div className="home-hero__rule" aria-hidden />
-            <p className="home-hero__tagline">
-              {hero.tagline.map((line, i) => (
-                <span key={line}>
-                  {i > 0 ? <br /> : null}
-                  {line}
-                </span>
-              ))}
-            </p>
-            <div className="home-hero__cta-row">
-              <a href="#contact" className="home-cta">
-                BEGIN <span className="home-cta__arrow">→</span>
-              </a>
-              <Link to="/about" className="home-cta home-cta--ghost">
-                {lang === 'zh' ? '了解更多' : 'Learn More'}
-              </Link>
-            </div>
-          </div>
-
-          <div className="home-hero__footer">
-            <div className="home-hero__footer-l">
-              E S T . 2 0 2 6
-              <br />
-              T A I P E I
-            </div>
-            <div className="home-hero__footer-r">
-              <div>0 1 / 0 4 · H O M E</div>
-              <div className="home-scroll-hint">
-                <span>S C R O L L</span>
-                <span className="home-scroll-line" aria-hidden />
-              </div>
-            </div>
-          </div>
-        </section>
+        <HomeHero />
 
         <section className="home-philosophy" id="philosophy">
           <HomeFadeIn className="home-philosophy__inner">
