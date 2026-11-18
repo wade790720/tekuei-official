@@ -132,3 +132,31 @@
     right: 28px;
   }
 }
+
+/* Over a dark first section (home hero), until the page scrolls. */
+.site-nav--on-dark .site-nav__logo,
+.site-nav--on-dark .site-nav__links a:hover {
+  color: #f4eee7;
+}
+
+.site-nav--on-dark .site-nav__links a,
+.site-nav--on-dark .site-nav__lang {
+  color: rgba(244, 238, 231, 0.78);
+}
+
+.site-nav--on-dark .site-nav__links a.is-active,
+.site-nav--on-dark .site-nav__lang:hover {
+  color: #c99a63;
+}
+
+.site-nav--on-dark .site-nav__links a::after {
+  background: #c99a63;
+}
+
+.site-nav--on-dark .nav-toggle__line {
+  background: #f4eee7;
+}
+
+.site-nav--on-dark::after {
+  background: rgba(244, 238, 231, 0.16);
+}

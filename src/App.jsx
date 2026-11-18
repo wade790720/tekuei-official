@@ -31,6 +31,7 @@ function AppNav() {
   return (
     <SiteNav
       variant={isCase ? 'case' : 'default'}
+      onDark={pathname === '/'}
       highlightJournal={pathname.startsWith('/journal')}
       highlightWorkSection={pathname.startsWith('/work') || isCase}
     />

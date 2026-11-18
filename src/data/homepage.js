@@ -13,16 +13,20 @@ export const HOME_META = {
 
 export const HOME_HERO = {
   zh: {
-    label: 'PERSONAL BRAND ARCHITECT',
-    headline: ['讓有價值的人', '被世界正確看見'],
-    subEn: 'Where presence becomes form.',
-    tagline: ['TEKUEI 是一套人格品牌系統，', '協助你從模糊的人設，走向清晰而真實的人格品牌。'],
+    ariaLabel: '首頁主視覺',
+    headline: ['我寫程式，', '也把過程寫下來。'],
+    cta: '看看我的世界',
+    aside: ['想法、工具，', '和認真做的', '實驗。'],
+    latestLabel: '最新文章',
+    viewAll: '全部文章',
   },
   en: {
-    label: 'PERSONAL BRAND ARCHITECT',
-    headline: ['Making the worthy', 'visible to the world'],
-    subEn: 'Where presence becomes form.',
-    tagline: ['TEKUEI is a personal brand system', 'that guides you from vague persona to authentic presence.'],
+    ariaLabel: 'Home hero',
+    headline: ['A quieter way', 'to create.'],
+    cta: 'Explore my world',
+    aside: ['Ideas, tools &', 'thoughtful', 'experiments.'],
+    latestLabel: 'Latest writings',
+    viewAll: 'View all',
   },
 }
 
