@@ -9,7 +9,7 @@
   --hh-taupe: #a8a09a;
   --hh-gold: #c99a63;
   --hh-amber: #e4b57b;
-  --hh-serif: 'Instrument Serif', 'Noto Serif TC', Georgia, serif;
+  --hh-serif: var(--font-serif);
   background: var(--hh-bg);
   color: var(--hh-ivory);
 }

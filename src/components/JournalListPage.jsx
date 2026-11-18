@@ -2,8 +2,11 @@ import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { HomeFadeIn } from './HomeFadeIn.jsx'
 import { JOURNAL_HEADER, JOURNAL_META, JOURNAL_POSTS } from '../data/journal.js'
+import { HOME_FOOTER } from '../data/homepage.js'
 import { useLang } from '../i18n'
 import { mountGlyphField } from '../lib/glyphField.js'
+import { mountShatterImage } from '../lib/shatterImage.js'
+import seaImage from '../assets/journal/footer-sea.webp'
 import '../styles/work.css'
 import '../styles/journal.css'
 
@@ -76,12 +79,92 @@ export default function JournalListPage() {
         ))}
       </div>
 
-      <footer className="journal-footer">
-        <div className="journal-footer__mark">T E K U E I · J O U R N A L</div>
-        <Link to="/" className="journal-footer__back">
-          ← Back to Home
-        </Link>
-      </footer>
+      <JournalFooter />
     </div>
+  )
+}
+
+// Home-page anchors (#work) need the home path when used from /journal.
+const toHome = (href) => (href.startsWith('#') ? `/${href}` : href)
+
+function FooterLink({ href, i, children }) {
+  const target = toHome(href)
+  const props = { className: 'journal-footer__link', style: { '--i': i } }
+  return target.startsWith('/') ? (
+    <Link to={target} {...props}>
+      {children}
+    </Link>
+  ) : (
+    <a href={target} {...props}>
+      {children}
+    </a>
+  )
+}
+
+function JournalFooter() {
+  const { lang } = useLang()
+  const footer = HOME_FOOTER[lang]
+  const root = useRef(null)
+  const sea = useRef(null)
+
+  useEffect(
+    () =>
+      mountShatterImage(sea.current, {
+        src: seaImage,
+        crop: [0, 389, 1280, 470],
+        onPlay: () => root.current?.classList.add('is-in'),
+      }),
+    [],
+  )
+
+  const columns = [
+    { title: 'Explore', links: footer.explore },
+    { title: 'Services', links: footer.services.map((s) => ({ label: s, href: '#contact' })) },
+    { title: 'Contact', links: footer.contact },
+  ]
+
+  return (
+    <footer className="journal-footer" ref={root}>
+      <div className="journal-footer__rules" aria-hidden>
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="journal-footer__cols">
+        <div className="journal-footer__col">
+          <Link to="/" className="journal-footer__brand journal-footer__r" style={{ '--i': 0 }}>
+            T E K U E I
+          </Link>
+          <div className="journal-footer__sub journal-footer__r" style={{ '--i': 1 }}>
+            德 溎
+          </div>
+          <p className="journal-footer__tagline journal-footer__r" style={{ '--i': 2 }}>
+            {footer.tagline.map((line, i) => (
+              <span key={line}>
+                {i > 0 ? <br /> : null}
+                {line}
+              </span>
+            ))}
+          </p>
+          <div className="journal-footer__copy journal-footer__r" style={{ '--i': 3 }}>
+            © 2026 TEKUEI
+          </div>
+        </div>
+        {columns.map((col, c) => (
+          <div className="journal-footer__col" key={col.title}>
+            <div className="journal-footer__title journal-footer__r" style={{ '--i': c * 2 + 2 }}>
+              {col.title}
+            </div>
+            {col.links.map((link, k) => (
+              <FooterLink key={link.label} href={link.href} i={c * 2 + 3 + k}>
+                {link.label}
+              </FooterLink>
+            ))}
+          </div>
+        ))}
+      </div>
+      <canvas className="journal-footer__sea" ref={sea} aria-hidden />
+    </footer>
   )
 }

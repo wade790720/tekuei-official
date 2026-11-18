@@ -12,8 +12,8 @@
   letter-spacing: 0.02em;
   -webkit-font-smoothing: antialiased;
 
-  --fd: 'Instrument Serif', serif;
-  --fc: 'Noto Serif TC', 'Shippori Mincho', serif;
+  --fd: var(--font-serif);
+  --fc: var(--font-serif);
   --ease: var(--ease-touch);
   --wrap: min(1080px, calc(100% - 40px));
   --page-pad: 20px;

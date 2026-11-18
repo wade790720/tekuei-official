@@ -42,7 +42,7 @@
   align-items: center;
   gap: 14px;
   margin: 0 0 22px;
-  font-family: 'Instrument Serif', serif;
+  font-family: var(--font-serif);
   font-size: 15px;
   letter-spacing: 0.2em;
   color: var(--af-sky);
@@ -58,7 +58,7 @@
 
 .about-fall h1 {
   margin: 0 0 20px;
-  font-family: 'Instrument Serif', 'Noto Serif TC', serif;
+  font-family: var(--font-serif);
   font-weight: 400;
   font-size: clamp(32px, 3.8vw, 58px);
   line-height: 1.25;

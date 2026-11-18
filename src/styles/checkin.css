@@ -1,8 +1,8 @@
-﻿/* Check-in · 隱藏路由 · 和紙 × 墨 × 燼 */
+﻿/* Check-in · 隱藏路由 */
 
 .checkin-page {
-  --checkin-fd: 'Instrument Serif', serif;
-  --checkin-fc: 'Noto Serif TC', 'Shippori Mincho', serif;
+  --checkin-fd: var(--font-serif);
+  --checkin-fc: var(--font-serif);
   --checkin-border: rgba(122, 104, 69, 0.22);
   --checkin-border-soft: rgba(122, 104, 69, 0.14);
   --checkin-muted: rgba(244, 238, 231, 0.52);

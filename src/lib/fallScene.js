@@ -8,7 +8,7 @@ const WAVE_SECONDS = 1.6
 const NEAR_BLACK = '#0B0B0D'
 
 const subFont = (s) => `700 ${s}px ui-monospace, "Cascadia Mono", Consolas, "Noto Sans TC", monospace`
-const titleFont = (s) => `400 ${s}px "Noto Serif TC", "Instrument Serif", Georgia, serif`
+const titleFont = (s) => `400 ${s}px "Instrument Serif", "Noto Serif TC", "Source Han Serif TC", serif`
 
 // Smooth noise in 0..1, three layers. It shapes the impact dust into tall clouds.
 const hash2 = (x, y) => {

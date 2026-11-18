@@ -8,8 +8,8 @@
 :root {
   --bg: #0b0b0d;
   --text: #f4eee7;
-  --fd: 'Instrument Serif', serif;
-  --fc: 'Noto Serif TC', serif;
+  --fd: var(--font-serif);
+  --fc: var(--font-serif);
   --ease-haunt: var(--ease-touch);
 }
 
