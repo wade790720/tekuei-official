@@ -5,11 +5,11 @@
 export const ABOUT_FALL_META = {
   zh: {
     title: 'About · TEKUEI 德溎',
-    description: '朱德溎，10 年軟體工程與產品管理，創立 MONOLAB，整合技術、美學與商業。',
+    description: '10 年軟體工程師經歷，策劃過 10 餘檔展覽，同時是 MONOLAB 共同創辦人。目前專注記錄日常想法，以及行銷、工程、AI 相關的內容創作。',
   },
   en: {
     title: 'About · TEKUEI',
-    description: 'Wade Zhu. Ten years of software engineering and product work. Founder of MONOLAB. Technology, aesthetics and business in one practice.',
+    description: 'Ten years as a software engineer, curator of more than ten exhibitions, and co-founder of MONOLAB. I now write about daily thoughts, marketing, engineering and AI.',
   },
 }
 

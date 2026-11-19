@@ -2,12 +2,12 @@ import { WORK_ITEMS } from './work.js'
 
 export const HOME_META = {
   zh: {
-    title: 'TEKUEI 德溎 — 讓有價值的人，被世界正確看見',
-    description: 'Wade 的個人網站。十年程式，兩年展覽策展。這裡寫行銷、AI、技術和實作過程，也放真實的案例。',
+    title: 'TEKUEI 德溎 — 遵循內心並實踐創造',
+    description: '探索底層邏輯與真相，對未知領域充滿好奇，喜愛技術、行銷與人工智能。',
   },
   en: {
-    title: 'TEKUEI — Where the Worthy Are Seen by the World',
-    description: "Wade's personal site. Ten years of code, two years of curating exhibitions. Notes on marketing, AI, engineering and how things get built, plus real case studies.",
+    title: 'TEKUEI — Follow Your Heart and Create',
+    description: 'Exploring first principles and the truth beneath things. Curious about the unknown. I love technology, marketing and AI.',
   },
 }
 
