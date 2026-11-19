@@ -36,14 +36,14 @@ const result = streamText({
 const SAMPLE_DOC = blocksToDoc([
   { type: 'lead', text: '前言用比內文大一階的字，帶出整篇文章。' },
   { type: 'h2', text: '小標題' },
-  { type: 'p', text: '一般段落。字級 17px，行高 1.9，一行約 35–40 個中文字。' },
+  { type: 'p', text: '一般段落，字級 17px，行高 1.9，一行約 35–40 個中文字。' },
   { type: 'quote', text: '引言放在這裡。', attr: '出處' },
 ])
 
 const EDITOR_SAMPLE = blocksToDoc([
-  { type: 'lead', text: '編輯器的示範。選取文字後按工具列。' },
+  { type: 'lead', text: '編輯器的示範，選取文字後按工具列。' },
   { type: 'h2', text: '小標題' },
-  { type: 'p', text: '一般段落。可以加粗、斜體、連結和行內程式碼。' },
+  { type: 'p', text: '一般段落，可以加粗、斜體、連結和行內程式碼。' },
   { type: 'quote', text: '引言放在這裡。', attr: '出處' },
   { type: 'code', lang: 'ts', filename: 'demo.ts', code: 'const x = 1' },
 ])

@@ -16,7 +16,7 @@ export const HOME_HERO = {
     ariaLabel: '首頁主視覺',
     headline: ['我寫程式，', '也把過程寫下來。'],
     cta: '看看我的世界',
-    aside: ['想法、工具，', '和認真做的', '實驗。'],
+    aside: ['想法、工具，', '和認真做的', '實驗'],
     latestLabel: '最新文章',
     viewAll: '全部文章',
   },
@@ -36,15 +36,15 @@ export const HOME_PHILOSOPHY = {
     lines: [
       { text: '我相信，', tone: 'default' },
       { text: '每個人心裡，', tone: 'default' },
-      { text: '都有一個尚未真正活出來的自己', tone: 'default' },
+      { text: '都有一個尚未真正活出來的自己。', tone: 'default' },
       { type: 'divider' },
       { text: '而大部分人的遺憾，', tone: 'mid' },
-      { text: '是因為恐懼、猶豫、迎合、與自我懷疑，', tone: 'mid' },
+      { text: '是因為恐懼、猶豫、迎合與自我懷疑，', tone: 'mid' },
       { text: '最終活成了世界期待的樣子。', tone: 'mid' },
       { type: 'divider' },
-      { text: '品牌，不只是曝光流量', tone: 'default' },
+      { text: '品牌，不只是曝光流量，', tone: 'default' },
       { text: '真正的品牌，是讓一個人', tone: 'default' },
-      { text: '開始看見自己、理解自己、勇敢成為自己', tone: 'default' },
+      { text: '開始看見自己、理解自己、勇敢成為自己。', tone: 'default' },
       { type: 'divider' },
       { text: '當一個人真正活出自己的核心，', tone: 'dim' },
       { text: '世界自然會看見他。', tone: 'dim' },
@@ -148,7 +148,7 @@ export const HOME_FEATURED_WORKS = {
 export const HOME_APPROACH = {
   zh: {
     label: 'APPROACH · 方法論',
-    title: ['系統化梳理後', '讓你看見原本的樣貌'],
+    title: ['系統化梳理後，', '讓你看見原本的樣貌'],
     items: [
       {
         num: '01',
@@ -192,7 +192,7 @@ export const HOME_APPROACH = {
 
 export const HOME_QUOTE = {
   zh: {
-    lines: ['當你', '成為一個有力量的人時', '現實中可能會有一萬個', '想成為像你一樣的人出現'],
+    lines: ['當你', '成為一個有力量的人時，', '現實中可能會有一萬個', '想成為像你一樣的人出現'],
     en: 'Let your strength be a light to others.',
   },
   en: {

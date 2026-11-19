@@ -96,7 +96,7 @@ function readTekuei() {
     h2: `${num(v('--type-h2'))} / ${v('--type-h2-lh')}`,
     display: `${v('--type-display')} / ${v('--type-display-lh')}、${v('--type-display-ls')}`,
     tiers: `${tiers} 階${v('--text-faint') ? ' + 裝飾' : ''}`,
-    space: SPACE_SCALE.map(([t]) => num(v(t))).join(' · '),
+    space: SPACE_SCALE.map(([t]) => num(v(t))).join('、'),
     measure: measureColumn(),
   }
 }

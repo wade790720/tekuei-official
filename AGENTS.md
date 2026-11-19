@@ -36,7 +36,7 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 
 | 路徑 | 放什麼 |
 |---|---|
-| `src/components/` | 頁面（`XxxPage.jsx`）和共用元件（`Editor.jsx`、`RichText.jsx`、`CodeCard.jsx`…），一個元件一個檔案 |
+| `src/components/` | 頁面（`XxxPage.jsx`）和共用元件（`Editor.jsx`、`RichText.jsx`、`CodeCard.jsx`……），一個元件一個檔案 |
 | `src/components/<頁面>/` | 只有那一頁用的元件，例如 `journal/JournalEditPanel.jsx`、`case/CaseReveal.jsx`、`admin/OtpGate.jsx` |
 | `src/data/` | 所有文案與內容。雙語內容的形狀是 `{ zh: …, en: … }` |
 | `src/data/cases/` | 案例內容，一個案例一檔 |
@@ -70,7 +70,7 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 - 頁面的 CSS 只負責排版（位置、寬度、間距）。不要在頁面裡改元件的外觀。要改外觀，改元件本身或加變體。
 - 新增或修改元件時，同一個變更裡更新 Component Library：`componentLibrary.data.js` 的說明，有需要時加 `demos.jsx` 的示範。
 - 回報時列出：用了哪些既有元件、擴充了哪一個、新增了哪一個以及原因。
-- 不要新增依賴。真的需要時，先問使用者。
+- 不要新增相依套件。真的需要時，先問使用者。
 - 註解只寫程式碼看不出來的原因。
 
 ## 編輯模式（前台 CMS）
@@ -85,14 +85,19 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 - Wade 只寫中文。英文是翻譯。
 - 從別人網站拿來的圖或文字，不可以直接上線。要先告訴使用者版權風險。
 
-## 寫作規則（ASD-STE100，做到約八成）
-
-適用於文件、UI 文案、commit message、回報。
+## 寫作規則
+**跟 AI 的對話、回報、commit message、規範檔（AGENTS.md、PRODUCT.md、DESIGN.md）：用 ASD-STE100，做到約八成。**
 
 - 一個詞只有一個意思。同一個東西不換名稱。
 - 句子要短。英文 20 字以內，中文以同等長度為準。用主動語態。
 - 一句只講一個指示。
 - 只有在照規則寫反而讓文字變差時，才可以破例。
+
+**網站上的所有文字（UI 文案、案例、About、文章、Component Library）：不用 STE，照 zh-tw-writing skill 的台灣正式中文寫法。**
+
+- 同一個主題的短句用逗號接成一句，講完一個意思才用句號。
+- 名詞片語、標題、表格儲存格、按鈕和標籤，結尾不加句號。
+- 並列用頓號「、」，不用「·」或「/」。破折號寫成「──」，刪節號寫成「……」。
 
 ## 禁止
 
