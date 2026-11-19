@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ADMIN_CODE_LENGTH, CMS_LABELS as T } from '../../data/admin.js'
 import { SecretInput } from '../SecretInput.jsx'
+import { CheckIcon } from '../SidePanel.jsx'
 import '../../styles/cms.css'
 
 const UNLOCK_MS = 650 // how long "已解鎖" stays before the gate closes
@@ -74,7 +75,7 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
         <div className="cms-gate__field">
           {busy ? (
             <div className="cms-gate__pill">
-              {state === 'verifying' ? <span className="cms-gate__spin" aria-hidden /> : <CheckIcon />}
+              {state === 'verifying' ? <span className="cms-spin" aria-hidden /> : <CheckIcon />}
               {status}
             </div>
           ) : (
@@ -98,13 +99,5 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
       </div>
     </div>,
     document.body,
-  )
-}
-
-function CheckIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-      <path d="M3 8.5l3.2 3L13 4.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   )
 }
