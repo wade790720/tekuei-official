@@ -29,13 +29,6 @@
   line-height: 1.85;
 }
 
-.journal-page__grid {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
 /* 環境光：多層霧金漸層，與首頁同邏輯、無 blur 光圈 */
 .journal-atmosphere {
   position: fixed;
@@ -154,9 +147,9 @@
 
 .journal-header__inner {
   position: relative;
-  max-width: 1100px;
+  max-width: var(--page-column-box);
   margin: 0 auto;
-  padding: 0 var(--space-16);
+  padding: 0 var(--page-pad);
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -212,9 +205,9 @@
 }
 
 .journal-header__slash {
-  max-width: 1100px;
+  max-width: var(--page-column-box);
   margin: var(--space-16) auto 0;
-  padding: 0 var(--space-16);
+  padding: 0 var(--page-pad);
   height: 0.5px;
   background: linear-gradient(
     to right,
@@ -230,9 +223,9 @@
 .journal-list {
   position: relative;
   z-index: 2;
-  max-width: 1100px;
+  max-width: var(--page-column-box);
   margin: 0 auto;
-  padding: 0 var(--space-16) var(--space-32);
+  padding: 0 var(--page-pad) var(--space-32);
 }
 
 .journal-card {
@@ -368,9 +361,10 @@
 .journal-post {
   position: relative;
   z-index: 2;
-  max-width: 720px;
+  /* Reading column: 656px of text, about 38 Chinese characters a line. */
+  max-width: calc(656px + 2 * var(--page-pad));
   margin: 0 auto;
-  padding: var(--space-32) var(--space-8) var(--space-32);
+  padding: var(--space-32) var(--page-pad);
 }
 
 .journal-post__back {
@@ -790,13 +784,6 @@
 /* ── Responsive ── */
 
 @media (max-width: 900px) {
-  .journal-header__inner,
-  .journal-header__slash,
-  .journal-list {
-    padding-left: var(--space-6);
-    padding-right: var(--space-6);
-  }
-
   .journal-footer__cols {
     grid-template-columns: repeat(2, 1fr);
     row-gap: var(--space-10);

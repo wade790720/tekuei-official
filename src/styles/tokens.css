@@ -94,6 +94,9 @@
   --page-max: 1920px;
   --page-gutter: max(0px, (100vw - var(--page-max)) / 2);
   --page-pad: clamp(20px, 4vw, 68px);
+  /* Text-and-list pages (Work, Journal): column width, without --page-pad. */
+  --page-column: 1104px;
+  --page-column-box: calc(var(--page-column) + 2 * var(--page-pad));
 
   /* Typeface: Latin in Instrument Serif, CJK in Source Han Serif (思源宋體, Google Fonts name Noto Serif TC).
      Instrument Serif has no CJK glyphs, so the browser uses the next font for Chinese. index.html loads both. */
