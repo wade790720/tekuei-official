@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { FadeIn } from './FadeIn.jsx'
+import { TagList } from './Tag.jsx'
 import { JournalPostEditPanel } from './journal/JournalEditPanel.jsx'
 import { RichText } from './RichText.jsx'
 import { getDoc } from '../lib/richText.js'
 import { useJournal } from '../context/journal.js'
-import { getAdjacentPosts, getJournalPost } from '../data/journal.js'
+import { getAdjacentPosts, getJournalPost, postTags } from '../data/journal.js'
 import { useLang } from '../i18n'
 import '../styles/work.css'
 import '../styles/journal.css'
@@ -52,7 +53,7 @@ export default function JournalPostPage() {
               JOURNAL
             </Link>
             <div className="journal-post__meta">
-              <span>{post.category}</span>
+              <TagList tags={postTags(post)} />
               <span aria-hidden>·</span>
               <time dateTime={post.date.replace(/\./g, '-')}>{post.date}</time>
               <span aria-hidden>·</span>

@@ -231,6 +231,11 @@
   padding: 0 var(--page-pad) var(--space-24);
 }
 
+/* Tag filter over the list (a .tag-group) */
+.journal-filter {
+  margin-bottom: var(--space-12);
+}
+
 .journal-card {
   position: relative;
   display: grid;
@@ -291,10 +296,6 @@
   letter-spacing: var(--type-label-ls);
   color: var(--j-stone);
   text-transform: uppercase;
-}
-
-.journal-card__category {
-  color: var(--j-lamp-dim);
 }
 
 .journal-card__dot {
@@ -393,7 +394,6 @@
 }
 
 .journal-row__num,
-.journal-row__category,
 .journal-row__date,
 .journal-row__min {
   font-family: var(--font-label);
@@ -404,10 +404,6 @@
 }
 
 .journal-row__num,
-.journal-row__category {
-  color: var(--j-lamp-dim);
-}
-
 .journal-row__date,
 .journal-row__min {
   text-align: right;

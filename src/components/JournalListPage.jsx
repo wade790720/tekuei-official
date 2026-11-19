@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { FadeIn } from './FadeIn.jsx'
-import { JOURNAL_HEADER, JOURNAL_META } from '../data/journal.js'
+import { Tag, TagList } from './Tag.jsx'
+import { JOURNAL_FILTER, JOURNAL_HEADER, JOURNAL_META, postTags, tagCounts } from '../data/journal.js'
 import { useJournal } from '../context/journal.js'
 import { JournalListEditPanel } from './journal/JournalEditPanel.jsx'
 import { HOME_FOOTER } from '../data/homepage.js'
@@ -16,8 +17,13 @@ export default function JournalListPage() {
   const { lang } = useLang()
   const meta = JOURNAL_META[lang]
   const header = JOURNAL_HEADER[lang]
-  const posts = useJournal().content.posts[lang]
+  const allPosts = useJournal().content.posts[lang]
+  // The chosen tag lives in the URL (?tag=AI), so a filtered list can be shared.
+  const [params, setParams] = useSearchParams()
+  const tag = params.get('tag')?.toUpperCase() ?? null
+  const posts = tag ? allPosts.filter((p) => postTags(p).includes(tag)) : allPosts
   const [latest, ...rest] = posts
+  const chooseTag = (t) => setParams(t ? { tag: t } : {}, { replace: true, preventScrollReset: true })
   const glyphs = useRef(null)
 
   useEffect(() => mountGlyphField(glyphs.current), [])
@@ -53,6 +59,7 @@ export default function JournalListPage() {
       </header>
 
       <div className="journal-list">
+        <TagFilter posts={allPosts} tag={tag} onChoose={chooseTag} />
         {latest ? <FeaturedPost post={latest} /> : null}
         {byYear(rest).map(([year, group]) => (
           <section className="journal-year" key={year} aria-label={year}>
@@ -63,7 +70,9 @@ export default function JournalListPage() {
                   <FadeIn as={Link} to={`/journal/${post.slug}`} className="journal-row">
                     <span className="journal-row__num">{post.num}</span>
                     <span className="journal-row__title">{post.title}</span>
-                    <span className="journal-row__category">{post.category}</span>
+                    <span className="journal-row__tags">
+                      <TagList tags={postTags(post)} />
+                    </span>
                     <time className="journal-row__date" dateTime={post.date.replace(/\./g, '-')}>
                       {post.date.slice(5)}
                     </time>
@@ -78,6 +87,26 @@ export default function JournalListPage() {
 
       <JournalFooter />
       <JournalListEditPanel />
+    </div>
+  )
+}
+
+/** One row of tag pills over the list, each with its post count. Hidden when there is nothing to choose between. */
+function TagFilter({ posts, tag, onChoose }) {
+  const { lang } = useLang()
+  const t = JOURNAL_FILTER[lang]
+  const tags = tagCounts(posts)
+  if (tags.length < 2) return null
+  return (
+    <div className="journal-filter tag-group" role="group" aria-label={t.label}>
+      <Tag count={posts.length} selected={!tag} onClick={() => onChoose(null)}>
+        {t.all}
+      </Tag>
+      {tags.map(([name, count]) => (
+        <Tag key={name} count={count} selected={tag === name} onClick={() => onChoose(tag === name ? null : name)}>
+          {name}
+        </Tag>
+      ))}
     </div>
   )
 }
@@ -101,7 +130,7 @@ function FeaturedPost({ post }) {
       </div>
       <div className="journal-card__body">
         <div className="journal-card__meta">
-          <span className="journal-card__category">{post.category}</span>
+          <TagList tags={postTags(post)} />
           <span className="journal-card__dot" aria-hidden>·</span>
           <time dateTime={post.date.replace(/\./g, '-')}>{post.date}</time>
           <span className="journal-card__dot" aria-hidden>·</span>

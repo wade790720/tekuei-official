@@ -286,6 +286,46 @@ export const GROUPS = [
         notes: ['首頁位移 20px，Journal 位移 24px。', '減少動態效果開啟時直接顯示。', '包住整個區塊，不要每一行各包一次。'],
       },
 
+      // ── Tag ──
+      {
+        id: 'tag',
+        name: 'Tag',
+        file: 'src/components/Tag.jsx',
+        summary: '文章的標籤。可以只顯示文字，也可以當篩選按鈕',
+        hero: { demo: 'tag', code: '<TagList tags={postTags(post)} />' },
+        api: [
+          {
+            part: 'Tag',
+            description: '沒有 onClick 時是金色的標籤文字；有 onClick 時是膠囊按鈕，用 aria-pressed 表示選取',
+            props: [
+              ['children', 'node', '—', '標籤文字，英文大寫'],
+              ['count', 'number', '—', '按鈕上的篇數，只在按鈕時顯示'],
+              ['selected', 'boolean', 'false', '目前選取的標籤，外框變金色'],
+              ['onClick', '() => void', '—', '有這個 prop 就變成按鈕'],
+            ],
+          },
+          {
+            part: 'TagList',
+            description: '一排純文字標籤，用在列表、精選文章和文章頁的 meta',
+            props: [['tags', 'string[]', '—', '必填，用 postTags(post) 取得']],
+          },
+        ],
+        examples: [
+          {
+            id: 'filter',
+            title: '篩選列',
+            demo: 'tag-filter',
+            description: 'Journal 列表上方的一排按鈕：「全部」加上每個標籤和篇數，一次選一個。選取的標籤寫在網址 ?tag=AI',
+            code: '<Tag count={2} selected={tag === "AI"} onClick={() => choose("AI")}>AI</Tag>',
+          },
+        ],
+        notes: [
+          '標籤是英文大寫，中英文共用，在編輯面板用逗號分開輸入（parseTags）。',
+          '舊文章只有 category，postTags 會把它當成唯一的標籤。',
+          '少於兩個標籤時，篩選列不顯示。',
+        ],
+      },
+
       // ── RichText ──
       {
         id: 'rich-text',

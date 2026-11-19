@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { TextInput, SidePanel, FormRow, PanelSection, TextArea } from '../SidePanel.jsx'
 import { useAdmin, useAdminSave } from '../../context/admin.js'
 import { useJournal } from '../../context/journal.js'
+import { parseTags, postTags } from '../../data/journal.js'
 import { CMS_LABELS as T } from '../../data/admin.js'
 import { useLang } from '../../i18n'
 import { uploadSiteImage } from '../../lib/adminApi.js'
@@ -78,7 +79,7 @@ export function JournalPostEditPanel({ slug }) {
   const body = cms.draft.content[lang]?.[slug]
   if (!post || !body) return null
 
-  // Title and text belong to one language. Date, reading time and category are shared.
+  // Title and text belong to one language. Date, reading time and tags are shared.
   const setPost = (key, value) =>
     cms.updateDraft((d) => {
       d.posts[lang].find((p) => p.slug === slug)[key] = value
@@ -105,8 +106,8 @@ export function JournalPostEditPanel({ slug }) {
       <FormRow label="英文副標" htmlFor="cms-title-en">
         <TextInput id="cms-title-en" value={post.titleEn} onChange={(v) => setPost('titleEn', v)} placeholder="English subtitle" />
       </FormRow>
-      <FormRow label="分類" htmlFor="cms-category" hint="中英文共用">
-        <TextInput id="cms-category" value={post.category} onChange={(v) => setShared('category', v.toUpperCase())} />
+      <FormRow label="標籤" htmlFor="cms-tags" hint="用逗號分開，例如 AI, MARKETING。中英文共用">
+        <TagsInput key={slug} id="cms-tags" tags={postTags(post)} onChange={(tags) => setShared('tags', tags)} />
       </FormRow>
       <FormRow label="日期" htmlFor="cms-date" hint="格式 2026.11.19，中英文共用">
         <TextInput id="cms-date" value={post.date} onChange={(v) => setShared('date', v)} />
@@ -209,7 +210,7 @@ export function JournalListEditPanel() {
         d.posts[l].unshift({
           slug,
           num: '01',
-          category: 'NOTE',
+          tags: ['NOTE'],
           date: today(),
           readMin: 3,
           title: l === 'zh' ? '未命名文章' : 'Untitled',
@@ -275,7 +276,7 @@ export function JournalListEditPanel() {
                     {post.title || '（未命名）'}
                   </Link>
                   <div className="cms-post__meta">
-                    {post.date} · {post.category} · /{post.slug}
+                    {post.date} · {postTags(post).join(', ')} · /{post.slug}
                   </div>
                 </div>
                 <button type="button" className="cms-icon cms-icon--danger" onClick={() => remove(post)} aria-label={`刪除「${post.title}」`}>
@@ -287,6 +288,21 @@ export function JournalListEditPanel() {
         </div>
       </PanelSection>
     </SidePanel>
+  )
+}
+
+/** Tags as one line of text. It keeps what Wade types (a trailing comma, a half-typed tag) and saves the parsed list. */
+function TagsInput({ id, tags, onChange }) {
+  const [text, setText] = useState(() => tags.join(', '))
+  return (
+    <TextInput
+      id={id}
+      value={text}
+      onChange={(v) => {
+        setText(v)
+        onChange(parseTags(v))
+      }}
+    />
   )
 }
 

@@ -25,8 +25,7 @@ export const JOURNAL_POSTS = {
     {
       slug: 'ma-negative-space',
       num: '01',
-      category: 'PHILOSOPHY',
-      categoryZh: '哲學',
+      tags: ['PHILOSOPHY'],
       date: '2026.03.12',
       readMin: 6,
       title: '留白的建築',
@@ -37,8 +36,7 @@ export const JOURNAL_POSTS = {
     {
       slug: 'ink-monochrome',
       num: '02',
-      category: 'VISUAL',
-      categoryZh: '視覺',
+      tags: ['VISUAL'],
       date: '2026.02.28',
       readMin: 8,
       title: '水墨與黑白',
@@ -49,8 +47,7 @@ export const JOURNAL_POSTS = {
     {
       slug: 'neo-orientalism',
       num: '03',
-      category: 'CULTURE',
-      categoryZh: '文化',
+      tags: ['CULTURE'],
       date: '2026.02.08',
       readMin: 7,
       title: '新東方主義',
@@ -61,8 +58,7 @@ export const JOURNAL_POSTS = {
     {
       slug: 'bleach-aesthetic',
       num: '04',
-      category: 'AESTHETIC',
-      categoryZh: '美學',
+      tags: ['AESTHETIC'],
       date: '2026.01.20',
       readMin: 9,
       title: '死神美學的啟示',
@@ -75,7 +71,7 @@ export const JOURNAL_POSTS = {
     {
       slug: 'ma-negative-space',
       num: '01',
-      category: 'PHILOSOPHY',
+      tags: ['PHILOSOPHY'],
       date: '2026.03.12',
       readMin: 6,
       title: 'The Architecture of Ma',
@@ -86,7 +82,7 @@ export const JOURNAL_POSTS = {
     {
       slug: 'ink-monochrome',
       num: '02',
-      category: 'VISUAL',
+      tags: ['VISUAL'],
       date: '2026.02.28',
       readMin: 8,
       title: 'Ink & Monochrome',
@@ -97,7 +93,7 @@ export const JOURNAL_POSTS = {
     {
       slug: 'neo-orientalism',
       num: '03',
-      category: 'CULTURE',
+      tags: ['CULTURE'],
       date: '2026.02.08',
       readMin: 7,
       title: 'Neo-Orientalism',
@@ -108,7 +104,7 @@ export const JOURNAL_POSTS = {
     {
       slug: 'bleach-aesthetic',
       num: '04',
-      category: 'AESTHETIC',
+      tags: ['AESTHETIC'],
       date: '2026.01.20',
       readMin: 9,
       title: 'Notes from Bleach',
@@ -124,6 +120,25 @@ export const JOURNAL_POSTS = {
  * which stay as the default until the first save.
  * @typedef {{ posts: typeof JOURNAL_POSTS, content: typeof JOURNAL_CONTENT }} JournalData
  */
+/** Filter bar labels on the Journal list. */
+export const JOURNAL_FILTER = {
+  zh: { label: '依標籤篩選', all: '全部' },
+  en: { label: 'Filter by tag', all: 'ALL' },
+}
+
+/** A post's tags. Posts saved before tags existed have one `category`, which becomes the only tag. */
+export const postTags = (post) => post.tags ?? (post.category ? [post.category] : [])
+
+/** Every tag with its post count: most used first, then A to Z. */
+export function tagCounts(posts) {
+  const counts = new Map()
+  for (const p of posts) for (const t of postTags(p)) counts.set(t, (counts.get(t) ?? 0) + 1)
+  return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+}
+
+/** Edit-panel text to tags: split on commas (also ，、), trim, uppercase, drop blanks and repeats. */
+export const parseTags = (text) => [...new Set(text.split(/[,，、]/).map((t) => t.trim().toUpperCase()).filter(Boolean))]
+
 export const getDefaultJournal = () => ({ posts: JOURNAL_POSTS, content: JOURNAL_CONTENT })
 export const cloneJournal = (j) => structuredClone(j)
 

@@ -113,6 +113,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 左右留白用 `--page-pad`（`clamp(20px, 4vw, 68px)`）。
 - Work 和 Journal 列表的欄寬是 `--page-column`（1104px）。容器寫 `max-width: var(--page-column-box)`，左右 padding 用 `var(--page-pad)`。
 - Journal 列表：最新一篇用大卡片，其他文章是一列一篇（約 68px），按年份分組，年份標在左欄。
+- Journal 列表上方有一排標籤篩選（`Tag`），一次選一個，網址帶 `?tag=`。每篇文章可以有多個標籤，英文大寫，中英文共用。標籤取代了舊的分類（category）。
 - Journal 文章頁和列表用同一個外框（`--page-column-box`）。分隔線和頁尾從左邊緣到右邊緣。其他內容（返回連結、標題、內文、圖片、程式碼、引言、輪播）離外框左右各 8px（`--space-2`），和列表同寬。卡片和文字同寬。（2026-11-19 Wade 決定拿掉 656px 的上限。）
 - 斷點：主要用 900px（平板以下）和 768px（手機）。新程式碼只用這兩個。
 - 線：0.5px，顏色 `--ember-line` 或 `--ember-whisper`。格線和分隔線可以用虛線。

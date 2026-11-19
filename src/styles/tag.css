@@ -1,0 +1,65 @@
+/* Tag (src/components/Tag.jsx). Plain: gold label text. Button: a pill in a filter bar.
+   Gold marks the chosen pill and hover only, as everywhere else on the site. */
+
+.tag {
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  line-height: var(--type-label-lh);
+  letter-spacing: var(--type-label-ls);
+  text-transform: uppercase;
+  color: var(--ember-soft);
+}
+
+.tag-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+}
+
+.tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tag--button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  box-shadow: inset 0 0 0 0.5px var(--line-strong);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    color 0.3s var(--ease-touch),
+    background-color 0.3s var(--ease-touch),
+    box-shadow 0.3s var(--ease-touch);
+}
+
+.tag--button:hover {
+  background: var(--ember-whisper);
+  color: var(--text-primary);
+}
+
+.tag--button[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 0.5px var(--ember);
+  color: var(--ember-soft);
+}
+
+.tag--button:focus-visible {
+  outline: 1px solid var(--ember-line);
+  outline-offset: 2px;
+}
+
+.tag__count {
+  color: var(--text-tertiary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tag--button {
+    transition: none;
+  }
+}
