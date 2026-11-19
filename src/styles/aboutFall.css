@@ -99,7 +99,10 @@
   transform: translateY(8px);
   transition:
     opacity 0.6s ease,
-    transform 0.6s ease;
+    transform 0.6s ease,
+    padding 0.4s var(--ease-touch),
+    background-color 0.4s var(--ease-touch),
+    backdrop-filter 0.4s var(--ease-touch);
   pointer-events: none;
 }
 
@@ -171,13 +174,18 @@
   grid-template-rows: 1fr;
 }
 
+/* max-height stays on when closed too, so closing starts from the capped height and does not jump */
 .about-fall__caption-details > div {
   min-height: 0;
+  max-height: min(45vh, 420px);
   overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-touch);
 }
 
 .about-fall__caption-details:not([inert]) > div {
-  max-height: min(45vh, 420px);
+  opacity: 1;
+  transition-delay: 0.1s;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -397,7 +405,7 @@ html.about-fall-doc body::-webkit-scrollbar {
     bottom: 76px;
   }
 
-  .about-fall__caption-details:not([inert]) > div {
+  .about-fall__caption-details > div {
     max-height: 36vh;
   }
 }
@@ -405,6 +413,7 @@ html.about-fall-doc body::-webkit-scrollbar {
 @media (prefers-reduced-motion: reduce) {
   .about-fall__caption,
   .about-fall__caption-details,
+  .about-fall__caption-details > div,
   .about-fall__caption-more svg {
     transition: none;
   }
