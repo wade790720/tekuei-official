@@ -691,7 +691,7 @@
   inset: 0 var(--page-gutter);
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   pointer-events: none;
 }
 
@@ -703,7 +703,7 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   padding: var(--space-12) var(--page-gutter) 0;
 }
 
@@ -736,13 +736,6 @@
 
 .journal-footer__title {
   margin-bottom: var(--space-2);
-}
-
-.journal-footer__tagline {
-  margin: var(--space-2) 0 0;
-  font-size: var(--type-caption);
-  line-height: 1.8;
-  color: var(--j-text-dim);
 }
 
 .journal-footer__copy {

@@ -148,18 +148,14 @@ function FeaturedPost({ post }) {
   )
 }
 
-// Home-page anchors (#work) need the home path when used from /journal.
-const toHome = (href) => (href.startsWith('#') ? `/${href}` : href)
-
 function FooterLink({ href, i, children }) {
-  const target = toHome(href)
   const props = { className: 'journal-footer__link', style: { '--i': i } }
-  return target.startsWith('/') ? (
-    <Link to={target} {...props}>
+  return href.startsWith('/') ? (
+    <Link to={href} {...props}>
       {children}
     </Link>
   ) : (
-    <a href={target} {...props}>
+    <a href={href} {...props}>
       {children}
     </a>
   )
@@ -183,14 +179,12 @@ function JournalFooter() {
 
   const columns = [
     { title: 'Explore', links: footer.explore },
-    { title: 'Services', links: footer.services.map((s) => ({ label: s, href: '#contact' })) },
     { title: 'Contact', links: footer.contact },
   ]
 
   return (
     <footer className="journal-footer" ref={root}>
       <div className="journal-footer__rules" aria-hidden>
-        <span />
         <span />
         <span />
         <span />
@@ -203,14 +197,6 @@ function JournalFooter() {
           <div className="journal-footer__sub journal-footer__r" style={{ '--i': 1 }}>
             德 溎
           </div>
-          <p className="journal-footer__tagline journal-footer__r" style={{ '--i': 2 }}>
-            {footer.tagline.map((line, i) => (
-              <span key={line}>
-                {i > 0 ? <br /> : null}
-                {line}
-              </span>
-            ))}
-          </p>
           <div className="journal-footer__copy journal-footer__r" style={{ '--i': 3 }}>
             © 2026 TEKUEI
           </div>
