@@ -51,7 +51,7 @@
   font-weight: 400;
   font-size: 28px;
   letter-spacing: 0;
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .cms-gate__field {
@@ -76,7 +76,7 @@
   background: var(--surface-2);
   box-shadow: var(--cms-ring);
   font-size: var(--type-small);
-  color: var(--ink);
+  color: var(--text-primary);
   animation: cms-pop 0.25s var(--ease-touch);
 }
 
@@ -87,8 +87,8 @@
 .cms-gate__spin {
   width: 14px;
   height: 14px;
-  border: 1.5px solid var(--ink-22);
-  border-top-color: var(--ink);
+  border: 1.5px solid var(--gray-a8);
+  border-top-color: var(--gray-12);
   border-radius: 50%;
   animation: cms-spin 0.7s linear infinite;
 }
@@ -104,7 +104,7 @@
   margin: 0;
   font-family: var(--font-mono);
   font-size: var(--type-caption);
-  color: var(--ink-50);
+  color: var(--text-tertiary);
 }
 
 /* ── Panel ──
@@ -140,10 +140,10 @@
   display: flex;
   flex-direction: column;
   width: var(--cms-panel-w);
-  border-left: 0.5px solid var(--ink-04);
+  border-left: 0.5px solid var(--gray-a3);
   background: var(--surface-1);
   box-shadow: -24px 0 48px rgba(0, 0, 0, 0.35);
-  color: var(--ink);
+  color: var(--text-primary);
   font-family: var(--font-serif);
   animation: cms-slide 0.4s var(--ease-touch);
 }
@@ -154,7 +154,7 @@
   justify-content: space-between;
   gap: var(--space-4);
   padding: var(--space-5) var(--space-6);
-  border-bottom: 0.5px solid var(--ink-04);
+  border-bottom: 0.5px solid var(--gray-a3);
 }
 
 .cms-panel__heading {
@@ -173,7 +173,7 @@
   white-space: nowrap;
   font-family: var(--font-mono);
   font-size: var(--type-label);
-  color: var(--ink-50);
+  color: var(--text-tertiary);
 }
 
 .cms-panel__actions {
@@ -184,10 +184,10 @@
 
 .cms-panel__status {
   padding: var(--space-2) var(--space-6);
-  border-bottom: 0.5px solid var(--ink-04);
+  border-bottom: 0.5px solid var(--gray-a3);
   font-family: var(--font-mono);
   font-size: var(--type-label);
-  color: var(--ink-50);
+  color: var(--text-tertiary);
 }
 
 .cms-panel__status[data-state='dirty'] {
@@ -204,7 +204,7 @@
   overscroll-behavior: contain;
   padding: 0 0 var(--space-24);
   scrollbar-width: thin;
-  scrollbar-color: var(--ink-22) transparent;
+  scrollbar-color: var(--gray-a8) transparent;
 }
 
 .cms-section + .cms-section {
@@ -220,7 +220,7 @@
   font-weight: 400;
   font-size: var(--type-label);
   letter-spacing: var(--type-label-ls);
-  color: var(--ink-50);
+  color: var(--text-tertiary);
   font-family: var(--font-label);
 }
 
@@ -230,7 +230,7 @@
   gap: var(--space-5);
   margin: 0 var(--space-6);
   padding: var(--space-4) 0;
-  border-bottom: 0.5px solid var(--ink-04);
+  border-bottom: 0.5px solid var(--gray-a3);
 }
 
 .cms-row__label {
@@ -275,7 +275,7 @@
   font: inherit;
   font-size: var(--type-small);
   line-height: 1.6;
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .cms-input::placeholder {
@@ -316,13 +316,13 @@
   border-radius: 6px;
   background: transparent;
   font-size: var(--type-caption);
-  color: var(--ink-50);
+  color: var(--text-tertiary);
   cursor: pointer;
 }
 
 .cms-icon:hover:not(:disabled) {
-  background: var(--ink-04);
-  color: var(--ink);
+  background: var(--gray-a3);
+  color: var(--text-primary);
 }
 
 .cms-icon:disabled {
@@ -342,10 +342,10 @@
   padding: 0 var(--space-3);
   border: 0;
   border-radius: 8px;
-  background: var(--ink);
+  background: var(--gray-12);
   font: inherit;
   font-size: var(--type-caption);
-  color: var(--paper);
+  color: var(--gray-1);
   white-space: nowrap;
   flex-shrink: 0;
   cursor: pointer;
@@ -369,14 +369,14 @@
 }
 
 .cms-btn--ghost:hover {
-  background: var(--ink-04);
-  color: var(--ink);
+  background: var(--gray-a3);
+  color: var(--text-primary);
 }
 
 .cms-btn__kbd {
   padding: 1px 5px;
   border-radius: 4px;
-  background: rgba(11, 11, 13, 0.12);
+  background: color-mix(in srgb, var(--surface-0) 12%, transparent);
   font-family: var(--font-mono);
   font-size: var(--type-label);
 }
@@ -402,7 +402,7 @@
   padding: 0;
   border: 0;
   border-radius: 999px;
-  background: var(--ink-22);
+  background: var(--gray-a8);
   cursor: pointer;
   transition: background-color 0.2s var(--ease-touch);
 }
@@ -418,7 +418,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--ink);
+  background: var(--gray-12);
   transition: transform 0.2s var(--ease-touch);
 }
 
@@ -477,7 +477,7 @@
 }
 
 .cms-drag:hover {
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .cms-sort[data-dragging] .cms-drag {
@@ -500,7 +500,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: var(--type-small);
-  color: var(--ink);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -553,20 +553,20 @@
 }
 
 .cms-ed-btn:hover {
-  background: rgba(244, 238, 231, 0.07);
-  color: var(--ink);
+  background: var(--gray-a5);
+  color: var(--text-primary);
 }
 
 .cms-ed-btn[aria-pressed='true'] {
   background: var(--line);
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .cms-ed-sep {
   width: 0.5px;
   height: 18px;
   margin: 0 var(--space-1);
-  background: var(--ink-22);
+  background: var(--gray-a8);
 }
 
 /* The tooltip sits below the bar: above it the panel's scroll area would clip it. */
@@ -580,8 +580,8 @@
   gap: var(--space-2);
   padding: 5px var(--space-2);
   border-radius: 8px;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--gray-12);
+  color: var(--gray-1);
   font-size: var(--type-caption);
   font-weight: var(--weight-regular);
   line-height: 1.3;
@@ -613,10 +613,10 @@
 .cms-ed-tip kbd {
   padding: 1px var(--space-1);
   border-radius: 4px;
-  background: rgba(11, 11, 13, 0.1);
+  background: color-mix(in srgb, var(--surface-0) 10%, transparent);
   font-family: var(--font-mono);
   font-size: var(--type-label);
-  color: rgba(11, 11, 13, 0.6);
+  color: color-mix(in srgb, var(--surface-0) 60%, transparent);
 }
 
 @keyframes cms-tip-in {
@@ -649,7 +649,7 @@
 
 .cms-ed-content p.lead {
   font-size: var(--type-small);
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .cms-ed-content h2,
@@ -657,7 +657,7 @@
   margin: 22px 0 var(--space-0-5);
   font-weight: 400;
   letter-spacing: 0;
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .cms-ed-content h2 {
@@ -676,7 +676,7 @@
 
 .cms-ed-content strong {
   font-weight: var(--weight-regular);
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .cms-ed-content a {
@@ -716,7 +716,7 @@
 .cms-ed--loading {
   padding: var(--space-2) 0;
   font-size: var(--type-caption);
-  color: var(--ink-50);
+  color: var(--text-tertiary);
 }
 
 .cms-ed-quote {
@@ -726,14 +726,14 @@
 }
 
 .cms-ed-quote__text p {
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .cms-ed-code {
   margin: var(--space-4) 0;
   overflow: hidden;
   border-radius: 10px;
-  background: var(--paper);
+  background: var(--surface-0);
   box-shadow: var(--cms-ring);
 }
 
@@ -741,7 +741,7 @@
   display: flex;
   gap: var(--space-3);
   padding: var(--space-2) var(--space-3);
-  border-bottom: 0.5px solid var(--ink-04);
+  border-bottom: 0.5px solid var(--gray-a3);
 }
 
 .cms-ed-code__bar .cms-ed-field:first-child {
@@ -770,7 +770,7 @@
   margin: var(--space-4) 0;
   padding: var(--space-3) var(--space-3) var(--space-3);
   border-radius: 10px;
-  background: var(--paper);
+  background: var(--surface-0);
   box-shadow: var(--cms-ring);
 }
 
@@ -823,7 +823,7 @@
   font-family: var(--font-serif);
   font-size: var(--type-caption);
   line-height: 1.7;
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .cms-ed-field::placeholder {
@@ -857,7 +857,7 @@
   box-shadow: var(--cms-ring), 0 12px 32px rgba(0, 0, 0, 0.45);
   font: inherit;
   font-size: var(--type-caption);
-  color: var(--ink);
+  color: var(--text-primary);
   cursor: pointer;
   animation: cms-rise 0.3s var(--ease-touch);
 }
@@ -986,7 +986,7 @@
   grid-template-columns: 72px minmax(0, 1fr);
   gap: var(--space-3);
   padding: var(--space-2) 0;
-  border-top: 0.5px solid var(--ink-04);
+  border-top: 0.5px solid var(--gray-a3);
 }
 
 .cms-ed-slide__thumb {
@@ -1029,7 +1029,7 @@
 
 .cms-ed-style:hover,
 .cms-ed-style[aria-expanded='true'] {
-  background: rgba(244, 238, 231, 0.07);
-  color: var(--ink);
+  background: var(--gray-a5);
+  color: var(--text-primary);
 }
 

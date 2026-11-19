@@ -2,10 +2,10 @@
 
 .home-banner,
 .home-latest {
-  --hh-bg: var(--paper);
+  --hh-bg: var(--surface-0);
   --hh-charcoal: var(--surface-1);
   --hh-elev: var(--surface-2);
-  --hh-ivory: var(--ink);
+  --hh-ivory: var(--gray-12);
   --hh-taupe: var(--text-secondary);
   --hh-gold: var(--ember);
   --hh-amber: var(--ember-soft);
@@ -70,8 +70,8 @@
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(11, 11, 13, 0.55) 0%, rgba(11, 11, 13, 0) 16%),
-    linear-gradient(0deg, var(--hh-bg) 0%, rgba(11, 11, 13, 0) 16%);
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-0) 55%, transparent) 0%, transparent 16%),
+    linear-gradient(0deg, var(--hh-bg) 0%, transparent 16%);
 }
 
 .home-banner__lead {
@@ -110,8 +110,8 @@
 
 .home-banner__pill:hover {
   border-color: var(--hh-amber);
-  background: rgba(228, 181, 123, 0.07);
-  box-shadow: 0 0 28px rgba(228, 181, 123, 0.16);
+  background: color-mix(in srgb, var(--accent-10) 7%, transparent);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--accent-10) 16%, transparent);
 }
 
 .home-banner__pill:hover span {
@@ -157,7 +157,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid rgba(201, 154, 99, 0.45);
+  border-top: 1px solid var(--accent-a8);
   padding: 26px 0 var(--space-6);
   font-size: var(--type-caption);
   letter-spacing: var(--type-label-ls);
@@ -221,20 +221,20 @@
 
 .home-latest__thumb--1 {
   background:
-    radial-gradient(120% 90% at 20% 10%, rgba(228, 181, 123, 0.34), transparent 60%),
-    linear-gradient(135deg, #2a211a, var(--paper));
+    radial-gradient(120% 90% at 20% 10%, color-mix(in srgb, var(--accent-10) 34%, transparent), transparent 60%),
+    linear-gradient(135deg, #2a211a, var(--surface-0));
 }
 
 .home-latest__thumb--2 {
   background:
-    radial-gradient(90% 80% at 50% 0%, rgba(228, 181, 123, 0.4), transparent 62%),
-    linear-gradient(180deg, #241c16, var(--paper));
+    radial-gradient(90% 80% at 50% 0%, color-mix(in srgb, var(--accent-10) 40%, transparent), transparent 62%),
+    linear-gradient(180deg, #241c16, var(--surface-0));
 }
 
 .home-latest__thumb--3 {
   background:
-    radial-gradient(110% 90% at 80% 20%, rgba(201, 154, 99, 0.36), transparent 60%),
-    linear-gradient(225deg, #2a211a, var(--paper));
+    radial-gradient(110% 90% at 80% 20%, color-mix(in srgb, var(--accent-9) 36%, transparent), transparent 60%),
+    linear-gradient(225deg, #2a211a, var(--surface-0));
 }
 
 .home-latest__body {
@@ -264,9 +264,9 @@
     left: var(--page-gutter);
     right: var(--page-gutter);
     background:
-      linear-gradient(90deg, var(--hh-bg) 0%, rgba(11, 11, 13, 0) 9%, rgba(11, 11, 13, 0) 91%, var(--hh-bg) 100%),
-      linear-gradient(180deg, rgba(11, 11, 13, 0.55) 0%, rgba(11, 11, 13, 0) 16%),
-      linear-gradient(0deg, var(--hh-bg) 0%, rgba(11, 11, 13, 0) 16%);
+      linear-gradient(90deg, var(--hh-bg) 0%, transparent 9%, transparent 91%, var(--hh-bg) 100%),
+      linear-gradient(180deg, color-mix(in srgb, var(--surface-0) 55%, transparent) 0%, transparent 16%),
+      linear-gradient(0deg, var(--hh-bg) 0%, transparent 16%);
   }
 }
 
@@ -296,7 +296,7 @@
   }
 
   .home-banner__scrim {
-    background: linear-gradient(0deg, var(--hh-bg) 0%, rgba(11, 11, 13, 0.78) 26%, rgba(11, 11, 13, 0) 52%);
+    background: linear-gradient(0deg, var(--hh-bg) 0%, color-mix(in srgb, var(--surface-0) 78%, transparent) 26%, transparent 52%);
   }
 
   .home-banner__lead {

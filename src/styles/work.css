@@ -10,7 +10,7 @@
 
   --bg: transparent;
   --bg-deep: var(--surface-2);
-  --text: var(--ink);
+  --text: var(--gray-12);
   --accent: var(--ember);
   --accent-line: var(--ember-line);
   --panel: var(--surface-1);
@@ -85,7 +85,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
 }
 
 .work-page-header .count {
-  color: var(--ink-22);
+  color: var(--gray-a8);
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
   font-family: var(--font-label);
@@ -302,7 +302,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
 .work-info .tag {
   padding: var(--space-1) var(--space-3);
   border: 0.5px solid var(--line-strong);
-  background: rgba(36, 32, 36, 0.35);
+  background: color-mix(in srgb, var(--surface-2) 35%, transparent);
   color: var(--accent);
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
@@ -382,7 +382,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
 }
 
 .work-page-footer .mark {
-  color: var(--ink-22);
+  color: var(--gray-a8);
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
   font-family: var(--font-label);

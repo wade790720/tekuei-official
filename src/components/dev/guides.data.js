@@ -173,7 +173,7 @@ npm run dev`,
       ['DESIGN.md', '視覺和動態規範。'],
       ['src/styles/tokens.css', '所有設計變數。'],
     ],
-    references: '建立字級和間距時量測的三個網站。TEKUEI 一欄是採用的值。',
+    references: '建立字級和間距時量測的三個網站。TEKUEI 一欄即時讀取 tokens.css 和文章版面，永遠是目前的設定。',
   },
 
   // ── Theme ──

@@ -64,7 +64,7 @@
 
 .howto-checkin-hero__title {
   margin: 0;
-  color: var(--ink);
+  color: var(--text-primary);
   letter-spacing: 0;
   font-weight: var(--weight-regular);
   font-size: 1.625rem;
@@ -139,7 +139,7 @@
 
 .howto-checkin-step__label {
   margin: 0 0 var(--space-2);
-  color: var(--ink);
+  color: var(--text-primary);
   letter-spacing: 0;
   font-weight: var(--weight-regular);
   font-size: var(--type-body);
@@ -149,7 +149,7 @@
 
 .howto-checkin-step__title {
   margin: 0 0 var(--space-3);
-  color: var(--ink);
+  color: var(--text-primary);
   letter-spacing: 0;
   font-weight: var(--weight-regular);
   font-size: var(--type-lead);
@@ -170,7 +170,7 @@
 }
 
 .howto-checkin-step__em {
-  color: var(--ink);
+  color: var(--text-primary);
   font-weight: var(--weight-regular);
 }
 
@@ -182,9 +182,9 @@
   padding: var(--space-4) var(--space-6);
   min-height: 48px;
   width: 100%;
-  border: 0.5px solid var(--ink);
-  background: var(--ink);
-  color: var(--paper);
+  border: 0.5px solid var(--gray-12);
+  background: var(--gray-12);
+  color: var(--gray-1);
   text-decoration: none;
   letter-spacing: 0;
   font-weight: var(--weight-regular);
@@ -257,7 +257,7 @@
 .howto-checkin-perks__title {
   margin: 0 0 var(--space-6);
   max-width: var(--text-max);
-  color: var(--ink);
+  color: var(--text-primary);
   letter-spacing: 0;
   font-weight: var(--weight-regular);
   font-size: var(--type-lead);
@@ -292,7 +292,7 @@
 
 .howto-checkin-perk__title {
   margin: 0 0 var(--space-2);
-  color: var(--ink);
+  color: var(--text-primary);
   letter-spacing: 0;
   font-weight: var(--weight-regular);
   font-size: var(--type-body);
@@ -324,7 +324,7 @@
 
 .howto-checkin-final__lead {
   margin: 0 0 var(--space-3);
-  color: var(--ink);
+  color: var(--text-primary);
   letter-spacing: 0;
   font-weight: var(--weight-regular);
   font-size: var(--type-body);
