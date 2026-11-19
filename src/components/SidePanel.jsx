@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useAdmin } from '../context/admin.js'
 import { CMS_LABELS as T } from '../data/admin.js'
@@ -6,6 +6,7 @@ import '../styles/cms.css'
 
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent)
 const SAVE_KEY = isMac ? '⌘S' : 'Ctrl S'
+const SAVED_MS = 1600 // how long the save button shows "已儲存" after a save
 
 /**
  * Right-side edit panel. It lies over the live page, which re-renders from the draft as you type.
@@ -19,6 +20,22 @@ const SAVE_KEY = isMac ? '⌘S' : 'Ctrl S'
  */
 export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, children }) {
   const { panelOpen, setPanelOpen } = useAdmin()
+  const [justSaved, setJustSaved] = useState(false)
+  const [prevSaving, setPrevSaving] = useState(saving)
+
+  // A save that ends without an error flashes "已儲存" on the button.
+  if (saving !== prevSaving) {
+    setPrevSaving(saving)
+    setJustSaved(!saving && !error)
+  }
+
+  useEffect(() => {
+    if (!justSaved) return undefined
+    const id = setTimeout(() => setJustSaved(false), SAVED_MS)
+    return () => clearTimeout(id)
+  }, [justSaved])
+
+  const saveState = saving ? 'saving' : justSaved && !dirty ? 'saved' : error ? 'error' : 'idle'
 
   // html.has-cms-panel moves the page and nav left (cms.css) while the panel is open.
   useLayoutEffect(() => {
@@ -56,8 +73,13 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
             {T.logout}
           </button>
           {/* Lights up only when there is something to save */}
-          <button type="button" className="cms-btn" onClick={onSave} disabled={saving || !dirty}>
-            {saving ? T.saving : T.save}
+          <button type="button" className="cms-btn cms-save" data-state={saveState} onClick={onSave} disabled={saving || !dirty}>
+            {/* key remounts the label so each state swaps in with a blur */}
+            <span className="cms-save__label" key={saveState}>
+              {saveState === 'saving' ? <span className="cms-spin" aria-hidden /> : null}
+              {saveState === 'saved' ? <CheckIcon /> : null}
+              {{ saving: T.saving, saved: T.saved }[saveState] ?? T.save}
+            </span>
             <kbd className="cms-btn__kbd">{SAVE_KEY}</kbd>
           </button>
         </div>
@@ -134,6 +156,14 @@ export function Switch({ checked, onChange, label }) {
     >
       <span className="cms-switch__knob" aria-hidden />
     </button>
+  )
+}
+
+export function CheckIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+      <path d="M3 8.5l3.2 3L13 4.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   )
 }
 

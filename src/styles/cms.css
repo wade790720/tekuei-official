@@ -84,7 +84,8 @@
   color: var(--ember-soft);
 }
 
-.cms-gate__spin {
+/* Spinner shared by the gate pill and the save button */
+.cms-spin {
   width: 14px;
   height: 14px;
   border: 1.5px solid var(--gray-a8);
@@ -363,6 +364,26 @@
 
 .cms-btn:disabled .cms-btn__kbd {
   background: transparent;
+}
+
+/* Save button: idle → saving → saved, each label blurs in (transitions.dev "Text states swap") */
+.cms-save__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  animation: cms-swap 0.3s var(--ease-touch);
+}
+
+.cms-save .cms-spin {
+  width: 12px;
+  height: 12px;
+  border-color: var(--gray-a6);
+  border-top-color: currentColor;
+}
+
+/* The "已儲存" flash; the button is disabled then, so override the grey disabled text */
+.cms-save[data-state='saved'] {
+  color: var(--ember-soft);
 }
 
 .cms-btn--ghost {
@@ -966,6 +987,14 @@
   }
 }
 
+@keyframes cms-swap {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(4px);
+  }
+}
+
 @keyframes cms-spin {
   to {
     transform: rotate(360deg);
@@ -977,7 +1006,8 @@
   .cms-gate__panel,
   .cms-gate__pill,
   .cms-panel,
-  .cms-dock{
+  .cms-dock,
+  .cms-save__label {
     animation: none;
   }
 
