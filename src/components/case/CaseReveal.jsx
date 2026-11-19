@@ -1,9 +1,9 @@
-import { useReveal } from '../hooks/useReveal.js'
+import { useReveal } from '../../hooks/useReveal.js'
 
 /**
  * @param {{ as?: keyof JSX.IntrinsicElements, className?: string, style?: import('react').CSSProperties, children: import('react').ReactNode, threshold?: number }} props
  */
-export function Reveal({
+export function CaseReveal({
   as: Tag = 'div',
   className = '',
   style,

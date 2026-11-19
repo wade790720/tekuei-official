@@ -14,3 +14,6 @@ export const NAV_LABELS = {
     lang: '中文, switch to Chinese',
   },
 }
+
+// Header logo. Same in both languages.
+export const SITE_LOGO = 'TEKUEI CHU'

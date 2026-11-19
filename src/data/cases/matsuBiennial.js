@@ -2,7 +2,7 @@ const ZH = {
   slug: 'matsu-biennial',
   documentTitle: 'TEKUEI · Matsu Biennial',
   hero: {
-    num: 'C A S E   0 1',
+    num: 'CASE 01',
     titleEm: 'Matsu',
     titleRest: 'Biennial',
     subtitle: '藝 術 島 嶼 策 展',
@@ -15,9 +15,9 @@ const ZH = {
     ],
   },
   media: {
-    fullWidthLabel: 'M A T S U   B I E N N I A L   ·   D I G I T A L   P O R T A L',
+    fullWidthLabel: 'MATSU BIENNIAL · DIGITAL PORTAL',
     fullWidthBg: 'linear-gradient(135deg, rgba(36, 32, 36, 0.94) 0%, rgba(24, 23, 25, 0.84) 50%, rgba(16, 15, 17, 0.76) 100%)',
-    inlineLabel: 'E X H I B I T I O N   ·   W E B   V I E W',
+    inlineLabel: 'EXHIBITION · WEB VIEW',
   },
   sections: {
     overview: {
@@ -81,10 +81,10 @@ const EN = {
   slug: 'matsu-biennial',
   documentTitle: 'TEKUEI · Matsu Biennial',
   hero: {
-    num: 'C A S E   0 1',
+    num: 'CASE 01',
     titleEm: 'Matsu',
     titleRest: 'Biennial',
-    subtitle: 'I S L A N D   A R T   C U R A T I O N',
+    subtitle: 'ISLAND ART CURATION',
     bg: ZH.hero.bg,
     meta: [
       { label: 'Client', lines: ['Matsu Biennial', 'National Matsu Arts Festival'] },
@@ -94,9 +94,9 @@ const EN = {
     ],
   },
   media: {
-    fullWidthLabel: 'M A T S U   B I E N N I A L   ·   D I G I T A L   P O R T A L',
+    fullWidthLabel: 'MATSU BIENNIAL · DIGITAL PORTAL',
     fullWidthBg: ZH.media.fullWidthBg,
-    inlineLabel: 'E X H I B I T I O N   ·   W E B   V I E W',
+    inlineLabel: 'EXHIBITION · WEB VIEW',
   },
   sections: {
     overview: {

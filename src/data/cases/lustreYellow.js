@@ -5,7 +5,7 @@ const ZH = {
   slug: 'lustre-yellow',
   documentTitle: 'TEKUEI · Lustre Yellow',
   hero: {
-    num: 'C A S E   0 3',
+    num: 'CASE 03',
     titleEm: 'Lustre',
     titleRest: 'Yellow',
     subtitle: '花 蜜 水 晶 花 工 藝',
@@ -18,9 +18,9 @@ const ZH = {
     ],
   },
   media: {
-    fullWidthLabel: 'L U S T R E   Y E L L O W   ·   B R A N D   S Y S T E M',
+    fullWidthLabel: 'LUSTRE YELLOW · BRAND SYSTEM',
     fullWidthBg: FULL_BG,
-    inlineLabel: 'S A L E S   P A G E   ·   D E S K T O P   V I E W',
+    inlineLabel: 'SALES PAGE · DESKTOP VIEW',
   },
   sections: {
     overview: {
@@ -86,10 +86,10 @@ const EN = {
   slug: 'lustre-yellow',
   documentTitle: 'TEKUEI · Lustre Yellow',
   hero: {
-    num: 'C A S E   0 3',
+    num: 'CASE 03',
     titleEm: 'Lustre',
     titleRest: 'Yellow',
-    subtitle: 'B R A N D   S Y S T E M   A R C H I T E C T U R E',
+    subtitle: 'BRAND SYSTEM ARCHITECTURE',
     bg: BG,
     meta: [
       { label: 'Client', lines: ['Ting-Ting Hsu', 'MADOKA Floral Design Academy · Associate Professor'] },
@@ -99,9 +99,9 @@ const EN = {
     ],
   },
   media: {
-    fullWidthLabel: 'L U S T R E   Y E L L O W   ·   B R A N D   S Y S T E M',
+    fullWidthLabel: 'LUSTRE YELLOW · BRAND SYSTEM',
     fullWidthBg: FULL_BG,
-    inlineLabel: 'S A L E S   P A G E   ·   D E S K T O P   V I E W',
+    inlineLabel: 'SALES PAGE · DESKTOP VIEW',
   },
   sections: {
     overview: {

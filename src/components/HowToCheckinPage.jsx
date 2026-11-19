@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { HomeFadeIn } from './HomeFadeIn.jsx'
+import { FadeIn } from './FadeIn.jsx'
 import {
   HOW_TO_CHECKIN_FINAL,
   HOW_TO_CHECKIN_HERO,
@@ -140,7 +140,7 @@ export default function HowToCheckinPage() {
 
               return (
               <li key={item.step} className="howto-checkin-step">
-                <HomeFadeIn className={layoutClass}>
+                <FadeIn className={layoutClass}>
                   <div className="howto-checkin-step__copy">
                     <p className="howto-checkin-step__label">
                       Step {item.step}
@@ -163,7 +163,7 @@ export default function HowToCheckinPage() {
                     )}
                   </div>
                   <StepMedia item={item} />
-                </HomeFadeIn>
+                </FadeIn>
               </li>
               )
             })}
@@ -172,22 +172,22 @@ export default function HowToCheckinPage() {
 
         <section className="howto-checkin-perks" aria-labelledby="howto-checkin-perks-title">
           <div className="howto-checkin-perks__inner">
-            <HomeFadeIn>
+            <FadeIn>
               <p className="howto-checkin-step__label howto-checkin-perks__label">{perksLabel.eyebrow}</p>
               <h2 className="howto-checkin-perks__title" id="howto-checkin-perks-title">
                 {perksLabel.heading}
               </h2>
-            </HomeFadeIn>
+            </FadeIn>
             <ul className="howto-checkin-perks__list">
               {perks.map((perk) => (
                 <li key={perk.num} className="howto-checkin-perk">
-                  <HomeFadeIn className="howto-checkin-perk__card">
+                  <FadeIn className="howto-checkin-perk__card">
                     <div className="howto-checkin-perk__num" aria-hidden>
                       {perk.num}
                     </div>
                     <h3 className="howto-checkin-perk__title">{perk.title}</h3>
                     <p className="howto-checkin-perk__body">{perk.body}</p>
-                  </HomeFadeIn>
+                  </FadeIn>
                 </li>
               ))}
             </ul>
@@ -195,11 +195,11 @@ export default function HowToCheckinPage() {
         </section>
 
         <footer className="howto-checkin-final">
-          <HomeFadeIn className="howto-checkin-final__inner">
+          <FadeIn className="howto-checkin-final__inner">
             <p className="howto-checkin-final__lead">{final.lead}</p>
             <p className="howto-checkin-final__body">{final.body}</p>
             <p className="howto-checkin-final__closing">{final.closing}</p>
-          </HomeFadeIn>
+          </FadeIn>
         </footer>
       </div>
     </div>

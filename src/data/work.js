@@ -10,7 +10,7 @@ export function cloneWorkContent(content = siteDefaults.work) {
 export const WORK_EN = {
   meta: { title: 'TEKUEI · Work' },
   header: {
-    pre: 'S E L E C T E D   W O R K',
+    pre: 'SELECTED WORK',
     title: 'Work',
     countSuffix: 'Projects',
   },
@@ -30,7 +30,7 @@ export const WORK_EN = {
       title: 'Biennial',
       titleEmWord: 'Matsu',
       titleEm: true,
-      subtitle: 'I S L A N D   A R T   C U R A T I O N',
+      subtitle: 'ISLAND ART CURATION',
       descriptionLines: [
         'The 3rd Matsu International Arts Festival —',
         'a digital gateway between island memory and contemporary creation.',
@@ -47,7 +47,7 @@ export const WORK_EN = {
       client: 'MONOLAB · MORAN Interactive Design',
       title: 'MONOLAB',
       titleEm: false,
-      subtitle: 'E M O T I O N A L   E C O S Y S T E M   ·   A R T   F I E L D',
+      subtitle: 'EMOTIONAL ECOSYSTEM · ART FIELD',
       descriptionLines: [
         'An art field co-creating emotional ecosystems —',
         'generative art, immersive experience, and digital art practice.',
@@ -64,7 +64,7 @@ export const WORK_EN = {
       client: 'Lustre Yellow · Crystal Art Flowers',
       title: 'Lustre Yellow',
       titleEm: false,
-      subtitle: 'B R A N D   S Y S T E M   A R C H I T E C T U R E',
+      subtitle: 'BRAND SYSTEM ARCHITECTURE',
       descriptionLines: [
         'A complete brand system for a MADOKA Floral Design Academy instructor —',
         'from story mining and sales page to ad strategy.',

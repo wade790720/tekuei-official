@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { POST_CARD_LABELS } from '../../data/journal.js'
-import { useLang } from '../../i18n'
-import '../../styles/postCards.css'
+import { CARD_LABELS } from '../data/cards.js'
+import { useLang } from '../i18n'
+import '../styles/cards.css'
 
 const RATES = [1, 1.5, 2]
 
@@ -15,7 +15,7 @@ const clock = (s) => {
  */
 export function VideoCard({ src, poster, caption, loop = false }) {
   const { lang } = useLang()
-  const t = POST_CARD_LABELS[lang]
+  const t = CARD_LABELS[lang]
   const root = useRef(null)
   const video = useRef(null)
   const [playing, setPlaying] = useState(false)
@@ -57,7 +57,7 @@ export function VideoCard({ src, poster, caption, loop = false }) {
 
   return (
     <figure className="post-figure">
-      <div className="post-card post-video" ref={root} data-playing={playing || undefined}>
+      <div className="card video-card" ref={root} data-playing={playing || undefined}>
         <video
           ref={video}
           src={src}
@@ -73,21 +73,21 @@ export function VideoCard({ src, poster, caption, loop = false }) {
         />
         <button
           type="button"
-          className="post-video__surface"
+          className="video-card__surface"
           onClick={toggle}
           aria-label={playing ? t.pause : t.play}
         >
-          <span className="post-video__big" aria-hidden>
+          <span className="video-card__big" aria-hidden>
             <PlayIcon size={22} />
           </span>
         </button>
-        <div className="post-video__bar">
-          <button type="button" className="post-video__btn" onClick={toggle} aria-label={playing ? t.pause : t.play}>
+        <div className="video-card__bar">
+          <button type="button" className="video-card__btn" onClick={toggle} aria-label={playing ? t.pause : t.play}>
             {playing ? <PauseIcon /> : <PlayIcon />}
           </button>
-          <span className="post-video__time">{clock(time)}</span>
+          <span className="video-card__time">{clock(time)}</span>
           <input
-            className="post-video__seek"
+            className="video-card__seek"
             type="range"
             min="0"
             max={duration || 0}
@@ -97,11 +97,11 @@ export function VideoCard({ src, poster, caption, loop = false }) {
             aria-label={t.seek}
             style={{ '--progress': `${progress}%` }}
           />
-          <span className="post-video__time">{clock(duration)}</span>
-          <button type="button" className="post-video__btn post-video__rate" onClick={nextRate} aria-label={t.speed}>
+          <span className="video-card__time">{clock(duration)}</span>
+          <button type="button" className="video-card__btn video-card__rate" onClick={nextRate} aria-label={t.speed}>
             {rate}×
           </button>
-          <button type="button" className="post-video__btn" onClick={fullscreen} aria-label={t.fullscreen}>
+          <button type="button" className="video-card__btn" onClick={fullscreen} aria-label={t.fullscreen}>
             <FullscreenIcon />
           </button>
         </div>

@@ -14,13 +14,80 @@
   --amber: #e4b57b; /* hover, glow */
   --bronze: #40352c; /* dividers, borders */
 
-  /* Surfaces */
-  --paper: var(--obsidian);
-  --paper-warm: var(--charcoal);
-  --paper-cool: var(--charcoal-elevated);
+  /* ── Color scales ──
+     Two 12-step scales, each with a solid and an alpha (transparent ivory or gold) variant.
+     Steps by job: 1–2 backgrounds, 3–5 interactive, 6–8 borders, 9–10 solid, 11–12 text.
+     The brand colours are anchors (gray 1, 3, 5, 12; accent 9, 10); the steps between are mixes.
+     The semantic tokens below point at scale steps, so components never use a step directly. */
+  --gray-1: var(--obsidian);
+  --gray-2: color-mix(in oklab, var(--ivory) 3%, var(--obsidian));
+  --gray-3: var(--charcoal);
+  --gray-4: color-mix(in oklab, var(--ivory) 7%, var(--obsidian));
+  --gray-5: var(--charcoal-elevated);
+  --gray-6: color-mix(in oklab, var(--ivory) 14%, var(--obsidian));
+  --gray-7: color-mix(in oklab, var(--ivory) 20%, var(--obsidian));
+  --gray-8: color-mix(in oklab, var(--ivory) 30%, var(--obsidian));
+  --gray-9: color-mix(in oklab, var(--ivory) 45%, var(--obsidian));
+  --gray-10: color-mix(in oklab, var(--ivory) 55%, var(--obsidian));
+  --gray-11: color-mix(in oklab, var(--ivory) 72%, var(--obsidian));
+  --gray-12: var(--ivory);
+
+  --gray-a1: rgba(244, 238, 231, 0.015);
+  --gray-a2: rgba(244, 238, 231, 0.03);
+  --gray-a3: rgba(244, 238, 231, 0.05);
+  --gray-a4: rgba(244, 238, 231, 0.06);
+  --gray-a5: rgba(244, 238, 231, 0.07);
+  --gray-a6: rgba(244, 238, 231, 0.08);
+  --gray-a7: rgba(244, 238, 231, 0.14);
+  --gray-a8: rgba(244, 238, 231, 0.22);
+  --gray-a9: rgba(244, 238, 231, 0.4);
+  --gray-a10: rgba(244, 238, 231, 0.64);
+  --gray-a11: rgba(244, 238, 231, 0.72);
+  --gray-a12: rgba(244, 238, 231, 0.9);
+
+  --accent-1: color-mix(in oklab, var(--gold) 4%, var(--obsidian));
+  --accent-2: color-mix(in oklab, var(--gold) 7%, var(--obsidian));
+  --accent-3: color-mix(in oklab, var(--gold) 11%, var(--obsidian));
+  --accent-4: color-mix(in oklab, var(--gold) 15%, var(--obsidian));
+  --accent-5: color-mix(in oklab, var(--gold) 19%, var(--obsidian));
+  --accent-6: color-mix(in oklab, var(--gold) 25%, var(--obsidian));
+  --accent-7: color-mix(in oklab, var(--gold) 33%, var(--obsidian));
+  --accent-8: color-mix(in oklab, var(--gold) 48%, var(--obsidian));
+  --accent-9: var(--gold);
+  --accent-10: var(--amber);
+  --accent-11: color-mix(in oklab, var(--amber) 85%, var(--ivory));
+  --accent-12: color-mix(in oklab, var(--amber) 35%, var(--ivory));
+
+  --accent-a1: rgba(201, 154, 99, 0.03);
+  --accent-a2: rgba(201, 154, 99, 0.05);
+  --accent-a3: rgba(201, 154, 99, 0.08);
+  --accent-a4: rgba(201, 154, 99, 0.14);
+  --accent-a5: rgba(201, 154, 99, 0.18);
+  --accent-a6: rgba(201, 154, 99, 0.24);
+  --accent-a7: rgba(201, 154, 99, 0.3);
+  --accent-a8: rgba(201, 154, 99, 0.45);
+  --accent-a9: var(--accent-9);
+  --accent-a10: var(--accent-10);
+  --accent-a11: var(--accent-11);
+  --accent-a12: var(--accent-12);
+
+  /* Text or icons placed on a solid accent (step 9) */
+  --accent-contrast: var(--gray-1);
+
+  /* Surfaces. New code uses --surface-0/1/2 (page, card, raised); paper-* are the old names. */
+  --paper: var(--gray-1);
+  --paper-warm: var(--gray-3);
+  --paper-cool: var(--gray-5);
+  --surface-0: var(--paper);
+  --surface-1: var(--paper-warm);
+  --surface-2: var(--paper-cool);
+
+  /* Lines. Neutral by default; gold lines (--ember-line) only mark the current page, focus or hover. */
+  --line: var(--gray-a6);
+  --line-strong: var(--gray-a7);
 
   /* Text hierarchy, ivory at falling strength */
-  --ink: var(--ivory);
+  --ink: var(--gray-12);
   --ink-90: rgba(244, 238, 231, 0.9);
   --ink-70: rgba(244, 238, 231, 0.72);
   --ink-68: rgba(244, 238, 231, 0.7);
@@ -32,11 +99,11 @@
   --ink-04: rgba(244, 238, 231, 0.05);
 
   /* Accent */
-  --ember: var(--gold);
-  --ember-soft: var(--amber);
+  --ember: var(--accent-9);
+  --ember-soft: var(--accent-10);
   --ember-deep: var(--gold);
-  --ember-line: rgba(201, 154, 99, 0.3);
-  --ember-whisper: rgba(201, 154, 99, 0.14);
+  --ember-line: var(--accent-a7);
+  --ember-whisper: var(--accent-a4);
   --ember-50: rgba(201, 154, 99, 0.5);
 
   /* Page width. Content stops growing at --page-max; wider screens extend the sides.
@@ -49,6 +116,13 @@
      Instrument Serif has no CJK glyphs, so the browser uses the next font for Chinese. index.html loads both. */
   --font-serif: 'Instrument Serif', 'Noto Serif TC', 'Source Han Serif TC', serif;
   --font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, monospace;
+  /* Labels, dates, categories, values: monospace, with the serif for any Chinese in them */
+  --font-label: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, 'Noto Serif TC', monospace;
+
+  /* Weights. Noto Serif TC is loaded at 200 / 300 / 400 and Instrument Serif at 400 only:
+     anything above 400 would be a faux bold. Body text is 400; light text on dark needs the weight. */
+  --weight-light: 300; /* large headings only */
+  --weight-regular: 400;
 
   /* Code highlighting (journal code cards). Muted, warm, readable on --paper-warm. */
   --code-keyword: var(--gold);
@@ -60,14 +134,75 @@
   --code-punct: var(--ink-62);
   --code-plain: var(--ink-90);
 
+  /* ── Foundations ── Shown with examples on /dev/component-library (Theme). */
+
+  /* Text tiers: four steps on the gray alpha scale. Faint is for decoration, never for reading. */
+  --text-primary: var(--ink); /* headings, the thing to read first */
+  --text-body: var(--gray-a12); /* paragraphs */
+  --text-secondary: var(--gray-a11); /* descriptions, captions */
+  --text-tertiary: var(--gray-a10); /* meta, dates, hints; the dimmest text that still passes 4.5:1 */
+  --text-faint: var(--gray-a9); /* decoration only */
+  --danger: #e8907c;
+  --annotate: #ff6fae; /* dev only: spec annotations in the component library */
+
+  /* Type scale. Hierarchy comes from size and text tier, plus 300 for large headings.
+     Chinese needs more leading than Latin, so body text sits near 1.9.
+     Reading text is 12px or more; Instrument Serif only from 18px (it is a display face). */
+  --type-display: clamp(44px, 6vw, 72px); /* one per page: Journal, About headers */
+  --type-display-lh: 1.05;
+  --type-display-ls: -0.02em;
+  --type-h1: 32px; /* post title */
+  --type-h1-lh: 1.35;
+  --type-h2: 22px; /* section heading in a post */
+  --type-h2-lh: 1.5;
+  --type-h3: 18px;
+  --type-h3-lh: 1.6;
+  --type-lead: 18px; /* opening paragraph */
+  --type-lead-lh: 1.9;
+  --type-body: 17px; /* reading text; jakub.kr 17px, interfaces.dev 18px */
+  --type-body-lh: 1.9;
+  --type-small: 14px; /* UI text, secondary copy */
+  --type-small-lh: 1.6;
+  --type-caption: 13px; /* captions, meta */
+  --type-caption-lh: 1.5;
+  --type-label: 11px; /* labels in --font-label, uppercase */
+  --type-label-lh: 1.3;
+  --type-label-ls: 0.1em;
+  --type-mono: 13px;
+  --type-mono-lh: 1.65;
+
+  /* Spacing: a 4px grid. Space outside a group is always larger than space inside it. */
+  --space-0-5: 2px; /* hairline gaps: icon and its badge */
+  --space-1: 4px; /* inside a component: icon and its text */
+  --space-2: 8px; /* related elements: label and field, buttons in a group */
+  --space-3: 12px; /* left and right padding of buttons and inputs */
+  --space-4: 16px; /* unrelated elements; card padding */
+  --space-5: 20px; /* small groups: a card's header to its body */
+  --space-6: 24px; /* sub-sections; paragraph to paragraph */
+  --space-8: 32px; /* blocks inside a section; around figures */
+  --space-10: 40px; /* a section's title to its content */
+  --space-12: 48px; /* between groups of blocks */
+  --space-16: 64px; /* before a heading in a post */
+  --space-24: 96px; /* between page sections on phones and tablets */
+  --space-32: 128px; /* between page sections on desktop */
+  --section-gap: clamp(var(--space-24), 10vw, var(--space-32)); /* the one section rhythm */
+
+  /* Corner radius: small controls 8, cards 12–16, pills full */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
   /* ── Motion & typography rhythm ── */
   --ease-touch: cubic-bezier(0.16, 0.08, 0.12, 1);
-  --ls-title: 0.05em;
-  --ls-label: 0.46em;
-  --ls-body: 0.025em;
+  /* Tracking: three values only. Display -0.02em, everything else 0, labels 0.1em.
+     --ls-* are the old names, kept so old rules follow the new values. */
+  --ls-title: 0;
+  --ls-label: var(--type-label-ls);
+  --ls-body: 0;
 
   /* ── Legacy aliases（內頁相容） ── */
-  --ink-30: var(--taupe);
+  --ink-30: var(--text-secondary);
   --ink-30-head: var(--ink);
   --ink-30-muted: var(--ink-70);
   --ink-30-faint: var(--ink-65);

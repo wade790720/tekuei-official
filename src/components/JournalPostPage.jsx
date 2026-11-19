@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { HomeFadeIn } from './HomeFadeIn.jsx'
+import { FadeIn } from './FadeIn.jsx'
 import { JournalPostEditPanel } from './journal/JournalEditPanel.jsx'
-import { PostDoc } from './journal/PostDoc.jsx'
-import { getPostDoc } from '../lib/postDoc.js'
+import { RichText } from './RichText.jsx'
+import { getDoc } from '../lib/richText.js'
 import { useJournal } from '../context/journal.js'
 import { getAdjacentPosts, getJournalPost } from '../data/journal.js'
 import { useLang } from '../i18n'
@@ -46,7 +46,7 @@ export default function JournalPostPage() {
 
       <article className="journal-post">
         <header className="journal-post__header">
-          <HomeFadeIn>
+          <FadeIn>
             <Link to="/journal" className="journal-post__back">
               <span className="journal-post__back-line" aria-hidden />
               JOURNAL
@@ -61,13 +61,13 @@ export default function JournalPostPage() {
             <div className="journal-post__num">{post.num}</div>
             <h1 className="journal-post__title">{post.title}</h1>
             <div className="journal-post__title-en">{post.titleEn}</div>
-          </HomeFadeIn>
+          </FadeIn>
         </header>
 
         <div className="journal-post__rule" aria-hidden />
 
         <div className="journal-post__body">
-          <PostDoc doc={getPostDoc(content)} />
+          <RichText doc={getDoc(content)} />
         </div>
 
         <footer className="journal-post__footer">

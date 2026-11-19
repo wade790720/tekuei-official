@@ -1,0 +1,459 @@
+/* Code, image and video cards inside journal posts (src/components/journal/).
+   One card look: charcoal surface, 16px radius, a 1px ivory ring instead of a border. */
+
+.card {
+  --post-ring: 0 0 0 1px var(--line), 0 2px 6px rgba(0, 0, 0, 0.35);
+
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--surface-1);
+  box-shadow: var(--post-ring);
+}
+
+.post-figure,
+.code-card {
+  margin: var(--space-10) 0;
+}
+
+.post-figure__caption {
+  margin-top: var(--space-4);
+  text-align: center;
+  font-size: var(--type-small);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.card__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Code ── */
+
+.code-card__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: var(--space-1) var(--space-1) 0;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+  border-radius: 12px;
+  background: var(--surface-2);
+  box-shadow: 0 0 0 1px var(--ink-04);
+}
+
+.code-card__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+.code-card__lang {
+  flex-shrink: 0;
+  padding: var(--space-0-5) var(--space-1);
+  border-radius: 4px;
+  background: var(--ember-whisper);
+  font-family: var(--font-mono);
+  font-size: var(--type-label);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: var(--type-label-ls);
+  color: var(--ember);
+}
+
+.code-card__copy {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background-color 0.2s var(--ease-touch),
+    color 0.2s var(--ease-touch);
+}
+
+.code-card__copy:hover {
+  background: var(--ink-04);
+  color: var(--ink);
+}
+
+.code-card__copy[data-copied] {
+  color: var(--ember);
+}
+
+.code-card__pre {
+  margin: 0;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  line-height: 1.65;
+  letter-spacing: 0;
+  tab-size: 2;
+  color: var(--code-plain);
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-22) transparent;
+}
+
+.code-card__pre code {
+  font: inherit;
+}
+
+.code-card__pre:focus-visible,
+.code-card__copy:focus-visible,
+.video-card__surface:focus-visible,
+.video-card__btn:focus-visible,
+.video-card__seek:focus-visible {
+  outline: 1px solid var(--ember);
+  outline-offset: -2px;
+}
+
+.code-card__tok--keyword { color: var(--code-keyword); }
+.code-card__tok--fn { color: var(--code-fn); }
+.code-card__tok--prop { color: var(--code-prop); }
+.code-card__tok--string { color: var(--code-string); }
+.code-card__tok--number { color: var(--code-number); }
+.code-card__tok--comment { color: var(--code-comment); font-style: italic; }
+.code-card__tok--punct { color: var(--code-punct); }
+
+/* ── Image ── */
+
+.image-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* A small image (phone screenshot) centred on the card */
+.image-card--frame {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-12) var(--space-6);
+}
+
+.image-card--frame img {
+  width: auto;
+  max-width: min(100%, 280px);
+  max-height: 560px;
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+/* ── Video ── */
+
+.video-card {
+  background: #000;
+}
+
+.video-card video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.video-card__surface {
+  position: absolute;
+  inset: 0 0 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.video-card__big {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding-left: 3px; /* optical centre of the triangle */
+  border-radius: 50%;
+  background: rgba(244, 238, 231, 0.2);
+  color: var(--ink);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    opacity 0.25s var(--ease-touch),
+    transform 0.25s var(--ease-touch);
+}
+
+.video-card[data-playing] .video-card__big {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.video-card__bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-3) var(--space-2);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+  color: var(--ink);
+  transition: opacity 0.25s var(--ease-touch);
+}
+
+/* While playing, the bar shows on hover or keyboard focus only */
+.video-card[data-playing] .video-card__bar {
+  opacity: 0;
+}
+
+.video-card[data-playing]:hover .video-card__bar,
+.video-card[data-playing]:focus-within .video-card__bar {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .video-card[data-playing] .video-card__bar {
+    opacity: 1;
+  }
+}
+
+.video-card__btn {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 var(--space-1);
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease-touch);
+}
+
+.video-card__btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.video-card__time,
+.video-card__rate {
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.video-card__rate {
+  min-width: 36px;
+}
+
+.video-card__seek {
+  flex: 1;
+  min-width: 40px;
+  height: 20px;
+  margin: 0 var(--space-1);
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.video-card__seek::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--ink) var(--progress),
+    rgba(244, 238, 231, 0.28) var(--progress)
+  );
+}
+
+.video-card__seek::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--ink) var(--progress),
+    rgba(244, 238, 231, 0.28) var(--progress)
+  );
+}
+
+.video-card__seek::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: var(--ink);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.video-card__seek::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.video-card:fullscreen {
+  display: flex;
+  align-items: center;
+  border-radius: 0;
+}
+
+.video-card:fullscreen video {
+  max-height: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .post-figure,
+  .code-card {
+    margin: var(--space-8) 0;
+  }
+
+  .image-card--frame {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  /* Narrow: keep the elapsed time, drop the total */
+  .video-card__time:nth-of-type(2) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-card__copy,
+  .video-card__big,
+  .video-card__bar,
+  .video-card__btn {
+    transition: none;
+  }
+}
+
+/* ── Slides (SlidesCard) ──
+   After the interfaces.dev slider: each slide is the track width minus 160px, so the neighbours
+   peek in 80px on each side, and the edges fade into the page. */
+
+.slides-card {
+  margin: var(--space-10) 0;
+}
+
+/* Wider than the text column, as in the reference */
+@media (min-width: 900px) {
+  .slides-card {
+    margin-inline: -80px;
+  }
+}
+
+.slides-card__track {
+  position: relative; /* slides measure offsetLeft from the track (SlidesCard) */
+  display: flex;
+  gap: var(--space-5);
+  padding: var(--space-1) var(--space-24);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  cursor: grab;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 64px, #000 calc(100% - 64px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 64px, #000 calc(100% - 64px), transparent);
+}
+
+.slides-card__track::-webkit-scrollbar {
+  display: none;
+}
+
+.slides-card__track[data-dragging] {
+  scroll-snap-type: none; /* free movement while the mouse drags; snapped again on release */
+  cursor: grabbing;
+  user-select: none;
+}
+
+.slides-card__track:focus-visible {
+  outline: 1px solid var(--ember);
+  outline-offset: 4px;
+}
+
+.slides-card__slide {
+  flex: 0 0 100%;
+  margin: 0;
+  scroll-snap-align: center;
+}
+
+.slides-card__frame img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.slides-card__nav {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.slides-card__btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-1);
+  box-shadow: 0 0 0 1px var(--line);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease-touch), color 0.2s var(--ease-touch);
+}
+
+.slides-card__btn:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.slides-card__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.slides-card__btn:focus-visible {
+  outline: 1px solid var(--ember);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .slides-card__track {
+    gap: var(--space-3);
+    padding: var(--space-1) var(--space-6);
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slides-card__btn {
+    transition: none;
+  }
+}

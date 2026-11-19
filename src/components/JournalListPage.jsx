@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { HomeFadeIn } from './HomeFadeIn.jsx'
+import { FadeIn } from './FadeIn.jsx'
 import { JOURNAL_HEADER, JOURNAL_META } from '../data/journal.js'
 import { useJournal } from '../context/journal.js'
 import { JournalListEditPanel } from './journal/JournalEditPanel.jsx'
@@ -32,7 +32,7 @@ export default function JournalListPage() {
       <header className="journal-header">
         <canvas className="journal-header__glyphs" ref={glyphs} aria-hidden />
         <div className="journal-header__inner">
-          <HomeFadeIn>
+          <FadeIn>
             <div className="journal-header__pre">{header.pre}</div>
             <h1 className="journal-header__title">Journal</h1>
             <p className="journal-header__desc">
@@ -43,7 +43,7 @@ export default function JournalListPage() {
                 </span>
               ))}
             </p>
-          </HomeFadeIn>
+          </FadeIn>
           <div className="journal-header__count" aria-hidden>
             {String(posts.length).padStart(2, '0')} Entries
           </div>
@@ -53,7 +53,7 @@ export default function JournalListPage() {
 
       <div className="journal-list">
         {posts.map((post, index) => (
-          <HomeFadeIn key={post.slug} as={Link} to={`/journal/${post.slug}`} className="journal-card">
+          <FadeIn key={post.slug} as={Link} to={`/journal/${post.slug}`} className="journal-card">
             <div className="journal-card__index">
               <span className="journal-card__num">{post.num}</span>
               <span className="journal-card__line" aria-hidden />
@@ -77,7 +77,7 @@ export default function JournalListPage() {
             {index < posts.length - 1 ? (
               <div className="journal-card__rule" aria-hidden />
             ) : null}
-          </HomeFadeIn>
+          </FadeIn>
         ))}
       </div>
 

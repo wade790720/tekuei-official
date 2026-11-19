@@ -1,15 +1,15 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { CmsInput, CmsPanel, CmsRow, CmsSection, CmsTextarea } from '../admin/CmsPanel.jsx'
+import { TextInput, SidePanel, FormRow, PanelSection, TextArea } from '../SidePanel.jsx'
 import { useAdmin, useAdminSave } from '../../context/admin.js'
 import { useJournal } from '../../context/journal.js'
 import { CMS_LABELS as T } from '../../data/admin.js'
 import { useLang } from '../../i18n'
 import { uploadSiteImage } from '../../lib/adminApi.js'
-import { emptyDoc, getPostDoc } from '../../lib/postDoc.js'
+import { emptyDoc, getDoc } from '../../lib/richText.js'
 
 // Tiptap is large; load it only when Wade opens a post in edit mode, not for every visitor.
-const PostEditor = lazy(() => import('./editor/PostEditor.jsx').then((m) => ({ default: m.PostEditor })))
+const Editor = lazy(() => import('../Editor.jsx').then((m) => ({ default: m.Editor })))
 
 const LANGS = ['zh', 'en']
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -98,37 +98,37 @@ export function JournalPostEditPanel({ slug }) {
   const upload = async (file) => (await uploadSiteImage('journal', file, admin.getToken())).url
 
   return (
-    <CmsPanel title="編輯文章" subtitle={`/journal/${slug} · ${lang === 'zh' ? '中文' : 'English'}`} {...panelProps}>
-      <CmsRow label="標題" htmlFor="cms-title">
-        <CmsInput id="cms-title" value={post.title} onChange={(v) => setPost('title', v)} placeholder="文章標題" />
-      </CmsRow>
-      <CmsRow label="英文副標" htmlFor="cms-title-en">
-        <CmsInput id="cms-title-en" value={post.titleEn} onChange={(v) => setPost('titleEn', v)} placeholder="English subtitle" />
-      </CmsRow>
-      <CmsRow label="分類" htmlFor="cms-category" hint="中英文共用">
-        <CmsInput id="cms-category" value={post.category} onChange={(v) => setShared('category', v.toUpperCase())} />
-      </CmsRow>
-      <CmsRow label="日期" htmlFor="cms-date" hint="格式 2026.11.19，中英文共用">
-        <CmsInput id="cms-date" value={post.date} onChange={(v) => setShared('date', v)} />
-      </CmsRow>
-      <CmsRow label="閱讀時間" htmlFor="cms-read" hint="分鐘，中英文共用">
-        <CmsInput
+    <SidePanel title="編輯文章" subtitle={`/journal/${slug} · ${lang === 'zh' ? '中文' : 'English'}`} {...panelProps}>
+      <FormRow label="標題" htmlFor="cms-title">
+        <TextInput id="cms-title" value={post.title} onChange={(v) => setPost('title', v)} placeholder="文章標題" />
+      </FormRow>
+      <FormRow label="英文副標" htmlFor="cms-title-en">
+        <TextInput id="cms-title-en" value={post.titleEn} onChange={(v) => setPost('titleEn', v)} placeholder="English subtitle" />
+      </FormRow>
+      <FormRow label="分類" htmlFor="cms-category" hint="中英文共用">
+        <TextInput id="cms-category" value={post.category} onChange={(v) => setShared('category', v.toUpperCase())} />
+      </FormRow>
+      <FormRow label="日期" htmlFor="cms-date" hint="格式 2026.11.19，中英文共用">
+        <TextInput id="cms-date" value={post.date} onChange={(v) => setShared('date', v)} />
+      </FormRow>
+      <FormRow label="閱讀時間" htmlFor="cms-read" hint="分鐘，中英文共用">
+        <TextInput
           id="cms-read"
           type="number"
           min="1"
           value={post.readMin}
           onChange={(v) => setShared('readMin', Math.max(1, Number(v) || 1))}
         />
-      </CmsRow>
-      <CmsRow label="摘要" htmlFor="cms-excerpt" hint="顯示在列表和首頁">
-        <CmsTextarea id="cms-excerpt" value={post.excerpt} onChange={(v) => setPost('excerpt', v)} placeholder="一兩句話說明這篇文章" />
-      </CmsRow>
-      <CmsRow label="內文">
+      </FormRow>
+      <FormRow label="摘要" htmlFor="cms-excerpt" hint="顯示在列表和首頁">
+        <TextArea id="cms-excerpt" value={post.excerpt} onChange={(v) => setPost('excerpt', v)} placeholder="一兩句話說明這篇文章" />
+      </FormRow>
+      <FormRow label="內文">
         <Suspense fallback={<div className="cms-ed--loading">載入編輯器…</div>}>
-          <PostEditor key={`${slug}-${lang}`} doc={getPostDoc(body)} onChange={setDoc} upload={upload} />
+          <Editor key={`${slug}-${lang}`} doc={getDoc(body)} onChange={setDoc} upload={upload} />
         </Suspense>
-      </CmsRow>
-    </CmsPanel>
+      </FormRow>
+    </SidePanel>
   )
 }
 
@@ -225,11 +225,11 @@ export function JournalListEditPanel() {
   }
 
   return (
-    <CmsPanel title="編輯 Journal" subtitle={`${posts.length} 篇文章 · ${lang === 'zh' ? '中文' : 'English'}`} {...panelProps}>
-      <CmsSection title="新增文章">
-        <CmsRow label="網址代稱" htmlFor="cms-new-slug" hint={slugError || `網址會是 /journal/${slug || 'my-post'}，之後不能改。`}>
+    <SidePanel title="編輯 Journal" subtitle={`${posts.length} 篇文章 · ${lang === 'zh' ? '中文' : 'English'}`} {...panelProps}>
+      <PanelSection title="新增文章">
+        <FormRow label="網址代稱" htmlFor="cms-new-slug" hint={slugError || `網址會是 /journal/${slug || 'my-post'}，之後不能改。`}>
           <div className="cms-inline">
-            <CmsInput
+            <TextInput
               id="cms-new-slug"
               value={slug}
               onChange={(v) => setSlug(v.trim().toLowerCase())}
@@ -241,10 +241,10 @@ export function JournalListEditPanel() {
               建立
             </button>
           </div>
-        </CmsRow>
-      </CmsSection>
+        </FormRow>
+      </PanelSection>
 
-      <CmsSection title="文章">
+      <PanelSection title="文章">
         <div className="cms-sort" data-dragging={drag ? '' : undefined}>
           {posts.map((post, i) => {
             const moved = drag && target(drag) !== drag.from
@@ -285,8 +285,8 @@ export function JournalListEditPanel() {
             )
           })}
         </div>
-      </CmsSection>
-    </CmsPanel>
+      </PanelSection>
+    </SidePanel>
   )
 }
 

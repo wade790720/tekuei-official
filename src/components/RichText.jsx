@@ -1,11 +1,12 @@
 import { Fragment } from 'react'
-import { HomeFadeIn } from '../HomeFadeIn.jsx'
+import { FadeIn } from './FadeIn.jsx'
 import { CodeCard } from './CodeCard.jsx'
 import { ImageCard } from './ImageCard.jsx'
+import { SlidesCard } from './SlidesCard.jsx'
 import { VideoCard } from './VideoCard.jsx'
-import { safeHref } from '../../lib/postDoc.js'
+import { safeHref } from '../lib/richText.js'
 
-// Renders a post body (Tiptap JSON, see src/lib/postDoc.js) as the article markup.
+// Renders a post body (Tiptap JSON, see src/lib/richText.js) as the article markup.
 // Each top-level node fades in on its own, as the old blocks did.
 
 function wrapMark(mark, child, key) {
@@ -92,6 +93,10 @@ function Node({ node }) {
       return a.src ? <ImageCard src={a.src} alt={a.alt ?? ''} caption={a.caption} frame={a.frame} /> : null
     case 'videoCard':
       return a.src ? <VideoCard src={a.src} poster={a.poster || undefined} caption={a.caption} loop={a.loop} /> : null
+    case 'slidesCard': {
+      const slides = (a.slides ?? []).filter((s) => s?.src)
+      return slides.length ? <SlidesCard slides={slides} /> : null
+    }
     case 'horizontalRule':
       return <hr className="journal-post__hr" />
     default:
@@ -100,10 +105,10 @@ function Node({ node }) {
 }
 
 /** @param {{ doc: { content?: any[] } }} props */
-export function PostDoc({ doc }) {
+export function RichText({ doc }) {
   return (doc.content ?? []).map((node, i) => (
-    <HomeFadeIn key={i}>
+    <FadeIn key={i}>
       <Node node={node} />
-    </HomeFadeIn>
+    </FadeIn>
   ))
 }

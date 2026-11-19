@@ -2,13 +2,13 @@
 
 .home-banner,
 .home-latest {
-  --hh-bg: #0b0b0d;
-  --hh-charcoal: #181719;
-  --hh-elev: #242024;
-  --hh-ivory: #f4eee7;
-  --hh-taupe: #a8a09a;
-  --hh-gold: #c99a63;
-  --hh-amber: #e4b57b;
+  --hh-bg: var(--paper);
+  --hh-charcoal: var(--surface-1);
+  --hh-elev: var(--surface-2);
+  --hh-ivory: var(--ink);
+  --hh-taupe: var(--text-secondary);
+  --hh-gold: var(--ember);
+  --hh-amber: var(--ember-soft);
   --hh-serif: var(--font-serif);
   background: var(--hh-bg);
   color: var(--hh-ivory);
@@ -81,7 +81,7 @@
 }
 
 .home-banner h1 {
-  margin: 0 0 clamp(24px, 3.4vw, 52px);
+  margin: 0 0 clamp(var(--space-6), 3.4vw, var(--space-12));
   font-family: var(--hh-serif);
   font-weight: 400;
   font-size: clamp(38px, 5vw, 86px);
@@ -91,7 +91,7 @@
 .home-banner__pill {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   padding: 15px 30px;
   border: 1px solid var(--hh-gold);
   border-radius: 999px;
@@ -123,7 +123,7 @@
   right: calc(var(--page-gutter) + var(--page-pad) + clamp(0px, 5.6vw, 96px));
   top: 32%;
   margin: 0;
-  padding: clamp(22px, 2.6vw, 40px) 0;
+  padding: clamp(22px, 2.6vw, var(--space-10)) 0;
   font-family: var(--hh-serif);
   font-style: italic;
   font-size: clamp(22px, 2.4vw, 40px);
@@ -158,16 +158,16 @@
   align-items: center;
   justify-content: space-between;
   border-top: 1px solid rgba(201, 154, 99, 0.45);
-  padding: 26px 0 24px;
-  font-size: 13px;
-  letter-spacing: 0.24em;
+  padding: 26px 0 var(--space-6);
+  font-size: var(--type-caption);
+  letter-spacing: var(--type-label-ls);
   text-transform: uppercase;
 }
 
 .home-latest__bar h2 {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: var(--space-5);
   margin: 0;
   font: inherit;
   letter-spacing: inherit;
@@ -192,7 +192,7 @@
 .home-latest__cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(16px, 2vw, 30px);
+  gap: clamp(var(--space-4), 2vw, 30px);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -222,33 +222,34 @@
 .home-latest__thumb--1 {
   background:
     radial-gradient(120% 90% at 20% 10%, rgba(228, 181, 123, 0.34), transparent 60%),
-    linear-gradient(135deg, #2a211a, #0f0d0c);
+    linear-gradient(135deg, #2a211a, var(--paper));
 }
 
 .home-latest__thumb--2 {
   background:
     radial-gradient(90% 80% at 50% 0%, rgba(228, 181, 123, 0.4), transparent 62%),
-    linear-gradient(180deg, #241c16, #0f0d0c);
+    linear-gradient(180deg, #241c16, var(--paper));
 }
 
 .home-latest__thumb--3 {
   background:
     radial-gradient(110% 90% at 80% 20%, rgba(201, 154, 99, 0.36), transparent 60%),
-    linear-gradient(225deg, #2a211a, #0f0d0c);
+    linear-gradient(225deg, #2a211a, var(--paper));
 }
 
 .home-latest__body {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 24px 22px;
+  gap: var(--space-3);
+  padding: var(--space-6) 22px;
 }
 
 .home-latest__meta {
-  font-size: 11px;
-  letter-spacing: 0.2em;
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
   color: var(--hh-taupe);
   text-transform: uppercase;
+  font-family: var(--font-label);
 }
 
 .home-latest__title {
@@ -305,7 +306,7 @@
   }
 
   .home-banner__pill {
-    padding: 13px 24px;
+    padding: 13px var(--space-6);
   }
 }
 

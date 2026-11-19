@@ -9,7 +9,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 28px 44px;
+  padding: var(--space-6) var(--space-12);
 }
 
 .site-nav--scroll-aware {
@@ -22,8 +22,8 @@
   background: rgba(11, 11, 13, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-5);
 }
 
 .site-nav--case {
@@ -49,17 +49,46 @@
 }
 
 .site-nav__logo {
-  font-family: var(--font-serif);
-  font-size: clamp(14px, 1.05vw, 17px);
-  letter-spacing: 0.38em;
   color: var(--ink);
   text-decoration: none;
-  white-space: nowrap; /* the spaced letters wrap when edit mode narrows the page */
+}
+
+/* Logo: the name and a blinking underscore cursor */
+.site-logo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-0-5);
+  font-family: var(--font-serif);
+  font-size: var(--type-body);
+  line-height: 26px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.site-logo__cursor {
+  display: inline-block;
+  width: 8px;
+  height: 2px;
+  background: currentColor;
+  animation: site-logo-blink 2s steps(1, end) infinite;
+}
+
+/* About 1 s on, 1 s off, with a hard cut, as in the reference */
+@keyframes site-logo-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-logo__cursor {
+    animation: none;
+  }
 }
 
 .site-nav__links {
   display: flex;
-  gap: 32px;
+  gap: var(--space-8);
 }
 
 .site-nav__links a {
@@ -68,7 +97,7 @@
   font-size: clamp(13px, 1vw, 15px);
   letter-spacing: var(--ls-label);
   text-transform: uppercase;
-  color: var(--ink-68);
+  color: var(--text-secondary);
   text-decoration: none;
   transition: color 0.4s var(--ease-touch);
 }
@@ -102,12 +131,12 @@
 .site-nav__lang {
   background: none;
   border: none;
-  font-family: inherit;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  color: var(--ink-70);
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  color: var(--text-secondary);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: var(--space-1) var(--space-2);
   opacity: 0.6;
   transition: opacity 0.2s;
 }
@@ -118,14 +147,14 @@
 }
 
 .site-nav__lang--overlay {
-  font-size: 13px;
-  margin-top: 32px;
+  font-size: var(--type-caption);
+  margin-top: var(--space-8);
   opacity: 0.5;
 }
 
 @media (max-width: 900px) {
   .site-nav {
-    padding: 20px 28px;
+    padding: var(--space-5) var(--space-6);
   }
 
   .site-nav::after {

@@ -11,11 +11,11 @@ export const JOURNAL_META = {
 
 export const JOURNAL_HEADER = {
   zh: {
-    pre: 'J O U R N A L · 隨 筆',
+    pre: 'JOURNAL · 隨筆',
     desc: ['關於留白、水墨、新東方主義與品牌美學的思考。', '在黑白之間，尋找呼吸的節奏。'],
   },
   en: {
-    pre: 'J O U R N A L',
+    pre: 'JOURNAL',
     desc: ['Reflections on negative space, ink wash, neo-orientalism, and brand aesthetics.', 'Finding rhythm between black and white.'],
   },
 }
@@ -144,26 +144,6 @@ export function getAdjacentPosts(journal, slug, lang = 'zh') {
 }
 
 // Labels for the code, image and video cards in post bodies.
-export const POST_CARD_LABELS = {
-  zh: {
-    copy: '複製程式碼',
-    copied: '已複製',
-    play: '播放',
-    pause: '暫停',
-    seek: '播放進度',
-    speed: '播放速度',
-    fullscreen: '全螢幕',
-  },
-  en: {
-    copy: 'Copy code',
-    copied: 'Copied',
-    play: 'Play',
-    pause: 'Pause',
-    seek: 'Seek',
-    speed: 'Playback speed',
-    fullscreen: 'Full screen',
-  },
-}
 
 export const JOURNAL_CONTENT = {
   zh: {

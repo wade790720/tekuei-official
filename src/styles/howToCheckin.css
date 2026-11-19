@@ -5,11 +5,11 @@
   z-index: 1;
   min-height: 100vh;
   background: transparent;
-  color: var(--ink-68);
+  color: var(--text-secondary);
   font-weight: 400;
   font-family: var(--fc);
   line-height: 1.75;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
 
   --fd: var(--font-serif);
@@ -25,7 +25,7 @@
   z-index: 1;
 }
 
-.howto-checkin-page .home-fade-in {
+.howto-checkin-page .fade-in {
   opacity: 0;
   transform: translateY(12px);
   transition:
@@ -33,7 +33,7 @@
     transform 0.85s var(--ease);
 }
 
-.howto-checkin-page .home-fade-in.is-visible {
+.howto-checkin-page .fade-in.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -41,7 +41,7 @@
 /* ── Hero ── */
 
 .howto-checkin-hero {
-  padding: 96px 0 36px;
+  padding: var(--space-24) 0 var(--space-10);
 }
 
 .howto-checkin-hero__inner {
@@ -52,12 +52,12 @@
 }
 
 .howto-checkin-hero__eyebrow {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
   color: var(--ember);
   text-transform: uppercase;
-  letter-spacing: 0.28em;
-  font-size: 11px;
-  font-family: var(--fd);
+  letter-spacing: var(--type-label-ls);
+  font-size: var(--type-label);
+  font-family: var(--font-label);
   opacity: 0;
   animation: howto-rise 0.9s var(--ease) 0.35s forwards;
 }
@@ -65,8 +65,8 @@
 .howto-checkin-hero__title {
   margin: 0;
   color: var(--ink);
-  letter-spacing: 0.04em;
-  font-weight: 500;
+  letter-spacing: 0;
+  font-weight: var(--weight-regular);
   font-size: 1.625rem;
   font-family: var(--fc);
   line-height: 1.5;
@@ -75,11 +75,11 @@
 }
 
 .howto-checkin-hero__subtitle {
-  margin: 16px 0 0;
+  margin: var(--space-4) 0 0;
   max-width: var(--text-max);
-  color: var(--ink-68);
-  letter-spacing: 0.03em;
-  font-size: 1rem;
+  color: var(--text-secondary);
+  letter-spacing: 0;
+  font-size: var(--type-body);
   line-height: 1.75;
   opacity: 0;
   animation: howto-rise 1s var(--ease) 0.62s forwards;
@@ -113,7 +113,7 @@
 /* ── Steps ── */
 
 .howto-checkin-steps {
-  padding: 40px 0 48px;
+  padding: var(--space-10) 0 var(--space-12);
 }
 
 .howto-checkin-steps__list {
@@ -123,14 +123,14 @@
   padding: 0 var(--page-pad);
   max-width: var(--wrap);
   list-style: none;
-  gap: 48px;
+  gap: var(--space-12);
 }
 
 .howto-checkin-step__layout {
   display: grid;
   align-items: start;
   grid-template-columns: 1fr;
-  gap: 24px;
+  gap: var(--space-6);
 }
 
 .howto-checkin-step__copy {
@@ -138,30 +138,30 @@
 }
 
 .howto-checkin-step__label {
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-2);
   color: var(--ink);
-  letter-spacing: 0.03em;
-  font-weight: 600;
-  font-size: 1.0625rem;
+  letter-spacing: 0;
+  font-weight: var(--weight-regular);
+  font-size: var(--type-body);
   font-family: var(--fc);
   line-height: 1.4;
 }
 
 .howto-checkin-step__title {
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-3);
   color: var(--ink);
-  letter-spacing: 0.03em;
-  font-weight: 500;
-  font-size: 1.1875rem;
+  letter-spacing: 0;
+  font-weight: var(--weight-regular);
+  font-size: var(--type-lead);
   font-family: var(--fc);
   line-height: 1.6;
 }
 
 .howto-checkin-step__body {
   margin: 0;
-  color: var(--ink-68);
-  letter-spacing: 0.02em;
-  font-size: 1rem;
+  color: var(--text-secondary);
+  letter-spacing: 0;
+  font-size: var(--type-body);
   line-height: 1.75;
 }
 
@@ -171,36 +171,36 @@
 
 .howto-checkin-step__em {
   color: var(--ink);
-  font-weight: 600;
+  font-weight: var(--weight-regular);
 }
 
 .howto-checkin-step__cta {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
-  padding: 16px 24px;
+  margin-top: var(--space-5);
+  padding: var(--space-4) var(--space-6);
   min-height: 48px;
   width: 100%;
   border: 0.5px solid var(--ink);
   background: var(--ink);
   color: var(--paper);
   text-decoration: none;
-  letter-spacing: 0.06em;
-  font-weight: 500;
-  font-size: 0.9375rem;
+  letter-spacing: 0;
+  font-weight: var(--weight-regular);
+  font-size: var(--type-small);
   font-family: var(--fc);
   line-height: 1.4;
   transition:
     background 0.4s var(--ease),
     color 0.4s var(--ease),
     border-color 0.4s var(--ease);
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .howto-checkin-step__cta:hover {
-  border-color: var(--ember-deep);
-  background: var(--ember-deep);
+  border-color: var(--ember);
+  background: var(--ember);
 }
 
 .howto-checkin-step__cta-arrow {
@@ -221,7 +221,7 @@
   align-items: center;
   margin: 0;
   width: 100%;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .howto-checkin-step__figures .howto-checkin-step__img,
@@ -230,7 +230,7 @@
   width: 100%;
   max-width: 280px;
   height: auto;
-  border: 0.5px solid var(--ember-whisper);
+  border: 0.5px solid var(--line);
   border-radius: 12px;
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.30),
@@ -240,8 +240,8 @@
 /* ── Perks ── */
 
 .howto-checkin-perks {
-  padding: 48px 0;
-  border-top: 0.5px solid var(--ember-line);
+  padding: var(--space-12) 0;
+  border-top: 0.5px solid var(--line-strong);
 }
 
 .howto-checkin-perks__inner {
@@ -251,16 +251,16 @@
 }
 
 .howto-checkin-perks__label {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .howto-checkin-perks__title {
-  margin: 0 0 28px;
+  margin: 0 0 var(--space-6);
   max-width: var(--text-max);
   color: var(--ink);
-  letter-spacing: 0.03em;
-  font-weight: 500;
-  font-size: 1.1875rem;
+  letter-spacing: 0;
+  font-weight: var(--weight-regular);
+  font-size: var(--type-lead);
   font-family: var(--fc);
   line-height: 1.6;
 }
@@ -271,48 +271,48 @@
   padding: 0;
   list-style: none;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .howto-checkin-perk__card {
-  padding: 20px;
+  padding: var(--space-5);
   height: 100%;
-  border: 0.5px solid var(--ember-whisper);
-  background: var(--paper-warm);
+  border: 0.5px solid var(--line);
+  background: var(--surface-1);
 }
 
 .howto-checkin-perk__num {
-  margin-bottom: 10px;
+  margin-bottom: var(--space-3);
   color: var(--ember);
-  letter-spacing: 0.12em;
-  font-weight: 600;
-  font-size: 0.875rem;
+  letter-spacing: 0;
+  font-weight: var(--weight-regular);
+  font-size: var(--type-small);
   font-family: var(--fc);
 }
 
 .howto-checkin-perk__title {
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-2);
   color: var(--ink);
-  letter-spacing: 0.03em;
-  font-weight: 500;
-  font-size: 1.0625rem;
+  letter-spacing: 0;
+  font-weight: var(--weight-regular);
+  font-size: var(--type-body);
   font-family: var(--fc);
   line-height: 1.5;
 }
 
 .howto-checkin-perk__body {
   margin: 0;
-  color: var(--ink-68);
-  letter-spacing: 0.02em;
-  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  letter-spacing: 0;
+  font-size: var(--type-small);
   line-height: 1.75;
 }
 
 /* ── Final ── */
 
 .howto-checkin-final {
-  padding: 48px 0 72px;
-  border-top: 0.5px solid var(--ember-line);
+  padding: var(--space-12) 0 var(--space-16);
+  border-top: 0.5px solid var(--line-strong);
 }
 
 .howto-checkin-final__inner {
@@ -323,28 +323,28 @@
 }
 
 .howto-checkin-final__lead {
-  margin: 0 0 10px;
+  margin: 0 0 var(--space-3);
   color: var(--ink);
-  letter-spacing: 0.03em;
-  font-weight: 500;
-  font-size: 1.0625rem;
+  letter-spacing: 0;
+  font-weight: var(--weight-regular);
+  font-size: var(--type-body);
   line-height: 1.6;
 }
 
 .howto-checkin-final__body {
-  margin: 0 0 24px;
-  color: var(--ink-68);
-  letter-spacing: 0.02em;
-  font-size: 1rem;
+  margin: 0 0 var(--space-6);
+  color: var(--text-secondary);
+  letter-spacing: 0;
+  font-size: var(--type-body);
   line-height: 1.75;
 }
 
 .howto-checkin-final__closing {
   margin: 0;
-  color: var(--ember-deep);
-  letter-spacing: 0.04em;
-  font-weight: 500;
-  font-size: 1.125rem;
+  color: var(--ember);
+  letter-spacing: 0;
+  font-weight: var(--weight-regular);
+  font-size: var(--type-lead);
   font-family: var(--fc);
   line-height: 1.6;
 }
@@ -357,7 +357,7 @@
   }
 
   .howto-checkin-hero {
-    padding: clamp(120px, 18vw, 160px) 0 clamp(40px, 7vw, 64px);
+    padding: clamp(var(--space-32), 18vw, var(--space-32)) 0 clamp(var(--space-10), 7vw, var(--space-16));
   }
 
   .howto-checkin-hero__inner {
@@ -365,36 +365,37 @@
   }
 
   .howto-checkin-hero__eyebrow {
-    letter-spacing: 0.38em;
-    font-size: 11px;
-  }
+    letter-spacing: var(--type-label-ls);
+    font-size: var(--type-label);
+  font-family: var(--font-label);
+}
 
   .howto-checkin-hero__title {
     font-weight: 400;
     font-size: clamp(1.75rem, 5.5vw, 2.5rem);
-    letter-spacing: 0.06em;
+    letter-spacing: 0;
     line-height: 1.45;
   }
 
   .howto-checkin-hero__subtitle {
     margin-inline: auto;
     text-align: center;
-    letter-spacing: 0.06em;
+    letter-spacing: 0;
     font-size: clamp(0.9375rem, 2vw, 1rem);
   }
 
   .howto-checkin-steps {
-    padding: clamp(48px, 8vw, 80px) 0;
+    padding: clamp(var(--space-12), 8vw, var(--space-24)) 0;
   }
 
   .howto-checkin-steps__list {
-    gap: clamp(56px, 10vw, 80px);
+    gap: clamp(var(--space-16), 10vw, var(--space-24));
   }
 
   .howto-checkin-step__layout:not(.howto-checkin-step__layout--no-media) {
     align-items: center;
     grid-template-columns: minmax(0, 1fr) min(220px, 28%);
-    gap: clamp(20px, 2.5vw, 28px);
+    gap: clamp(var(--space-5), 2.5vw, var(--space-6));
   }
 
   .howto-checkin-step__layout--dual {
@@ -402,14 +403,14 @@
   }
 
   .howto-checkin-step__label {
-    font-weight: 500;
+    font-weight: var(--weight-regular);
     font-size: clamp(1rem, 1.8vw, 1.125rem);
   }
 
   .howto-checkin-step__title {
     font-weight: 400;
     font-size: clamp(1.125rem, 2.4vw, 1.375rem);
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
   }
 
   .howto-checkin-step__body {
@@ -420,10 +421,10 @@
     display: inline-flex;
     width: auto;
     min-height: auto;
-    padding: 14px 28px;
+    padding: var(--space-4) var(--space-6);
     font-weight: 400;
-    font-size: 0.875rem;
-    letter-spacing: 0.12em;
+    font-size: var(--type-small);
+    letter-spacing: 0;
   }
 
   .howto-checkin-step__figure {
@@ -436,7 +437,7 @@
     align-items: flex-start;
     width: fit-content;
     justify-self: start;
-    gap: clamp(10px, 1.5vw, 16px);
+    gap: clamp(var(--space-3), 1.5vw, var(--space-4));
   }
 
   .howto-checkin-step__figures .howto-checkin-step__img,
@@ -446,44 +447,44 @@
   }
 
   .howto-checkin-perks {
-    padding: clamp(48px, 8vw, 72px) 0;
+    padding: clamp(var(--space-12), 8vw, var(--space-16)) 0;
   }
 
   .howto-checkin-perks__title {
-    margin-bottom: clamp(32px, 5vw, 48px);
+    margin-bottom: clamp(var(--space-8), 5vw, var(--space-12));
     font-weight: 400;
     font-size: clamp(1.25rem, 3vw, 1.5rem);
-    letter-spacing: 0.06em;
+    letter-spacing: 0;
   }
 
   .howto-checkin-perks__list {
     grid-template-columns: repeat(3, 1fr);
-    gap: clamp(16px, 3vw, 28px);
+    gap: clamp(var(--space-4), 3vw, var(--space-6));
   }
 
   .howto-checkin-perk__card {
-    padding: clamp(24px, 4vw, 32px) clamp(20px, 3vw, 28px);
+    padding: clamp(var(--space-6), 4vw, var(--space-8)) clamp(var(--space-5), 3vw, var(--space-6));
   }
 
   .howto-checkin-perk__num {
     font-weight: 400;
-    font-size: 11px;
-    font-family: var(--fd);
-    letter-spacing: 0.2em;
+    font-size: var(--type-label);
+    font-family: var(--font-label);
+    letter-spacing: var(--type-label-ls);
   }
 
   .howto-checkin-perk__title {
     font-weight: 400;
-    font-size: 1rem;
-    letter-spacing: 0.06em;
+    font-size: var(--type-body);
+    letter-spacing: 0;
   }
 
   .howto-checkin-perk__body {
-    font-size: 0.875rem;
+    font-size: var(--type-small);
   }
 
   .howto-checkin-final {
-    padding: clamp(56px, 10vw, 96px) 0 clamp(80px, 14vw, 120px);
+    padding: clamp(var(--space-16), 10vw, var(--space-24)) 0 clamp(var(--space-24), 14vw, var(--space-32));
   }
 
   .howto-checkin-final__inner {
@@ -493,20 +494,20 @@
 
   .howto-checkin-final__lead {
     font-weight: 400;
-    letter-spacing: 0.06em;
+    letter-spacing: 0;
     font-size: clamp(1rem, 2.2vw, 1.125rem);
   }
 
   .howto-checkin-final__body {
-    letter-spacing: 0.04em;
-    font-size: 0.9375rem;
+    letter-spacing: 0;
+    font-size: var(--type-small);
   }
 
   .howto-checkin-final__closing {
     font-weight: 400;
     font-style: italic;
     font-family: var(--fd);
-    letter-spacing: 0.08em;
+    letter-spacing: 0;
     font-size: clamp(1.125rem, 2.8vw, 1.375rem);
     color: var(--ember);
   }

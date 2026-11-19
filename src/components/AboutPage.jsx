@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import 'lenis/dist/lenis.css'
 import '../styles/aboutFall.css'
 import figureSrc from '../assets/about/fall-figure.png'
 import { ABOUT_FALL_ACTS, ABOUT_FALL_INTRO, ABOUT_FALL_META } from '../data/aboutFall.js'
@@ -18,6 +19,12 @@ export default function AboutPage() {
   const scene = useRef(null)
   const [current, setCurrent] = useState(-1)
   const [sound, setSound] = useState(true)
+
+  // Like the reference piece: Lenis scrolls the page and the browser scrollbar is hidden.
+  useEffect(() => {
+    document.documentElement.classList.add('about-fall-doc')
+    return () => document.documentElement.classList.remove('about-fall-doc')
+  }, [])
 
   useEffect(() => {
     document.title = meta.title
@@ -71,6 +78,11 @@ export default function AboutPage() {
       </div>
 
       <button type="button" className="about-fall__sound" aria-pressed={sound} onClick={toggleSound}>
+        <span className="about-fall__bars" aria-hidden>
+          <i />
+          <i />
+          <i />
+        </span>
         {sound ? intro.soundOn : intro.soundOff}
       </button>
 

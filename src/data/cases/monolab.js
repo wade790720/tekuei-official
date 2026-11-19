@@ -5,7 +5,7 @@ const ZH = {
   slug: 'monolab',
   documentTitle: 'TEKUEI · MONOLAB',
   hero: {
-    num: 'C A S E   0 2',
+    num: 'CASE 02',
     titleRest: 'MONOLAB',
     subtitle: '情 緒 生 態 系 · 藝 術 場 域',
     bg: BG,
@@ -17,9 +17,9 @@ const ZH = {
     ],
   },
   media: {
-    fullWidthLabel: 'M O N O L A B   ·   A R T   E C O S Y S T E M',
+    fullWidthLabel: 'MONOLAB · ART ECOSYSTEM',
     fullWidthBg: FULL_BG,
-    inlineLabel: 'G E N E R A T I V E   ·   E X H I B I T I O N   V I E W',
+    inlineLabel: 'GENERATIVE · EXHIBITION VIEW',
   },
   sections: {
     overview: {
@@ -83,9 +83,9 @@ const EN = {
   slug: 'monolab',
   documentTitle: 'TEKUEI · MONOLAB',
   hero: {
-    num: 'C A S E   0 2',
+    num: 'CASE 02',
     titleRest: 'MONOLAB',
-    subtitle: 'E M O T I O N A L   E C O S Y S T E M   ·   A R T   F I E L D',
+    subtitle: 'EMOTIONAL ECOSYSTEM · ART FIELD',
     bg: BG,
     meta: [
       { label: 'Client', lines: ['MONOLAB', 'MORAN Interactive Design'] },
@@ -95,9 +95,9 @@ const EN = {
     ],
   },
   media: {
-    fullWidthLabel: 'M O N O L A B   ·   A R T   E C O S Y S T E M',
+    fullWidthLabel: 'MONOLAB · ART ECOSYSTEM',
     fullWidthBg: FULL_BG,
-    inlineLabel: 'G E N E R A T I V E   ·   E X H I B I T I O N   V I E W',
+    inlineLabel: 'GENERATIVE · EXHIBITION VIEW',
   },
   sections: {
     overview: {

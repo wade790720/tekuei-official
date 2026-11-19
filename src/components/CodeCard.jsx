@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { POST_CARD_LABELS } from '../../data/journal.js'
-import { useLang } from '../../i18n'
-import { tokenize } from '../../lib/highlight.js'
-import '../../styles/postCards.css'
+import { CARD_LABELS } from '../data/cards.js'
+import { useLang } from '../i18n'
+import { tokenize } from '../lib/highlight.js'
+import '../styles/cards.css'
 
 const BADGE = { bash: 'SH', shell: 'SH', zsh: 'SH', javascript: 'JS', typescript: 'TS', python: 'PY', yaml: 'YML' }
 
@@ -11,7 +11,7 @@ const BADGE = { bash: 'SH', shell: 'SH', zsh: 'SH', javascript: 'JS', typescript
  */
 export function CodeCard({ code, lang = 'ts', filename }) {
   const { lang: ui } = useLang()
-  const t = POST_CARD_LABELS[ui]
+  const t = CARD_LABELS[ui]
   const tokens = useMemo(() => tokenize(code, lang), [code, lang])
   const [copied, setCopied] = useState(false)
   const timer = useRef(0)
@@ -26,34 +26,34 @@ export function CodeCard({ code, lang = 'ts', filename }) {
   }
 
   return (
-    <figure className="post-card post-code">
-      <figcaption className="post-code__bar">
-        <span className="post-code__name">
-          <span className="post-code__lang" aria-hidden>
+    <figure className="card code-card">
+      <figcaption className="code-card__bar">
+        <span className="code-card__name">
+          <span className="code-card__lang" aria-hidden>
             {BADGE[lang] ?? lang.slice(0, 3).toUpperCase()}
           </span>
           {filename ?? lang}
         </span>
         <button
           type="button"
-          className="post-code__copy"
+          className="code-card__copy"
           onClick={copy}
           aria-label={t.copy}
           data-copied={copied || undefined}
         >
           {copied ? <CheckIcon /> : <CopyIcon />}
         </button>
-        <span className="post-card__sr" role="status">
+        <span className="card__sr" role="status">
           {copied ? t.copied : ''}
         </span>
       </figcaption>
-      <pre className="post-code__pre" tabIndex={0}>
+      <pre className="code-card__pre" tabIndex={0}>
         <code>
           {tokens.map((tk, i) =>
             tk.type === 'plain' ? (
               tk.text
             ) : (
-              <span key={i} className={`post-code__tok--${tk.type}`}>
+              <span key={i} className={`code-card__tok--${tk.type}`}>
                 {tk.text}
               </span>
             ),
