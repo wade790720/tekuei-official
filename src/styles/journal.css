@@ -2,8 +2,8 @@
 
 .journal-page {
   --j-ink-main: transparent;
-  --j-page: var(--ink);
-  --j-warm-white: var(--ink);
+  --j-page: var(--gray-12);
+  --j-warm-white: var(--gray-12);
   --j-lamp: var(--ember);
   --j-lamp-dim: var(--ember-soft);
   --j-lamp-glow: var(--ember-soft);
@@ -22,7 +22,7 @@
   z-index: 1;
   min-height: 100vh;
   background: var(--j-ink-main);
-  color: var(--ink);
+  color: var(--text-primary);
   font-family: var(--j-fc);
   font-weight: var(--weight-regular);
   letter-spacing: 0;
@@ -141,8 +141,8 @@
   width: 1200px;
   height: 400px;
   transform: translateX(-50%);
-  color: var(--gold);
-  --glyph-glow: var(--amber);
+  color: var(--accent-9);
+  --glyph-glow: var(--accent-10);
   font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, monospace;
   opacity: 0.5;
   pointer-events: none;
@@ -660,7 +660,7 @@
   font-size: var(--type-h2);
   letter-spacing: 0.4em;
   margin-right: -0.4em; /* letter-spacing trails the last glyph; keep it centred */
-  color: var(--ink);
+  color: var(--text-primary);
   text-decoration: none;
 }
 

@@ -10,11 +10,11 @@
 
   --bg: transparent;
   --bg-deep: var(--surface-2);
-  --bg-light: var(--paper-60-wash, rgba(36, 32, 36, 0.48));
-  --text: var(--ink);
+  --bg-light: var(--surface-1);
+  --text: var(--gray-12);
   --accent: var(--ember);
   --accent-line: var(--ember-line);
-  --ink-on-light: var(--ink);
+  --ink-on-light: var(--gray-12);
   --ink-on-light-muted: var(--text-secondary);
   --ink-on-light-faint: var(--text-secondary);
   --fd: var(--font-serif);
@@ -46,7 +46,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-6) var(--space-12);
-  background: rgba(11, 11, 13, 0.78);
+  background: color-mix(in srgb, var(--surface-0) 78%, transparent);
 
           backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -124,7 +124,7 @@
   background: linear-gradient(
   to bottom,
   transparent 50%,
-  rgba(11, 11, 13, 0.35) 85%,
+  color-mix(in srgb, var(--surface-0) 35%, transparent) 85%,
   transparent 100%
   );
   content: '';
@@ -141,12 +141,12 @@
 .case-hero-bg--photo::after {
   background: linear-gradient(
   to bottom,
-  rgba(11, 11, 13, 0) 0%,
-  rgba(11, 11, 13, 0) 25%,
-  rgba(11, 11, 13, 0.28) 50%,
-  rgba(11, 11, 13, 0.62) 68%,
-  rgba(11, 11, 13, 0.82) 82%,
-  rgba(11, 11, 13, 0.90) 100%
+  transparent 0%,
+  transparent 25%,
+  color-mix(in srgb, var(--surface-0) 28%, transparent) 50%,
+  color-mix(in srgb, var(--surface-0) 62%, transparent) 68%,
+  color-mix(in srgb, var(--surface-0) 82%, transparent) 82%,
+  color-mix(in srgb, var(--surface-0) 90%, transparent) 100%
   );
 }
 
@@ -155,11 +155,11 @@
 }
 
 .case-hero--has-photo .case-title {
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .case-hero--has-photo .case-subtitle {
-  color: rgba(244, 238, 231, 0.80);
+  color: color-mix(in srgb, var(--gray-12) 80%, transparent);
 }
 
 .case-hero--has-photo .meta-label {
@@ -168,7 +168,7 @@
 
 .case-hero--has-photo .meta-value, .case-hero--has-photo .meta-value a {
   border-bottom-color: var(--ember-line);
-  color: rgba(244, 238, 231, 0.72);
+  color: var(--gray-a11);
 }
 
 .case-hero-content {
@@ -185,7 +185,7 @@
 
 .case-hero .case-num {
   margin-bottom: var(--space-6);
-  color: rgba(244, 238, 231, 0.72);
+  color: var(--gray-a11);
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
   font-family: var(--font-label);
@@ -196,7 +196,7 @@
 
 .case-hero .case-title {
   margin-bottom: var(--space-2);
-  color: rgba(244, 238, 231, 0.72);
+  color: var(--gray-a11);
   font-weight: 400;
   font-size: clamp(40px, 6vw, 72px);
   font-family: var(--fd);
@@ -211,7 +211,7 @@
 }
 
 .case-hero .case-subtitle {
-  color: rgba(244, 238, 231, 0.72);
+  color: var(--gray-a11);
   letter-spacing: var(--type-label-ls);
   font-weight: var(--weight-light);
   font-size: clamp(13px, 1.4vw, 16px);
@@ -286,7 +286,7 @@
 
 .case-sec-num {
   margin-bottom: var(--space-5);
-  color: var(--ink-22);
+  color: var(--gray-a8);
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
   font-family: var(--font-label);
@@ -346,7 +346,7 @@
 
 .case-section--light .case-quote {
   border-left-color: var(--accent);
-  background: rgba(36, 32, 36, 0.35);
+  background: color-mix(in srgb, var(--surface-2) 35%, transparent);
 }
 
 .case-quote p {
@@ -406,7 +406,7 @@
 
 .case-section--light .case-del-item {
   border-color: var(--line-strong);
-  background: rgba(36, 32, 36, 0.35);
+  background: color-mix(in srgb, var(--surface-2) 35%, transparent);
 }
 
 .case-del-num {
@@ -482,7 +482,7 @@
   left: -28px;
   width: 5px;
   height: 5px;
-  border: 2px solid var(--paper);
+  border: 2px solid var(--surface-0);
   border-radius: 50%;
   background: var(--accent);
   content: '';
@@ -547,7 +547,7 @@
   width: min(100vw, var(--page-max));
   background: linear-gradient(
   135deg,
-  rgba(36, 32, 36, 0.85) 0%,
+  color-mix(in srgb, var(--surface-2) 85%, transparent) 0%,
   var(--surface-2) 50%,
   var(--surface-2) 100%
   );
@@ -629,7 +629,7 @@
 }
 
 .case-footer .mark {
-  color: var(--ink-22);
+  color: var(--gray-a8);
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
   font-family: var(--font-label);

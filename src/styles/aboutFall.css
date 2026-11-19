@@ -3,8 +3,8 @@
 .about-fall {
   --af-sky: #9db8e8; /* cool accent for this page only; the rest of the site uses gold */
   position: relative;
-  background: var(--obsidian);
-  color: var(--ivory);
+  background: var(--surface-0);
+  color: var(--text-primary);
 }
 
 .about-fall__canvas {
@@ -121,7 +121,7 @@
 .about-fall__caption-role {
   margin: 0 0 var(--space-2);
   font-size: var(--type-small);
-  color: var(--ivory);
+  color: var(--text-primary);
 }
 
 .about-fall__caption-line {
@@ -139,7 +139,7 @@
   top: 24vh;
   bottom: 24vh;
   width: 1px;
-  background: rgba(157, 184, 232, 0.22);
+  background: color-mix(in srgb, var(--af-sky) 22%, transparent);
   pointer-events: none;
 }
 
@@ -151,7 +151,7 @@
   height: 7px;
   border-radius: 50%;
   background: var(--af-sky);
-  box-shadow: 0 0 12px rgba(157, 184, 232, 0.8);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--af-sky) 80%, transparent);
 }
 
 .about-fall__rail span {
@@ -182,9 +182,9 @@
   bottom: clamp(20px, 5vh, 48px);
   padding: var(--space-2) var(--space-4);
   background: transparent;
-  border: 1px solid rgba(157, 184, 232, 0.35);
+  border: 1px solid color-mix(in srgb, var(--af-sky) 35%, transparent);
   border-radius: 999px;
-  color: var(--ivory);
+  color: var(--text-primary);
   font:
     700 10px ui-monospace,
     'Cascadia Mono',
@@ -252,7 +252,7 @@ html.about-fall-doc body::-webkit-scrollbar {
 
 .about-fall__sound:hover {
   border-color: var(--af-sky);
-  background: rgba(157, 184, 232, 0.08);
+  background: color-mix(in srgb, var(--af-sky) 8%, transparent);
 }
 
 .about-fall__sound:focus-visible {
@@ -273,10 +273,10 @@ html.about-fall-doc body::-webkit-scrollbar {
 }
 
 .about-fall__end a {
-  color: var(--ivory);
+  color: var(--text-primary);
   text-decoration: none;
   padding-bottom: var(--space-2);
-  border-bottom: 1px solid rgba(157, 184, 232, 0.4);
+  border-bottom: 1px solid color-mix(in srgb, var(--af-sky) 40%, transparent);
   transition:
     color 0.2s,
     border-color 0.2s;

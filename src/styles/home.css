@@ -1,15 +1,15 @@
 ﻿/* Homepage */
 
 .home {
-  --home-paper: var(--paper);
+  --home-paper: var(--surface-0);
   --home-paper-warm: var(--surface-1);
   --home-paper-cool: var(--surface-2);
-  --home-ink: var(--ink);
+  --home-ink: var(--gray-12);
   --home-ink-body: var(--text-secondary);
   --home-ink-nav: var(--text-secondary);
   --home-ink-secondary: var(--text-secondary);
   --home-ink-philosophy-dim: var(--text-tertiary);
-  --home-ink-decorative: var(--ink-22);
+  --home-ink-decorative: var(--gray-a8);
   --home-panel: var(--surface-1);
   --home-panel-deep: var(--surface-2);
   --home-ember: var(--ember);
@@ -27,7 +27,7 @@
   color: var(--home-ink-body);
   font-family: var(--home-fc);
   font-weight: var(--weight-regular);
-  letter-spacing: var(--ls-body);
+  letter-spacing: 0;
   line-height: 1.75;
 }
 
@@ -79,7 +79,7 @@
   font-size: clamp(140px, 28vw, 360px);
   line-height: 0.85;
   color: transparent;
-  -webkit-text-stroke: 0.5px var(--ink-04);
+  -webkit-text-stroke: 0.5px var(--gray-a3);
   z-index: 2;
   pointer-events: none;
   user-select: none;
@@ -98,7 +98,7 @@
 .home-hero__label {
   font-family: var(--home-fd);
   font-size: var(--type-caption);
-  letter-spacing: var(--ls-label);
+  letter-spacing: var(--type-label-ls);
   color: var(--home-ember);
   margin-bottom: var(--space-8);
   text-transform: uppercase;
@@ -120,7 +120,7 @@
   font-weight: var(--weight-light);
   font-size: clamp(38px, 6.5vw, 76px);
   line-height: 1.2;
-  letter-spacing: var(--ls-title);
+  letter-spacing: 0;
   color: var(--home-ink);
   margin-bottom: var(--space-6);
 }
@@ -129,7 +129,7 @@
   font-family: var(--home-fd);
   font-style: italic;
   font-size: clamp(18px, 2.2vw, 24px);
-  letter-spacing: var(--ls-body);
+  letter-spacing: 0;
   color: var(--home-ember);
   margin-bottom: var(--space-10);
 }
@@ -137,7 +137,7 @@
 .home-hero__rule {
   width: 56px;
   height: 0.5px;
-  background: var(--ember-50);
+  background: var(--accent-a8);
   margin-bottom: var(--space-8);
 }
 
@@ -146,7 +146,7 @@
   font-weight: var(--weight-light);
   font-size: clamp(15px, 1.6vw, 17px);
   line-height: 2;
-  letter-spacing: var(--ls-body);
+  letter-spacing: 0;
   color: var(--home-ink-body);
   max-width: 560px;
   margin-bottom: var(--space-16);
@@ -161,13 +161,13 @@
 
 .home-hero .home-cta {
   color: var(--home-ink);
-  border-color: rgba(244, 238, 231, 0.22);
+  border-color: var(--gray-a8);
 }
 
 .home-cta {
   font-family: var(--home-fd);
   font-size: var(--type-caption);
-  letter-spacing: var(--ls-label);
+  letter-spacing: var(--type-label-ls);
   color: var(--home-ember);
   border: 0.5px solid var(--line-strong);
   padding: var(--space-4) var(--space-10);
@@ -226,7 +226,7 @@
 .home-cta--ghost:hover {
   color: var(--home-ember);
   background: transparent;
-  letter-spacing: var(--ls-label);
+  letter-spacing: var(--type-label-ls);
 }
 
 .home-hero__footer {
@@ -269,7 +269,7 @@
 .home-scroll-line {
   width: 36px;
   height: 0.5px;
-  background: var(--ember-50);
+  background: var(--accent-a8);
 }
 
 /* ── Section shared ── */
@@ -303,7 +303,7 @@
   font-weight: var(--weight-light);
   font-size: clamp(30px, 4.5vw, 52px);
   line-height: 1.3;
-  letter-spacing: var(--ls-title);
+  letter-spacing: 0;
   color: var(--home-ink);
   margin-bottom: var(--space-12);
   max-width: 800px;
@@ -330,7 +330,7 @@
   letter-spacing: 0;
   line-height: 2.4;
   font-size: clamp(18px, 2vw, 22px);
-  text-shadow: 0 0 28px rgba(11, 11, 13, 0.72);
+  text-shadow: 0 0 28px color-mix(in srgb, var(--surface-0) 72%, transparent);
 }
 
 .home-philosophy__line--mid {
@@ -346,7 +346,7 @@
 .home-philosophy__divider {
   width: 80px;
   height: 0.5px;
-  background: var(--ember-50);
+  background: var(--accent-a8);
   margin: var(--space-6) 0;
 }
 
@@ -551,7 +551,7 @@
   margin: 0 auto;
   position: relative;
   padding-left: var(--space-16);
-  border-left: 1px solid var(--ember-50);
+  border-left: 1px solid var(--accent-a8);
 }
 
 .home-quote__text {
@@ -559,7 +559,7 @@
   font-weight: var(--weight-light);
   font-size: clamp(24px, 3.2vw, 36px);
   line-height: 1.8;
-  letter-spacing: var(--ls-title);
+  letter-spacing: 0;
   color: var(--home-ink);
   margin-bottom: var(--space-8);
 }
@@ -637,7 +637,7 @@
   font-weight: var(--weight-light);
   font-size: clamp(32px, 4vw, 48px);
   line-height: 1.5;
-  letter-spacing: var(--ls-title);
+  letter-spacing: 0;
   color: var(--home-ink);
   margin-bottom: var(--space-8);
 }
@@ -654,7 +654,7 @@
 
 .home-final-cta .home-cta {
   color: var(--home-ink);
-  border-color: rgba(244, 238, 231, 0.22);
+  border-color: var(--gray-a8);
 }
 
 /* ── Footer ── */

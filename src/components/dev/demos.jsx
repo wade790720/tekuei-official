@@ -164,16 +164,39 @@ function OtpDemo() {
   )
 }
 
+// One pane of the editor demo: a header with a direction icon, then the content.
+function IoPane({ dir, title, meta, className = '', children }) {
+  return (
+    <section className="cl-editor__pane" aria-label={title}>
+      <header className="cl-editor__head">
+        <span className="cl-editor__icon" aria-hidden>
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.4">
+            {dir === 'in' ? (
+              <path d="M1.5 5h7M5.5 2l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
+            ) : (
+              <path d="M8.5 5h-7M4.5 2l-3 3 3 3" strokeLinecap="round" strokeLinejoin="round" />
+            )}
+          </svg>
+        </span>
+        <span className="cl-editor__title">{title}</span>
+        <code className="cl-editor__meta">{meta}</code>
+      </header>
+      <div className={`cl-editor__body ${className}`}>{children}</div>
+    </section>
+  )
+}
+
+// Input (what the editor holds) on the left, output (how RichText shows it) on the right.
 function EditorDemo() {
   const [doc, setDoc] = useState(EDITOR_SAMPLE)
   return (
     <div className="cl-editor">
-      <div className="cl-editor__pane">
+      <IoPane dir="in" title="Input" meta="Editor">
         <Editor doc={EDITOR_SAMPLE} onChange={setDoc} upload={async (file) => URL.createObjectURL(file)} />
-      </div>
-      <div className="journal-post__body cl-editor__preview">
+      </IoPane>
+      <IoPane dir="out" title="Output" meta="RichText" className="journal-post__body doc-prose">
         <RichText doc={doc} />
-      </div>
+      </IoPane>
     </div>
   )
 }

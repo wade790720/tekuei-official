@@ -6,7 +6,7 @@
 
 1. 讀這份檔案。
 2. 讀 [PRODUCT.md](PRODUCT.md)。它說明網站為什麼存在、給誰看、品牌喜歡和不喜歡什麼。
-3. 要改畫面、樣式或動畫時，讀 [DESIGN.md](DESIGN.md)。
+3. 要改畫面、樣式或動畫時，讀 [DESIGN.md](DESIGN.md)，並先查 Component Library（見「元件：先查 Component Library」）。
 4. 規範和使用者的指示衝突時，照使用者的指示做。做完後，問使用者要不要更新規範。
 
 ## 專案
@@ -53,12 +53,22 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 - 新的 class 用「頁面或區塊前綴 + BEM」，例如 `journal-footer__link`、`is-in`。
 - Canvas 效果寫成 `mountXxx(canvas, opts)`，回傳 cleanup 函式。元件在 `useEffect` 裡呼叫它。參考 `src/lib/glyphField.js`。
 - 每個動畫都要支援 `prefers-reduced-motion`。效果停下後要停止 `requestAnimationFrame`。
-- 先用專案裡已有的東西。可重複使用的元件和規範都列在 `/dev/component-library`（開發模式）。
-- 兩個以上的地方會用到，才抽成元件。只用一次的小東西（例如 logo）直接寫在用到的地方。
-- 共用元件放在 `src/components/` 第一層，名稱不綁頁面（`Editor`，不是 `PostEditor`）。只有一頁用的元件放在那一頁的資料夾。
-- 一個元件的零件（只有它自己用）寫在同一個檔案，例如 `SiteNav.jsx` 裡的 `NavOverlay`。
 - 樣式一個元件或一頁一個檔案，放在 `src/styles/`，檔名和元件或頁面相同。
-- 新增或修改元件時，同時更新 `src/components/dev/componentLibrary.data.js`。
+
+## 元件：先查 Component Library
+
+做任何介面之前，照這個順序決定。不可以跳步。
+
+1. **先查。** 打開 `/dev/component-library`（開發模式），或讀 `src/components/dev/componentLibrary.data.js`。
+2. **有就用。** 直接匯入既有元件，用它的 props。不要在頁面裡另寫一份功能相同的標記或樣式。
+3. **差一點就擴充。** 既有元件不完全符合時，在原元件加 prop 或變體。不要複製一份再改。
+4. **真的沒有，先問。** 說明現有元件為什麼不能用，提出新元件的名稱和用途，得到使用者同意後再建立。
+5. **放對位置。** 兩個以上的地方會用到：放在 `src/components/` 第一層，名稱不綁頁面（`Editor`，不是 `PostEditor`）。只有一頁用：放在那一頁的資料夾。只用一次的小東西（例如 logo）直接寫在用到的地方。
+6. **零件寫在一起。** 只有某個元件自己用的零件，寫在同一個檔案，例如 `SiteNav.jsx` 裡的 `NavOverlay`。
+
+- 頁面的 CSS 只負責排版（位置、寬度、間距）。不要在頁面裡改元件的外觀。要改外觀，改元件本身或加變體。
+- 新增或修改元件時，同一個變更裡更新 Component Library：`componentLibrary.data.js` 的說明，有需要時加 `demos.jsx` 的示範。
+- 回報時列出：用了哪些既有元件、擴充了哪一個、新增了哪一個以及原因。
 - 不要新增依賴。真的需要時，先問使用者。
 - 註解只寫程式碼看不出來的原因。
 

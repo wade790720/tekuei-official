@@ -19,7 +19,7 @@
 }
 
 .site-nav--scroll-aware.is-scrolled {
-  background: rgba(11, 11, 13, 0.88);
+  background: color-mix(in srgb, var(--surface-0) 88%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding-top: var(--space-5);
@@ -27,7 +27,7 @@
 }
 
 .site-nav--case {
-  background: rgba(11, 11, 13, 0.92);
+  background: color-mix(in srgb, var(--surface-0) 92%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
@@ -49,7 +49,7 @@
 }
 
 .site-nav__logo {
-  color: var(--ink);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -95,7 +95,7 @@
   position: relative;
   font-family: var(--font-serif);
   font-size: clamp(13px, 1vw, 15px);
-  letter-spacing: var(--ls-label);
+  letter-spacing: var(--type-label-ls);
   text-transform: uppercase;
   color: var(--text-secondary);
   text-decoration: none;
@@ -116,7 +116,7 @@
 }
 
 .site-nav__links a:hover {
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .site-nav__links a:hover::after,

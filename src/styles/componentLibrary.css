@@ -302,7 +302,7 @@
   padding: var(--space-10) var(--space-6) var(--space-6);
   border: 0.5px dashed var(--line-strong);
   border-radius: 16px;
-  background: var(--paper);
+  background: var(--surface-0);
 }
 
 .cl-stage__label {
@@ -449,7 +449,7 @@
 
 .cl-table td {
   padding: var(--space-3) var(--space-4);
-  border-top: 0.5px solid var(--ink-04);
+  border-top: 0.5px solid var(--gray-a3);
   vertical-align: top;
   color: var(--text-secondary);
 }
@@ -462,7 +462,7 @@
 }
 
 .cl-table td:first-child code {
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .cl-main > .code-card {
@@ -587,23 +587,76 @@
 }
 
 /* Editor demo: editor and rendered result side by side */
+/* Editor demo: Input (Editor) and Output (RichText) side by side, filling the example card */
 .cl-editor {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--space-6);
+  margin: calc(-1 * var(--space-6));
 }
 
 .cl-editor__pane {
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
-.cl-editor__preview {
+.cl-editor__pane + .cl-editor__pane {
+  border-left: 1px solid var(--line);
+}
+
+.cl-editor__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.cl-editor__icon {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--gray-a7);
+  color: var(--text-primary);
+}
+
+.cl-editor__title {
+  font-size: var(--type-small);
+  line-height: var(--type-small-lh);
+  color: var(--text-primary);
+}
+
+.cl-editor__meta {
+  margin-left: auto;
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.cl-editor__body {
+  flex: 1;
   min-width: 0;
+  padding: var(--space-5);
+}
+
+/* Output pane: the reader's page background, so the result looks as it will on the site */
+.cl-editor__pane:last-child .cl-editor__body {
+  background: var(--surface-0);
 }
 
 @media (max-width: 900px) {
   .cl-editor {
     grid-template-columns: 1fr;
+  }
+
+  .cl-editor__pane + .cl-editor__pane {
+    border-top: 1px solid var(--line);
+    border-left: 0;
   }
 }
 
@@ -800,8 +853,8 @@
 
 .fd-spec__btn--primary {
   border-color: transparent;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--gray-12);
+  color: var(--gray-1);
 }
 
 .fd-spec__overlay {
@@ -862,7 +915,7 @@
   padding: var(--space-0-5) var(--space-1);
   border-radius: 4px;
   background: var(--annotate);
-  color: var(--paper);
+  color: var(--gray-1);
 }
 
 .fd-spec__guide-label--below {

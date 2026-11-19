@@ -383,7 +383,7 @@ export const GROUPS = [
       {
         id: 'side-panel',
         name: 'SidePanel',
-        file: 'src/components/admin/SidePanel.jsx',
+        file: 'src/components/SidePanel.jsx',
         summary: '從右側滑出的編輯面板。每列左邊是欄位名稱，右邊是值。',
         hero: {
           code: `<SidePanel title="編輯文章" dirty={dirty} saving={saving} onSave={save} onLogout={logout}>

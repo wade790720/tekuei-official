@@ -1,7 +1,7 @@
 /* TEKUEI brand colours. Dark base, ivory text, gold as a small accent.
    Share: about 70% black and charcoal, 25% ivory text, 5% gold.
-   The paper / ink / ember names stay because every stylesheet uses them:
-   paper = surface, ink = text, ember = accent. */
+   Brand colours below are the anchors of the gray and accent scales. Stylesheets use the
+   semantic tokens (--surface-*, --text-*, --line, --ember*) and never the anchors or scale steps. */
 
 :root {
   /* Brand palette */
@@ -9,10 +9,8 @@
   --charcoal: #181719; /* cards, section background */
   --charcoal-elevated: #242024; /* raised elements */
   --ivory: #f4eee7; /* headings, main text */
-  --taupe: #a8a09a; /* secondary text */
   --gold: #c99a63; /* accent */
   --amber: #e4b57b; /* hover, glow */
-  --bronze: #40352c; /* dividers, borders */
 
   /* ── Color scales ──
      Two 12-step scales, each with a solid and an alpha (transparent ivory or gold) variant.
@@ -74,37 +72,22 @@
   /* Text or icons placed on a solid accent (step 9) */
   --accent-contrast: var(--gray-1);
 
-  /* Surfaces. New code uses --surface-0/1/2 (page, card, raised); paper-* are the old names. */
-  --paper: var(--gray-1);
-  --paper-warm: var(--gray-3);
-  --paper-cool: var(--gray-5);
-  --surface-0: var(--paper);
-  --surface-1: var(--paper-warm);
-  --surface-2: var(--paper-cool);
+  /* Surfaces: page, card, raised */
+  --surface-0: var(--gray-1);
+  --surface-1: var(--gray-3);
+  --surface-2: var(--gray-5);
 
   /* Lines. Neutral by default; gold lines (--ember-line) only mark the current page, focus or hover. */
   --line: var(--gray-a6);
   --line-strong: var(--gray-a7);
 
   /* Text hierarchy, ivory at falling strength */
-  --ink: var(--gray-12);
-  --ink-90: rgba(244, 238, 231, 0.9);
-  --ink-70: rgba(244, 238, 231, 0.72);
-  --ink-68: rgba(244, 238, 231, 0.7);
-  --ink-65: rgba(244, 238, 231, 0.66);
-  --ink-62: rgba(244, 238, 231, 0.64);
-  --ink-50: rgba(244, 238, 231, 0.5);
-  --ink-40: rgba(244, 238, 231, 0.4);
-  --ink-22: rgba(244, 238, 231, 0.22);
-  --ink-04: rgba(244, 238, 231, 0.05);
 
   /* Accent */
   --ember: var(--accent-9);
   --ember-soft: var(--accent-10);
-  --ember-deep: var(--gold);
   --ember-line: var(--accent-a7);
   --ember-whisper: var(--accent-a4);
-  --ember-50: rgba(201, 154, 99, 0.5);
 
   /* Page width. Content stops growing at --page-max; wider screens extend the sides.
      heroFx.js has the same number as MAX_W. */
@@ -124,20 +107,20 @@
   --weight-light: 300; /* large headings only */
   --weight-regular: 400;
 
-  /* Code highlighting (journal code cards). Muted, warm, readable on --paper-warm. */
+  /* Code highlighting (journal code cards). Muted, warm, readable on --surface-1. */
   --code-keyword: var(--gold);
   --code-fn: var(--amber);
   --code-prop: #c9b8a6;
   --code-string: #a9b88f;
   --code-number: #d39b84;
-  --code-comment: var(--ink-50); /* ink-40 falls under 4.5:1 on charcoal */
-  --code-punct: var(--ink-62);
-  --code-plain: var(--ink-90);
+  --code-comment: rgba(244, 238, 231, 0.5); /* gray-a9 (40%) falls under 4.5:1 on a card */
+  --code-punct: var(--gray-a10);
+  --code-plain: var(--gray-a12);
 
   /* ── Foundations ── Shown with examples on /dev/component-library (Theme). */
 
   /* Text tiers: four steps on the gray alpha scale. Faint is for decoration, never for reading. */
-  --text-primary: var(--ink); /* headings, the thing to read first */
+  --text-primary: var(--gray-12); /* headings, the thing to read first */
   --text-body: var(--gray-a12); /* paragraphs */
   --text-secondary: var(--gray-a11); /* descriptions, captions */
   --text-tertiary: var(--gray-a10); /* meta, dates, hints; the dimmest text that still passes 4.5:1 */
@@ -195,33 +178,7 @@
 
   /* ── Motion & typography rhythm ── */
   --ease-touch: cubic-bezier(0.16, 0.08, 0.12, 1);
-  /* Tracking: three values only. Display -0.02em, everything else 0, labels 0.1em.
-     --ls-* are the old names, kept so old rules follow the new values. */
-  --ls-title: 0;
-  --ls-label: var(--type-label-ls);
-  --ls-body: 0;
-
-  /* ── Legacy aliases（內頁相容） ── */
-  --ink-30: var(--text-secondary);
-  --ink-30-head: var(--ink);
-  --ink-30-muted: var(--ink-70);
-  --ink-30-faint: var(--ink-65);
-  --ink-30-whisper: var(--ink-22);
-  --paper-60-wash: var(--paper-warm);
-  --paper-60-deep: var(--paper-cool);
-  --paper-60-edge: var(--bronze);
-  --gold-10: var(--ember);
-  --gold-10-soft: var(--ember-soft);
-  --gold-10-line: var(--ember-line);
-  --gold-10-whisper: var(--ember-whisper);
-  --ink-soft: var(--ink-70);
-  --ink-faint: var(--ink-65);
-  --ink-muted: var(--ink-22);
-  --paper-panel: var(--paper-warm);
-  --paper-panel-deep: var(--paper-cool);
-  --paper-border: var(--ember-whisper);
-  --paper-border-gold: var(--ember-line);
-  --ease-haunt: var(--ease-touch);
+  /* Tracking: three values only. Display -0.02em (--type-display-ls), labels 0.1em (--type-label-ls), everything else 0. */
 }
 
 /* ── Site-wide loading bar ── */
