@@ -927,6 +927,16 @@
   background: var(--ember-soft);
 }
 
+/* Screen-reader only: announces save states while the panel is collapsed */
+.cms-dock__status {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* Buttons keep a keyboard focus ring; text fields and the editor show only the caret */
 .cms-panel button:focus-visible,
 .cms-panel select:focus-visible,

@@ -48,12 +48,27 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
 
   // Portal to <body>: page roots such as .journal-page set z-index and would trap the panel under the nav.
   if (!panelOpen) {
+    // The dock shows the same save states, so a Ctrl+S save while collapsed is visible.
     return createPortal(
-      <button type="button" className="cms-dock" onClick={() => setPanelOpen(true)} aria-label={T.expand}>
-        <PencilIcon />
-        <span>{T.dock}</span>
-        {dirty ? <span className="cms-dock__dot" title={T.unsaved} /> : null}
-      </button>,
+      <>
+        <button type="button" className="cms-dock cms-save" data-state={saveState} onClick={() => setPanelOpen(true)} aria-label={T.expand}>
+          <SaveLabels
+            state={saveState}
+            idle={
+              <>
+                <PencilIcon />
+                {T.dock}
+              </>
+            }
+          />
+          {/* Stays while saving so the dock keeps its width; it goes once the save lands */}
+          {dirty ? <span className="cms-dock__dot" title={T.unsaved} /> : null}
+        </button>
+        {/* The button's aria-label hides its text, so the state is announced here */}
+        <span className="cms-dock__status" role="status">
+          {saveState === 'idle' ? '' : status}
+        </span>
+      </>,
       document.body,
     )
   }
@@ -74,20 +89,7 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
           </button>
           {/* Lights up only when there is something to save */}
           <button type="button" className="cms-btn cms-save" data-state={saveState} onClick={onSave} disabled={saving || !dirty}>
-            {/* All labels share one grid cell, so the button keeps the widest label's width */}
-            <span className="cms-save__stack">
-              <span className="cms-save__label" data-on={saveState === 'idle' || saveState === 'error' || undefined}>
-                {T.save}
-              </span>
-              <span className="cms-save__label" data-on={saveState === 'saving' || undefined}>
-                <span className="cms-spin" aria-hidden />
-                {T.saving}
-              </span>
-              <span className="cms-save__label" data-on={saveState === 'saved' || undefined}>
-                <CheckIcon />
-                {T.saved}
-              </span>
-            </span>
+            <SaveLabels state={saveState} idle={T.save} />
             <kbd className="cms-btn__kbd">{SAVE_KEY}</kbd>
           </button>
         </div>
@@ -164,6 +166,28 @@ export function Switch({ checked, onChange, label }) {
     >
       <span className="cms-switch__knob" aria-hidden />
     </button>
+  )
+}
+
+/**
+ * Idle, saving and saved labels in one grid cell, so the button keeps the widest label's width.
+ * Used by the save button and the dock button.
+ */
+function SaveLabels({ state, idle }) {
+  return (
+    <span className="cms-save__stack">
+      <span className="cms-save__label" data-on={state === 'idle' || state === 'error' || undefined}>
+        {idle}
+      </span>
+      <span className="cms-save__label" data-on={state === 'saving' || undefined}>
+        <span className="cms-spin" aria-hidden />
+        {T.saving}
+      </span>
+      <span className="cms-save__label" data-on={state === 'saved' || undefined}>
+        <CheckIcon />
+        {T.saved}
+      </span>
+    </span>
   )
 }
 
