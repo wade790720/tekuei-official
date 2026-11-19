@@ -16,7 +16,10 @@ const SPONGE_LOSS = 0.25 // extra loss per step at the outer edge of the border;
 const DROP = 900 // drop depth at the centre
 const DROP_R = 8 // drop radius in cells; the edge is a smooth cosine falloff
 const BEND = 0.6 // slope -> displacement map offset (0–127)
-const BEND_PX = 64 // feDisplacementMap scale: the largest shift, in CSS px
+const BEND_PX = 64 // feDisplacementMap scale; the largest shift is half of it, in CSS px
+// Near the viewport edges the shift fades to 0. Otherwise the filter samples past the edge, where there is
+// no page, and white shows through. The band is wider than the largest shift (BEND_PX / 2).
+const EDGE_PX = 40
 const LIGHT = 0.0018 // slope -> light opacity
 const MAX_ALPHA = 0.3
 const SWAP_MS = 300 // the text changes here, while the waves still cover the page
@@ -43,10 +46,13 @@ export function playWaterRipple(x, y, onSwap) {
 
 function createSim() {
   // Size the cell so the wave front reaches the far corner in REACH_MS on any screen.
-  const cell = Math.max(MIN_CELL, Math.hypot(innerWidth, innerHeight) / (WAVE_SPEED * (REACH_MS / STEP_MS)))
+  // clientWidth leaves out the scrollbar: it is not page content, so it must not be sampled either.
+  const vw = document.documentElement.clientWidth
+  const vh = document.documentElement.clientHeight
+  const cell = Math.max(MIN_CELL, Math.hypot(vw, vh) / (WAVE_SPEED * (REACH_MS / STEP_MS)))
   // w × h is the visible grid; gw × gh adds the absorbing border around it.
-  const w = Math.ceil(innerWidth / cell) + 2
-  const h = Math.ceil(innerHeight / cell) + 2
+  const w = Math.ceil(vw / cell) + 2
+  const h = Math.ceil(vh / cell) + 2
   const gw = w + 2 * SPONGE
   const gh = h + 2 * SPONGE
   let cur = new Float32Array(gw * gh)
@@ -110,8 +116,9 @@ function createSim() {
         const k = (j + SPONGE) * gw + i + SPONGE
         const sx = cur[k - 1] - cur[k + 1]
         const sy = cur[k - gw] - cur[k + gw]
-        m[p] = 128 + Math.max(-127, Math.min(127, sx * BEND))
-        m[p + 1] = 128 + Math.max(-127, Math.min(127, sy * BEND))
+        const edge = Math.min(1, (Math.min(i, j, w - 1 - i, h - 1 - j) * cell) / EDGE_PX)
+        m[p] = 128 + Math.max(-127, Math.min(127, sx * BEND)) * edge
+        m[p + 1] = 128 + Math.max(-127, Math.min(127, sy * BEND)) * edge
         m[p + 2] = 128
         m[p + 3] = 255
         // Light from the top left: slopes facing it shine gold, the others go dark.
@@ -127,7 +134,7 @@ function createSim() {
     mapCtx.putImageData(mapImg, 0, 0)
 
     // The root filter works in document coordinates: keep the map over the viewport as the page scrolls.
-    const box = { x: scrollX, y: scrollY, width: innerWidth, height: innerHeight }
+    const box = { x: scrollX, y: scrollY, width: vw, height: vh }
     for (const [k, v] of Object.entries(box)) {
       filter.setAttribute(k, v)
       image.setAttribute(k, v)
