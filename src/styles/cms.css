@@ -71,7 +71,7 @@
   align-items: center;
   gap: var(--space-3);
   height: 44px;
-  padding: 0 var(--space-5);
+  padding: 0 var(--space-6);
   border-radius: var(--radius-full);
   background: var(--surface-2);
   box-shadow: var(--cms-ring);
@@ -123,7 +123,7 @@
   }
 
   html.has-cms-panel .site-nav__links {
-    gap: var(--space-5);
+    gap: var(--space-6);
   }
 
   html.has-cms-panel .site-nav__links a {
@@ -153,7 +153,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  padding: var(--space-5) var(--space-6);
+  padding: var(--space-6) var(--space-6);
   border-bottom: 0.5px solid var(--gray-a3);
 }
 
@@ -167,7 +167,7 @@
 }
 
 .cms-panel__subtitle {
-  margin-top: var(--space-0-5);
+  margin-top: var(--space-1);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -229,14 +229,14 @@
 .cms-row {
   display: grid;
   grid-template-columns: 128px minmax(0, 1fr);
-  gap: var(--space-5);
+  gap: var(--space-6);
   margin: 0 var(--space-6);
   padding: var(--space-4) 0;
   border-bottom: 0.5px solid var(--gray-a3);
 }
 
 .cms-row__label {
-  padding-top: var(--space-0-5);
+  padding-top: var(--space-1);
   font-size: var(--type-caption);
   line-height: 1.6;
   color: var(--text-secondary);
@@ -305,7 +305,7 @@
 
 .cms-block__tools {
   display: flex;
-  gap: var(--space-0-5);
+  gap: var(--space-1);
 }
 
 .cms-icon {
@@ -376,7 +376,7 @@
 }
 
 .cms-btn__kbd {
-  padding: var(--space-0-5) var(--space-1);
+  padding: var(--space-1) var(--space-1);
   border-radius: calc(var(--radius-sm) / 2);
   background: color-mix(in srgb, var(--surface-0) 12%, transparent);
   font-family: var(--font-label);
@@ -537,7 +537,7 @@
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-0-5);
+  gap: var(--space-1);
   max-width: 100%;
   margin: 0 0 var(--space-4);
   padding: var(--space-1);
@@ -621,7 +621,7 @@
 }
 
 .cms-ed-tip kbd {
-  padding: var(--space-0-5) var(--space-1);
+  padding: var(--space-1) var(--space-1);
   border-radius: calc(var(--radius-sm) / 2);
   background: color-mix(in srgb, var(--surface-0) 10%, transparent);
   font-family: var(--font-label);
@@ -665,7 +665,7 @@
 
 .cms-ed-content h2,
 .cms-ed-content h3 {
-  margin: var(--space-6) 0 var(--space-0-5);
+  margin: var(--space-6) 0 var(--space-1);
   font-weight: 400;
   letter-spacing: 0;
   color: var(--text-primary);
@@ -697,7 +697,7 @@
 }
 
 .cms-ed-content code {
-  padding: var(--space-0-5) var(--space-1);
+  padding: var(--space-1) var(--space-1);
   border-radius: calc(var(--radius-sm) / 2);
   background: var(--surface-2);
   font-family: var(--font-mono);
@@ -706,7 +706,7 @@
 }
 
 .cms-ed-content hr {
-  margin: var(--space-5) auto;
+  margin: var(--space-6) auto;
   width: 48px;
   border: 0;
   border-top: 0.5px solid var(--line-strong);
@@ -813,7 +813,7 @@
   display: block;
   max-height: 180px;
   max-width: 100%;
-  margin: var(--space-0-5) 0 var(--space-1);
+  margin: var(--space-1) 0 var(--space-1);
   border-radius: var(--radius-sm);
   object-fit: contain;
   align-self: flex-start;
@@ -827,6 +827,7 @@
 
 .cms-ed-field {
   flex: 1;
+  width: 100%; /* an <input> outside a flex row would fall back to about 20 characters */
   min-width: 0;
   padding: 0;
   border: 0;
@@ -902,17 +903,17 @@
 
   .cms-panel__head {
     flex-wrap: wrap;
-    padding: var(--space-4) var(--space-5);
+    padding: var(--space-4) var(--space-6);
   }
 
   .cms-panel__status {
-    padding: var(--space-2) var(--space-5);
+    padding: var(--space-2) var(--space-6);
   }
 
   .cms-row {
     grid-template-columns: 1fr;
     gap: var(--space-1);
-    margin: 0 var(--space-5);
+    margin: 0 var(--space-6);
   }
 
   .cms-post {
@@ -926,7 +927,7 @@
   }
 
   .cms-section__head {
-    padding: var(--space-5) var(--space-5) var(--space-2);
+    padding: var(--space-6) var(--space-6) var(--space-2);
   }
 
   .cms-gate__field {
@@ -1012,7 +1013,7 @@
 .cms-ed-slide__fields {
   display: flex;
   flex-direction: column;
-  gap: var(--space-0-5);
+  gap: var(--space-1);
   min-width: 0;
 }
 

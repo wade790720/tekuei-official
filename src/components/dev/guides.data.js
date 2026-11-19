@@ -279,7 +279,7 @@ var(--accent-a4); /* --ember-whisper：hover 的淡底 */`,
       ['spec', '實際使用'],
       ['rules', '原則'],
     ],
-    scale: '13 階，以 4px 為基礎，只用刻度上的值。',
+    scale: '8 階，以 4px 為基礎，只用刻度上的值。',
     rhythm: '三種節奏：元件內 4–12px、段落之間 24px、區塊之間 --section-gap。外面的間距永遠大於裡面的間距。',
     rhythmRows: [
       ['元件內', '--space-1 – --space-3', '4–12px', '按鈕內距、圖示和文字之間'],

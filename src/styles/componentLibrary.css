@@ -19,7 +19,7 @@
   left: var(--cl-edge);
   z-index: 5;
   width: var(--cl-side-w);
-  padding: var(--space-8) var(--space-4) var(--space-16) 0;
+  padding: var(--space-8) var(--space-4) var(--space-12) 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   border-right: 1px solid var(--line);
@@ -95,7 +95,7 @@
 /* ── Body: the page and the "本頁" nav ── */
 
 .cl-body {
-  padding: calc(var(--cl-top) + var(--space-12)) var(--cl-edge) var(--space-32);
+  padding: calc(var(--cl-top) + var(--space-12)) var(--cl-edge) var(--space-24);
   padding-left: calc(var(--cl-edge) + var(--cl-side-w) + var(--space-12));
   padding-right: calc(var(--cl-edge) + var(--cl-quick-w) + var(--space-12));
 }
@@ -186,7 +186,7 @@
 .cl-head__file {
   display: inline-block;
   margin-top: var(--space-4);
-  padding: var(--space-0-5) var(--space-2);
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
   background: var(--surface-1);
   box-shadow: 0 0 0 1px var(--line);
@@ -201,7 +201,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: var(--space-3);
-  margin-bottom: var(--space-10);
+  margin-bottom: var(--space-12);
 }
 
 .cl-cat {
@@ -252,7 +252,7 @@
   display: flex;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-top: var(--space-16);
+  margin-top: var(--space-12);
   padding-top: var(--space-6);
   border-top: 1px solid var(--line);
 }
@@ -298,8 +298,8 @@
 /* Live demo area */
 .cl-stage {
   position: relative;
-  margin: var(--space-6) 0 var(--space-10);
-  padding: var(--space-10) var(--space-6) var(--space-6);
+  margin: var(--space-6) 0 var(--space-12);
+  padding: var(--space-12) var(--space-6) var(--space-6);
   border: 0.5px dashed var(--line-strong);
   border-radius: 16px;
   background: var(--surface-0);
@@ -401,7 +401,7 @@
 
 .cl-rules ul{
   margin: 0;
-  padding-left: var(--space-5);
+  padding-left: var(--space-6);
   font-size: var(--type-body);
   line-height: var(--type-body-lh);
   color: var(--text-secondary);
@@ -582,11 +582,11 @@
 @media (max-width: 768px) {
   .cl-rules {
     grid-template-columns: 1fr;
-    gap: var(--space-5);
+    gap: var(--space-6);
   }
 
   .cl-stage {
-    padding: var(--space-10) var(--space-4) var(--space-4);
+    padding: var(--space-12) var(--space-4) var(--space-4);
   }
 
   /* Keep the description column readable; the table scrolls inside its frame */
@@ -660,7 +660,7 @@
 .cl-editor__body {
   flex: 1;
   min-width: 0;
-  padding: var(--space-5);
+  padding: var(--space-6);
 }
 
 /* Output pane: the reader's page background, so the result looks as it will on the site */
@@ -712,7 +712,7 @@
 .fd-swatch__meta {
   display: flex;
   flex-direction: column;
-  gap: var(--space-0-5);
+  gap: var(--space-1);
   min-width: 0;
 }
 
@@ -765,7 +765,7 @@
 
 .fd-rules {
   margin: 0;
-  padding-left: var(--space-5);
+  padding-left: var(--space-6);
   font-size: var(--type-small);
   line-height: 1.8;
   color: var(--text-body);
@@ -800,7 +800,7 @@
 .fd-spec__stage {
   position: relative;
   min-width: 840px;
-  padding: var(--space-12) 320px var(--space-12) var(--space-10);
+  padding: var(--space-12) 320px var(--space-12) var(--space-12);
 }
 
 .fd-spec__card {
@@ -931,7 +931,7 @@
 
 .fd-spec__tag {
   transform: translate(-50%, -50%);
-  padding: var(--space-0-5) var(--space-1);
+  padding: var(--space-1) var(--space-1);
   border-radius: 4px;
   background: var(--annotate);
   color: var(--gray-1);
@@ -965,7 +965,7 @@
 .fd-spec__chip {
   display: flex;
   flex-direction: column;
-  gap: var(--space-0-5);
+  gap: var(--space-1);
   transform: translateY(-50%);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
@@ -1008,7 +1008,7 @@
 
 .doc-section__lead {
   max-width: 680px;
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-6);
   font-size: var(--type-body);
   line-height: var(--type-body-lh);
   color: var(--text-secondary);
@@ -1020,7 +1020,7 @@
 
 /* Sub-sections (h3): an API part, an example, a step */
 .doc-section--3 {
-  margin-top: var(--space-10);
+  margin-top: var(--space-12);
 }
 
 .doc-section--3 > .doc-section__title {

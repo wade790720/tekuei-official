@@ -57,7 +57,7 @@
 }
 
 .about-fall h1 {
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-6);
   font-family: var(--font-serif);
   font-weight: 400;
   font-size: clamp(32px, 3.8vw, 58px);
@@ -185,7 +185,7 @@
 }
 
 .about-fall__caption-details h3 {
-  margin: var(--space-5) 0 var(--space-2);
+  margin: var(--space-6) 0 var(--space-2);
   font-family: var(--font-label);
   font-size: var(--type-label);
   font-weight: var(--weight-regular);
@@ -293,7 +293,7 @@
 .about-fall__bars {
   display: flex;
   align-items: flex-end;
-  gap: var(--space-0-5);
+  gap: var(--space-1);
   height: 10px;
 }
 

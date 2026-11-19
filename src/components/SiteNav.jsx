@@ -1,6 +1,6 @@
 // The site's top navigation and its parts: SiteNavLinks (shared by the bar and the phone menu),
 // NavToggle (the phone menu button) and NavOverlay (the full-screen phone menu).
-import { forwardRef, useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
 import { NavLink, useLocation } from 'react-router-dom'
 import { NAV_LABELS, SITE_LOGO } from '../data/nav.js'
@@ -8,6 +8,11 @@ import { useLang } from '../i18n'
 import { playWaterRipple } from '../lib/waterRipple.js'
 import '../styles/siteNav.css'
 import '../styles/navOverlay.css'
+
+function subscribeScroll(onChange) {
+  window.addEventListener('scroll', onChange, { passive: true })
+  return () => window.removeEventListener('scroll', onChange)
+}
 
 /**
  * @param {{
@@ -21,9 +26,8 @@ export function SiteNav({
   highlightJournal = false,
   variant = 'default',
 }) {
-  const { pathname } = useLocation()
+  useLocation() // re-render on route change, so `scrolled` is read again
   const [open, setOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   const { lang, toggle } = useLang()
   const t = NAV_LABELS[lang]
   const toggleRef = useRef(null)
@@ -38,16 +42,8 @@ export function SiteNav({
   // The toggle unmounts while the menu is open; give it focus back once the menu has gone.
   const onMenuExited = () => toggleRef.current?.focus()
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  useEffect(() => {
-    setScrolled(window.scrollY > 80)
-  }, [pathname])
+  // Read on every render too, so a route change (which re-renders the nav) picks up the new position.
+  const scrolled = useSyncExternalStore(subscribeScroll, () => window.scrollY > 80)
 
   const navClass = [
     'site-nav',
@@ -208,10 +204,22 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
   const t = NAV_LABELS[lang]
   const closeBtn = useRef(null)
   const exited = useRef(onExited)
-  const wasMounted = useRef(open)
-  const [mounted, setMounted] = useState(open)
   const [active, setActive] = useState(false)
   const [closing, setClosing] = useState(false)
+  // React to `open` changing during render, not in an effect (no extra render pass).
+  const [prevOpen, setPrevOpen] = useState(open)
+  if (open !== prevOpen) {
+    setPrevOpen(open)
+    if (open) {
+      setClosing(false)
+    } else {
+      setActive(false)
+      setClosing(overlayDuration() > 0)
+    }
+  }
+  // Stays in the DOM while the closing animation runs.
+  const mounted = open || closing
+  const wasMounted = useRef(mounted)
 
   useEffect(() => {
     exited.current = onExited
@@ -229,33 +237,25 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
     if (active) closeBtn.current?.focus()
   }, [active])
 
+  // Two frames after mounting, add is-active so the opening transition runs from the hidden state.
   useEffect(() => {
-    if (open) {
-      setClosing(false)
-      setMounted(true)
-      const raf = requestAnimationFrame(() => {
-        requestAnimationFrame(() => setActive(true))
-      })
-      return () => cancelAnimationFrame(raf)
+    if (!open) return undefined
+    let inner = 0
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => setActive(true))
+    })
+    return () => {
+      cancelAnimationFrame(outer)
+      cancelAnimationFrame(inner)
     }
+  }, [open])
 
-    if (!mounted) return undefined
-
-    setActive(false)
-    setClosing(true)
-    const ms = overlayDuration()
-    if (ms === 0) {
-      setMounted(false)
-      setClosing(false)
-      return undefined
-    }
-
-    const timer = window.setTimeout(() => {
-      setMounted(false)
-      setClosing(false)
-    }, ms)
+  // Unmount when the closing animation ends.
+  useEffect(() => {
+    if (!closing) return undefined
+    const timer = window.setTimeout(() => setClosing(false), overlayDuration())
     return () => window.clearTimeout(timer)
-  }, [open, mounted])
+  }, [closing])
 
   useEffect(() => {
     if (!mounted) return undefined
