@@ -157,21 +157,17 @@
   --type-mono: 13px;
   --type-mono-lh: 1.65;
 
-  /* Spacing: a 4px grid. Space outside a group is always larger than space inside it. */
-  --space-0-5: 2px; /* hairline gaps: icon and its badge */
+  /* Spacing: eight steps on a 4px grid (4 8 12 16 24 32 48 96). Space outside a group is always larger than space inside it. */
   --space-1: 4px; /* inside a component: icon and its text */
   --space-2: 8px; /* related elements: label and field, buttons in a group */
   --space-3: 12px; /* left and right padding of buttons and inputs */
   --space-4: 16px; /* unrelated elements; card padding */
-  --space-5: 20px; /* small groups: a card's header to its body */
-  --space-6: 24px; /* sub-sections; paragraph to paragraph */
+  --space-6: 24px; /* sub-sections; paragraph to paragraph; a card header to its body */
   --space-8: 32px; /* blocks inside a section; around figures */
-  --space-10: 40px; /* a section's title to its content */
-  --space-12: 48px; /* between groups of blocks */
-  --space-16: 64px; /* before a heading in a post */
+  --space-12: 48px; /* between groups of blocks; a section title to its content; before a heading in a post */
   --space-24: 96px; /* between page sections on phones and tablets */
-  --space-32: 128px; /* between page sections on desktop */
-  --section-gap: clamp(var(--space-24), 10vw, var(--space-32)); /* the one section rhythm */
+  /* Between page sections: 96px on phones, up to 128px on desktop. Page rhythm, not a step of the scale. */
+  --section-gap: clamp(var(--space-24), 10vw, 128px);
 
   /* Corner radius: small controls 8, cards 12–16, pills full */
   --radius-sm: 8px;

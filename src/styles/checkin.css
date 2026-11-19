@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-10) var(--space-6);
+  padding: var(--space-12) var(--space-6);
   overflow: hidden;
   font-family: var(--checkin-fc);
   font-weight: var(--weight-regular);
@@ -81,7 +81,7 @@
 
 .checkin-brand {
   text-align: center;
-  margin-bottom: var(--space-10);
+  margin-bottom: var(--space-12);
 }
 
 .checkin-brand-name {
@@ -105,7 +105,7 @@
   -webkit-backdrop-filter: blur(8px);
   border: 0.5px solid var(--checkin-border);
   border-radius: 1px;
-  padding: var(--space-10) var(--space-8) var(--space-10);
+  padding: var(--space-12) var(--space-8) var(--space-12);
   overflow: hidden;
 }
 
@@ -135,7 +135,7 @@
   font-size: var(--type-caption);
   color: var(--checkin-muted);
   line-height: 1.8;
-  margin-bottom: var(--space-10);
+  margin-bottom: var(--space-12);
   letter-spacing: 0;
 }
 
@@ -268,7 +268,7 @@
 }
 
 .checkin-dev-badge {
-  margin: -8px 0 var(--space-5);
+  margin: -8px 0 var(--space-6);
   padding: var(--space-2) var(--space-3);
   border: 0.5px dashed var(--line-strong);
   font-size: var(--type-label);
@@ -279,7 +279,7 @@
 }
 
 .checkin-dev-payload {
-  margin-top: var(--space-5);
+  margin-top: var(--space-6);
   font-size: var(--type-label);
   color: var(--checkin-muted);
   word-break: break-all;
@@ -359,7 +359,7 @@
   font-family: var(--checkin-fd);
   font-size: 36px;
   color: var(--ember);
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-6);
   line-height: 1;
 }
 

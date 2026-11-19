@@ -109,7 +109,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 var(--space-12) 0 var(--space-10);
+  padding: 0 var(--space-12) 0 var(--space-12);
 }
 
 .h-pre {
@@ -139,7 +139,7 @@
   font-size: clamp(13px, 1.4vw, 16px);
   letter-spacing: var(--type-label-ls);
   color: var(--text-secondary);
-  margin-bottom: var(--space-10);
+  margin-bottom: var(--space-12);
   opacity: 0;
   animation: fade-up 1s var(--ease-touch) 2.8s forwards;
 }
@@ -160,7 +160,7 @@
   line-height: 2.15;
   color: var(--text-primary);
   letter-spacing: 0;
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-6);
   opacity: 0;
   animation: fade-up 1s var(--ease-touch) 3.3s forwards;
 }
@@ -247,11 +247,11 @@
   }
 
   nav {
-    padding: var(--space-5) var(--space-6);
+    padding: var(--space-6) var(--space-6);
   }
 
   .nav-links {
-    gap: var(--space-5);
+    gap: var(--space-6);
   }
 
   .scroll-hint {

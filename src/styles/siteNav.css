@@ -22,8 +22,8 @@
   background: color-mix(in srgb, var(--surface-0) 88%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding-top: var(--space-5);
-  padding-bottom: var(--space-5);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
 }
 
 .site-nav--case {
@@ -57,7 +57,7 @@
 .site-logo {
   display: inline-flex;
   align-items: baseline;
-  gap: var(--space-0-5);
+  gap: var(--space-1);
   font-family: var(--font-serif);
   font-size: var(--type-body);
   line-height: 26px;
@@ -154,7 +154,7 @@
 
 @media (max-width: 900px) {
   .site-nav {
-    padding: var(--space-5) var(--space-6);
+    padding: var(--space-6) var(--space-6);
   }
 
   .site-nav::after {

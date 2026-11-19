@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useEffectEvent, useState } from 'react'
 import { cloneSiteData, siteDefaults } from '../lib/siteData.js'
 import { fetchSiteData, isRemoteSync, saveSitePatch } from '../lib/adminApi.js'
 import { LOCAL_CASES } from '../data/cases/index.js'
@@ -16,6 +16,8 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  // Reads the latest getDefault and cloneContent without reloading when the caller passes new functions.
+  const sectionContent = useEffectEvent((data) => cloneContent(data[sectionKey] ?? getDefault()))
 
   useEffect(() => {
     let cancelled = false
@@ -25,7 +27,7 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
       const fallback = () => {
         const bundled = cloneSiteData()
         setSiteData(bundled)
-        setContent(cloneContent(bundled[sectionKey] ?? getDefault()))
+        setContent(sectionContent(bundled))
       }
       if (!isRemoteSync()) {
         if (!cancelled) {
@@ -38,7 +40,7 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
         const remote = await fetchSiteData()
         if (!cancelled) {
           setSiteData(remote)
-          setContent(cloneContent(remote[sectionKey] ?? getDefault()))
+          setContent(sectionContent(remote))
         }
       } catch {
         if (!cancelled) fallback()
@@ -158,7 +160,7 @@ export function useCaseCms(slug) {
     return () => {
       cancelled = true
     }
-  }, [slug, lang])
+  }, [slug, lang, staticCase])
 
   const workItems = siteData.work?.items ?? siteDefaults.work.items
 
