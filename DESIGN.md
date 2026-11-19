@@ -112,6 +112,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 - 左右留白用 `--page-pad`（`clamp(20px, 4vw, 68px)`）。
 - Work 和 Journal 列表的欄寬是 `--page-column`（1104px）。容器寫 `max-width: var(--page-column-box)`，左右 padding 用 `var(--page-pad)`。
+- Journal 列表：最新一篇用大卡片，其他文章是一列一篇（約 68px），按年份分組，年份標在左欄。
 - Journal 文章的閱讀欄是 656px，寫法相同：`max-width: calc(656px + 2 * var(--page-pad))`。
 - 斷點：主要用 900px（平板以下）和 768px（手機）。新程式碼只用這兩個。
 - 線：0.5px，顏色 `--ember-line` 或 `--ember-whisper`。格線和分隔線可以用虛線。
@@ -135,6 +136,8 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 | `src/lib/glyphField.js` | Journal 頁首 | 字元雨，游標附近的字會亮 |
 | `src/lib/fallScene.js` | About | 粒子人形往下掉，穿過刻字石板 |
 | `src/lib/shatterImage.js` | Journal 頁尾 | 版畫圖由碎片從左到右組合，然後靜止 |
+
+另有一個小互動：`src/lib/waterRipple.js`。按下語言按鈕時，水波從點擊處擴散，整頁文字跟著扭曲，1 秒內結束，語言在 0.3 秒時切換（`playWaterRipple(x, y, onSwap)`，動完自己移除）。扭曲用 SVG 濾鏡，掛在 `<html>` 上，因為只有根元素的 filter 不會改變 `position: fixed`。
 
 新效果照同樣的方式寫：`mountXxx(canvas, opts)`，回傳 cleanup。檔案開頭用一兩行說明效果和數字的來源。
 

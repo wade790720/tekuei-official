@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { NavLink, useLocation } from 'react-router-dom'
 import { NAV_LABELS, SITE_LOGO } from '../data/nav.js'
 import { useLang } from '../i18n'
+import { playWaterRipple } from '../lib/waterRipple.js'
 import '../styles/siteNav.css'
 import '../styles/navOverlay.css'
 
@@ -27,6 +28,13 @@ export function SiteNav({
   const t = NAV_LABELS[lang]
   const toggleRef = useRef(null)
   const close = () => setOpen(false)
+  const switchLang = (e) => {
+    // Keyboard presses have no pointer position (detail 0): start from the button's centre.
+    const r = e.currentTarget.getBoundingClientRect()
+    const fromPointer = e.detail > 0
+    // The language changes while the waves are strongest, so the new text seems to arrive with them.
+    playWaterRipple(fromPointer ? e.clientX : r.left + r.width / 2, fromPointer ? e.clientY : r.top + r.height / 2, toggle)
+  }
   // The toggle unmounts while the menu is open; give it focus back once the menu has gone.
   const onMenuExited = () => toggleRef.current?.focus()
 
@@ -62,8 +70,8 @@ export function SiteNav({
           highlightWorkSection={highlightWorkSection}
           highlightJournal={highlightJournal}
         />
-        <button type="button" className="site-nav__lang" onClick={toggle} aria-label={t.lang}>
-          {lang === 'zh' ? 'EN' : '中'}
+        <button type="button" className="site-nav__lang" onClick={switchLang} aria-label={t.lang}>
+          {lang === 'zh' ? 'EN' : 'TW'}
         </button>
       </div>
       {!open && <NavToggle ref={toggleRef} onToggle={() => setOpen(true)} />}
@@ -77,13 +85,13 @@ export function SiteNav({
         <button
           type="button"
           className="site-nav__lang site-nav__lang--overlay"
-          onClick={() => {
-            toggle()
+          onClick={(e) => {
+            switchLang(e)
             close()
           }}
           aria-label={t.lang}
         >
-          {lang === 'zh' ? 'EN' : '中文'}
+          {lang === 'zh' ? 'EN' : 'TW'}
         </button>
       </NavOverlay>
     </nav>
