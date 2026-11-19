@@ -2,6 +2,7 @@
 // Each act is a stone slab with its text carved on it. The figure breaks through the slab when the act begins.
 // Behaviour and numbers follow the scroll piece "Palindrome of a Fall" (github.com/0xkev21/palindrome-of-a-fall).
 import Lenis from 'lenis'
+import shatterSrc from '../assets/about/audio/stone_shatter.mp3'
 
 const SAMPLE_W = 420 // the figure picture is read at this width
 const WAVE_SECONDS = 1.6
@@ -64,78 +65,19 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     ? null
     : new Lenis({ lerp: touch ? 0.08 : 0.05, wheelMultiplier: 0.65, touchMultiplier: 1.6, syncTouch: true, smoothWheel: true })
 
-  // Impact sound, made with Web Audio: a sharp crack, a low thump, then crumbling debris.
-  // shortcut: synthesised, not a recording. Swap in a licensed stone-impact sample if it should sound more real.
-  // Browsers keep audio silent until the visitor clicks, taps or presses a key.
-  let audio = null
+  // Impact sound: a recording of stone breaking.
+  // Browsers reject play() until the visitor clicks, taps or presses a key. Before that, impacts are silent.
+  const crack = new Audio(shatterSrc)
+  crack.preload = 'auto'
+  crack.volume = 0.75
   let soundOn = true
   let lastCrack = 0
-  const unlock = () => {
-    if (!audio) {
-      try {
-        audio = new (window.AudioContext || window.webkitAudioContext)()
-      } catch {
-        return
-      }
-    }
-    if (audio.state === 'suspended') audio.resume().catch(() => {})
-  }
   function stoneCrack() {
-    if (!soundOn || !audio || audio.state !== 'running') return
-    const now = audio.currentTime
-    if (now - lastCrack < 0.28) return // never two hits on top of each other
+    const now = performance.now()
+    if (!soundOn || now - lastCrack < 280) return // never two hits on top of each other
     lastCrack = now
-    const out = audio.createGain()
-    out.gain.value = 0.75
-    out.connect(audio.destination)
-    const burst = (dur) => {
-      const b = audio.createBuffer(1, audio.sampleRate * dur, audio.sampleRate)
-      const ch = b.getChannelData(0)
-      for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1
-      const src = audio.createBufferSource()
-      src.buffer = b
-      return src
-    }
-    // crack: a very short burst of bright noise
-    const c = burst(0.1)
-    const cf = audio.createBiquadFilter()
-    const cg = audio.createGain()
-    cf.type = 'bandpass'
-    cf.frequency.value = 2600
-    cf.Q.value = 0.8
-    cg.gain.setValueAtTime(1, now)
-    cg.gain.exponentialRampToValueAtTime(0.001, now + 0.08)
-    c.connect(cf)
-    cf.connect(cg)
-    cg.connect(out)
-    c.start(now)
-    // thump: a low tone that drops in pitch
-    const o = audio.createOscillator()
-    const og = audio.createGain()
-    o.frequency.setValueAtTime(120, now)
-    o.frequency.exponentialRampToValueAtTime(42, now + 0.22)
-    og.gain.setValueAtTime(0.9, now)
-    og.gain.exponentialRampToValueAtTime(0.001, now + 0.3)
-    o.connect(og)
-    og.connect(out)
-    o.start(now)
-    o.stop(now + 0.32)
-    // debris: many tiny grains of dull noise, thinning out over 0.8 seconds
-    const r = burst(0.95)
-    const rf = audio.createBiquadFilter()
-    const rg = audio.createGain()
-    rf.type = 'lowpass'
-    rf.frequency.setValueAtTime(1800, now)
-    rf.frequency.exponentialRampToValueAtTime(350, now + 0.8)
-    rg.gain.setValueAtTime(0.0001, now)
-    for (let at = 0.04; at < 0.8; at += 0.03 + Math.random() * 0.07) {
-      rg.gain.setValueAtTime(0.5 * (1 - at / 0.8) * (0.4 + Math.random() * 0.6), now + at)
-      rg.gain.exponentialRampToValueAtTime(0.0001, now + at + 0.025 + Math.random() * 0.03)
-    }
-    r.connect(rf)
-    rf.connect(rg)
-    rg.connect(out)
-    r.start(now)
+    crack.currentTime = 0
+    crack.play().catch(() => {})
   }
 
   function resize() {
@@ -574,7 +516,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     sample()
     if (reduce) requestAnimationFrame(frame)
   }
-  const unlockEvents = ['pointerdown', 'keydown', 'touchstart']
 
   canvas.style.background = `radial-gradient(60% 50% at 50% 46%, rgba(40,62,110,.28), rgba(11,11,13,0) 70%), ${NEAR_BLACK}`
   Promise.all([figure.decode().catch(() => {}), document.fonts.ready]).then(() => {
@@ -585,24 +526,22 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     addEventListener('resize', onResize)
     addEventListener('mousemove', onMouseMove, { passive: true })
     document.documentElement.addEventListener('mouseleave', onMouseLeave)
-    unlockEvents.forEach((ev) => addEventListener(ev, unlock, { passive: true }))
     raf = requestAnimationFrame(frame)
   })
 
   return {
     setSound(on) {
       soundOn = on
-      unlock()
+      if (!on) crack.pause()
     },
     destroy() {
       dead = true
       cancelAnimationFrame(raf)
       lenis?.destroy()
-      audio?.close().catch(() => {})
+      crack.pause()
       removeEventListener('resize', onResize)
       removeEventListener('mousemove', onMouseMove)
       document.documentElement.removeEventListener('mouseleave', onMouseLeave)
-      unlockEvents.forEach((ev) => removeEventListener(ev, unlock))
     },
   }
 }
