@@ -8,7 +8,6 @@
   --home-ink-body: var(--text-secondary);
   --home-ink-nav: var(--text-secondary);
   --home-ink-secondary: var(--text-secondary);
-  --home-ink-philosophy-dim: var(--text-tertiary);
   --home-ink-decorative: var(--gray-a8);
   --home-panel: var(--surface-1);
   --home-panel-deep: var(--surface-2);
@@ -309,56 +308,6 @@
   max-width: 800px;
 }
 
-/* ── Philosophy ── */
-
-.home-philosophy {
-  background: transparent;
-  padding: 200px var(--space-12);
-  border-top: 0.5px solid var(--line-strong);
-  position: relative;
-}
-
-.home-philosophy__inner {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.home-philosophy__line {
-  font-family: var(--home-fc);
-  font-weight: var(--weight-light);
-  color: var(--home-ink);
-  letter-spacing: 0;
-  line-height: 2.4;
-  font-size: clamp(18px, 2vw, 22px);
-  text-shadow: 0 0 28px color-mix(in srgb, var(--surface-0) 72%, transparent);
-}
-
-.home-philosophy__line--mid {
-  color: var(--home-ink-body);
-  font-size: clamp(17px, 1.85vw, 20px);
-}
-
-.home-philosophy__line--dim {
-  color: var(--home-ink-philosophy-dim);
-  font-size: clamp(16px, 1.7vw, 19px);
-}
-
-.home-philosophy__divider {
-  width: 80px;
-  height: 0.5px;
-  background: var(--accent-a8);
-  margin: var(--space-6) 0;
-}
-
-.home-philosophy__sig {
-  font-family: var(--home-fd);
-  font-style: italic;
-  font-size: var(--type-small);
-  letter-spacing: var(--type-label-ls);
-  color: var(--home-ember);
-  margin-top: var(--space-12);
-}
-
 /* ── Work grid ── */
 
 .home-work {
@@ -486,92 +435,6 @@
   line-height: 1.75;
 }
 
-/* ── Approach ── */
-
-.home-approach {
-  background: transparent;
-  padding: 200px var(--space-12);
-}
-
-.home-approach__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-12);
-  margin-top: var(--space-24);
-  max-width: 1300px;
-}
-
-.home-approach__item {
-  position: relative;
-  padding-top: var(--space-8);
-  border-top: 0.5px solid var(--line-strong);
-}
-
-.home-approach__num {
-  position: absolute;
-  top: -32px;
-  left: 0;
-  font-family: var(--home-fd);
-  font-style: italic;
-  font-size: var(--type-body);
-  color: var(--home-ember);
-  letter-spacing: var(--type-label-ls);
-}
-
-.home-approach__title {
-  font-family: var(--home-fc);
-  font-weight: var(--weight-light);
-  font-size: 26px;
-  color: var(--home-ink);
-  margin-bottom: var(--space-6);
-  letter-spacing: 0;
-  line-height: 1.4;
-}
-
-.home-approach__desc {
-  font-family: var(--home-fc);
-  font-weight: var(--weight-regular);
-  font-size: var(--type-small);
-  line-height: 2;
-  color: var(--home-ink-secondary);
-  letter-spacing: 0;
-  max-width: 36ch;
-}
-
-/* ── Quote ── */
-
-.home-quote {
-  padding: 200px var(--space-12);
-  background: var(--home-panel);
-  border-block: 0.5px solid var(--home-ember-line);
-}
-
-.home-quote__inner {
-  max-width: 1000px;
-  margin: 0 auto;
-  position: relative;
-  padding-left: var(--space-12);
-  border-left: 1px solid var(--accent-a8);
-}
-
-.home-quote__text {
-  font-family: var(--home-fc);
-  font-weight: var(--weight-light);
-  font-size: clamp(24px, 3.2vw, 36px);
-  line-height: 1.8;
-  letter-spacing: 0;
-  color: var(--home-ink);
-  margin-bottom: var(--space-8);
-}
-
-.home-quote__en {
-  font-family: var(--home-fd);
-  font-style: italic;
-  font-size: var(--type-h2);
-  color: var(--home-ember);
-  letter-spacing: 0;
-}
-
 /* ── Final CTA：扉頁式左軸 ── */
 
 .home-final-cta {
@@ -579,8 +442,6 @@
   background: transparent;
   position: relative;
   overflow: hidden;
-  /* Past --page-max, cut the watermark at the content edge, as the viewport does below it */
-  clip-path: inset(0 var(--page-gutter));
   text-align: left;
   min-height: 72vh;
   display: flex;
@@ -604,25 +465,6 @@
   pointer-events: none;
 }
 
-.home-final-cta__watermark {
-  position: absolute;
-  top: 50%;
-  right: calc(var(--page-gutter) - min(100vw, var(--page-max)) * 0.04);
-  left: auto;
-  transform: translateY(-50%);
-  font-family: var(--home-fd);
-  font-style: italic;
-  font-size: clamp(140px, 28vw, 420px);
-  color: transparent;
-  -webkit-text-stroke: 0.5px var(--ember-whisper);
-  z-index: 1;
-  pointer-events: none;
-  user-select: none;
-  letter-spacing: var(--type-display-ls);
-  line-height: 0.85;
-  will-change: transform;
-}
-
 .home-final-cta__content {
   position: relative;
   z-index: 10;
@@ -642,16 +484,6 @@
   margin-bottom: var(--space-8);
 }
 
-.home-final-cta__desc {
-  font-family: var(--home-fc);
-  font-weight: var(--weight-regular);
-  font-size: var(--type-body);
-  line-height: var(--type-body-lh);
-  color: var(--home-ink-secondary);
-  margin-bottom: var(--space-12);
-  max-width: 480px;
-}
-
 .home-final-cta .home-cta {
   color: var(--home-ink);
   border-color: var(--gray-a8);
@@ -669,7 +501,7 @@
 
 .home-footer__grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr;
   gap: var(--space-12);
   margin-bottom: var(--space-24);
   max-width: 1400px;
@@ -689,15 +521,6 @@
   letter-spacing: var(--type-label-ls);
   color: var(--home-ember);
   margin-bottom: var(--space-6);
-}
-
-.home-footer__brand-tagline {
-  font-family: var(--home-fc);
-  font-weight: var(--weight-regular);
-  font-size: var(--type-small);
-  line-height: 1.9;
-  color: var(--home-ink-secondary);
-  max-width: 320px;
 }
 
 .home-footer__col-title {
@@ -760,8 +583,7 @@
   }
 
   .home-hero__content,
-  .home-hero__watermark,
-  .home-final-cta__watermark {
+  .home-hero__watermark {
     transform: none !important;
     opacity: 1 !important;
   }
@@ -770,11 +592,6 @@
 @media (max-width: 1024px) {
   .home-work__grid {
     grid-template-columns: 1fr 1fr;
-  }
-
-  .home-approach__grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-24);
   }
 }
 
@@ -808,32 +625,10 @@
     bottom: 28px;
   }
 
-  .home-philosophy,
   .home-work,
-  .home-approach,
-  .home-quote,
   .home-final-cta {
     padding-left: var(--space-6);
     padding-right: var(--space-6);
-  }
-
-  .home-philosophy {
-    padding-top: var(--space-24);
-    padding-bottom: var(--space-24);
-  }
-
-  .home-approach {
-    padding-top: var(--space-24);
-    padding-bottom: var(--space-24);
-  }
-
-  .home-quote {
-    padding-top: var(--space-24);
-    padding-bottom: var(--space-24);
-  }
-
-  .home-quote__inner {
-    padding-left: var(--space-6);
   }
 
   .home-final-cta {
@@ -852,12 +647,6 @@
     margin-left: 0;
     padding-left: var(--space-12);
     max-width: none;
-  }
-
-  .home-final-cta__watermark {
-    right: -12%;
-    font-size: clamp(100px, 36vw, 200px);
-    opacity: 0.7;
   }
 
   .home-work__grid {
@@ -881,10 +670,7 @@
 }
 
 /* Same page width as the hero: content stops at --page-max, the sides extend. */
-.home-philosophy,
 .home-work,
-.home-approach,
-.home-quote,
 .home-final-cta,
 .home-footer {
   padding-left: calc(var(--page-gutter) + var(--page-pad));

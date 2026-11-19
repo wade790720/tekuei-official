@@ -12,11 +12,11 @@ export const JOURNAL_META = {
 export const JOURNAL_HEADER = {
   zh: {
     pre: 'JOURNAL · 隨筆',
-    desc: ['關於留白、水墨、新東方主義與品牌美學的思考。', '在黑白之間，尋找呼吸的節奏。'],
+    desc: ['我當下遇到的事：行銷、AI、技術、實作過程。'],
   },
   en: {
     pre: 'JOURNAL',
-    desc: ['Reflections on negative space, ink wash, neo-orientalism, and brand aesthetics.', 'Finding rhythm between black and white.'],
+    desc: ['What I am working through right now: marketing, AI, engineering and the build process.'],
   },
 }
 

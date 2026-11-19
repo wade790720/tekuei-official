@@ -4,17 +4,7 @@ import '../styles/hero.css'
 import '../styles/home.css'
 import { FadeIn } from './FadeIn.jsx'
 import { HomeHero } from './HomeHero.jsx'
-import {
-  HOME_APPROACH,
-  HOME_CTA,
-  HOME_FEATURED_WORKS,
-  HOME_FOOTER,
-  HOME_META,
-  HOME_PHILOSOPHY,
-  HOME_QUOTE,
-  HOME_WORK,
-} from '../data/homepage.js'
-import { useScrollParallax } from '../hooks/useScrollParallax.js'
+import { HOME_CTA, HOME_FEATURED_WORKS, HOME_FOOTER, HOME_META, HOME_WORK } from '../data/homepage.js'
 import { useLang } from '../i18n'
 
 function imgVariantClass(variant) {
@@ -25,14 +15,10 @@ function imgVariantClass(variant) {
 
 export default function SiteHero() {
   const { lang } = useLang()
-  const ctaWatermarkRef = useScrollParallax(0.12)
 
   const meta = HOME_META[lang]
-  const philosophy = HOME_PHILOSOPHY[lang]
   const work = HOME_WORK[lang]
   const featuredWorks = HOME_FEATURED_WORKS[lang]
-  const approach = HOME_APPROACH[lang]
-  const quote = HOME_QUOTE[lang]
   const cta = HOME_CTA[lang]
   const footer = HOME_FOOTER[lang]
 
@@ -48,29 +34,6 @@ export default function SiteHero() {
 
         <main>
         <HomeHero />
-
-        <section className="home-philosophy" id="philosophy">
-          <FadeIn className="home-philosophy__inner">
-            <div className="home-section-label">{philosophy.label}</div>
-            {philosophy.lines.map((item, i) => {
-              if (item.type === 'divider') {
-                return <div key={`div-${i}`} className="home-philosophy__divider" aria-hidden />
-              }
-              const toneClass =
-                item.tone === 'mid'
-                  ? 'home-philosophy__line--mid'
-                  : item.tone === 'dim'
-                    ? 'home-philosophy__line--dim'
-                    : ''
-              return (
-                <div key={item.text} className={['home-philosophy__line', toneClass].filter(Boolean).join(' ')}>
-                  {item.text}
-                </div>
-              )
-            })}
-            <div className="home-philosophy__sig">{philosophy.signature}</div>
-          </FadeIn>
-        </section>
 
         <section className="home-work" id="work">
           <FadeIn>
@@ -111,58 +74,8 @@ export default function SiteHero() {
           </div>
         </section>
 
-        <section className="home-approach" id="approach">
-          <FadeIn>
-            <div className="home-section-label">{approach.label}</div>
-            <h2 className="home-section-title">
-              {approach.title.map((line) => (
-                <span key={line}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </h2>
-          </FadeIn>
-
-          <div className="home-approach__grid">
-            {approach.items.map((item) => (
-              <FadeIn key={item.num} className="home-approach__item">
-                <div className="home-approach__num">{item.num}</div>
-                <h3 className="home-approach__title">
-                  {item.title.map((line, i) => (
-                    <span key={line}>
-                      {i > 0 ? <br /> : null}
-                      {line}
-                    </span>
-                  ))}
-                </h3>
-                <p className="home-approach__desc">{item.desc}</p>
-              </FadeIn>
-            ))}
-          </div>
-        </section>
-
-        <section className="home-quote">
-          <FadeIn className="home-quote__inner">
-            <div className="home-quote__text">
-              {quote.lines.map((line) => (
-                <span key={line}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </div>
-            <div className="home-quote__en">
-              <em>{quote.en}</em>
-            </div>
-          </FadeIn>
-        </section>
-
         <section className="home-final-cta" id="contact">
           <div className="home-final-cta__vline" aria-hidden />
-          <div className="home-final-cta__watermark" ref={ctaWatermarkRef} aria-hidden>
-            begin
-          </div>
           <FadeIn className="home-final-cta__content">
             <div className="home-section-label">{cta.label}</div>
             <h2 className="home-final-cta__title">
@@ -173,16 +86,8 @@ export default function SiteHero() {
                 </span>
               ))}
             </h2>
-            <p className="home-final-cta__desc">
-              {cta.desc.map((line, i) => (
-                <span key={line}>
-                  {i > 0 ? <br /> : null}
-                  {line}
-                </span>
-              ))}
-            </p>
             <a href={`mailto:${cta.email}`} className="home-cta">
-              BEGIN THE JOURNEY <span className="home-cta__arrow">→</span>
+              {cta.email} <span className="home-cta__arrow">→</span>
             </a>
           </FadeIn>
         </section>
@@ -193,14 +98,6 @@ export default function SiteHero() {
           <div>
             <div className="home-footer__brand-name">T E K U E I</div>
             <div className="home-footer__brand-sub">德 溎</div>
-            <p className="home-footer__brand-tagline">
-              {footer.tagline.map((line, i) => (
-                <span key={line}>
-                  {i > 0 ? <br /> : null}
-                  {line}
-                </span>
-              ))}
-            </p>
           </div>
           <div className="home-footer__col">
             <div className="home-footer__col-title">EXPLORE</div>
@@ -215,14 +112,6 @@ export default function SiteHero() {
                 </a>
               ),
             )}
-          </div>
-          <div className="home-footer__col">
-            <div className="home-footer__col-title">SERVICES</div>
-            {footer.services.map((s) => (
-              <a key={s} href="#contact">
-                {s}
-              </a>
-            ))}
           </div>
           <div className="home-footer__col">
             <div className="home-footer__col-title">CONTACT</div>
