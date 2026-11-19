@@ -45,6 +45,7 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 | `src/hooks/` | React hook，例如 `useReveal`、`useCmsSection` |
 | `src/assets/` | 圖片，依頁面分資料夾 |
 | `functions/` | API：`/api/data`、`/api/upload`、`/api/file/*`、`/api/admin/verify` |
+| `functions/journal/`、`sitemap.xml.js`、`llms.txt.js` | SEO：把 Journal 的內文、meta、JSON-LD 寫進 HTML，並產生 sitemap 和 llms.txt。邏輯在 `src/lib/seo.js` |
 
 ## 寫程式的規則
 

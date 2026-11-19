@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dev/
+
+Sitemap: https://tekuei.com/sitemap.xml
