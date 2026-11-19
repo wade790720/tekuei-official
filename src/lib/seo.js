@@ -14,7 +14,9 @@ export const PERSON = {
   name: 'Wade',
   alternateName: 'TEKUEI 德溎',
   url: `${SITE_URL}/about`,
-  jobTitle: '工程師、策展人',
+  jobTitle: '軟體工程師、策展人',
+  description: '10 年軟體工程師經歷，策劃過 10 餘檔展覽，同時是 MONOLAB 共同創辦人。目前專注記錄日常想法，以及行銷、工程、AI 相關的內容創作。',
+  knowsAbout: ['軟體工程', '美學', '設計', '行銷', 'AI'],
 }
 
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }
@@ -211,7 +213,11 @@ export function llmsTxt(journal, workItems) {
   return [
     `# ${SITE_NAME}`,
     '',
-    '> Wade 的個人網站。他寫了十年程式，也做過兩年展覽策展。文章寫他當下遇到的事：行銷、AI、技術、實作過程。',
+    '> 遵循內心並實踐創造，追求卓越，為熱愛而學習，勇於面對未知與挑戰。',
+    '',
+    `Wade：${PERSON.description}`,
+    '',
+    `主題：${PERSON.knowsAbout.join('、')}`,
     '',
     '## Journal',
     ...posts,
