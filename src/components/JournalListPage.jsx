@@ -17,6 +17,7 @@ export default function JournalListPage() {
   const meta = JOURNAL_META[lang]
   const header = JOURNAL_HEADER[lang]
   const posts = useJournal().content.posts[lang]
+  const [latest, ...rest] = posts
   const glyphs = useRef(null)
 
   useEffect(() => mountGlyphField(glyphs.current), [])
@@ -52,38 +53,69 @@ export default function JournalListPage() {
       </header>
 
       <div className="journal-list">
-        {posts.map((post, index) => (
-          <FadeIn key={post.slug} as={Link} to={`/journal/${post.slug}`} className="journal-card">
-            <div className="journal-card__index">
-              <span className="journal-card__num">{post.num}</span>
-              <span className="journal-card__line" aria-hidden />
-            </div>
-            <div className="journal-card__body">
-              <div className="journal-card__meta">
-                <span className="journal-card__category">{post.category}</span>
-                <span className="journal-card__dot" aria-hidden>·</span>
-                <time dateTime={post.date.replace(/\./g, '-')}>{post.date}</time>
-                <span className="journal-card__dot" aria-hidden>·</span>
-                <span>{post.readMin} min</span>
-              </div>
-              <h2 className="journal-card__title">{post.title}</h2>
-              <div className="journal-card__title-en">{post.titleEn}</div>
-              <p className="journal-card__excerpt">{post.excerpt}</p>
-            </div>
-            <div className="journal-card__arrow" aria-hidden>
-              <span className="journal-card__arrow-line" />
-              <span>READ</span>
-            </div>
-            {index < posts.length - 1 ? (
-              <div className="journal-card__rule" aria-hidden />
-            ) : null}
-          </FadeIn>
+        {latest ? <FeaturedPost post={latest} /> : null}
+        {byYear(rest).map(([year, group]) => (
+          <section className="journal-year" key={year} aria-label={year}>
+            <div className="journal-year__label">{year}</div>
+            <ol className="journal-year__rows">
+              {group.map((post) => (
+                <li key={post.slug}>
+                  <FadeIn as={Link} to={`/journal/${post.slug}`} className="journal-row">
+                    <span className="journal-row__num">{post.num}</span>
+                    <span className="journal-row__title">{post.title}</span>
+                    <span className="journal-row__category">{post.category}</span>
+                    <time className="journal-row__date" dateTime={post.date.replace(/\./g, '-')}>
+                      {post.date.slice(5)}
+                    </time>
+                    <span className="journal-row__min">{post.readMin} min</span>
+                  </FadeIn>
+                </li>
+              ))}
+            </ol>
+          </section>
         ))}
       </div>
 
       <JournalFooter />
       <JournalListEditPanel />
     </div>
+  )
+}
+
+/** Posts in their stored order, grouped by the year of their date: [['2026', [...]], ...]. */
+function byYear(posts) {
+  const groups = new Map()
+  for (const p of posts) {
+    const year = p.date.slice(0, 4)
+    groups.set(year, [...(groups.get(year) ?? []), p])
+  }
+  return [...groups]
+}
+
+function FeaturedPost({ post }) {
+  return (
+    <FadeIn as={Link} to={`/journal/${post.slug}`} className="journal-card">
+      <div className="journal-card__index">
+        <span className="journal-card__num">{post.num}</span>
+        <span className="journal-card__line" aria-hidden />
+      </div>
+      <div className="journal-card__body">
+        <div className="journal-card__meta">
+          <span className="journal-card__category">{post.category}</span>
+          <span className="journal-card__dot" aria-hidden>·</span>
+          <time dateTime={post.date.replace(/\./g, '-')}>{post.date}</time>
+          <span className="journal-card__dot" aria-hidden>·</span>
+          <span>{post.readMin} min</span>
+        </div>
+        <h2 className="journal-card__title">{post.title}</h2>
+        <div className="journal-card__title-en">{post.titleEn}</div>
+        <p className="journal-card__excerpt">{post.excerpt}</p>
+      </div>
+      <div className="journal-card__arrow" aria-hidden>
+        <span className="journal-card__arrow-line" />
+        <span>READ</span>
+      </div>
+    </FadeIn>
   )
 }
 
