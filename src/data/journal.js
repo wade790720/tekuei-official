@@ -1,11 +1,11 @@
 export const JOURNAL_META = {
   zh: {
     title: 'Journal · TEKUEI',
-    description: '關於留白、水墨、新東方主義與品牌美學的思考。',
+    description: 'Wade 當下遇到的事：行銷、AI、技術、實作過程。',
   },
   en: {
     title: 'Journal · TEKUEI',
-    description: 'Reflections on negative space, ink wash, neo-orientalism, and brand aesthetics.',
+    description: 'What Wade is working through right now: marketing, AI, engineering and the build process.',
   },
 }
 

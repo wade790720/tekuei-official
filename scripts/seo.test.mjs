@@ -1,0 +1,70 @@
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { describe, it } from 'node:test'
+import { getDefaultJournal, JOURNAL_META } from '../src/data/journal.js'
+import { injectPage, journalIndexPage, llmsTxt, postPage, siteJournal, sitemapXml } from '../src/lib/seo.js'
+
+const journal = getDefaultJournal()
+const slug = journal.posts.zh[0].slug
+const work = JSON.parse(readFileSync(new URL('../src/data/data.json', import.meta.url), 'utf8')).work.items
+const indexHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf8')
+
+describe('postPage', () => {
+  it('renders the post text, meta and BlogPosting JSON-LD into index.html', () => {
+    const page = postPage(journal, slug)
+    const html = injectPage(indexHtml, page)
+    assert.match(html, new RegExp(`<title>${journal.posts.zh[0].title} · Journal · TEKUEI</title>`))
+    assert.match(html, /<link rel="canonical" href="https:\/\/tekuei.com\/journal\//)
+    assert.match(html, /"@type":"BlogPosting"/)
+    assert.match(html, /<div id="root"><article><h1>/)
+    assert.equal(html.match(/property="og:title"/g).length, 1, 'default og:title is replaced, not doubled')
+    assert.equal(html.match(/name="description"/g).length, 1)
+  })
+
+  it('returns null for an unknown slug', () => {
+    assert.equal(postPage(journal, 'nope'), null)
+  })
+
+  it('escapes HTML in text and drops unsafe links', () => {
+    const j = structuredClone(journal)
+    j.content.zh[slug] = {
+      doc: {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              { type: 'text', text: '<script>x</script>' },
+              { type: 'text', text: 'bad', marks: [{ type: 'link', attrs: { href: 'javascript:alert(1)' } }] },
+            ],
+          },
+        ],
+      },
+    }
+    const { html } = postPage(j, slug)
+    assert.ok(html.includes('&lt;script&gt;x&lt;/script&gt;'))
+    assert.ok(!html.includes('javascript:'))
+  })
+
+  it('keeps "</script>" in a title from closing the JSON-LD tag', () => {
+    const j = structuredClone(journal)
+    j.posts.zh[0].title = '</script><b>'
+    const out = injectPage(indexHtml, postPage(j, slug))
+    assert.ok(!out.includes('"</script><b>'))
+  })
+})
+
+describe('site files', () => {
+  it('falls back to the bundled journal when R2 has none', () => {
+    assert.ok(siteJournal(null).posts.zh.length > 0)
+    const remote = { posts: { zh: [] }, content: { zh: {} } }
+    assert.equal(siteJournal({ journal: remote }), remote)
+  })
+
+  it('lists posts in the journal index, sitemap and llms.txt', () => {
+    assert.match(journalIndexPage(journal, JOURNAL_META.zh).html, new RegExp(`/journal/${slug}`))
+    assert.match(sitemapXml(journal, work), new RegExp(`<loc>https://tekuei.com/journal/${slug}</loc>`))
+    assert.match(sitemapXml(journal, work), /<loc>https:\/\/tekuei.com\/cases\//)
+    assert.match(llmsTxt(journal, work), /^# TEKUEI/)
+  })
+})

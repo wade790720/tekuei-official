@@ -3,11 +3,11 @@ import { WORK_ITEMS } from './work.js'
 export const HOME_META = {
   zh: {
     title: 'TEKUEI 德溎 — 讓有價值的人，被世界正確看見',
-    description: 'TEKUEI 是一套人格品牌系統，協助你從模糊的人設，走向清晰而真實的人格品牌。',
+    description: 'Wade 的個人網站。十年程式，兩年展覽策展。這裡寫行銷、AI、技術和實作過程，也放真實的案例。',
   },
   en: {
     title: 'TEKUEI — Where the Worthy Are Seen by the World',
-    description: 'TEKUEI is a personal brand system that guides you from a vague persona to a clear, authentic personal brand.',
+    description: "Wade's personal site. Ten years of code, two years of curating exhibitions. Notes on marketing, AI, engineering and how things get built, plus real case studies.",
   },
 }
 
