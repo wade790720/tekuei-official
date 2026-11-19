@@ -62,19 +62,9 @@ export default function AboutPage() {
         <span>{intro.railEnd}</span>
       </div>
 
-      {/* The slab text is drawn on the canvas, so screen readers get it from the sections below instead. */}
-      <div className={`about-fall__caption${shownAct ? ' is-on' : ''}`} aria-hidden>
-        {shownAct ? (
-          <>
-            <p className="about-fall__caption-sub">{shownAct.sub}</p>
-            <p className="about-fall__caption-role">{shownAct.role}</p>
-            {shownAct.lines.map((line) => (
-              <p key={line} className="about-fall__caption-line">
-                {line}
-              </p>
-            ))}
-          </>
-        ) : null}
+      <div className={`about-fall__caption${shownAct ? ' is-on' : ''}`}>
+        {/* key: a new act starts closed */}
+        {shownAct ? <ActCaption key={shownAct.sub} act={shownAct} intro={intro} /> : null}
       </div>
 
       <button type="button" className="about-fall__sound" aria-pressed={sound} onClick={toggleSound}>
@@ -109,8 +99,20 @@ export default function AboutPage() {
               <h2>{act.title}</h2>
               <p>{act.sub}</p>
               <p>{act.role}</p>
-              {act.lines.map((line) => (
-                <p key={line}>{line}</p>
+              <ul>
+                {act.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+              {act.details.map((group) => (
+                <div key={group.heading}>
+                  <h3>{group.heading}</h3>
+                  <ul>
+                    {group.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
               ))}
             </div>
           </section>
@@ -122,5 +124,57 @@ export default function AboutPage() {
         <Link to="/work">Work</Link>
       </nav>
     </div>
+  )
+}
+
+/**
+ * Corner caption for the act the figure is in: org / role, a few points, and an arrow that opens the full details.
+ * The summary is aria-hidden: screen readers read the act sections in <main>. The arrow and details stay reachable.
+ */
+function ActCaption({ act, intro }) {
+  const [open, setOpen] = useState(false)
+  const id = `about-act-${act.sub.replace(/\W+/g, '-')}`
+  return (
+    <>
+      <div aria-hidden>
+        <p className="about-fall__caption-sub">{act.sub}</p>
+        <p className="about-fall__caption-head">
+          <span>{act.org ?? act.title}</span>
+          <span className="about-fall__caption-slash">/</span>
+          <span className="about-fall__caption-role">{act.role}</span>
+        </p>
+        <ul className="about-fall__caption-points">
+          {act.points.map((point) => (
+            <li key={point}>{point}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="about-fall__caption-details" id={id} inert={!open} data-lenis-prevent>
+        <div>
+          {act.details.map((group) => (
+            <section key={group.heading}>
+              <h3>{group.heading}</h3>
+              <ul>
+                {group.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </div>
+      <button
+        type="button"
+        className="about-fall__caption-more"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => setOpen(!open)}
+      >
+        {open ? intro.less : intro.more}
+        <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
+          <path d="M2 6h8M6.5 2.5 10 6 6.5 9.5" fill="none" stroke="currentColor" strokeWidth="1" />
+        </svg>
+      </button>
+    </>
   )
 }

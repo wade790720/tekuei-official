@@ -113,6 +113,27 @@ export function Resources() {
       <DocSection id="references" title="參考網站對照" lead={g.references}>
         <DocTable head={REFERENCE_TABLE.head} rows={rows} rowHeader />
       </DocSection>
+      <DocSection id="bibliography" title="參考文獻" lead={g.bibliography.lead}>
+        {g.bibliography.groups.map((group, i) => (
+          <DocSection key={group.title} id={`bibliography-${i + 1}`} title={group.title} lead={group.lead} level={3}>
+            <DocTable
+              head={['網站', '參考了什麼', '用在哪裡']}
+              rows={group.rows.map(([site, url, what, where]) => [
+                url ? (
+                  <a href={url} target="_blank" rel="noreferrer">
+                    {site}
+                  </a>
+                ) : (
+                  site
+                ),
+                what,
+                where,
+              ])}
+              rowHeader
+            />
+          </DocSection>
+        ))}
+      </DocSection>
     </>
   )
 }

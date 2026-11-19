@@ -468,6 +468,18 @@
   white-space: nowrap;
 }
 
+.cl-table a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.3s var(--ease-touch);
+}
+
+.cl-table a:hover {
+  text-decoration-color: var(--ember);
+}
+
 .cl-table td:first-child code {
   color: var(--text-primary);
 }
