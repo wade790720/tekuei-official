@@ -517,7 +517,7 @@ export const GROUPS = [
   {
     id: 'effects',
     title: '效果',
-    intro: 'Canvas 視覺效果，每頁最多一個。都寫成 mountXxx(canvas, opts)，回傳 cleanup。',
+    intro: 'Canvas 視覺效果。常駐的效果每頁最多一個，寫成 mountXxx(canvas, opts)，回傳 cleanup。按一下才播一次的效果寫成 playXxx(…)，自己建立畫面、播完自己移除。',
     items: [
       {
         id: 'shatter-image',
@@ -583,6 +583,31 @@ export const GROUPS = [
         ],
         examples: [],
         notes: ['cleanup 時一起銷毀 Lenis。'],
+      },
+      {
+        id: 'water-ripple',
+        name: 'playWaterRipple',
+        file: 'src/lib/waterRipple.js',
+        summary: '在一個點滴下水滴，水波 0.8 秒內擴散到畫面對角，整頁文字跟著扭曲，1 秒內結束。',
+        hero: { demo: 'ripple', code: `playWaterRipple(e.clientX, e.clientY, toggleLang)` },
+        api: [
+          {
+            description: '一次性的效果：自己建立 Canvas 和 SVG 濾鏡，播完全部移除。動畫中再呼叫，會加一顆水滴並重新計算 1 秒。',
+            props: [
+              ['x', 'number', '—', '必填。水滴位置，視窗座標。'],
+              ['y', 'number', '—', '必填。'],
+              ['onSwap', '() => void', '—', '0.3 秒時呼叫一次，用來在波紋中換內容。減少動態效果開啟時立刻呼叫。'],
+            ],
+          },
+        ],
+        examples: [],
+        notes: [
+          '波動方程式在 CPU 上計算，每秒固定 360 步，和螢幕更新率無關。',
+          '扭曲用 SVG feDisplacementMap，掛在 <html> 上，因為只有根元素的 filter 不會改變 position: fixed。',
+          '畫面外有一圈吸收帶，波碰到邊緣不反彈。離邊緣 40px 內扭曲減到 0，避免露出白底。',
+          '用在 SiteNav 的語言按鈕。',
+          '待修：Safari 和手機尚未測試。',
+        ],
       },
     ],
   },

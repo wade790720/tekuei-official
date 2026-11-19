@@ -14,6 +14,7 @@ import { SecretInput } from '../SecretInput.jsx'
 import { blocksToDoc } from '../../lib/richText.js'
 import { mountGlyphField } from '../../lib/glyphField.js'
 import { mountShatterImage } from '../../lib/shatterImage.js'
+import { playWaterRipple } from '../../lib/waterRipple.js'
 import heroImage from '../../assets/hero/bg.webp'
 import cutImage from '../../assets/hero/cut.webp'
 import seaImage from '../../assets/journal/footer-sea.webp'
@@ -80,6 +81,19 @@ function ShatterDemo() {
   const canvas = useRef(null)
   useEffect(() => mountShatterImage(canvas.current, { src: seaImage, crop: [0, 389, 1280, 470] }), [])
   return <canvas ref={canvas} className="cl-shatter" aria-hidden />
+}
+
+function RippleDemo() {
+  const play = (e) => {
+    const r = e.currentTarget.getBoundingClientRect()
+    const fromPointer = e.detail > 0
+    playWaterRipple(fromPointer ? e.clientX : r.left + r.width / 2, fromPointer ? e.clientY : r.top + r.height / 2)
+  }
+  return (
+    <button type="button" className="cl-box cl-ripple" onClick={play}>
+      在這裡點一下
+    </button>
+  )
 }
 
 function GlyphDemo() {
@@ -241,6 +255,7 @@ const DEMOS = {
     </Replayable>
   ),
   glyph: () => <GlyphDemo />,
+  ripple: () => <RippleDemo />,
 }
 
 /** Renders the live demo registered under `name`, or nothing. */

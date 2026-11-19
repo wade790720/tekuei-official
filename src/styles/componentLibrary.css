@@ -359,6 +359,13 @@
   color: var(--text-secondary);
 }
 
+/* playWaterRipple demo: the whole box is the button. */
+.cl-ripple {
+  width: 100%;
+  border: none;
+  cursor: pointer;
+}
+
 .cl-box--row {
   display: flex;
   gap: var(--space-4);
