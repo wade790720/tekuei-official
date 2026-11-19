@@ -111,6 +111,8 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 驗收：用 2560px 寬的視窗打開頁面，文字和圖片都要在中間的 1920px 內。
 
 - 左右留白用 `--page-pad`（`clamp(20px, 4vw, 68px)`）。
+- Work 和 Journal 列表的欄寬是 `--page-column`（1104px）。容器寫 `max-width: var(--page-column-box)`，左右 padding 用 `var(--page-pad)`。
+- Journal 文章的閱讀欄是 656px，寫法相同：`max-width: calc(656px + 2 * var(--page-pad))`。
 - 斷點：主要用 900px（平板以下）和 768px（手機）。新程式碼只用這兩個。
 - 線：0.5px，顏色 `--ember-line` 或 `--ember-whisper`。格線和分隔線可以用虛線。
 

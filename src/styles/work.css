@@ -22,14 +22,6 @@
   box-sizing: border-box;
 }
 
-.work-page__grid {
-  position: fixed;
-  z-index: 0;
-  pointer-events: none;
-
-  inset: 0;
-}
-
 html.has-scroll-document {
   overflow-x: hidden;
   overflow-y: auto;
@@ -60,8 +52,8 @@ html.has-scroll-document body, html.has-scroll-document #root {
   align-items: flex-end;
   justify-content: space-between;
   margin: 0 auto;
-  padding: 0 var(--space-12);
-  max-width: 1200px;
+  padding: 0 var(--page-pad);
+  max-width: var(--page-column-box);
 }
 
 .work-page-header .pre {
@@ -97,8 +89,8 @@ html.has-scroll-document body, html.has-scroll-document #root {
   position: relative;
   z-index: 2;
   margin: 0 auto;
-  padding: 0 var(--space-12);
-  max-width: 1200px;
+  padding: 0 var(--page-pad);
+  max-width: var(--page-column-box);
   opacity: 0;
   animation: work-fade-in 1.5s ease 1s forwards;
 }
@@ -120,8 +112,8 @@ html.has-scroll-document body, html.has-scroll-document #root {
   position: relative;
   z-index: 2;
   margin: 0 auto;
-  padding: var(--space-16) var(--space-12) var(--space-32);
-  max-width: 1200px;
+  padding: var(--space-16) var(--page-pad) var(--space-32);
+  max-width: var(--page-column-box);
 }
 
 .work-grid__item {
@@ -366,7 +358,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
 .work-page-footer {
   position: relative;
   z-index: 2;
-  padding: var(--space-24) var(--space-12) var(--space-12);
+  padding: var(--space-24) calc(var(--page-gutter) + var(--page-pad)) var(--space-12);
   border-top: 0.5px solid var(--line-strong);
   text-align: center;
 }
@@ -460,17 +452,12 @@ html.has-scroll-document body, html.has-scroll-document #root {
   .work-page-header-inner {
     align-items: flex-start;
     flex-direction: column;
-    padding: 0 var(--space-6);
 
     gap: var(--space-3);
   }
 
   .work-page-header {
     padding: var(--space-32) 0 var(--space-12);
-  }
-
-  .work-header-rule {
-    padding: 0 var(--space-6);
   }
 
   .work-grid {
@@ -505,7 +492,8 @@ html.has-scroll-document body, html.has-scroll-document #root {
   }
 
   .work-page-footer {
-    padding: var(--space-16) var(--space-6) var(--space-10);
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-10);
   }
 
   .case-stub {
