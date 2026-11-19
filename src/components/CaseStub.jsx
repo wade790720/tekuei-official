@@ -25,7 +25,7 @@ export default function CaseStub() {
     <div className="work-page">
       <main className="case-stub">
         <h1>{item ? `${title}` : `Case · ${slug}`}</h1>
-        <p>案例詳情頁面尚未接上；將由獨立專題頁承接此路由。</p>
+        <p>案例詳情頁面尚未接上，之後由獨立專題頁承接此路由。</p>
         <Link className="case-stub__back" to="/work">
           ← 返回 Work
         </Link>

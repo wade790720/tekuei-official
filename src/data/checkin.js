@@ -15,7 +15,7 @@ export const CHECKIN_WORKER_URL =
   'https://tekuei-checkin.tekuei-xx.workers.dev/checkin'
 
 /**
- * 本機開發略過 LIFF（僅 DEV；正式站永遠走 LIFF）
+ * 本機開發略過 LIFF（只在 DEV，正式站永遠走 LIFF）
  * DEV 預設開啟。要強制走 LIFF：?liff=1
  * 或 .env.local：VITE_CHECKIN_DEV_BYPASS=false
  */

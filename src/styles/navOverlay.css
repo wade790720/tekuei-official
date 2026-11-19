@@ -1,4 +1,4 @@
-﻿/* 手機版全屏 overlay 選單 */
+﻿/* 手機版全螢幕 overlay 選單 */
 
 .nav-toggle {
   display: none;
@@ -53,7 +53,7 @@ html.nav-overlay-open .site-nav {
   pointer-events: none;
 }
 
-/* ── 全屏 Overlay（portal 至 body）── */
+/* ── 全螢幕 Overlay（portal 至 body）── */
 
 .nav-overlay {
   --nav-overlay-ease: var(--ease-touch);

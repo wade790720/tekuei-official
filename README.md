@@ -1,6 +1,6 @@
 # tekuei-official
 
-React + Vite 官網；About 頁 CMS 與 [nectar-official](https://github.com/) 相同：**Cloudflare Pages + 單一 R2 桶**，無獨立 Worker、無 r2.dev 公開網址。
+React + Vite 官網。About 頁 CMS 與 [nectar-official](https://github.com/) 相同：**Cloudflare Pages + 單一 R2 桶**，無獨立 Worker、無 r2.dev 公開網址。
 
 ## 本機開發
 
@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-開發模式預設讀 bundled `src/data/data.json`；要連遠端 R2 API 可設 `VITE_USE_REMOTE=true` 與 `VITE_DEV_PROXY_TARGET`。
+開發模式預設讀 bundled `src/data/data.json`。要連遠端 R2 API 可設 `VITE_USE_REMOTE=true` 與 `VITE_DEV_PROXY_TARGET`。
 
 本機跑 Pages Functions + R2：
 
@@ -31,7 +31,7 @@ tekuei-cms（R2）
 
 ## 首次部署檢查清單（依序）
 
-部署 **Functions 前** 必須先建好 R2，否則會出現：
+部署 **Functions 前**必須先建好 R2，否則會出現：
 
 `R2 bucket 'tekuei-cms' not found`
 
@@ -57,7 +57,7 @@ Dashboard → **Workers & Pages** → **tekuei-official** → **Settings** → *
 npx wrangler pages secret put ADMIN_SECRET --project-name=tekuei-official
 ```
 
-（執行後輸入你要的管理密碼；**Ctrl+Space 登入時就打這串**，沒有另外的帳號系統）
+（執行後輸入你要的管理密碼。**Ctrl+Space 登入時就打這串**，沒有另外的帳號系統）
 
 設完 Secret 後請 **重新部署**（Retry deployment），Functions 才讀得到。
 
@@ -69,7 +69,7 @@ npx wrangler pages secret put ADMIN_SECRET --project-name=tekuei-official
 npm run seed
 ```
 
-（需已登入 `npx wrangler login`；會上傳到**雲端** R2，非本機模擬）
+（需已登入 `npx wrangler login`，會上傳到**雲端** R2，非本機模擬）
 
 ### 5. 重新部署
 
@@ -80,7 +80,7 @@ Deployments → **Retry deployment**
 | 狀況 | 處理 |
 |------|------|
 | 正式站密碼錯誤 | 確認 `ADMIN_SECRET` 設在 **Pages** 專案（不是舊 Worker），且已重新部署 |
-| 本機 `npm run dev` 登入失敗 | 本機無 `/api`；改用 `npm run dev:pages` 或設 `VITE_DEV_PROXY_TARGET` |
+| 本機 `npm run dev` 登入失敗 | 本機沒有 `/api`，改用 `npm run dev:pages` 或設 `VITE_DEV_PROXY_TARGET` |
 | 驗證 API | `curl -X POST https://你的網域/api/admin/verify -H "Authorization: Bearer 你的密碼"` 應回 `200` |
 
 ---
@@ -97,7 +97,7 @@ Deployments → **Retry deployment**
 | Build output directory | `dist` |
 | **Deploy command** | **`npm run deploy`**（或完全留空） |
 
-**請勿使用** `npx wrangler deploy`——那是獨立 Worker 指令，會導致你看到的錯誤。
+**請勿使用** `npx wrangler deploy`──那是獨立 Worker 指令，會導致你看到的錯誤。
 
 - **留空**：Git 建置完自動發佈 `dist` + `functions/`（nectar 做法）
 - **`npm run deploy`**：若 Dashboard 強制要填 Deploy command，改填這個（內部是 `wrangler pages deploy dist`）

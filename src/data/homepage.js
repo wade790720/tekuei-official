@@ -3,7 +3,7 @@ import { WORK_ITEMS } from './work.js'
 export const HOME_META = {
   zh: {
     title: 'TEKUEI 德溎 — 遵循內心並實踐創造',
-    description: '探索底層邏輯與真相，對未知領域充滿好奇，喜愛技術、行銷與人工智能。',
+    description: '探索底層邏輯與真相，對未知領域充滿好奇，喜愛技術、行銷與人工智慧。',
   },
   en: {
     title: 'TEKUEI — Follow Your Heart and Create',

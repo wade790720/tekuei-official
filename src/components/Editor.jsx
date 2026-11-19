@@ -306,7 +306,7 @@ export function Editor({ doc, onChange, upload }) {
 
   // The editor keeps the upload it was created with. That is fine: it unmounts when the login changes.
   const editor = useEditor({
-    extensions: editorExtensions({ upload, placeholder: '開始寫…' }),
+    extensions: editorExtensions({ upload, placeholder: '開始寫……' }),
     content: doc,
     immediatelyRender: true,
     editorProps: { attributes: { class: 'cms-ed-content', 'aria-label': '內文', spellcheck: 'false' } },

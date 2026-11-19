@@ -66,7 +66,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 ### 標籤
 
-- 標籤、日期、數值、快捷鍵用 `--font-label`（等寬）、大寫、11–12px、字距 0.1em。
+- 標籤、日期、數值、快速鍵用 `--font-label`（等寬）、大寫、11–12px、字距 0.1em。
 - 例：`JOURNAL`、`2026.11.19`、`6 MIN`。
 
 ## 間距
@@ -152,7 +152,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 | 文件節點 | 元件 | 屬性 |
 |---|---|---|
-| `codeBlock` | `CodeCard` | 內容是程式碼；`language`（預設 `ts`）、`filename` |
+| `codeBlock` | `CodeCard` | 內容是程式碼。屬性：`language`（預設 `ts`）、`filename` |
 | `imageCard` | `ImageCard` | `src`、`alt`（必填）、`caption`、`frame`（小圖置中留白） |
 | `videoCard` | `VideoCard` | `src`、`poster`、`caption`、`loop` |
 | `slidesCard` | `SlidesCard` | `slides`：`[{ src, alt, caption }]`。圖片輪播，寬螢幕比內文欄左右各寬 80px |
@@ -182,7 +182,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 - 開發模式打開 `/dev/component-library`。編排參考 Radix Themes 的文件：一頁一個主題或元件，網址是 `/dev/component-library/<id>`。
 - 分類：概覽（開始使用、樣式、版面、資源）、主題（總覽、Color、Typography、Spacing、Radius、Motion、Breakpoints）、元件、效果、編輯模式。
-- 每種頁面有自己的編排：指南用步驟和延伸閱讀；token 頁用色階或刻度、token 程式碼和表格；元件頁用示範、API Reference（每個零件一個小標題）、Examples、鍵盤、說明。
+- 每種頁面有自己的編排：指南用步驟和延伸閱讀，token 頁用色階或刻度、token 程式碼和表格，元件頁用示範、API Reference（每個零件一個小標題）、Examples、鍵盤、說明。
 - 左側目錄固定不動。右側的「本頁」列出段落，寬度 1280px 以下隱藏。手機上目錄收成一顆按鈕。
 - 文字在 `src/components/dev/`：`guides.data.js`（概覽和主題）、`componentLibrary.data.js`（元件）、`foundations.data.js`（字級、間距、色票）。這一頁只給開發用，只寫中文，不進正式 build。
 - 新增或修改元件時，同一個變更裡更新這份資料。標「待修」的項目是已知問題。

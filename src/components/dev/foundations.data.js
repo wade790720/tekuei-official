@@ -81,7 +81,7 @@ export const TYPE_STEPS = [
     tracking: true,
     upper: true,
   },
-  { name: 'Mono', token: '--type-mono', use: '程式碼、快捷鍵', sample: 'const x = 1 · ⌘S', family: '--font-mono' },
+  { name: 'Mono', token: '--type-mono', use: '程式碼、快速鍵', sample: 'const x = 1 · ⌘S', family: '--font-mono' },
 ]
 
 // Copy for the Typography page, one entry per section.
