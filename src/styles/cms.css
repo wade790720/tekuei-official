@@ -367,11 +367,32 @@
 }
 
 /* Save button: idle → saving → saved, each label blurs in (transitions.dev "Text states swap") */
+.cms-save__stack {
+  display: inline-grid;
+  justify-items: center;
+}
+
 .cms-save__label {
+  grid-area: 1 / 1;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  visibility: hidden;
+}
+
+/* Adding data-on starts the animation, so each state blurs in once */
+.cms-save__label[data-on] {
+  visibility: visible;
   animation: cms-swap 0.3s var(--ease-touch);
+}
+
+.cms-save__label:not([data-on]) .cms-spin {
+  animation: none;
+}
+
+/* A failed save shakes the button once, like a wrong code in the gate */
+.cms-save[data-state='error'] {
+  animation: shake-damped 0.45s linear;
 }
 
 .cms-save .cms-spin {
@@ -1007,7 +1028,8 @@
   .cms-gate__pill,
   .cms-panel,
   .cms-dock,
-  .cms-save__label {
+  .cms-save[data-state='error'],
+  .cms-save__label[data-on] {
     animation: none;
   }
 
