@@ -74,11 +74,19 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
           </button>
           {/* Lights up only when there is something to save */}
           <button type="button" className="cms-btn cms-save" data-state={saveState} onClick={onSave} disabled={saving || !dirty}>
-            {/* key remounts the label so each state swaps in with a blur */}
-            <span className="cms-save__label" key={saveState}>
-              {saveState === 'saving' ? <span className="cms-spin" aria-hidden /> : null}
-              {saveState === 'saved' ? <CheckIcon /> : null}
-              {{ saving: T.saving, saved: T.saved }[saveState] ?? T.save}
+            {/* All labels share one grid cell, so the button keeps the widest label's width */}
+            <span className="cms-save__stack">
+              <span className="cms-save__label" data-on={saveState === 'idle' || saveState === 'error' || undefined}>
+                {T.save}
+              </span>
+              <span className="cms-save__label" data-on={saveState === 'saving' || undefined}>
+                <span className="cms-spin" aria-hidden />
+                {T.saving}
+              </span>
+              <span className="cms-save__label" data-on={saveState === 'saved' || undefined}>
+                <CheckIcon />
+                {T.saved}
+              </span>
             </span>
             <kbd className="cms-btn__kbd">{SAVE_KEY}</kbd>
           </button>
