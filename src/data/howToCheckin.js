@@ -59,7 +59,7 @@ export const HOW_TO_CHECKIN_STEPS = {
       title: '確認號碼是否正確',
       body: [
         '確認號碼是否正確，再點擊「確認無誤」',
-        ['若未於 LINE 報到，將', { em: '無法收到' }, '正式連結與通知；有任何操作問題，都可以在', { em: 'LINE 詢問助教' }, '唷！'],
+        ['若未於 LINE 報到，將', { em: '無法收到' }, '正式連結與通知。有任何操作問題，都可以在', { em: 'LINE 詢問助教' }, '唷！'],
       ],
       image: '/how-to-checkin/step-04.png',
       imageAlt: 'LINE 確認手機號碼與報到完成畫面',

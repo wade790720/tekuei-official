@@ -186,7 +186,7 @@ export const GROUPS = [
           },
           {
             id: 'shortcuts',
-            title: '快捷鍵和分隔線',
+            title: '快速鍵和分隔線',
             description: '項目的 kbd 顯示在右側。用字串 divider 把項目分組。',
             code: `const STYLES = [
   { value: 'paragraph', label: '段落', kbd: '⌘⌥0' },
@@ -620,7 +620,7 @@ export const GROUPS = [
         id: 'admin-provider',
         name: 'AdminProvider',
         file: 'src/context/AdminProvider.jsx',
-        summary: '管理登入狀態、編輯模式和 Ctrl/⌘+S 快捷鍵。',
+        summary: '管理登入狀態、編輯模式和 Ctrl/⌘+S 快速鍵。',
         hero: {
           code: `const admin = useAdmin()
 useAdminSave(admin.editing ? save : null)`,

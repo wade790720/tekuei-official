@@ -124,7 +124,7 @@ export function JournalPostEditPanel({ slug }) {
         <TextArea id="cms-excerpt" value={post.excerpt} onChange={(v) => setPost('excerpt', v)} placeholder="一兩句話說明這篇文章" />
       </FormRow>
       <FormRow label="內文">
-        <Suspense fallback={<div className="cms-ed--loading">載入編輯器…</div>}>
+        <Suspense fallback={<div className="cms-ed--loading">載入編輯器……</div>}>
           <Editor key={`${slug}-${lang}`} doc={getDoc(body)} onChange={setDoc} upload={upload} />
         </Suspense>
       </FormRow>

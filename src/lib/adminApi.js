@@ -6,7 +6,7 @@ export function apiPath(path) {
 }
 
 /**
- * production 預設走同網域 /api（Pages Functions + R2）；
+ * production 預設走同網域 /api（Pages Functions + R2）。
  * 開發預設用 bundled data.json，除非 VITE_USE_REMOTE=true。
  */
 export function isRemoteSync() {
