@@ -59,7 +59,7 @@ npx wrangler pages secret put ADMIN_SECRET --project-name=tekuei-official
 
 （執行後輸入你要的管理密碼。**Ctrl+Space 登入時就打這串**，沒有另外的帳號系統）
 
-設完 Secret 後請 **重新部署**（Retry deployment），Functions 才讀得到。
+設完 Secret 後請**重新部署**（Retry deployment），Functions 才讀得到。
 
 ### 4. 種子 data.json
 

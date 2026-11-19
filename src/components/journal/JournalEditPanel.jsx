@@ -165,7 +165,7 @@ export function JournalListEditPanel() {
     })
 
   const remove = (post) => {
-    if (!window.confirm(`刪除「${post.title}」？中英文版本會一起刪除。儲存後才會生效。`)) return
+    if (!window.confirm(`刪除「${post.title}」？中英文版本會一起刪除，儲存後才會生效。`)) return
     cms.updateDraft((d) => {
       for (const l of LANGS) {
         d.posts[l] = d.posts[l].filter((p) => p.slug !== post.slug)
@@ -227,7 +227,7 @@ export function JournalListEditPanel() {
   return (
     <SidePanel title="編輯 Journal" subtitle={`${posts.length} 篇文章 · ${lang === 'zh' ? '中文' : 'English'}`} {...panelProps}>
       <PanelSection title="新增文章">
-        <FormRow label="網址代稱" htmlFor="cms-new-slug" hint={slugError || `網址會是 /journal/${slug || 'my-post'}，之後不能改。`}>
+        <FormRow label="網址代稱" htmlFor="cms-new-slug" hint={slugError || `網址會是 /journal/${slug || 'my-post'}，之後不能改`}>
           <div className="cms-inline">
             <TextInput
               id="cms-new-slug"
@@ -278,7 +278,7 @@ export function JournalListEditPanel() {
                     {post.date} · {post.category} · /{post.slug}
                   </div>
                 </div>
-                <button type="button" className="cms-icon cms-icon--danger" onClick={() => remove(post)} aria-label={`刪除 ${post.title}`}>
+                <button type="button" className="cms-icon cms-icon--danger" onClick={() => remove(post)} aria-label={`刪除「${post.title}」`}>
                   ✕
                 </button>
               </div>

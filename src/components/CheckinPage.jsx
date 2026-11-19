@@ -38,7 +38,7 @@ function loadLiffSdk() {
 
 const UI = {
   zh: {
-    loading: '初始化中⋯',
+    loading: '初始化中……',
     eyebrow: 'Check-in',
     formTitle: '完成報到手續',
     formSubtitle: '輸入手機號碼，讓我們在課前透過簡訊與 LINE 通知您課程資訊。',
@@ -52,7 +52,7 @@ const UI = {
     submitBusy: 'Sending ...',
     invalidPhone: '請輸入正確的手機號碼',
     emptyPhone: '請輸入手機號碼',
-    submitFailed: '提交失敗，請稍後再試。',
+    submitFailed: '提交失敗，請稍後再試',
     successTitle: '報到完成',
     successBody: ['我們已收到您的資料', '課程前會透過 LINE 與簡訊通知您', '期待和您在課程中相見'],
     errorTitle: '無法開啟報到頁面',

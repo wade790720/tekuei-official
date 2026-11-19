@@ -46,7 +46,7 @@ function QuoteView({ node, updateAttributes }) {
           label="引言出處"
           value={node.attrs.cite}
           onChange={(cite) => updateAttributes({ cite })}
-          placeholder="— 出處（選填）"
+          placeholder="──出處（選填）"
         />
       </div>
     </NodeViewWrapper>
@@ -450,7 +450,7 @@ function Toolbar({ editor }) {
     const input = window.prompt('連結網址', 'https://')
     if (input === null) return
     const href = safeHref(input)
-    if (!href) return window.alert('這個網址不能用。請用 https://、mailto: 或 / 開頭的網址。')
+    if (!href) return window.alert('這個網址不能用，請用 https://、mailto: 或 / 開頭的網址。')
     run().extendMarkRange('link').setLink({ href }).run()
   }
 

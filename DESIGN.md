@@ -46,7 +46,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 ## 字級
 
-- 字級、行高、字距都是 token：`--type-display`、`--type-h1`…`--type-mono`，各自帶 `-lh`（行高），大標和標籤另有 `-ls`（字距）。
+- 字級、行高、字距都是 token：`--type-display`、`--type-h1`……`--type-mono`，各自帶 `-lh`（行高），大標和標籤另有 `-ls`（字距）。
 - 內文 17px、行高 1.9。小標題 22px、行高 1.5。大標 clamp(44–72px)。
 - 需要閱讀的字至少 12px（`--type-caption`）。只有標籤可以用 11px。
 - 一行中文 35–40 字（約 640–720px）。
@@ -104,7 +104,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 「內容」包括文字、按鈕、圖片、Canvas 效果、跟內容對齊的裝飾（浮水印、軸線、格線）。
 - 可以延伸到全寬的只有：背景色、背景漸層、整條的分隔線、導覽列和讀取條的底色。
 - 寫法：區塊左右留白用 `calc(var(--page-gutter) + var(--page-pad))`。`--page-gutter` 在 1920 以下是 0。
-- 絕對定位的裝飾：`left` / `right` 也要加上 `var(--page-gutter)`。
+- 絕對定位的裝飾：`left`、`right` 也要加上 `var(--page-gutter)`。
 - 全寬的圖帶：寬度用 `min(100vw, var(--page-max))`，置中用 `margin`，不要用 `transform`（淡入動畫會覆寫 `transform`）。
 - 會被螢幕邊緣切掉的大圖：寬螢幕上改在內容邊緣切掉，或讓邊緣淡出（例如 `mask-image`）。
 - `heroFx.js` 的 `MAX_W` 要和 `--page-max` 一致。

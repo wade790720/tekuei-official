@@ -30,7 +30,7 @@ const TOKENS_FILE = 'src/styles/tokens.css'
 
 const TYPOGRAPHY = {
   name: 'Typography',
-  lead: '字級、字重、字型和行內格式。',
+  lead: '字級、字重、字型和行內格式',
   toc: [
     ['base', '基本元件'],
     ['formatting', '行內格式'],

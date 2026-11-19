@@ -28,7 +28,7 @@ export const COLOR_GROUPS = [
       ['--text-primary', '標題、最先要讀的字'],
       ['--text-body', '內文段落'],
       ['--text-secondary', '說明、圖說'],
-      ['--text-tertiary', '日期、提示、meta。仍要達到 4.5:1'],
+      ['--text-tertiary', '日期、提示、meta，仍要達到 4.5:1'],
       ['--text-faint', '只當裝飾（字元雨、浮水印），不可用在要讀的字'],
     ],
   },
@@ -44,7 +44,7 @@ export const COLOR_GROUPS = [
   },
   {
     title: '狀態與程式碼',
-    note: '錯誤只用一個顏色。程式碼顏色只用在程式碼卡。',
+    note: '錯誤只用一個顏色，程式碼顏色只用在程式碼卡。',
     text: true,
     swatches: [
       ['--danger', '錯誤訊息、刪除'],
@@ -67,7 +67,7 @@ export const TYPE_STEPS = [
   {
     name: 'Body',
     token: '--type-body',
-    use: '內文。中文用 1.9 行高',
+    use: '內文，中文用 1.9 行高',
     sample: '在 TEKUEI 的設計哲學裡，「間」從不是裝飾性的空白。It is a pause with intent.',
   },
   { name: 'Small', token: '--type-small', use: '介面文字、次要說明', sample: '顯示在列表和首頁。' },
@@ -75,7 +75,7 @@ export const TYPE_STEPS = [
   {
     name: 'Label',
     token: '--type-label',
-    use: '標籤、日期、數值。等寬字、大寫',
+    use: '標籤、日期、數值，等寬字、大寫',
     sample: '2026.11.19 · 6 min',
     family: '--font-label',
     tracking: true,
@@ -87,7 +87,7 @@ export const TYPE_STEPS = [
 // Copy for the Typography page, one entry per section.
 export const TYPE_DOC = {
   base: {
-    lead: '文章的標題和內文由 RichText 畫出。字級、行高、顏色都來自 token，寫文章時不用另外設定。',
+    lead: '文章的標題和內文由 RichText 畫出，字級、行高、顏色都來自 token，寫文章時不用另外設定。',
     blocks: [
       { type: 'h2', text: '留白是一種節奏' },
       { type: 'p', text: '版面安靜，讀者才聽得見內容。字級和行高成對使用，一行中文約 35–40 字。' },
@@ -119,34 +119,34 @@ export const TYPE_DOC = {
   效果寫成 <code>mountGlyphField()</code>，延伸閱讀在 <a href="/journal">Journal</a>。
 </p>`,
   },
-  scale: '一套 10 階的字級，中英文共用。每一階都有字級和行高，大標和標籤另有字距，三者成組使用。點或滑過上面的 Aa 換一階。',
+  scale: '一套 10 階的字級，中英文共用，每一階都有字級和行高，大標和標籤另有字距，三者成組使用。點或滑過上面的 Aa 換一階。',
   weight: {
-    lead: '只有兩種字重。思源宋體只載入 200/300/400，Instrument Serif 只有 400，更粗會變成瀏覽器合成的假粗體。',
+    lead: '只有兩種字重。思源宋體只載入 200、300、400，Instrument Serif 只有 400，更粗會變成瀏覽器合成的假粗體。',
     rows: [
       ['Light', '--weight-light', '大標：Display、H1'],
       ['Regular', '--weight-regular', '內文、介面、其他全部'],
     ],
   },
   family: {
-    lead: '兩個字型 token。Instrument Serif 沒有中文字，中文自動改用思源宋體。Instrument Serif 只用在 18px 以上。',
+    lead: '字型 token 有兩個。Instrument Serif 沒有中文字，中文自動改用思源宋體。Instrument Serif 只用在 18px 以上。',
     rows: [
       ['內文、標題', '--font-serif', 'The quiet page 安靜的版面'],
       ['標籤、日期、數值', '--font-label', '2026.11.19 · CASE 01'],
       ['程式碼', '--font-mono', 'const gap = 24'],
     ],
   },
-  spec: '標題的實際大小、基線和 x-height，加上每段文字的字型、字級 / 行高、字重。數值從畫面量出來。',
+  spec: '標題的實際大小、基線和 x-height，加上每段文字的字型、字級 / 行高、字重，數值都從畫面量出來。',
 }
 
 export const TYPE_RULES = [
-  '字重只有兩種：內文和介面 400，大標 300。不要用 400 以上，思源宋體只載入 200/300/400，更粗會變成瀏覽器合成的假粗體。',
-  '層級靠「字級＋文字階」，不靠字重。',
-  '內文 17px。需要閱讀的字至少 12px。',
-  'Instrument Serif 只用在 18px 以上。更小的英文細節會糊，改用等寬的標籤字。',
-  '字距只有三種：大標 -0.02em、標籤 0.1em、其他全部 0。品牌字（T E K U E I）例外。',
-  '標籤、日期、數值用 --font-label（等寬）、大寫、11–12px、字距 0.1em。',
-  '中文行高 1.9。方塊字沒有上下伸部，需要比英文更多的行距。',
-  '一行中文 35–40 字，約 640–720px。',
+  '字重只有兩種：內文和介面 400，大標 300。不要用 400 以上，思源宋體只載入 200、300、400，更粗會變成瀏覽器合成的假粗體',
+  '層級靠「字級＋文字階」，不靠字重',
+  '內文 17px，需要閱讀的字至少 12px',
+  'Instrument Serif 只用在 18px 以上，更小的英文細節會糊，因此改用等寬的標籤字',
+  '字距只有三種：大標 -0.02em、標籤 0.1em、其他全部 0，品牌字（T E K U E I）例外',
+  '標籤、日期、數值用 --font-label（等寬）、大寫、11–12px、字距 0.1em',
+  '中文行高 1.9，因為方塊字沒有上下伸部，需要比英文更多的行距',
+  '一行中文 35–40 字，約 640–720px',
 ]
 
 export const SPACE_SCALE = [
@@ -166,11 +166,11 @@ export const SPACE_SCALE = [
 ]
 
 export const SPACE_RULES = [
-  '三種節奏就夠：元件內 4–12px、段落之間 24px、區塊之間 --section-gap（96–128px，跟著螢幕寬度變）。',
-  '外面的間距永遠大於裡面的間距。越往外，間距越大，關係才看得出來。',
-  '全部用刻度上的值。不在刻度上的數字（28、36、52）改成最近的刻度。',
-  '文章小標題的上方約是下方的 3 倍，讓標題靠近它帶領的內容。',
-  '圓角：小控制項 8px、卡片 12–16px、膠囊 999px。',
+  '三種節奏就夠：元件內 4–12px、段落之間 24px、區塊之間 --section-gap（96–128px，跟著螢幕寬度變）',
+  '外面的間距永遠大於裡面的間距，越往外間距越大，關係才看得出來',
+  '全部用刻度上的值，不在刻度上的數字（28、36、52）改成最近的刻度',
+  '文章小標題的上方約是下方的 3 倍，讓標題靠近它帶領的內容',
+  '圓角：小控制項 8px、卡片 12–16px、膠囊 999px',
 ]
 
 // Measured on the three reference sites. The TEKUEI column is not stored here:
@@ -183,7 +183,7 @@ export const REFERENCE_TABLE = {
     { key: 'h2', label: '小標題', refs: ['17、字重 550', '24 / 1.33、-0.3px', '24 / 1.25'] },
     { key: 'display', label: '大標', refs: ['—', '—', '72 / 1.06、-0.03em'] },
     { key: 'tiers', label: '文字階', refs: ['2 階', '4 階', '2 階'] },
-    { key: 'space', label: '間距', refs: ['4 · 8 · 16 · 128', '4 · 8 · 12 · 16 · 32 · 128', '4 · 8 · 16 · 24 · 48 · 96'] },
+    { key: 'space', label: '間距', refs: ['4、8、16、128', '4、8、12、16、32、128', '4、8、16、24、48、96'] },
     { key: 'measure', label: '內文欄寬', refs: ['644px', '720px', '525px'] },
   ],
 }
@@ -198,7 +198,7 @@ export const SPEC_SAMPLE = {
   actions: ['閱讀全文', '分享'],
   captions: {
     spacing: '粉紅色的 I 量出每個間距，數字單位是 px。卡片內距 32、段落之間 16–24、按鈕內距 12、按鈕之間 8。',
-    typography: '選取框是標題的實際大小。兩條線是基線和 x-height。右邊是每段文字的字型、字級 / 行高、字重。',
+    typography: '選取框是標題的實際大小，兩條線是基線和 x-height，右邊是每段文字的字型、字級 / 行高、字重。',
     color: '右邊是每個元素用的 token 和實際色值。邊框和分隔線用中性的 --line，金色只留給強調。',
   },
 }

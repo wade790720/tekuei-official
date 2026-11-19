@@ -17,7 +17,7 @@ export const CMS_LABELS = {
   saved: '已儲存',
   unsaved: '尚未儲存',
   saveFailed: '儲存失敗',
-  logoutConfirm: '還有修改沒有儲存。確定要登出嗎？修改會被丟掉。',
+  logoutConfirm: '還有修改沒有儲存，確定要登出嗎？修改會被丟掉。',
   logout: '登出',
   collapse: '收合面板',
   expand: '打開編輯面板',

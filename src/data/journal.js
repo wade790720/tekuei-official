@@ -1,7 +1,7 @@
 export const JOURNAL_META = {
   zh: {
     title: 'Journal · TEKUEI',
-    description: 'Wade 當下遇到的事：行銷、AI、技術、實作過程。',
+    description: 'Wade 當下遇到的事：行銷、AI、技術、實作過程',
   },
   en: {
     title: 'Journal · TEKUEI',
