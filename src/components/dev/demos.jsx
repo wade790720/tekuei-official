@@ -11,6 +11,7 @@ import { VideoCard } from '../VideoCard.jsx'
 import { Editor } from '../Editor.jsx'
 import { DropdownMenu } from '../DropdownMenu.jsx'
 import { SecretInput } from '../SecretInput.jsx'
+import { Tag, TagList } from '../Tag.jsx'
 import { blocksToDoc } from '../../lib/richText.js'
 import { mountGlyphField } from '../../lib/glyphField.js'
 import { mountShatterImage } from '../../lib/shatterImage.js'
@@ -256,6 +257,25 @@ const DEMOS = {
   ),
   glyph: () => <GlyphDemo />,
   ripple: () => <RippleDemo />,
+  tag: () => <TagList tags={['AI', 'MARKETING', 'ENGINEERING']} />,
+  'tag-filter': () => <TagFilterDemo />,
+}
+
+function TagFilterDemo() {
+  const [tag, setTag] = useState(null)
+  const tags = [['AI', 2], ['MARKETING', 1], ['ENGINEERING', 1]]
+  return (
+    <div className="tag-group" role="group" aria-label="依標籤篩選">
+      <Tag count={4} selected={!tag} onClick={() => setTag(null)}>
+        全部
+      </Tag>
+      {tags.map(([name, count]) => (
+        <Tag key={name} count={count} selected={tag === name} onClick={() => setTag(tag === name ? null : name)}>
+          {name}
+        </Tag>
+      ))}
+    </div>
+  )
 }
 
 /** Renders the live demo registered under `name`, or nothing. */

@@ -3,7 +3,7 @@
 // Chinese only: the URL does not carry a language yet, and zh is the default.
 
 import { getDoc, docText, safeHref } from './richText.js'
-import { getDefaultJournal } from '../data/journal.js'
+import { getDefaultJournal, postTags } from '../data/journal.js'
 
 export const SITE_URL = 'https://tekuei.com'
 export const SITE_NAME = 'TEKUEI 德溎'
@@ -127,7 +127,7 @@ export function postPage(journal, slug) {
       mainEntityOfPage: url,
       author: PERSON,
       publisher: PERSON,
-      ...(post.category ? { articleSection: post.category } : {}),
+      ...(postTags(post).length ? { articleSection: postTags(post)[0], keywords: postTags(post).join(', ') } : {}),
     },
     html:
       `<article><h1>${esc(post.title)}</h1>` +

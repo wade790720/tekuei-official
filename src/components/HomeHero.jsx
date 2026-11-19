@@ -6,6 +6,7 @@ import cutSrc from '../assets/hero/cut.webp'
 import altSrc from '../assets/hero/alt.webp'
 import { HOME_HERO } from '../data/homepage.js'
 import { useJournal } from '../context/journal.js'
+import { postTags } from '../data/journal.js'
 import { mountHeroFx } from '../lib/heroFx.js'
 import { useLang } from '../i18n'
 
@@ -65,7 +66,7 @@ export function HomeHero() {
                 <span className={`home-latest__thumb home-latest__thumb--${i + 1}`} aria-hidden />
                 <span className="home-latest__body">
                   <span className="home-latest__meta">
-                    {post.category} · {post.readMin} MIN
+                    {postTags(post).join(', ')} · {post.readMin} MIN
                   </span>
                   <span className="home-latest__title">{post.title}</span>
                 </span>

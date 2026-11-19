@@ -68,3 +68,18 @@ describe('site files', () => {
     assert.match(llmsTxt(journal, work), /^# TEKUEI/)
   })
 })
+
+describe('post tags', () => {
+  it('reads tags, falls back to the old category, and counts them', async () => {
+    const { postTags, tagCounts, parseTags } = await import('../src/data/journal.js')
+    assert.deepEqual(postTags({ tags: ['AI'] }), ['AI'])
+    assert.deepEqual(postTags({ category: 'NOTE' }), ['NOTE'])
+    assert.deepEqual(postTags({ tags: [], category: 'NOTE' }), [])
+    assert.deepEqual(tagCounts([{ tags: ['B', 'A'] }, { tags: ['A'] }, { category: 'C' }]), [['A', 2], ['B', 1], ['C', 1]])
+    assert.deepEqual(parseTags(' ai, Marketing，ai、 ,'), ['AI', 'MARKETING'])
+  })
+
+  it('puts tags into the BlogPosting JSON-LD', () => {
+    assert.match(injectPage(indexHtml, postPage(journal, slug)), /"keywords":"PHILOSOPHY"/)
+  })
+})
