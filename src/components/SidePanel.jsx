@@ -1,8 +1,8 @@
 import { useLayoutEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import { useAdmin } from '../../context/admin.js'
-import { CMS_LABELS as T } from '../../data/admin.js'
-import '../../styles/cms.css'
+import { useAdmin } from '../context/admin.js'
+import { CMS_LABELS as T } from '../data/admin.js'
+import '../styles/cms.css'
 
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent)
 const SAVE_KEY = isMac ? '⌘S' : 'Ctrl S'
@@ -17,7 +17,7 @@ const SAVE_KEY = isMac ? '⌘S' : 'Ctrl S'
  *   children: import('react').ReactNode,
  * }} props
  */
-export function CmsPanel({ title, subtitle, dirty, saving, error, onSave, onLogout, children }) {
+export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, children }) {
   const { panelOpen, setPanelOpen } = useAdmin()
 
   // html.has-cms-panel moves the page and nav left (cms.css) while the panel is open.
@@ -72,7 +72,7 @@ export function CmsPanel({ title, subtitle, dirty, saving, error, onSave, onLogo
 }
 
 /** One label | value row, as in the Framer CMS sheet. */
-export function CmsRow({ label, hint, children, htmlFor }) {
+export function FormRow({ label, hint, children, htmlFor }) {
   return (
     <div className="cms-row">
       <label className="cms-row__label" htmlFor={htmlFor}>
@@ -86,7 +86,7 @@ export function CmsRow({ label, hint, children, htmlFor }) {
   )
 }
 
-export function CmsSection({ title, action, children }) {
+export function PanelSection({ title, action, children }) {
   return (
     <section className="cms-section">
       <div className="cms-section__head">
@@ -98,12 +98,12 @@ export function CmsSection({ title, action, children }) {
   )
 }
 
-export function CmsInput({ value, onChange, ...rest }) {
+export function TextInput({ value, onChange, ...rest }) {
   return <input className="cms-input" value={value ?? ''} onChange={(e) => onChange(e.target.value)} {...rest} />
 }
 
 /** A textarea that grows with its text. */
-export function CmsTextarea({ value, onChange, mono = false, ...rest }) {
+export function TextArea({ value, onChange, mono = false, ...rest }) {
   const ref = useRef(null)
   useLayoutEffect(() => {
     const el = ref.current
@@ -122,7 +122,7 @@ export function CmsTextarea({ value, onChange, mono = false, ...rest }) {
   )
 }
 
-export function CmsSwitch({ checked, onChange, label }) {
+export function Switch({ checked, onChange, label }) {
   return (
     <button
       type="button"

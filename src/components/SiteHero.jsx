@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import '../styles/hero.css'
 import '../styles/home.css'
-import { HomeFadeIn } from './HomeFadeIn.jsx'
+import { FadeIn } from './FadeIn.jsx'
 import { HomeHero } from './HomeHero.jsx'
 import {
   HOME_APPROACH,
@@ -50,7 +50,7 @@ export default function SiteHero() {
         <HomeHero />
 
         <section className="home-philosophy" id="philosophy">
-          <HomeFadeIn className="home-philosophy__inner">
+          <FadeIn className="home-philosophy__inner">
             <div className="home-section-label">{philosophy.label}</div>
             {philosophy.lines.map((item, i) => {
               if (item.type === 'divider') {
@@ -69,11 +69,11 @@ export default function SiteHero() {
               )
             })}
             <div className="home-philosophy__sig">{philosophy.signature}</div>
-          </HomeFadeIn>
+          </FadeIn>
         </section>
 
         <section className="home-work" id="work">
-          <HomeFadeIn>
+          <FadeIn>
             <div className="home-section-label">{work.label}</div>
             <h2 className="home-section-title">
               {work.title.map((line) => (
@@ -83,11 +83,11 @@ export default function SiteHero() {
                 </span>
               ))}
             </h2>
-          </HomeFadeIn>
+          </FadeIn>
 
           <div className="home-work__grid">
             {featuredWorks.map((item) => (
-              <HomeFadeIn key={item.caseHref} as={Link} to={item.caseHref} className="home-work__item">
+              <FadeIn key={item.caseHref} as={Link} to={item.caseHref} className="home-work__item">
                 <div
                   className={imgVariantClass(item.variant)}
                   style={{ background: item.thumbBg }}
@@ -106,13 +106,13 @@ export default function SiteHero() {
                     ))}
                   </div>
                 </div>
-              </HomeFadeIn>
+              </FadeIn>
             ))}
           </div>
         </section>
 
         <section className="home-approach" id="approach">
-          <HomeFadeIn>
+          <FadeIn>
             <div className="home-section-label">{approach.label}</div>
             <h2 className="home-section-title">
               {approach.title.map((line) => (
@@ -122,11 +122,11 @@ export default function SiteHero() {
                 </span>
               ))}
             </h2>
-          </HomeFadeIn>
+          </FadeIn>
 
           <div className="home-approach__grid">
             {approach.items.map((item) => (
-              <HomeFadeIn key={item.num} className="home-approach__item">
+              <FadeIn key={item.num} className="home-approach__item">
                 <div className="home-approach__num">{item.num}</div>
                 <h3 className="home-approach__title">
                   {item.title.map((line, i) => (
@@ -137,13 +137,13 @@ export default function SiteHero() {
                   ))}
                 </h3>
                 <p className="home-approach__desc">{item.desc}</p>
-              </HomeFadeIn>
+              </FadeIn>
             ))}
           </div>
         </section>
 
         <section className="home-quote">
-          <HomeFadeIn className="home-quote__inner">
+          <FadeIn className="home-quote__inner">
             <div className="home-quote__text">
               {quote.lines.map((line) => (
                 <span key={line}>
@@ -155,7 +155,7 @@ export default function SiteHero() {
             <div className="home-quote__en">
               <em>{quote.en}</em>
             </div>
-          </HomeFadeIn>
+          </FadeIn>
         </section>
 
         <section className="home-final-cta" id="contact">
@@ -163,7 +163,7 @@ export default function SiteHero() {
           <div className="home-final-cta__watermark" ref={ctaWatermarkRef} aria-hidden>
             begin
           </div>
-          <HomeFadeIn className="home-final-cta__content">
+          <FadeIn className="home-final-cta__content">
             <div className="home-section-label">{cta.label}</div>
             <h2 className="home-final-cta__title">
               {cta.title.map((line) => (
@@ -184,7 +184,7 @@ export default function SiteHero() {
             <a href={`mailto:${cta.email}`} className="home-cta">
               BEGIN THE JOURNEY <span className="home-cta__arrow">→</span>
             </a>
-          </HomeFadeIn>
+          </FadeIn>
         </section>
       </main>
 

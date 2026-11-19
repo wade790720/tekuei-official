@@ -3,8 +3,8 @@
 .checkin-page {
   --checkin-fd: var(--font-serif);
   --checkin-fc: var(--font-serif);
-  --checkin-border: rgba(122, 104, 69, 0.22);
-  --checkin-border-soft: rgba(122, 104, 69, 0.14);
+  --checkin-border: var(--ember-whisper);
+  --checkin-border-soft: var(--ember-whisper);
   --checkin-muted: rgba(244, 238, 231, 0.52);
   --checkin-hint: rgba(244, 238, 231, 0.38);
 
@@ -13,10 +13,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px;
+  padding: var(--space-10) var(--space-6);
   overflow: hidden;
   font-family: var(--checkin-fc);
-  font-weight: 300;
+  font-weight: var(--weight-regular);
   letter-spacing: var(--ls-body);
   background-color: var(--paper);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
@@ -40,8 +40,8 @@
   max-height: 360px;
   background: radial-gradient(
     ellipse at center,
-    rgba(122, 104, 69, 0.14) 0%,
-    rgba(122, 104, 69, 0.06) 42%,
+    var(--ember-whisper) 0%,
+    var(--ember-whisper) 42%,
     transparent 72%
   );
 }
@@ -57,7 +57,7 @@
   background: radial-gradient(
     ellipse at center,
     rgba(143, 122, 90, 0.1) 0%,
-    rgba(122, 104, 69, 0.04) 52%,
+    var(--ember-whisper) 52%,
     transparent 76%
   );
 }
@@ -81,12 +81,12 @@
 
 .checkin-brand {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: var(--space-10);
 }
 
 .checkin-brand-name {
   font-family: var(--checkin-fd);
-  font-size: 13px;
+  font-size: var(--type-caption);
   letter-spacing: 0.35em;
   color: var(--ember);
   text-transform: uppercase;
@@ -96,7 +96,7 @@
   width: 32px;
   height: 0.5px;
   background: var(--ember-line);
-  margin: 12px auto 0;
+  margin: var(--space-3) auto 0;
 }
 
 .checkin-card {
@@ -105,7 +105,7 @@
   -webkit-backdrop-filter: blur(8px);
   border: 0.5px solid var(--checkin-border);
   border-radius: 1px;
-  padding: 40px 32px 36px;
+  padding: var(--space-10) var(--space-8) var(--space-10);
   overflow: hidden;
 }
 
@@ -114,50 +114,50 @@
 }
 
 .checkin-eyebrow {
-  font-family: var(--checkin-fd);
-  font-size: 11px;
-  letter-spacing: var(--ls-label);
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
   color: var(--ember-soft);
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 
 .checkin-title {
-  font-size: 22px;
-  font-weight: 300;
+  font-size: var(--type-h2);
+  font-weight: var(--weight-light);
   color: var(--ink);
   line-height: 1.5;
   letter-spacing: var(--ls-title);
-  margin-bottom: 10px;
+  margin-bottom: var(--space-3);
 }
 
 .checkin-subtitle {
-  font-size: 13px;
+  font-size: var(--type-caption);
   color: var(--checkin-muted);
   line-height: 1.8;
-  margin-bottom: 36px;
+  margin-bottom: var(--space-10);
   letter-spacing: var(--ls-body);
 }
 
 .checkin-label {
-  font-family: var(--checkin-fd);
-  font-size: 11px;
-  letter-spacing: 0.25em;
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
   color: var(--checkin-muted);
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-3);
   display: block;
 }
 
 .checkin-phone-field {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
   width: 100%;
   min-width: 0;
 }
 
 .checkin-phone-field.is-invalid .form-control.checkin-phone-input,
 .checkin-phone-field.is-invalid .flag-dropdown.checkin-phone-button {
-  border-color: #8a5048;
+  border-color: var(--danger);
 }
 
 .checkin-phone-container.react-tel-input {
@@ -172,8 +172,8 @@
   border-radius: 1px;
   padding-left: 58px !important;
   font-family: var(--checkin-fc);
-  font-size: 15px;
-  font-weight: 300;
+  font-size: var(--type-small);
+  font-weight: var(--weight-regular);
   color: var(--ink);
   background: transparent;
   letter-spacing: var(--ls-title);
@@ -198,7 +198,7 @@
 
 .checkin-phone-container .selected-flag {
   width: 48px;
-  padding: 0 0 0 10px;
+  padding: 0 0 0 var(--space-3);
   background: transparent;
 }
 
@@ -211,7 +211,7 @@
 .checkin-phone-dropdown.country-list {
   width: min(320px, 85vw);
   max-height: 260px;
-  margin: 4px 0 0;
+  margin: var(--space-1) 0 0;
   border: 0.5px solid var(--checkin-border);
   border-radius: 1px;
   background: rgba(36, 32, 36, 0.98);
@@ -221,8 +221,8 @@
 }
 
 .checkin-phone-dropdown .country {
-  padding: 8px 12px;
-  font-size: 13px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--type-caption);
   color: var(--ink);
 }
 
@@ -237,13 +237,13 @@
 
 .checkin-phone-search {
   width: calc(100% - 20px) !important;
-  margin: 10px !important;
-  padding: 10px 12px !important;
+  margin: var(--space-3) !important;
+  padding: var(--space-3) var(--space-3) !important;
   border: 0.5px solid var(--checkin-border) !important;
   border-radius: 1px !important;
   font-family: var(--checkin-fc) !important;
-  font-size: 13px !important;
-  background: var(--paper-warm) !important;
+  font-size: var(--type-caption) !important;
+  background: var(--surface-1) !important;
 }
 
 .checkin-phone-search:focus {
@@ -252,33 +252,35 @@
 }
 
 .checkin-preview {
-  font-size: 11px;
+  font-size: var(--type-label);
   color: var(--checkin-muted);
-  margin: 0 0 12px;
-  letter-spacing: var(--ls-body);
+  margin: 0 0 var(--space-3);
+  letter-spacing: var(--type-label-ls);
   line-height: 1.5;
   word-break: break-all;
+  font-family: var(--font-label);
 }
 
 .checkin-preview code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 12px;
-  color: var(--ember-deep);
+  font-size: var(--type-caption);
+  color: var(--ember);
 }
 
 .checkin-dev-badge {
-  margin: -8px 0 20px;
-  padding: 8px 10px;
-  border: 0.5px dashed var(--ember-line);
-  font-size: 11px;
-  letter-spacing: var(--ls-body);
-  color: var(--ember-deep);
+  margin: -8px 0 var(--space-5);
+  padding: var(--space-2) var(--space-3);
+  border: 0.5px dashed var(--line-strong);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  color: var(--ember);
   background: rgba(196, 106, 58, 0.06);
+  font-family: var(--font-label);
 }
 
 .checkin-dev-payload {
-  margin-top: 20px;
-  font-size: 11px;
+  margin-top: var(--space-5);
+  font-size: var(--type-label);
   color: var(--checkin-muted);
   word-break: break-all;
   line-height: 1.6;
@@ -286,26 +288,28 @@
 
 .checkin-dev-payload code {
   display: inline-block;
-  margin-top: 8px;
+  margin-top: var(--space-2);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 11px;
+  font-size: var(--type-label);
   color: var(--ink);
 }
 
 .checkin-error {
-  font-size: 11px;
-  color: #8a5048;
+  font-size: var(--type-label);
+  color: var(--danger);
   margin-top: -4px;
-  margin-bottom: 16px;
-  letter-spacing: var(--ls-body);
+  margin-bottom: var(--space-4);
+  letter-spacing: var(--type-label-ls);
+  font-family: var(--font-label);
 }
 
 .checkin-hint {
-  font-size: 11px;
+  font-size: var(--type-label);
   color: var(--checkin-hint);
-  margin-bottom: 32px;
-  letter-spacing: var(--ls-body);
+  margin-bottom: var(--space-8);
+  letter-spacing: var(--type-label-ls);
   line-height: 1.6;
+  font-family: var(--font-label);
 }
 
 .checkin-submit {
@@ -316,8 +320,8 @@
   border: none;
   border-radius: 1px;
   font-family: var(--checkin-fd);
-  font-size: 13px;
-  letter-spacing: 0.3em;
+  font-size: var(--type-caption);
+  letter-spacing: var(--type-label-ls);
   text-transform: uppercase;
   cursor: pointer;
   transition:
@@ -326,7 +330,7 @@
 }
 
 .checkin-submit:hover:not(:disabled) {
-  background: var(--ember-deep);
+  background: var(--ember);
 }
 
 .checkin-submit:active:not(:disabled) {
@@ -334,54 +338,54 @@
 }
 
 .checkin-submit:disabled {
-  background: rgba(122, 104, 69, 0.28);
+  background: var(--ember-whisper);
   cursor: not-allowed;
 }
 
 .checkin-loading {
   text-align: center;
   color: var(--checkin-hint);
-  font-size: 13px;
-  padding: 48px 0;
+  font-size: var(--type-caption);
+  padding: var(--space-12) 0;
   letter-spacing: var(--ls-body);
 }
 
 .checkin-state {
   text-align: center;
-  padding: 24px 0;
+  padding: var(--space-6) 0;
 }
 
 .checkin-state-mark {
   font-family: var(--checkin-fd);
   font-size: 36px;
   color: var(--ember);
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
   line-height: 1;
 }
 
 .checkin-state-mark--muted {
   font-size: 28px;
   color: var(--ember-soft);
-  letter-spacing: 0.2em;
+  letter-spacing: var(--type-label-ls);
 }
 
 .checkin-state h2 {
-  font-size: 18px;
-  font-weight: 300;
+  font-size: var(--type-lead);
+  font-weight: var(--weight-regular);
   color: var(--ink);
   letter-spacing: var(--ls-title);
-  margin-bottom: 14px;
+  margin-bottom: var(--space-4);
 }
 
 .checkin-state-line {
   width: 24px;
   height: 0.5px;
   background: var(--ember-line);
-  margin: 16px auto;
+  margin: var(--space-4) auto;
 }
 
 .checkin-state p {
-  font-size: 13px;
+  font-size: var(--type-caption);
   color: var(--checkin-muted);
   line-height: 1.9;
   letter-spacing: var(--ls-body);

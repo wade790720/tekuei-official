@@ -2,7 +2,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { getNextCase } from '../data/cases/index.js'
 import { useCaseCms } from '../hooks/useCmsSection.js'
-import { Reveal } from './Reveal.jsx'
+import { CaseReveal } from './case/CaseReveal.jsx'
 import '../styles/case.css'
 
 function DelGrid({ items }) {
@@ -120,7 +120,7 @@ export default function CaseStudyPage() {
         </div>
       </header>
 
-      <Reveal as="section" className="case-section">
+      <CaseReveal as="section" className="case-section">
         <div className="case-wrap">
           <SectionHeader {...sections.overview} />
           {sections.overview.prose.map((p) => (
@@ -137,9 +137,9 @@ export default function CaseStudyPage() {
             </blockquote>
           ) : null}
         </div>
-      </Reveal>
+      </CaseReveal>
 
-      <Reveal
+      <CaseReveal
         className="case-img-full"
         style={!media.fullWidthImage?.url && media.fullWidthBg ? { background: media.fullWidthBg } : undefined}
       >
@@ -149,9 +149,9 @@ export default function CaseStudyPage() {
         {!media.fullWidthImage?.url ? (
           <span className="case-img-label">{media.fullWidthLabel}</span>
         ) : null}
-      </Reveal>
+      </CaseReveal>
 
-      <Reveal as="section" className="case-section case-section--light">
+      <CaseReveal as="section" className="case-section case-section--light">
         <div className="case-wrap">
           <SectionHeader {...sections.challenge} />
           {sections.challenge.prose.map((p) => (
@@ -162,9 +162,9 @@ export default function CaseStudyPage() {
           <div className="case-sec-div" aria-hidden />
           <DelGrid items={sections.challenge.deliverables} />
         </div>
-      </Reveal>
+      </CaseReveal>
 
-      <Reveal as="section" className="case-section">
+      <CaseReveal as="section" className="case-section">
         <div className="case-wrap">
           <SectionHeader {...sections.approach} />
           {sections.approach.prose.map((p) => (
@@ -183,10 +183,10 @@ export default function CaseStudyPage() {
             ))}
           </div>
         </div>
-      </Reveal>
+      </CaseReveal>
 
       <div className="case-wrap">
-        <Reveal
+        <CaseReveal
           className="case-img"
           style={!media.inlineImage?.url ? undefined : { background: 'transparent', border: 'none' }}
         >
@@ -195,17 +195,17 @@ export default function CaseStudyPage() {
           ) : (
             <span className="case-img-label">{media.inlineLabel}</span>
           )}
-        </Reveal>
+        </CaseReveal>
       </div>
 
-      <Reveal as="section" className="case-section case-section--light">
+      <CaseReveal as="section" className="case-section case-section--light">
         <div className="case-wrap">
           <SectionHeader {...sections.deliverables} />
           <DelGrid items={sections.deliverables.items} />
         </div>
-      </Reveal>
+      </CaseReveal>
 
-      <Reveal as="section" className="case-section">
+      <CaseReveal as="section" className="case-section">
         <div className="case-wrap">
           <SectionHeader {...sections.result} />
           {sections.result.prose.map((p) => (
@@ -219,16 +219,16 @@ export default function CaseStudyPage() {
             </blockquote>
           ) : null}
         </div>
-      </Reveal>
+      </CaseReveal>
 
       {nextCase ? (
-        <Reveal className="case-next">
+        <CaseReveal className="case-next">
           <div className="case-next-label">N E X T &nbsp;&nbsp; C A S E</div>
           <Link to={nextCase.href}>
             <NextCaseTitle titleEm={nextCase.titleEm} titleRest={nextCase.titleRest} />
             <div className="case-next-sub">{nextCase.subtitle}</div>
           </Link>
-        </Reveal>
+        </CaseReveal>
       ) : null}
 
       <footer className="case-footer">

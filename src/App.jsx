@@ -61,7 +61,7 @@ export default function App() {
         <Route path="/how-to-checkin" element={<HowToCheckinPage />} />
         {ComponentLibrary ? (
           <Route
-            path="/dev/component-library"
+            path="/dev/component-library/:page?"
             element={
               <Suspense fallback={null}>
                 <ComponentLibrary />

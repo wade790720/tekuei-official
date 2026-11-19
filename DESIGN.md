@@ -14,43 +14,87 @@ TEKUEI 的視覺與動態規範。改畫面、樣式或動畫之前讀這份檔�
 
 ## 顏色
 
-Token 都在 `src/styles/tokens.css`。新程式碼只用語意 token（第二欄）。
+Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1…12`、`--accent-1…12`，各有透明版本（`-a1…a12`）。語意 token 指向色階，新程式碼只用這張表的語意 token。
 
 | 用途 | Token | 值 |
 |---|---|---|
-| 頁面背景 | `--paper` | `#0b0b0d` obsidian |
-| 卡片、區塊背景 | `--paper-warm` | `#181719` charcoal |
-| 浮起的元素 | `--paper-cool` | `#242024` |
-| 主要文字 | `--ink` | `#f4eee7` ivory |
-| 次要文字 | `--ink-70`、`--ink-65` | ivory 72%、66% |
-| 裝飾文字 | `--ink-40`、`--ink-22` | ivory 40%、22%。不可用在需要閱讀的文字 |
+| 頁面背景 | `--surface-0` | `#0b0b0d` obsidian |
+| 卡片、區塊背景 | `--surface-1` | `#181719` charcoal |
+| 浮起的元素 | `--surface-2` | `#242024` |
+| 分隔線、格線 | `--line` | ivory 8% |
+| 邊框、要看得到的分隔 | `--line-strong` | ivory 14% |
 | 強調 | `--ember` | `#c99a63` gold |
 | hover、光暈 | `--ember-soft` | `#e4b57b` amber |
-| 線 | `--ember-line` | gold 30% |
-| 細線 | `--ember-whisper` | gold 14% |
+| 聚焦框、目前頁的底線 | `--ember-line` | gold 30% |
+| hover 的淡底 | `--ember-whisper` | gold 14% |
+| 錯誤 | `--danger` | `#e8907c` |
 
 - 比例：約 70% 黑與炭灰、25% 象牙白文字、5% 金色。
-- 金色只用在小地方：標籤、目前所在的導覽項目、hover、細線。不要用金色填大面積。
-- `--ink-30`、`--gold-10`、`--paper-60-*`、`--ease-haunt` 是舊名稱。只為了相容保留，新程式碼不要用。
-- 頁面自己的變數（例如 `--j-lamp`、`--home-ember`）必須指向全站 token，不可以寫色碼。
+- 金色只用在三個地方：目前頁、聚焦、hover。一般的邊框和分隔線用 `--line`。
+- 頁面自己的變數（例如 `--j-lamp`、`--hh-gold`）必須指向全站 token，不可以寫色碼。
+- 舊名稱只為了相容保留，新程式碼不要用：`--paper*`、`--ink-*`、`--ink-30*`、`--gold-10*`、`--paper-60-*`、`--taupe`、`--bronze`、`--ember-deep`、`--ease-haunt`、`--ls-*`。
+
+### 文字四階
+
+| Token | 用途 |
+|---|---|
+| `--text-primary` | 標題、最先要讀的字 |
+| `--text-body` | 內文段落 |
+| `--text-secondary` | 說明、圖說 |
+| `--text-tertiary` | 日期、提示、meta。最暗但仍達 4.5:1 |
+| `--text-faint` | 只當裝飾，不可用在要讀的字 |
+
+## 字級
+
+- 字級、行高、字距都是 token：`--type-display`、`--type-h1`…`--type-mono`，各自帶 `-lh`（行高），大標和標籤另有 `-ls`（字距）。
+- 內文 17px、行高 1.9。小標題 22px、行高 1.5。大標 clamp(44–72px)。
+- 需要閱讀的字至少 12px（`--type-caption`）。只有標籤可以用 11px。
+- 一行中文 35–40 字（約 640–720px）。
+- 這組字級是 2026-11-19 從 jakub.kr、interfaces.dev、Promptfolio 比對後定的。
+
+### 字重
+
+- 只有兩種：內文和介面 `--weight-regular`（400），大標 `--weight-light`（300）。
+- 不要用 400 以上。思源宋體只載入 200/300/400，Instrument Serif 只有 400。更粗會變成瀏覽器合成的假粗體。
+- 層級靠字級和文字階，不靠字重。
+
+### 字距
+
+- 只有三種：大標 `--type-display-ls`（-0.02em）、標籤 `--type-label-ls`（0.1em）、其他全部 0。
+- 品牌字（頁尾的「T E K U E I」、報到頁的品牌名）例外，維持 0.3em 以上。
+- 字距會加在最後一個字後面。置中的字距文字要補 `margin-right: -<字距>`。
+
+### 標籤
+
+- 標籤、日期、數值、快捷鍵用 `--font-label`（等寬）、大寫、11–12px、字距 0.1em。
+- 例：`JOURNAL`、`2026.11.19`、`6 MIN`。
+
+## 間距
+
+- 4px 為基礎：`--space-0-5`（2px）、`--space-1`（4）、`-2`（8）、`-3`（12）、`-4`（16）、`-5`（20）、`-6`（24）、`-8`（32）、`-10`（40）、`-12`（48）、`-16`（64）、`-24`（96）、`-32`（128）。
+- 只用刻度上的值。28、36、52 這類數字改成最近的刻度。
+- 三種節奏：
+  - 元件內：4–12px。
+  - 段落之間：24px。
+  - 區塊之間：`--section-gap`（96–128px，跟著螢幕寬度變）。
+- 外面的間距永遠大於裡面的間距。
+- 圓角：`--radius-sm` 8px（小控制項）、`--radius-md` 12px、`--radius-lg` 16px（卡片）、`--radius-full`（膠囊）。
+- 完整示範在 Component Library 的「基礎」。間距、字級、色值都標在真的介面上，數值從 DOM 即時量測。
 
 ## 字型
 
-| 用途 | 現況 |
-|---|---|
-| 英文（拉丁字母、數字） | Instrument Serif 400，含斜體 |
-| 中文 | 思源宋體。Google Fonts 名稱是 Noto Serif TC，載入 200/300/400 |
-| 等寬（字元效果） | `ui-monospace`、Cascadia Mono、Consolas |
+| 用途 | Token | 字型 |
+|---|---|---|
+| 英文、中文 | `--font-serif` | Instrument Serif 400（含斜體），中文自動改用思源宋體（Noto Serif TC 200/300/400） |
+| 標籤、數值 | `--font-label` | `ui-monospace`、Cascadia Mono、Consolas，中文用思源宋體 |
+| 程式碼 | `--font-mono` | 同上，只用在程式碼卡 |
 
-- 兩種字型合在一個 token：`--font-serif`。Instrument Serif 排第一。它沒有中文字，所以中文自動改用思源宋體。
-- CSS 一律寫 `font-family: var(--font-serif)`。頁面自己的字型變數（例如 `--j-fd`、`--home-fc`）都指向它。不要另外寫字型名稱。
+- Instrument Serif 排第一。它沒有中文字，所以中文自動改用思源宋體。
+- Instrument Serif 只用在 18px 以上。更小的英文改用 `--font-label`。
+- CSS 一律寫 `font-family: var(--font-serif)` 或 `var(--font-label)`。頁面自己的字型變數（例如 `--j-fd`）都指向它們。不要另外寫字型名稱。
 - Canvas 不能用 CSS 變數，直接寫 `"Instrument Serif", "Noto Serif TC", "Source Han Serif TC", serif`。
 - 兩種字型都由 `index.html` 從 Google Fonts 載入。
-- 斜體只對英文有效。思源宋體沒有斜體，中文的 `font-style: italic` 會變成瀏覽器合成的斜體。
-
-- 標籤：大寫或字母間加空格，字距 `--ls-label`（0.46em）或 0.3em，字級 10–11px。
-- 標題字距 `--ls-title`（0.05em）。內文字距 `--ls-body`（0.025em）。
-- 字距會加在最後一個字後面。置中的字距文字要補 `margin-right: -<字距>`。
+- 斜體只對英文有效。中文的 `font-style: italic` 會變成瀏覽器合成的斜體。
 
 ## 版面
 
@@ -74,8 +118,8 @@ Token 都在 `src/styles/tokens.css`。新程式碼只用語意 token（第二�
 
 - Easing：`--ease-touch`（`cubic-bezier(0.16, 0.08, 0.12, 1)`）。
 - 時長：hover 0.3–0.4s。淡入 0.6s。依序淡入的間隔 70ms。
-- 進場淡入用 `HomeFadeIn` 或 `Reveal`（都用 `useReveal`，IntersectionObserver 觸發一次）。
-- 位移只用 `opacity` 和 `transform`。淡入的位移約 6px。
+- 進場淡入用 `FadeIn`（`useReveal`，IntersectionObserver 觸發一次）。案例頁自己的 `case/CaseReveal` 也一樣。
+- 位移只用 `opacity` 和 `transform`。淡入的位移寫在各頁 CSS（首頁 20px、Journal 24px）。
 - 每個效果都要支援 `prefers-reduced-motion`：直接顯示最終畫面。
 - 效果停下後，停止 `requestAnimationFrame`。畫面外不要繼續算。
 
@@ -92,21 +136,27 @@ Token 都在 `src/styles/tokens.css`。新程式碼只用語意 token（第二�
 
 新效果照同樣的方式寫：`mountXxx(canvas, opts)`，回傳 cleanup。檔案開頭用一兩行說明效果和數字的來源。
 
+## Logo
+
+- 頁首 logo：「TEKUEI CHU」後面接一個 8 × 2px、約 1 秒亮 1 秒暗的底線游標。只有頁首用到，所以直接寫在 SiteNav 和 NavOverlay 裡，不抽成元件（class `site-logo`）。
+- 頁尾的品牌字維持字距拉開的「T E K U E I」。
+
 ## 文章內的 card
 
-文章存在 R2 `data.json` 的 `journal`，在網站前台的編輯模式修改（見下方「編輯模式」）。`src/data/journal.js` 只是 R2 還沒有資料時的預設值。內文是 Tiptap 文件，由 `PostEditor` 編輯、`PostDoc` 顯示，格式寫在 `src/lib/postDoc.js`。
+文章存在 R2 `data.json` 的 `journal`，在網站前台的編輯模式修改（見下方「編輯模式」）。`src/data/journal.js` 只是 R2 還沒有資料時的預設值。內文是 Tiptap 文件，由 `Editor` 編輯、`RichText` 顯示，格式寫在 `src/lib/richText.js`。
 
 | 文件節點 | 元件 | 屬性 |
 |---|---|---|
 | `codeBlock` | `CodeCard` | 內容是程式碼；`language`（預設 `ts`）、`filename` |
 | `imageCard` | `ImageCard` | `src`、`alt`（必填）、`caption`、`frame`（小圖置中留白） |
 | `videoCard` | `VideoCard` | `src`、`poster`、`caption`、`loop` |
+| `slidesCard` | `SlidesCard` | `slides`：`[{ src, alt, caption }]`。圖片輪播，寬螢幕比內文欄左右各寬 80px |
 
 - 文字的部分（段落、前言、小標題、引言、清單）沿用 `journal.css` 的 `journal-post__*` 樣式。
 
-- 外觀：`--paper-warm` 底、圓角 16px、1px 象牙白光環，不用邊框。樣式在 `src/styles/postCards.css`。
+- 外觀：`--paper-warm` 底、圓角 16px、1px 象牙白光環，不用邊框。樣式在 `src/styles/cards.css`。
 - 程式碼字型用 `--font-mono`，顏色用 `--code-*` token。上色由 `src/lib/highlight.js` 處理，只支援類 C 語法。
-- 介面文字（複製、播放等）在 `POST_CARD_LABELS`。
+- 介面文字（複製、播放等）在 `CARD_LABELS`。
 - 三種 card 的示範和完整規範在 Component Library（見下一節）。
 
 ## 編輯模式
@@ -117,6 +167,7 @@ Token 都在 `src/styles/tokens.css`。新程式碼只用語意 token（第二�
 - 面板頂端只有三個按鈕：收合（>）、登出、儲存。儲存只有在有修改時才亮。
 - 收合後右下角留一顆「編輯面板」按鈕，有未儲存的修改時帶一個琥珀色圓點。
 - 清單排序用拖曳（⠿），不用上下箭頭。
+- 編輯器工具列是一條圓角長條，按鈕的提示用 warm tooltip：第一次等 400ms，之後在按鈕間移動時立刻出現並滑過去。
 - 面板一列一個欄位：左邊欄位名稱，右邊值。值看起來像一般文字，點進去才能編輯。
 - 面板和密碼框只給 Wade 用，介面文字只寫中文。
 - 只有 Journal 可以編輯。About、Work、案例頁刻意不提供編輯面板，內容改在程式碼裡。
@@ -124,8 +175,11 @@ Token 都在 `src/styles/tokens.css`。新程式碼只用語意 token（第二�
 
 ## Component Library
 
-- 開發模式打開 `/dev/component-library`。這一頁列出每個可重複使用的元件：用途、什麼時候用、不要用在哪、Props、用法、注意事項，能示範的附即時示範。
-- 規範文字在 `src/components/dev/componentLibrary.data.js`。這一頁只給開發用，所以只寫中文，不進正式 build。
+- 開發模式打開 `/dev/component-library`。編排參考 Radix Themes 的文件：一頁一個主題或元件，網址是 `/dev/component-library/<id>`。
+- 分類：概覽（開始使用、樣式、版面、資源）、主題（總覽、Color、Typography、Spacing、Radius、Motion、Breakpoints）、元件、效果、編輯模式。
+- 每種頁面有自己的編排：指南用步驟和延伸閱讀；token 頁用色階或刻度、token 程式碼和表格；元件頁用示範、API Reference（每個零件一個小標題）、Examples、鍵盤、說明。
+- 左側目錄固定不動。右側的「本頁」列出段落，寬度 1280px 以下隱藏。手機上目錄收成一顆按鈕。
+- 文字在 `src/components/dev/`：`guides.data.js`（概覽和主題）、`componentLibrary.data.js`（元件）、`foundations.data.js`（字級、間距、色票）。這一頁只給開發用，只寫中文，不進正式 build。
 - 新增或修改元件時，同一個變更裡更新這份資料。標「待修」的項目是已知問題。
 
 ## 無障礙
@@ -138,8 +192,8 @@ Token 都在 `src/styles/tokens.css`。新程式碼只用語意 token（第二�
 
 這些項目程式碼和 PRODUCT.md 不一致。處理前先問使用者。
 
-1. **字型統一**（之後處理）：字型已定為英文 Instrument Serif、中文思源宋體。各頁的字級、字重、斜體還沒統一。
-2. **小字**（跟第 1 項一起處理）：Journal 和 footer 有不少 10–13px 的文字，低於「內文 16px 以上」。標籤可以小，需要閱讀的文字要調整。
+1. **大標字級**：各頁的大標（24–80px）還是頁面自己的數字，沒有全部換成 `--type-*`。內文、說明、標籤已在 2026-11-19 換完。
+2. **編輯面板的小字**：`cms.css` 還有 12.5px、11.5px 兩處，只有 Wade 會看到，暫時保留。
 3. **Journal 頁尾的圖**（Wade 會換）：`src/assets/journal/footer-sea.webp` 是參考網站的截圖，上線前要換成有授權的圖。
 
 和紙樣式已全部移除（2026-11-18）。不要再加回和紙、水墨、紙紋的元素。

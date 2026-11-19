@@ -40,11 +40,11 @@
 .about-fall__label {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-4);
   margin: 0 0 22px;
   font-family: var(--font-serif);
-  font-size: 15px;
-  letter-spacing: 0.2em;
+  font-size: var(--type-small);
+  letter-spacing: var(--type-label-ls);
   color: var(--af-sky);
 }
 
@@ -57,7 +57,7 @@
 }
 
 .about-fall h1 {
-  margin: 0 0 20px;
+  margin: 0 0 var(--space-5);
   font-family: var(--font-serif);
   font-weight: 400;
   font-size: clamp(32px, 3.8vw, 58px);
@@ -65,15 +65,15 @@
 }
 
 .about-fall__intro p {
-  margin: 0 0 14px;
-  color: var(--taupe);
-  font-size: 16px;
-  line-height: 1.9;
+  margin: 0 0 var(--space-4);
+  color: var(--text-secondary);
+  font-size: var(--type-body);
+  line-height: var(--type-body-lh);
 }
 
 .about-fall__hint {
-  font-size: 13px;
-  letter-spacing: 0.2em;
+  font-size: var(--type-caption);
+  letter-spacing: var(--type-label-ls);
 }
 
 .about-fall__sr {
@@ -92,7 +92,7 @@
   left: calc(var(--page-gutter) + var(--page-pad));
   bottom: clamp(20px, 5vh, 48px);
   max-width: min(440px, calc(100vw - 2 * var(--page-pad)));
-  padding-left: 14px;
+  padding-left: var(--space-4);
   border-left: 1px solid var(--af-sky);
   opacity: 0;
   transform: translateY(8px);
@@ -108,27 +108,27 @@
 }
 
 .about-fall__caption-sub {
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-2);
   font:
     700 11px ui-monospace,
     'Cascadia Mono',
     Consolas,
     monospace;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--type-label-ls);
   color: var(--af-sky);
 }
 
 .about-fall__caption-role {
-  margin: 0 0 6px;
-  font-size: 15px;
+  margin: 0 0 var(--space-2);
+  font-size: var(--type-small);
   color: var(--ivory);
 }
 
 .about-fall__caption-line {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--type-small);
   line-height: 1.75;
-  color: var(--taupe);
+  color: var(--text-secondary);
 }
 
 /* How far the fall has gone. */
@@ -157,10 +157,11 @@
 .about-fall__rail span {
   position: absolute;
   right: 14px;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--taupe);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  color: var(--text-secondary);
   white-space: nowrap;
+  font-family: var(--font-label);
 }
 
 .about-fall__rail span:first-child {
@@ -172,11 +173,14 @@
 }
 
 .about-fall__sound {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   position: fixed;
   z-index: 3;
   right: calc(var(--page-gutter) + var(--page-pad));
   bottom: clamp(20px, 5vh, 48px);
-  padding: 8px 14px;
+  padding: var(--space-2) var(--space-4);
   background: transparent;
   border: 1px solid rgba(157, 184, 232, 0.35);
   border-radius: 999px;
@@ -186,11 +190,64 @@
     'Cascadia Mono',
     Consolas,
     monospace;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--type-label-ls);
   cursor: pointer;
   transition:
     border-color 0.2s,
     background 0.2s;
+}
+
+/* Equaliser bars beside SOUND, as in the reference piece. They move only while sound is on. */
+.about-fall__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-0-5);
+  height: 10px;
+}
+
+.about-fall__bars i {
+  width: 2px;
+  height: 3px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.about-fall__sound[aria-pressed='true'] .about-fall__bars i {
+  animation: about-fall-bar 0.6s ease-in-out infinite;
+}
+
+.about-fall__sound[aria-pressed='true'] .about-fall__bars i:nth-child(2) {
+  animation-duration: 0.8s;
+  animation-delay: 0.1s;
+}
+
+.about-fall__sound[aria-pressed='true'] .about-fall__bars i:nth-child(3) {
+  animation-duration: 0.5s;
+  animation-delay: 0.2s;
+}
+
+@keyframes about-fall-bar {
+  0%,
+  100% {
+    height: 3px;
+  }
+  50% {
+    height: 10px;
+  }
+}
+
+/* Lenis scrolls the page; hide the browser scrollbar and its reserved gutter */
+html.has-scroll-document.about-fall-doc,
+html.about-fall-doc body {
+  scrollbar-width: none;
+  scrollbar-gutter: auto;
+}
+
+html.about-fall-doc::-webkit-scrollbar,
+html.about-fall-doc body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .about-fall__sound:hover {
@@ -208,17 +265,17 @@
   z-index: 1;
   display: flex;
   justify-content: center;
-  gap: 32px;
+  gap: var(--space-8);
   padding: 0 var(--page-pad) 18vh;
-  font-size: 13px;
-  letter-spacing: 0.24em;
+  font-size: var(--type-caption);
+  letter-spacing: var(--type-label-ls);
   text-transform: uppercase;
 }
 
 .about-fall__end a {
   color: var(--ivory);
   text-decoration: none;
-  padding-bottom: 6px;
+  padding-bottom: var(--space-2);
   border-bottom: 1px solid rgba(157, 184, 232, 0.4);
   transition:
     color 0.2s,
@@ -252,5 +309,11 @@
 @media (prefers-reduced-motion: reduce) {
   .about-fall__caption {
     transition: none;
+  }
+
+  /* Bars stand still at mid height so ON still reads as on */
+  .about-fall__sound[aria-pressed='true'] .about-fall__bars i {
+    height: 7px;
+    animation: none;
   }
 }

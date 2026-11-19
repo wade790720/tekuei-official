@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { blocksToDoc, docText, getPostDoc, safeHref } from '../src/lib/postDoc.js'
+import { blocksToDoc, docText, getDoc, safeHref } from '../src/lib/richText.js'
 
 describe('blocksToDoc', () => {
   it('converts every old block type and keeps card settings', () => {
@@ -32,12 +32,12 @@ describe('blocksToDoc', () => {
   })
 })
 
-describe('getPostDoc', () => {
+describe('getDoc', () => {
   it('prefers a saved doc over old blocks', () => {
     const doc = { type: 'doc', content: [] }
-    assert.equal(getPostDoc({ doc, blocks: [{ type: 'p', text: 'x' }] }), doc)
-    assert.equal(getPostDoc({ blocks: [{ type: 'p', text: 'x' }] }).content[0].type, 'paragraph')
-    assert.equal(getPostDoc(undefined).type, 'doc')
+    assert.equal(getDoc({ doc, blocks: [{ type: 'p', text: 'x' }] }), doc)
+    assert.equal(getDoc({ blocks: [{ type: 'p', text: 'x' }] }).content[0].type, 'paragraph')
+    assert.equal(getDoc(undefined).type, 'doc')
   })
 })
 

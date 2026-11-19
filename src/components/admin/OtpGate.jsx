@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ADMIN_CODE_LENGTH, CMS_LABELS as T } from '../../data/admin.js'
+import { SecretInput } from '../SecretInput.jsx'
 import '../../styles/cms.css'
 
 const UNLOCK_MS = 650 // how long "已解鎖" stays before the gate closes
 
 /**
- * Full-screen code gate for edit mode: dark, blurred backdrop and one slot per digit.
- * One real <input> sits over the slots, so typing, paste and the phone's code autofill all work.
+ * Full-screen code gate for edit mode: dark, blurred backdrop around a SecretInput.
+ * Verifies as soon as the last digit is in.
  * @param {{ open: boolean, onClose: () => void, onVerify: (code: string) => Promise<boolean>, onUnlocked: () => void }} props
  */
 export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
@@ -25,7 +26,7 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
     }
   }
 
-  // Focus on open and again after a wrong code (the input is disabled while verifying).
+  // Focus on open and again after a wrong code (the field is swapped for a status pill while verifying).
   useEffect(() => {
     if (open && (state === 'idle' || state === 'error')) input.current?.focus()
   }, [open, state])
@@ -41,12 +42,12 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
 
   if (!open) return null
 
-  async function change(e) {
-    if (state === 'verifying' || state === 'unlocked') return
-    const next = e.target.value.replace(/\D/g, '').slice(0, ADMIN_CODE_LENGTH)
+  function change(next) {
     setCode(next)
     if (state === 'error') setState('idle')
-    if (next.length < ADMIN_CODE_LENGTH) return
+  }
+
+  async function verify(next) {
     setState('verifying')
     const ok = await onVerify(next)
     if (ok) {
@@ -77,31 +78,17 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
               {status}
             </div>
           ) : (
-            <div className="cms-gate__slots" aria-hidden>
-              {Array.from({ length: ADMIN_CODE_LENGTH }, (_, i) => (
-                <span
-                  key={i}
-                  className="cms-gate__slot"
-                  data-filled={i < code.length || undefined}
-                  data-current={i === code.length || undefined}
-                />
-              ))}
-            </div>
+            <SecretInput
+              ref={input}
+              length={ADMIN_CODE_LENGTH}
+              value={code}
+              onChange={change}
+              onComplete={verify}
+              invalid={state === 'error'}
+              label={T.gateInput}
+              describedBy="cms-gate-status"
+            />
           )}
-          <input
-            ref={input}
-            className="cms-gate__input"
-            type="password"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            pattern="[0-9]*"
-            maxLength={ADMIN_CODE_LENGTH}
-            value={code}
-            onChange={change}
-            disabled={busy}
-            aria-label={T.gateInput}
-            aria-describedby="cms-gate-status"
-          />
         </div>
 
         <p className="cms-gate__status" id="cms-gate-status" role="status">

@@ -1,8 +1,9 @@
 // Journal post bodies are Tiptap (ProseMirror) JSON documents: { type: 'doc', content: [...] }.
-// Older posts stored { blocks: [...] }; getPostDoc converts them on read, and the editor saves a doc.
+// Older posts stored { blocks: [...] }; getDoc converts them on read, and the editor saves a doc.
 //
 // Node types: paragraph, lead, heading (level 2 | 3), blockquote (attrs.cite), bulletList, orderedList,
-// listItem, codeBlock (attrs.language, attrs.filename), imageCard, videoCard, horizontalRule, hardBreak, text.
+// listItem, codeBlock (attrs.language, attrs.filename), imageCard, videoCard,
+// slidesCard (attrs.slides: [{ src, alt, caption }]), horizontalRule, hardBreak, text.
 // Marks: bold, italic, underline, strike, code, link (attrs.href).
 
 const text = (t) => (t ? [{ type: 'text', text: t }] : [])
@@ -47,7 +48,7 @@ export function blocksToDoc(blocks = []) {
 export const emptyDoc = () => ({ type: 'doc', content: [{ type: 'paragraph' }] })
 
 /** @param {{ doc?: object, blocks?: any[] } | null | undefined} body one post's stored body */
-export function getPostDoc(body) {
+export function getDoc(body) {
   if (body?.doc) return body.doc
   return blocksToDoc(body?.blocks)
 }

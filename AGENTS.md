@@ -36,7 +36,8 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 
 | 路徑 | 放什麼 |
 |---|---|
-| `src/components/` | 頁面元件，一頁一檔（`XxxPage.jsx`）。編輯模式的元件在 `admin/` 和 `journal/` |
+| `src/components/` | 頁面（`XxxPage.jsx`）和共用元件（`Editor.jsx`、`RichText.jsx`、`CodeCard.jsx`…），一個元件一個檔案 |
+| `src/components/<頁面>/` | 只有那一頁用的元件，例如 `journal/JournalEditPanel.jsx`、`case/CaseReveal.jsx`、`admin/OtpGate.jsx` |
 | `src/data/` | 所有文案與內容。雙語內容的形狀是 `{ zh: …, en: … }` |
 | `src/data/cases/` | 案例內容，一個案例一檔 |
 | `src/styles/` | CSS，一頁一檔。`tokens.css` 是全站 token |
@@ -53,6 +54,10 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 - Canvas 效果寫成 `mountXxx(canvas, opts)`，回傳 cleanup 函式。元件在 `useEffect` 裡呼叫它。參考 `src/lib/glyphField.js`。
 - 每個動畫都要支援 `prefers-reduced-motion`。效果停下後要停止 `requestAnimationFrame`。
 - 先用專案裡已有的東西。可重複使用的元件和規範都列在 `/dev/component-library`（開發模式）。
+- 兩個以上的地方會用到，才抽成元件。只用一次的小東西（例如 logo）直接寫在用到的地方。
+- 共用元件放在 `src/components/` 第一層，名稱不綁頁面（`Editor`，不是 `PostEditor`）。只有一頁用的元件放在那一頁的資料夾。
+- 一個元件的零件（只有它自己用）寫在同一個檔案，例如 `SiteNav.jsx` 裡的 `NavOverlay`。
+- 樣式一個元件或一頁一個檔案，放在 `src/styles/`，檔名和元件或頁面相同。
 - 新增或修改元件時，同時更新 `src/components/dev/componentLibrary.data.js`。
 - 不要新增依賴。真的需要時，先問使用者。
 - 註解只寫程式碼看不出來的原因。

@@ -1,4 +1,4 @@
-import '../../styles/postCards.css'
+import '../styles/cards.css'
 
 /**
  * @param {{
@@ -13,7 +13,7 @@ import '../../styles/postCards.css'
 export function ImageCard({ src, alt, caption, frame = false, width, height }) {
   return (
     <figure className="post-figure">
-      <div className={`post-card post-image${frame ? ' post-image--frame' : ''}`}>
+      <div className={`card image-card${frame ? ' image-card--frame' : ''}`}>
         <img src={src} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
       </div>
       {caption ? <figcaption className="post-figure__caption">{caption}</figcaption> : null}
