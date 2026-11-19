@@ -94,6 +94,7 @@
   max-width: min(440px, calc(100vw - 2 * var(--page-pad)));
   padding-left: var(--space-4);
   border-left: 1px solid var(--af-sky);
+  font-family: var(--font-label); /* under 18px: no Instrument Serif */
   opacity: 0;
   transform: translateY(8px);
   transition:
@@ -107,28 +108,119 @@
   transform: none;
 }
 
+/* Open: the details can run over the figure, so a dark glass sits behind the text */
+.about-fall__caption:has(.about-fall__caption-details:not([inert])) {
+  padding: var(--space-4);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: color-mix(in oklab, var(--surface-0) 82%, transparent);
+  backdrop-filter: blur(8px);
+}
+
 .about-fall__caption-sub {
   margin: 0 0 var(--space-2);
-  font:
-    700 11px ui-monospace,
-    'Cascadia Mono',
-    Consolas,
-    monospace;
+  font-family: var(--font-label);
+  font-size: var(--type-label);
   letter-spacing: var(--type-label-ls);
   color: var(--af-sky);
 }
 
-.about-fall__caption-role {
-  margin: 0 0 var(--space-2);
+/* Org / role, as on a CV */
+.about-fall__caption-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-2);
+  margin: 0 0 var(--space-3);
   font-size: var(--type-small);
+  line-height: var(--type-small-lh);
   color: var(--text-primary);
 }
 
-.about-fall__caption-line {
-  margin: 0;
-  font-size: var(--type-small);
-  line-height: 1.75;
+.about-fall__caption-slash {
+  color: var(--text-faint);
+}
+
+.about-fall__caption-role {
   color: var(--text-secondary);
+}
+
+.about-fall__caption-points,
+.about-fall__caption-details ul {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding-left: var(--space-4);
+  font-size: var(--type-caption);
+  line-height: var(--type-small-lh);
+  color: var(--text-secondary);
+}
+
+.about-fall__caption-points li::marker,
+.about-fall__caption-details li::marker {
+  color: var(--text-faint);
+}
+
+/* Full details: the row grows from 0 to its content height, so the caption opens upward from the bottom edge */
+.about-fall__caption-details {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s var(--ease-touch);
+  pointer-events: auto;
+}
+
+.about-fall__caption-details:not([inert]) {
+  grid-template-rows: 1fr;
+}
+
+.about-fall__caption-details > div {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.about-fall__caption-details:not([inert]) > div {
+  max-height: min(45vh, 420px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-a8) transparent;
+}
+
+.about-fall__caption-details h3 {
+  margin: var(--space-5) 0 var(--space-2);
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--type-label-ls);
+  color: var(--af-sky);
+}
+
+.about-fall__caption-more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding: var(--space-1) 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  color: var(--text-tertiary);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color 0.3s var(--ease-touch);
+}
+
+.about-fall__caption-more:hover,
+.about-fall__caption-more:focus-visible {
+  color: var(--af-sky);
+}
+
+.about-fall__caption-more svg {
+  transition: transform 0.3s var(--ease-touch);
+}
+
+.about-fall__caption-more[aria-expanded='true'] svg {
+  transform: rotate(-90deg);
 }
 
 /* How far the fall has gone. */
@@ -304,10 +396,16 @@ html.about-fall-doc body::-webkit-scrollbar {
   .about-fall__caption {
     bottom: 76px;
   }
+
+  .about-fall__caption-details:not([inert]) > div {
+    max-height: 36vh;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .about-fall__caption {
+  .about-fall__caption,
+  .about-fall__caption-details,
+  .about-fall__caption-more svg {
     transition: none;
   }
 

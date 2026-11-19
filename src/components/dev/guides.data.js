@@ -166,6 +166,7 @@ npm run dev`,
     toc: [
       ['files', '規範檔'],
       ['references', '參考網站對照'],
+      ['bibliography', '參考文獻'],
     ],
     files: [
       ['AGENTS.md', '工作規範：指令、資料夾、寫程式和內容的規則。'],
@@ -174,6 +175,30 @@ npm run dev`,
       ['src/styles/tokens.css', '所有設計變數。'],
     ],
     references: '建立字級和間距時量測的三個網站。TEKUEI 一欄即時讀取 tokens.css 和文章版面，永遠是目前的設定。',
+    bibliography: {
+      lead: '做這個網站時參考的網站。新增參考時，在對應的組別加一列。「用在哪裡」寫檔案或頁面。',
+      // [site, url, what we took from it, where it is used]
+      groups: [
+        {
+          title: '元件與效果',
+          rows: [
+            ['Radix UI', 'https://www.radix-ui.com/', '文件的分類、每頁的編排、Typography 頁', 'Component Library'],
+            ['React Bits Pro', 'https://pro.reactbits.dev/', '下拉選單', 'DropdownMenu'],
+            ['pixelui：Tracked Butterfly ASCII', 'https://pixelui.dev/components/tracked-butterfly-ascii', 'hover 時的 ASCII 追蹤框和第二張圖', 'heroFx.js'],
+            ['motionsites.ai', 'https://motionsites.ai/', '版畫圖由碎片組合的頁尾。footer-sea.webp 也來自這裡，未授權，上線前要換', 'shatterImage.js、Journal 頁尾'],
+            ['aiforui.dev', 'https://aiforui.dev/', '頁首的字元雨（MatrixRain）', 'glyphField.js'],
+          ],
+        },
+        {
+          title: '字級與內容頁',
+          rows: [
+            ['nan.fyi', 'https://www.nan.fyi/', '內容頁的細節、字體', 'Journal 內頁'],
+            ['jakub.kr', 'https://jakub.kr/', '字級、間距、小細節，文章內的程式碼、圖片、影片 card', 'tokens.css、CodeCard、ImageCard、VideoCard'],
+            ['interfaces.dev', 'https://interfaces.dev/', '字級、間距、圖片輪播', 'tokens.css、SlidesCard'],
+          ],
+        },
+      ],
+    },
   },
 
   // ── Theme ──

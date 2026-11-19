@@ -177,6 +177,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 面板和密碼框只給 Wade 用，介面文字只寫中文。
 - 只有 Journal 可以編輯。About、Work、案例頁刻意不提供編輯面板，內容改在程式碼裡。
 - 面板沒有聚焦框：文字欄位和編輯器只顯示游標。按鈕保留鍵盤聚焦框。
+- 面板的字小於 18px，所以一律用 `--font-label`：英文是等寬字，中文是思源宋體。日期、編號、狀態加標籤字距 0.1em。
 
 ## Component Library
 
@@ -198,7 +199,6 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 這些項目程式碼和 PRODUCT.md 不一致。處理前先問使用者。
 
 1. **大標字級**：各頁的大標（24–80px）還是頁面自己的數字，沒有全部換成 `--type-*`。內文、說明、標籤已在 2026-11-19 換完。
-2. **編輯面板的小字**：`cms.css` 還有 12.5px、11.5px 兩處，只有 Wade 會看到，暫時保留。
-3. **Journal 頁尾的圖**（Wade 會換）：`src/assets/journal/footer-sea.webp` 是參考網站的截圖，上線前要換成有授權的圖。
+2. **Journal 頁尾的圖**（Wade 會換）：`src/assets/journal/footer-sea.webp` 是參考網站的截圖，上線前要換成有授權的圖。
 
 和紙樣式已全部移除（2026-11-18）。不要再加回和紙、水墨、紙紋的元素。
