@@ -174,3 +174,15 @@
   left: calc(var(--page-gutter) + var(--page-pad));
   right: calc(var(--page-gutter) + var(--page-pad));
 }
+
+/* Water ripple after the language switch (waterRipple.js). The canvas is a coarse grid, stretched and smoothed. */
+.water-ripple {
+  position: fixed;
+  inset: 0;
+  z-index: 99; /* under .site-nav (100): the links stay readable while waves pass beneath */
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* Hides the grid's fine checker pattern so only the wave rings show. */
+  filter: blur(2px);
+}

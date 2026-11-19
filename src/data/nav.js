@@ -11,7 +11,7 @@ export const NAV_LABELS = {
     open: 'Open menu',
     close: 'Close menu',
     dialog: 'Site navigation',
-    lang: '中文, switch to Chinese',
+    lang: 'TW, switch to Chinese',
   },
 }
 
