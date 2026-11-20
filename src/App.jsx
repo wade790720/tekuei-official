@@ -1,5 +1,5 @@
-﻿import { lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+﻿import { lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react'
+import { BrowserRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom'
 import SiteHero from './components/SiteHero.jsx'
 import AboutPage from './components/AboutPage.jsx'
 import WorkListPage from './components/WorkListPage.jsx'
@@ -17,12 +17,33 @@ const ComponentLibrary = import.meta.env.DEV
   ? lazy(() => import('./components/dev/ComponentLibrary.jsx'))
   : null
 
+// Scroll position of each history entry, so back / forward returns to where the reader was.
+const scrollByEntry = new Map()
+
+/**
+ * A new page starts at the top. Back and forward (POP) return to the saved position instead.
+ * A new query on the same page (the Journal tag filter) keeps the scroll.
+ */
 function ScrollClasses() {
-  const { pathname } = useLocation()
+  const { pathname, key } = useLocation()
+  const type = useNavigationType()
+  const entry = useRef(key)
+  const lastPath = useRef(null)
+
   useEffect(() => {
     document.documentElement.classList.add('has-scroll-document')
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-  }, [pathname])
+    window.history.scrollRestoration = 'manual' // the browser would restore before React draws the page
+    const save = () => scrollByEntry.set(entry.current, window.scrollY)
+    window.addEventListener('scroll', save, { passive: true })
+    return () => window.removeEventListener('scroll', save)
+  }, [])
+
+  useLayoutEffect(() => {
+    entry.current = key
+    if (type === 'POP') window.scrollTo({ top: scrollByEntry.get(key) ?? 0, left: 0, behavior: 'instant' })
+    else if (pathname !== lastPath.current) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    lastPath.current = pathname
+  }, [key, pathname, type])
   return null
 }
 

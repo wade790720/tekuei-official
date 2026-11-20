@@ -100,7 +100,8 @@ function Node({ node }) {
     case 'horizontalRule':
       return <hr className="journal-post__hr" />
     default:
-      return <p className="journal-post__p">{inline(node.content)}</p>
+      // An empty paragraph is a blank line Wade left on purpose; the editor shows it one line tall.
+      return <p className="journal-post__p">{node.content?.length ? inline(node.content) : <br />}</p>
   }
 }
 

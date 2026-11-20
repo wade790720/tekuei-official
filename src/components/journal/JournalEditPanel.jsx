@@ -8,6 +8,7 @@ import { CMS_LABELS as T } from '../../data/admin.js'
 import { useLang } from '../../i18n'
 import { uploadSiteImage } from '../../lib/adminApi.js'
 import { emptyDoc, getDoc } from '../../lib/richText.js'
+import { RichText } from '../RichText.jsx'
 
 // Tiptap is large; load it only when Wade opens a post in edit mode, not for every visitor.
 const Editor = lazy(() => import('../Editor.jsx').then((m) => ({ default: m.Editor })))
@@ -72,12 +73,11 @@ function useJournalEditing() {
 
 export function JournalPostEditPanel({ slug }) {
   const { lang } = useLang()
-  const { cms, ready, panelProps, admin } = useJournalEditing()
+  const { cms, ready, panelProps } = useJournalEditing()
   if (!ready) return null
 
   const post = cms.draft.posts[lang]?.find((p) => p.slug === slug)
-  const body = cms.draft.content[lang]?.[slug]
-  if (!post || !body) return null
+  if (!post) return null
 
   // Title and text belong to one language. Date, reading time and tags are shared.
   const setPost = (key, value) =>
@@ -91,15 +91,8 @@ export function JournalPostEditPanel({ slug }) {
         if (p) p[key] = value
       }
     })
-  // The editor saves its own document; the old block list goes away on the first edit.
-  const setDoc = (doc) =>
-    cms.updateDraft((d) => {
-      d.content[lang][slug] = { doc }
-    })
-  const upload = async (file) => (await uploadSiteImage('journal', file, admin.getToken())).url
-
   return (
-    <SidePanel title="編輯文章" subtitle={`/journal/${slug} · ${lang === 'zh' ? '中文' : 'English'}`} {...panelProps}>
+    <SidePanel title="編輯文章" subtitle={`/journal/${slug} · ${lang === 'zh' ? '中文' : 'English'}`} preview {...panelProps}>
       <FormRow label="標題" htmlFor="cms-title">
         <TextInput id="cms-title" value={post.title} onChange={(v) => setPost('title', v)} placeholder="文章標題" />
       </FormRow>
@@ -124,12 +117,39 @@ export function JournalPostEditPanel({ slug }) {
       <FormRow label="摘要" htmlFor="cms-excerpt" hint="顯示在列表和首頁">
         <TextArea id="cms-excerpt" value={post.excerpt} onChange={(v) => setPost('excerpt', v)} placeholder="一兩句話說明這篇文章" />
       </FormRow>
-      <FormRow label="內文">
-        <Suspense fallback={<div className="cms-ed--loading">載入編輯器……</div>}>
-          <Editor key={`${slug}-${lang}`} doc={getDoc(body)} onChange={setDoc} upload={upload} />
-        </Suspense>
-      </FormRow>
     </SidePanel>
+  )
+}
+
+/**
+ * The post body. In edit mode it is the editor, in place on the page, so what Wade types is what readers see.
+ * Otherwise, and while Tiptap loads, it is `children` (the RichText of the saved post).
+ */
+export function JournalPostBody({ slug, children }) {
+  const { lang } = useLang()
+  const admin = useAdmin()
+  const cms = useJournal()
+  const body = admin.editing && cms.isEditing ? cms.draft.content[lang]?.[slug] : null
+  if (!body) return children
+
+  // The editor saves its own document; the old block list goes away on the first edit.
+  const setDoc = (doc) =>
+    cms.updateDraft((d) => {
+      d.content[lang][slug] = { doc }
+    })
+  const upload = async (file) => (await uploadSiteImage('journal', file, admin.getToken())).url
+
+  return (
+    <Suspense fallback={children}>
+      <Editor
+        key={`${slug}-${lang}`}
+        doc={getDoc(body)}
+        onChange={setDoc}
+        upload={upload}
+        previewing={admin.previewing}
+        renderPreview={(doc) => <RichText doc={doc} />}
+      />
+    </Suspense>
   )
 }
 

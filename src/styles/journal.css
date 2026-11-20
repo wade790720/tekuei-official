@@ -433,9 +433,9 @@
 
 /* Same frame as the list (--page-column-box). The divider and footer span it all.
    Everything else is 8px in from both edges. Cards and quotes are as wide as the text.
-   Body blocks each sit in a FadeIn div, hence > * > *. */
+   Body blocks each sit in a FadeIn div, hence > * > *. The editor's floating tools are placed by script. */
 .journal-post :is(.journal-post__back, .journal-post__meta, .journal-post__num, .journal-post__title, .journal-post__title-en),
-.journal-post .journal-post__body > * > * {
+.journal-post .journal-post__body > * > :not(.cms-ed-gutter, .cms-ed-bar) {
   margin-inline: var(--space-2); /* also replaces the slides card's 80px overhang */
 }
 
@@ -513,7 +513,8 @@
   background: var(--line); /* full width, solid: both ends show the list's edges */
 }
 
-.journal-post__lead {
+.journal-post__lead,
+.journal-post__body .ProseMirror > p.lead {
   margin: 0 0 var(--space-12);
   padding-left: var(--space-6);
   border-left: 1px solid var(--line-strong);
@@ -524,7 +525,8 @@
   color: var(--j-page);
 }
 
-.journal-post__h2 {
+.journal-post__h2,
+.journal-post__body .ProseMirror h2 {
   margin: var(--space-12) 0 var(--space-6);
   font-family: var(--j-fc);
   font-weight: 400;
@@ -533,15 +535,17 @@
   color: var(--j-warm-white);
 }
 
-.journal-post__p {
-  margin: 0 0 var(--space-6);
+.journal-post__p,
+.journal-post__body .ProseMirror > p {
+  margin: 0 0 var(--space-3);
   font-size: var(--type-body);
-  line-height: var(--type-body-lh);
+  line-height: 1.6; /* Editor.js spacing, Wade's pick on 2026-11-20 */
   color: var(--j-text-dim);
 }
 
 /* Rich text from the editor: small heading, lists, inline code, links, divider */
-.journal-post__h3 {
+.journal-post__h3,
+.journal-post__body .ProseMirror h3 {
   margin: var(--space-12) 0 var(--space-4);
   font-family: var(--j-fc);
   font-weight: 400;
@@ -550,19 +554,22 @@
   color: var(--j-warm-white);
 }
 
-.journal-post__list {
-  margin: 0 0 var(--space-6);
+.journal-post__list,
+.journal-post__body .ProseMirror :is(ul, ol) {
+  margin: 0 0 var(--space-3);
   padding-left: 1.4em;
   font-size: var(--type-body);
-  line-height: var(--type-body-lh);
+  line-height: 1.6; /* Editor.js spacing, Wade's pick on 2026-11-20 */
   color: var(--j-text-dim);
 }
 
-.journal-post__list li::marker {
+.journal-post__list li::marker,
+.journal-post__body .ProseMirror li::marker {
   color: var(--j-lamp-dim);
 }
 
-.journal-post__list .journal-post__p {
+.journal-post__list .journal-post__p,
+.journal-post__body .ProseMirror li > p {
   margin: 0;
 }
 
@@ -582,7 +589,8 @@
   color: var(--j-lamp-glow);
 }
 
-.journal-post__code {
+.journal-post__code,
+.journal-post__body .ProseMirror :not(pre) > code {
   padding: 1px var(--space-2);
   border-radius: 4px;
   background: var(--surface-1);
@@ -591,21 +599,24 @@
   color: var(--code-prop);
 }
 
-.journal-post__hr {
+.journal-post__hr,
+.journal-post__body .ProseMirror hr {
   margin: var(--space-12) auto;
   width: 48px;
   border: 0;
   border-top: 0.5px solid var(--line-strong);
 }
 
-.journal-post__quote {
+.journal-post__quote,
+.journal-post__body .cms-ed-quote {
   margin: var(--space-12) 0;
   padding: var(--space-12) var(--space-6) var(--space-12) var(--space-8);
   border-left: 0.5px solid var(--line-strong);
   background: var(--j-panel);
 }
 
-.journal-post__quote p {
+.journal-post__quote p,
+.journal-post__body .cms-ed-quote p {
   margin: 0 0 var(--space-4);
   font-size: var(--type-body);
   line-height: var(--type-body-lh);
@@ -672,6 +683,13 @@
   font-size: var(--type-small);
   letter-spacing: 0;
   color: var(--j-text-dim);
+}
+
+/* Back to the list, after previous / next: where a reader who finished the post is */
+.journal-post__footer .journal-post__back--end {
+  display: flex;
+  width: fit-content;
+  margin: var(--space-12) auto 0; /* overrides the header link's 8px inset and bottom gap */
 }
 
 /* ── Footer / 404 ── */

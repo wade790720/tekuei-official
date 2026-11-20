@@ -4,7 +4,7 @@ import '../styles/cards.css'
  * @param {{
  *   src: string,
  *   alt: string,
- *   caption?: string,
+ *   caption?: import('react').ReactNode, // usually text; the editor passes an input to type it in place
  *   frame?: boolean,   // true: small image (phone screenshot) centred on the card with space around it
  *   width?: number,    // intrinsic size, reserves space before the image loads
  *   height?: number,

@@ -69,7 +69,7 @@ export const GROUPS = [
             props: [
               ['src', 'string', '—', '必填，圖片網址或 import 的檔案'],
               ['alt', 'string', '—', '必填，描述圖片內容'],
-              ['caption', 'string', '—', '圖說'],
+              ['caption', 'ReactNode', '—', '圖說，通常是文字。編輯器傳入一個輸入框，讓圖說直接在原位編輯'],
               ['frame', 'boolean', 'false', '縮小置中，四周留白'],
               ['width / height', 'number', '—', '原始尺寸，載入前先保留空間'],
             ],
@@ -220,14 +220,16 @@ export const GROUPS = [
         name: 'Editor',
         file: 'src/components/Editor.jsx',
         summary: '文章內文的所見即所得編輯器，輸出 RichText 使用的文件',
-        hero: { demo: 'editor', code: `<Editor key={slug} doc={getDoc(body)} onChange={setDoc} upload={upload} />` },
+        hero: { demo: 'editor', code: `<Editor key={slug} doc={getDoc(body)} onChange={setDoc} upload={upload} previewing={admin.previewing} renderPreview={(doc) => <RichText doc={doc} />} />` },
         api: [
           {
-            description: '工具列：插入、段落樣式、粗體、斜體、底線、連結、引言、行內程式碼、清單',
+            description: '沒有固定工具列。每一行左邊的「+」新增區塊、「⠿」拖曳。選取文字時浮出格式工具列：轉換成、粗體、斜體、底線、連結、行內程式碼',
             props: [
               ['doc', 'object', '—', '必填，只在掛載時讀取，換文章時用新的 key 重新掛載'],
               ['onChange', '(doc) => void', '—', '必填，每次修改都傳出新的文件'],
               ['upload', '(file) => Promise<string>', '—', '必填，上傳圖片，回傳圖片網址'],
+              ['previewing', 'boolean', 'false', '選填。true 時把編輯器換成 renderPreview(doc)，也就是正式頁的畫面。編輯器只是隱藏，游標和復原紀錄都會保留。切換按鈕由呼叫的一方提供（文章頁放在 SidePanel）'],
+              ['renderPreview', '(doc) => ReactNode', '—', 'previewing 為 true 時必填，畫出預覽'],
             ],
           },
         ],
@@ -241,6 +243,21 @@ export const GROUPS = [
 - 清單
 1. 編號清單
 \`\`\` 程式碼`,
+          },
+          {
+            id: 'block-gutter',
+            title: '每一行左邊的 + 和 ⠿',
+            description: '滑鼠移到任何一行，左邊出現「+」和「⠿」，對齊這一行的第一行文字。「+」打開區塊選單（段落、標題、前言、引言、清單、程式碼、圖片、輪播、影片、分隔線），新區塊插在這一行下面，這一行是空的時直接換掉它。「⠿」拖曳移動整個區塊，點一下選取後可以按 Delete 刪除。游標停在空行時，那一行也出現「+」。手機和 768px 以下只在空行顯示「+」，放在空行裡面',
+          },
+          {
+            id: 'image-card',
+            title: '圖片卡',
+            description: '編輯器裡的圖片卡就是正式的 ImageCard，圖說直接在圖片下方輸入。右上角的工具列在滑過或選取時出現：「⋯」設定（替代文字、圖片網址和換圖、小圖置中）、✕ 刪除。沒有替代文字時，工具列一直顯示「缺替代文字」。還沒有圖片時，卡片顯示選擇檔案和圖片網址',
+          },
+          {
+            id: 'paste-image',
+            title: '貼上或拖放圖片',
+            description: '在內文裡貼上圖片，或把圖檔拖進來，會在游標或放下的位置插入圖片卡並自動上傳。上傳前在瀏覽器裡壓縮（src/lib/compressImage.js）：超過 1MB 或不是 JPG、PNG、WEBP 的圖，長邊縮到 2000px 並轉成 WEBP。貼上或拖進一段含圖片的網頁內容時，每個 <img> 都變成圖片卡，編輯器會下載並轉存一份。對方網站擋下載時，卡片保留原網址並顯示提醒，上線前要改成自己的圖',
           },
         ],
         keyboard: [
@@ -442,6 +459,7 @@ export const GROUPS = [
               ['title / subtitle', 'string', '—', '面板標題和副標'],
               ['dirty / saving / error', 'boolean / boolean / string', '—', '儲存狀態：尚未儲存、儲存中、已儲存、儲存失敗'],
               ['onSave / onLogout', '() => void', '—', '必填，儲存按鈕只在 dirty 時可以按'],
+              ['preview', 'boolean', 'false', '頂端多一顆「預覽」，切換 useAdmin().previewing。頁面讀這個值，換成正式頁的畫面'],
               ['children', 'node', '—', 'PanelSection 和 FormRow'],
             ],
           },
@@ -730,13 +748,24 @@ useAdminSave(admin.editing ? save : null)`,
         id: 'journal-edit-panel',
         name: 'JournalEditPanel',
         file: 'src/components/journal/JournalEditPanel.jsx',
-        summary: 'Journal 的編輯面板：文章頁編輯欄位和內文，列表頁新增、排序和刪除文章',
-        hero: { code: `<JournalPostEditPanel slug={slug} />
+        summary: 'Journal 的編輯模式：文章頁的內文直接在頁面上編輯，面板只放標題、標籤、日期、摘要，列表頁新增、排序和刪除文章',
+        hero: { code: `<JournalPostBody slug={slug}>
+  <RichText doc={getDoc(content)} />
+</JournalPostBody>
+<JournalPostEditPanel slug={slug} />
 <JournalListEditPanel />` },
         api: [
           {
+            part: 'JournalPostBody',
+            description: '包住文章頁的內文。編輯模式時換成 Editor，樣式和正式頁相同。其他時候，以及編輯器還在載入時，顯示 children',
+            props: [
+              ['slug', 'string', '—', '必填，目前文章的網址代稱'],
+              ['children', 'ReactNode', '—', '必填，沒有在編輯時顯示的內文'],
+            ],
+          },
+          {
             part: 'JournalPostEditPanel',
-            description: '放在 JournalPostPage，內文用 Editor 編輯',
+            description: '放在 JournalPostPage，編輯標題、英文副標、標籤、日期、閱讀時間、摘要',
             props: [['slug', 'string', '—', '必填，目前文章的網址代稱']],
           },
           {
@@ -750,7 +779,7 @@ useAdminSave(admin.editing ? save : null)`,
         notes: [
           '資料存在 R2 data.json 的 journal。src/data/journal.js 只是 R2 沒有資料時的預設值。',
           '日期、分類、閱讀時間、排序、新增和刪除套用到中英文，標題、摘要和內文只改目前的語言。',
-          '圖片上傳上限 1MB（JPG、PNG、WEBP），存在 R2 的 images/，影片只能填網址。',
+          '圖片上傳上限 1MB（JPG、PNG、WEBP），超過時編輯器會先自動壓縮。圖片存在 R2 的 images/，影片只能填網址。',
           '有未儲存的修改時，登出前會先確認。',
         ],
       },

@@ -289,6 +289,17 @@
   outline: none;
 }
 
+/* Numbers read as plain text too: no spin arrows. ↑ / ↓ still step the value. */
+.cms-input[type='number'] {
+  appearance: textfield;
+}
+
+.cms-input[type='number']::-webkit-inner-spin-button,
+.cms-input[type='number']::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
 .cms-input[aria-invalid='true'] {
   color: var(--danger);
 }
@@ -362,10 +373,6 @@
   cursor: default;
 }
 
-.cms-btn:disabled .cms-btn__kbd {
-  background: transparent;
-}
-
 /* Save button: idle → saving → saved, each label blurs in (transitions.dev "Text states swap") */
 .cms-save__stack {
   display: inline-grid;
@@ -415,15 +422,6 @@
 .cms-btn--ghost:hover {
   background: var(--gray-a3);
   color: var(--text-primary);
-}
-
-.cms-btn__kbd {
-  padding: var(--space-1) var(--space-1);
-  border-radius: calc(var(--radius-sm) / 2);
-  background: color-mix(in srgb, var(--surface-0) 12%, transparent);
-  font-family: var(--font-label);
-  font-size: var(--type-label);
-  letter-spacing: var(--type-label-ls);
 }
 
 .cms-upload {
@@ -571,21 +569,19 @@
 
 /* ── Rich-text editor (Editor): no box; the toolbar is a few small pill groups ── */
 
-/* One rounded bar of icon buttons, with warm tooltips (Editor) */
+/* The formatting bubble over selected text: one rounded bar of icon buttons, with warm tooltips (Editor) */
 .cms-ed-bar {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  display: inline-flex;
-  flex-wrap: wrap;
+  position: absolute;
+  z-index: 3;
+  display: flex;
   align-items: center;
   gap: var(--space-1);
-  max-width: 100%;
-  margin: 0 0 var(--space-4);
   padding: var(--space-1);
   border-radius: var(--radius-md);
   background: var(--surface-2);
-  box-shadow: 0 0 0 6px var(--surface-1); /* covers text scrolling under the sticky bar */
+  box-shadow: var(--cms-ring);
+  white-space: nowrap;
+  translate: 0 calc(-100% - var(--space-2)); /* top/left is the selection's first line */
 }
 
 .cms-ed-btn {
@@ -683,75 +679,10 @@
   position: relative;
 }
 
+/* The editor sits in the article, so the text takes the article's own styles (journal.css). */
 .cms-ed-content {
   min-height: 240px;
-  font-family: var(--font-label);
-  font-size: var(--type-small);
-  line-height: 1.75;
-  color: var(--text-body);
   outline: none;
-}
-
-.cms-ed-content > * + * {
-  margin-top: var(--space-3);
-}
-
-.cms-ed-content p {
-  margin: 0;
-}
-
-.cms-ed-content p.lead {
-  font-size: var(--type-small);
-  color: var(--text-primary);
-}
-
-.cms-ed-content h2,
-.cms-ed-content h3 {
-  margin: var(--space-6) 0 var(--space-1);
-  font-weight: 400;
-  letter-spacing: 0;
-  color: var(--text-primary);
-}
-
-.cms-ed-content h2 {
-  font-size: var(--type-body);
-}
-
-.cms-ed-content h3 {
-  font-size: var(--type-small);
-}
-
-.cms-ed-content ul,
-.cms-ed-content ol {
-  margin: 0;
-  padding-left: 1.4em;
-}
-
-.cms-ed-content strong {
-  font-weight: var(--weight-regular);
-  color: var(--text-primary);
-}
-
-.cms-ed-content a {
-  color: var(--ember);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.cms-ed-content code {
-  padding: var(--space-1) var(--space-1);
-  border-radius: calc(var(--radius-sm) / 2);
-  background: var(--surface-2);
-  font-family: var(--font-mono);
-  font-size: 0.875em;
-  color: var(--code-prop);
-}
-
-.cms-ed-content hr {
-  margin: var(--space-6) auto;
-  width: 48px;
-  border: 0;
-  border-top: 0.5px solid var(--line-strong);
 }
 
 .cms-ed-content hr.ProseMirror-selectednode {
@@ -851,16 +782,6 @@
   color: var(--ember);
 }
 
-.cms-ed-card__preview {
-  display: block;
-  max-height: 180px;
-  max-width: 100%;
-  margin: var(--space-1) 0 var(--space-1);
-  border-radius: var(--radius-sm);
-  object-fit: contain;
-  align-self: flex-start;
-}
-
 .cms-ed-card__row {
   display: flex;
   align-items: center;
@@ -892,6 +813,165 @@
   font-family: var(--font-mono);
   font-size: var(--type-label);
   color: var(--text-secondary);
+}
+
+/* Block gutter: "+" and "⠿" to the left of the line under the pointer (Editor) */
+.cms-ed {
+  position: relative;
+}
+
+.cms-ed-gutter {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  translate: calc(-100% - var(--space-3)) 0; /* left is the block's left edge */
+}
+
+.cms-ed-gutter .cms-ed-btn {
+  width: 24px;
+  height: 24px; /* HANDLE in Editor.jsx */
+  color: var(--text-tertiary);
+}
+
+.cms-ed-gutter__grip {
+  cursor: grab;
+}
+
+/* No pointer to hover with, and no room beside the text on a phone:
+   the "+" shows only on the empty line under the cursor, inside the line itself. */
+@media (hover: none), (max-width: 768px) {
+  .cms-ed-gutter {
+    display: none;
+  }
+
+  .cms-ed-gutter[data-empty] {
+    display: flex;
+    translate: 0 0;
+  }
+
+  .cms-ed-gutter[data-empty] .cms-ed-gutter__grip {
+    display: none;
+  }
+}
+
+/* Image card in the editor: the real ImageCard, with its tools over the top right corner */
+.cms-ed-image {
+  position: relative;
+}
+
+.cms-ed-image img {
+  pointer-events: none; /* a native image drag would paste a second copy */
+}
+
+.cms-ed-image[data-selected] .card {
+  --card-ring: 0 0 0 1px var(--ember-line);
+}
+
+.cms-ed-image__tools {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-touch);
+}
+
+.cms-ed-image:is(:hover, :focus-within, [data-selected]) .cms-ed-image__tools,
+.cms-ed-image__tools[data-attn] {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .cms-ed-image__tools {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cms-ed-image__tools {
+    transition: none;
+  }
+}
+
+.cms-ed-image__note {
+  padding: 0 var(--space-2);
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  color: var(--ember);
+}
+
+.cms-ed-image__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-12) 0;
+  padding: var(--space-12) var(--space-6);
+  border: 0.5px dashed var(--line-strong);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-label);
+  font-size: var(--type-caption);
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.cms-ed-image__empty .cms-ed-field {
+  max-width: 360px;
+  text-align: center;
+}
+
+/* Typed in place inside the figcaption, so it takes the caption's own type */
+.cms-ed-caption {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+}
+
+.cms-ed-caption::placeholder {
+  color: var(--text-tertiary);
+}
+
+.cms-ed-caption:focus {
+  outline: none;
+}
+
+.cms-ed-set {
+  position: relative;
+}
+
+.cms-ed-set__pop {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: calc(-1 * var(--space-1));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(320px, 80vw);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  box-shadow: var(--cms-ring);
+}
+
+.cms-ed-set__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  color: var(--text-tertiary);
 }
 
 /* Collapsed: a dock button at the bottom right brings the panel back */
