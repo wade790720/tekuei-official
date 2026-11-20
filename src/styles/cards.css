@@ -159,6 +159,13 @@
   height: auto;
 }
 
+.video-card--embed iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
 .video-card__surface {
   position: absolute;
   inset: 0 0 44px;

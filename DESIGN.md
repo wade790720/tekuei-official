@@ -180,7 +180,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 |---|---|---|
 | `codeBlock` | `CodeCard` | 內容是程式碼。屬性：`language`（預設 `ts`）、`filename` |
 | `imageCard` | `ImageCard` | `src`、`alt`（必填）、`caption`、`frame`（小圖置中留白） |
-| `videoCard` | `VideoCard` | `src`、`poster`、`caption`、`loop` |
+| `videoCard` | `VideoCard` | `src`、`poster`、`caption`、`loop`。`src` 是影片檔（mp4）或 YouTube 連結，YouTube 用它自己的播放器 |
 | `slidesCard` | `SlidesCard` | `slides`：`[{ src, alt, caption }]`。圖片輪播，寬螢幕比內文欄左右各寬 80px |
 
 - 文字的部分（段落、前言、小標題、引言、清單）沿用 `journal.css` 的 `journal-post__*` 樣式。

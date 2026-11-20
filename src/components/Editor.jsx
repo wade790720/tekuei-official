@@ -288,7 +288,7 @@ function VideoCardView({ node, updateAttributes, deleteNode, selected }) {
   const a = node.attrs
   return (
     <CardShell title="影片" selected={selected} deleteNode={deleteNode}>
-      <CardField label="影片網址" value={a.src} onChange={(src) => updateAttributes({ src })} placeholder="影片網址（mp4）" />
+      <CardField label="影片網址" value={a.src} onChange={(src) => updateAttributes({ src })} placeholder="影片網址（mp4 或 YouTube 連結）" />
       <CardField label="封面圖網址" value={a.poster} onChange={(poster) => updateAttributes({ poster })} placeholder="封面圖網址（選填）" />
       <CardField label="影片說明" value={a.caption} onChange={(caption) => updateAttributes({ caption })} placeholder="說明（選填）" />
       <label className="cms-check">

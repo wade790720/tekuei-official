@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { CARD_LABELS } from '../data/cards.js'
 import { useLang } from '../i18n'
+import { youtubeId } from '../lib/richText.js'
 import { Card } from './Card.jsx'
 import '../styles/cards.css'
 
@@ -12,9 +13,37 @@ const clock = (s) => {
 }
 
 /**
+ * A video in a post. A YouTube link plays in YouTube's player; a video file (mp4) in the site's own player.
  * @param {{ src: string, poster?: string, caption?: string, loop?: boolean }} props
  */
-export function VideoCard({ src, poster, caption, loop = false }) {
+export function VideoCard(props) {
+  const id = youtubeId(props.src)
+  return id ? <YouTubeVideo id={id} caption={props.caption} loop={props.loop} /> : <FileVideo {...props} />
+}
+
+/** YouTube's own player in privacy mode (youtube-nocookie.com): no cookies until the visitor plays it. */
+function YouTubeVideo({ id, caption, loop = false }) {
+  const { lang } = useLang()
+  const t = CARD_LABELS[lang]
+  const query = loop ? `?loop=1&playlist=${id}` : ''
+  return (
+    <figure className="post-figure">
+      <Card className="video-card video-card--embed">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${id}${query}`}
+          title={caption || t.youtube}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+      </Card>
+      {caption ? <figcaption className="post-figure__caption">{caption}</figcaption> : null}
+    </figure>
+  )
+}
+
+function FileVideo({ src, poster, caption, loop = false }) {
   const { lang } = useLang()
   const t = CARD_LABELS[lang]
   const root = useRef(null)
