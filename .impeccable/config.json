@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "src/components/dev/componentLibrary.data.js"
+        ],
+        "createdAt": "2026-11-20T06:59:15.150Z",
+        "reason": "Claude: L260 is doc prose that names the <img> tag, not markup"
+      }
+    ]
+  }
+}

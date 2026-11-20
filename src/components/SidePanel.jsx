@@ -4,8 +4,6 @@ import { useAdmin } from '../context/admin.js'
 import { CMS_LABELS as T } from '../data/admin.js'
 import '../styles/cms.css'
 
-const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent)
-const SAVE_KEY = isMac ? '⌘S' : 'Ctrl S'
 const SAVED_MS = 1600 // how long the save button shows "已儲存" after a save
 
 /**
@@ -15,11 +13,12 @@ const SAVED_MS = 1600 // how long the save button shows "已儲存" after a save
  *   title: string, subtitle?: string,
  *   dirty: boolean, saving: boolean, error?: string,
  *   onSave: () => void, onLogout: () => void,
+ *   preview?: boolean,  // adds the switch between editing and the page as readers see it
  *   children: import('react').ReactNode,
  * }} props
  */
-export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, children }) {
-  const { panelOpen, setPanelOpen } = useAdmin()
+export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, preview = false, children }) {
+  const { panelOpen, setPanelOpen, previewing, setPreviewing } = useAdmin()
   const [justSaved, setJustSaved] = useState(false)
   const [prevSaving, setPrevSaving] = useState(saving)
 
@@ -84,13 +83,18 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
           <button type="button" className="cms-btn cms-btn--ghost" onClick={() => setPanelOpen(false)} aria-label={T.collapse} title={T.collapse}>
             <ChevronIcon />
           </button>
+          {preview ? (
+            <button type="button" className="cms-btn cms-btn--ghost" aria-pressed={previewing} onClick={() => setPreviewing(!previewing)}>
+              <EyeIcon />
+              {previewing ? T.backToEdit : T.preview}
+            </button>
+          ) : null}
           <button type="button" className="cms-btn cms-btn--ghost" onClick={onLogout}>
             {T.logout}
           </button>
           {/* Lights up only when there is something to save */}
           <button type="button" className="cms-btn cms-save" data-state={saveState} onClick={onSave} disabled={saving || !dirty}>
             <SaveLabels state={saveState} idle={T.save} />
-            <kbd className="cms-btn__kbd">{SAVE_KEY}</kbd>
           </button>
         </div>
       </header>
@@ -211,6 +215,15 @@ function ChevronIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M6 3l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function EyeIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+      <path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" strokeLinejoin="round" />
+      <circle cx="8" cy="8" r="2" />
     </svg>
   )
 }

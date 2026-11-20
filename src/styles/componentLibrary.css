@@ -663,6 +663,14 @@
   padding: var(--space-6);
 }
 
+/* Input pane: room for the "+" and "⠿" gutter (two 24px buttons + 12px gap) left of the text.
+   Phones show the "+" inside the empty line instead (cms.css), so they keep the normal padding. */
+@media (hover: hover) and (min-width: 769px) {
+  .cl-editor__pane:first-child .cl-editor__body {
+    padding-left: calc(var(--space-12) + var(--space-6));
+  }
+}
+
 /* Output pane: the reader's page background, so the result looks as it will on the site */
 .cl-editor__pane:last-child .cl-editor__body {
   background: var(--surface-0);
@@ -1056,14 +1064,19 @@
 /* Example: the live preview with its code joined underneath (Radix Themes style) */
 .doc-example {
   margin: 0;
-  overflow: hidden;
   border-radius: var(--radius-lg);
   box-shadow: 0 0 0 1px var(--line);
 }
 
+/* The parts round their own corners: overflow: hidden here would clip open menus in the preview */
 .doc-example__preview {
   padding: var(--space-6);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   background: var(--surface-1);
+}
+
+.doc-example__preview:only-child {
+  border-radius: var(--radius-lg);
 }
 
 
@@ -1176,7 +1189,7 @@
 
 .doc-code--joined {
   border-top: 1px solid var(--line);
-  border-radius: 0;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   background: var(--surface-0);
   box-shadow: none;
 }

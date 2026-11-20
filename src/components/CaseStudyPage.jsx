@@ -61,7 +61,6 @@ export default function CaseStudyPage() {
   useEffect(() => {
     if (!data) return
     document.title = data.documentTitle
-    window.scrollTo(0, 0)
   }, [data?.documentTitle, data])
 
   if (loading || !data || !hero || !sections || !media) {

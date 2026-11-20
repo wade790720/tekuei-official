@@ -126,6 +126,12 @@ export const JOURNAL_FILTER = {
   en: { label: 'Filter by tag', all: 'ALL' },
 }
 
+/** Text on a post page outside the post itself. */
+export const JOURNAL_POST_LABELS = {
+  zh: { back: '返回 Journal', notFound: '文章不存在' },
+  en: { back: 'Back to Journal', notFound: 'Post not found' },
+}
+
 /** A post's tags. Posts saved before tags existed have one `category`, which becomes the only tag. */
 export const postTags = (post) => post.tags ?? (post.category ? [post.category] : [])
 

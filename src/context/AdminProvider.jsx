@@ -17,8 +17,11 @@ export function AdminProvider({ children }) {
   const [editing, setEditingState] = useState(false)
   // The panel opens with edit mode and stays as Wade leaves it (collapsed or not) across pages.
   const [panelOpen, setPanelOpen] = useState(true)
+  // Edit mode can show the page as readers see it; the panel holds the switch, the page reads it.
+  const [previewing, setPreviewing] = useState(false)
   const setEditing = useCallback((on) => {
     setEditingState(on)
+    setPreviewing(false)
     if (on) setPanelOpen(true)
   }, [])
   const save = useRef(null)
@@ -64,11 +67,13 @@ export function AdminProvider({ children }) {
       setEditing,
       panelOpen,
       setPanelOpen,
+      previewing,
+      setPreviewing,
       openGate: () => setGateOpen(true),
       logout,
       saveRef: save,
     }),
-    [token, editing, setEditing, panelOpen, logout],
+    [token, editing, setEditing, panelOpen, previewing, logout],
   )
 
   return (

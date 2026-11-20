@@ -206,7 +206,7 @@ function EditorDemo() {
   const [doc, setDoc] = useState(EDITOR_SAMPLE)
   return (
     <div className="cl-editor">
-      <IoPane dir="in" title="Input" meta="Editor">
+      <IoPane dir="in" title="Input" meta="Editor" className="journal-post__body doc-prose">
         <Editor doc={EDITOR_SAMPLE} onChange={setDoc} upload={async (file) => URL.createObjectURL(file)} />
       </IoPane>
       <IoPane dir="out" title="Output" meta="RichText" className="journal-post__body doc-prose">

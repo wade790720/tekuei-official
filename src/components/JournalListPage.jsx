@@ -13,6 +13,9 @@ import seaImage from '../assets/journal/footer-sea.webp'
 import '../styles/work.css'
 import '../styles/journal.css'
 
+// Tells the post page it was opened from this list, so its back link can return here (JournalPostPage BackLink).
+const FROM_LIST = { fromList: 1 }
+
 export default function JournalListPage() {
   const { lang } = useLang()
   const meta = JOURNAL_META[lang]
@@ -67,7 +70,7 @@ export default function JournalListPage() {
             <ol className="journal-year__rows">
               {group.map((post) => (
                 <li key={post.slug}>
-                  <FadeIn as={Link} to={`/journal/${post.slug}`} className="journal-row">
+                  <FadeIn as={Link} to={`/journal/${post.slug}`} state={FROM_LIST} className="journal-row">
                     <span className="journal-row__num">{post.num}</span>
                     <span className="journal-row__title">{post.title}</span>
                     <span className="journal-row__tags">
@@ -123,7 +126,7 @@ function byYear(posts) {
 
 function FeaturedPost({ post }) {
   return (
-    <FadeIn as={Link} to={`/journal/${post.slug}`} className="journal-card">
+    <FadeIn as={Link} to={`/journal/${post.slug}`} state={FROM_LIST} className="journal-card">
       <div className="journal-card__index">
         <span className="journal-card__num">{post.num}</span>
         <span className="journal-card__line" aria-hidden />
