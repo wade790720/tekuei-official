@@ -68,6 +68,28 @@ export function safeHref(href) {
   return `https://${h}` // "example.com/page" typed without a scheme
 }
 
+/**
+ * The video id of a YouTube watch, share (youtu.be), Shorts, live or embed link. Null for anything else,
+ * so a videoCard src that is a file (mp4) plays in the site's own player instead.
+ * @param {string | undefined} src
+ * @returns {string | null}
+ */
+export function youtubeId(src) {
+  let url
+  try {
+    url = new URL(String(src ?? '').trim())
+  } catch {
+    return null
+  }
+  const host = url.hostname.replace(/^(www|m|music)\./, '')
+  let id = null
+  if (host === 'youtu.be') id = url.pathname.split('/')[1]
+  else if (host === 'youtube.com' || host === 'youtube-nocookie.com') {
+    id = url.searchParams.get('v') ?? url.pathname.match(/^\/(?:embed|shorts|live)\/([^/]+)/)?.[1]
+  }
+  return id && /^[\w-]{11}$/.test(id) ? id : null
+}
+
 /** Plain text of a doc, for word counts and checks. */
 export function docText(node) {
   if (!node) return ''

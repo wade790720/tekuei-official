@@ -1,6 +1,26 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { blocksToDoc, docText, getDoc, safeHref } from '../src/lib/richText.js'
+import { blocksToDoc, docText, getDoc, safeHref, youtubeId } from '../src/lib/richText.js'
+
+describe('youtubeId', () => {
+  it('reads share, watch, Shorts and embed links', () => {
+    assert.equal(youtubeId('https://youtu.be/geP1C28wCeE?si=luwM46zzgBLTer-n'), 'geP1C28wCeE')
+    assert.equal(youtubeId('https://www.youtube.com/watch?v=geP1C28wCeE&t=30s'), 'geP1C28wCeE')
+    assert.equal(youtubeId('https://m.youtube.com/watch?v=geP1C28wCeE'), 'geP1C28wCeE')
+    assert.equal(youtubeId('https://youtube.com/shorts/geP1C28wCeE'), 'geP1C28wCeE')
+    assert.equal(youtubeId('https://www.youtube-nocookie.com/embed/geP1C28wCeE'), 'geP1C28wCeE')
+  })
+
+  it('returns null for files, other sites and broken input', () => {
+    assert.equal(youtubeId('https://example.com/clip.mp4'), null)
+    assert.equal(youtubeId('/api/file/clip.mp4'), null)
+    assert.equal(youtubeId('https://vimeo.com/123456'), null)
+    assert.equal(youtubeId('https://youtu.be/'), null)
+    assert.equal(youtubeId('https://youtube.com/watch?v=bad<id>'), null)
+    assert.equal(youtubeId(''), null)
+    assert.equal(youtubeId(undefined), null)
+  })
+})
 
 describe('blocksToDoc', () => {
   it('converts every old block type and keeps card settings', () => {

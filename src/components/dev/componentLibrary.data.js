@@ -283,14 +283,14 @@ export const GROUPS = [
         family: 'Card',
         name: 'VideoCard',
         file: 'src/components/VideoCard.jsx',
-        summary: '播放一段影片，附播放、時間、進度、倍速和全螢幕控制',
+        summary: '播放一段影片：影片檔用自己的播放器，附播放、時間、進度、倍速和全螢幕控制；YouTube 連結用 YouTube 的播放器',
         hero: { demo: 'video', code: `<VideoCard src={clip} poster={poster} caption="拖曳排序的過程" />` },
         api: [
           {
             description: '以 figure 元素渲染，不會自動播放',
             props: [
-              ['src', 'string', '—', '必填，建議 mp4（H.264）'],
-              ['poster', 'string', '—', '播放前顯示的圖'],
+              ['src', 'string', '—', '必填。影片檔建議 mp4（H.264），也可以是 YouTube 連結（youtu.be、watch、shorts、embed）'],
+              ['poster', 'string', '—', '播放前顯示的圖。YouTube 影片用 YouTube 的縮圖，不用這個'],
               ['caption', 'string', '—', '說明'],
               ['loop', 'boolean', 'false', '播完重新播放'],
             ],
@@ -304,12 +304,19 @@ export const GROUPS = [
             demo: 'video-loop',
             code: `<VideoCard src={clip} caption="播完重新播放" loop />`,
           },
+          {
+            id: 'youtube',
+            title: 'YouTube',
+            description: 'src 是 YouTube 連結時，換成 YouTube 的播放器（隱私模式 youtube-nocookie.com），比例 16:9',
+            code: `<VideoCard src="https://youtu.be/VIDEO_ID" caption="說明" />`,
+          },
         ],
         notes: [
           '播放時，控制列只在游標移入或鍵盤聚焦時出現，觸控裝置上則一直顯示。',
           '手機寬度不顯示總長度。',
           'iOS Safari 上，全螢幕作用在 video 元素本身。',
           '影片用 -movflags +faststart 輸出，才能邊下載邊播放。',
+          'YouTube 影片在訪客按下播放前不載入 YouTube 的 cookie。正式站的 HTML 裡寫成一個連到 YouTube 的連結，給搜尋引擎讀。',
         ],
       },
 

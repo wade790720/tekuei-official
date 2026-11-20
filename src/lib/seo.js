@@ -2,7 +2,7 @@
 // real text, meta tags and JSON-LD into the HTML, so crawlers and AI readers see content without JS.
 // Chinese only: the URL does not carry a language yet, and zh is the default.
 
-import { getDoc, docText, safeHref } from './richText.js'
+import { getDoc, docText, safeHref, youtubeId } from './richText.js'
 import { getDefaultJournal, postTags } from '../data/journal.js'
 
 export const SITE_URL = 'https://tekuei.com'
@@ -95,8 +95,13 @@ export function docHtml(node) {
       return figure(a.src, a.alt, a.caption)
     case 'slidesCard':
       return (a.slides ?? []).map((s) => figure(s.src, s.alt, s.caption)).join('')
-    case 'videoCard':
+    case 'videoCard': {
+      // A YouTube video becomes a link, so crawlers see it; a file video has nothing to show without the player.
+      const id = youtubeId(a.src)
+      const label = esc(a.caption || 'YouTube')
+      if (id) return `<p><a href="https://www.youtube.com/watch?v=${id}">${label}</a></p>`
       return a.caption ? `<p>${esc(a.caption)}</p>` : ''
+    }
     case 'horizontalRule':
       return '<hr>'
     default:
