@@ -165,7 +165,6 @@ npm run dev`,
     lead: '規範檔和量測資料',
     toc: [
       ['files', '規範檔'],
-      ['references', '參考網站對照'],
       ['bibliography', '參考文獻'],
     ],
     files: [
@@ -174,7 +173,6 @@ npm run dev`,
       ['DESIGN.md', '視覺和動態規範'],
       ['src/styles/tokens.css', '所有設計變數'],
     ],
-    references: '建立字級和間距時量測了這三個網站，TEKUEI 一欄即時讀取 tokens.css 和文章版面，永遠是目前的設定。',
     bibliography: {
       lead: '做這個網站時參考了這些網站。新增參考時，在對應的組別加一列，「用在哪裡」寫檔案或頁面。',
       // [site, url, what we took from it, where it is used]
@@ -188,6 +186,7 @@ npm run dev`,
             ['motionsites.ai', 'https://motionsites.ai/', '版畫圖由碎片組合的頁尾，footer-sea.webp 也來自這裡，未授權，上線前要換', 'shatterImage.js、Journal 頁尾'],
             ['aiforui.dev', 'https://aiforui.dev/', '頁首的字元雨（MatrixRain）', 'glyphField.js'],
             ['Palindrome of a Fall', 'https://palindrome-of-a-fall.vercel.app/', '粒子人形往下掉、穿過刻字石板，跟著捲動播放的節奏和數值', 'fallScene.js、About'],
+            ['recent.design', 'https://recent.design/websites', '點擊連結和按鈕的音效，參數照抄，授權不明，上線前要確認', 'uiSound.js'],
           ],
         },
         {

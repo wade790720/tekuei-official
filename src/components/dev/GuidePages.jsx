@@ -9,7 +9,6 @@ import { LinkCards } from './doc/LinkCards.jsx'
 import { RuleList } from './doc/RuleList.jsx'
 import { TokenScale } from './doc/TokenScale.jsx'
 import { rootVar } from './doc/tokens.js'
-import { REFERENCE_TABLE, SPACE_SCALE } from './foundations.data.js'
 import { GUIDES } from './guides.data.js'
 
 export function GettingStarted() {
@@ -72,46 +71,12 @@ export function LayoutGuide() {
   )
 }
 
-const num = (v) => v.replace(/px$/, '')
-
-/** The article column width, measured from the real journal styles (not from the viewport). */
-function measureColumn() {
-  const wrap = document.createElement('div')
-  wrap.className = 'journal-page'
-  wrap.style.cssText = 'position:absolute;left:-9999px;top:0;width:1600px;visibility:hidden'
-  wrap.innerHTML = '<div class="journal-post"><div class="journal-post__body"></div></div>'
-  document.body.append(wrap)
-  const w = Math.round(wrap.querySelector('.journal-post__body').getBoundingClientRect().width)
-  wrap.remove()
-  return `${w}px`
-}
-
-/** TEKUEI's values for the reference table, read live so the table cannot drift from the tokens. */
-function readTekuei() {
-  const v = rootVar
-  const tiers = ['--text-primary', '--text-body', '--text-secondary', '--text-tertiary'].filter((t) => v(t)).length
-  return {
-    background: v('--surface-0'),
-    body: `${num(v('--type-body'))} / ${v('--type-body-lh')}`,
-    h2: `${num(v('--type-h2'))} / ${v('--type-h2-lh')}`,
-    display: `${v('--type-display')} / ${v('--type-display-lh')}、${v('--type-display-ls')}`,
-    tiers: `${tiers} 階${v('--text-faint') ? ' + 裝飾' : ''}`,
-    space: SPACE_SCALE.map(([t]) => num(v(t))).join('、'),
-    measure: measureColumn(),
-  }
-}
-
 export function Resources() {
   const g = GUIDES.resources
-  const [tekuei] = useState(readTekuei)
-  const rows = REFERENCE_TABLE.rows.map((r) => [r.label, ...r.refs, tekuei[r.key]])
   return (
     <>
       <DocSection id="files" title="規範檔">
         <DocTable head={['檔案', '內容']} rows={g.files} code={[0]} />
-      </DocSection>
-      <DocSection id="references" title="參考網站對照" lead={g.references}>
-        <DocTable head={REFERENCE_TABLE.head} rows={rows} rowHeader />
       </DocSection>
       <DocSection id="bibliography" title="參考文獻" lead={g.bibliography.lead}>
         {g.bibliography.groups.map((group, i) => (
