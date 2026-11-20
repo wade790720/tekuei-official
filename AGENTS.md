@@ -4,10 +4,9 @@
 
 ## 開始之前
 
-1. 讀這份檔案。
-2. 讀 [PRODUCT.md](PRODUCT.md)。它說明網站為什麼存在、給誰看、品牌喜歡和不喜歡什麼。
-3. 要改畫面、樣式或動畫時，讀 [DESIGN.md](DESIGN.md)，並先查 Component Library（見「元件：先查 Component Library」）。
-4. 規範和使用者的指示衝突時，照使用者的指示做。做完後，問使用者要不要更新規範。
+1. 讀 [PRODUCT.md](PRODUCT.md)。它說明網站為什麼存在、給誰看、品牌喜歡和不喜歡什麼。
+2. 要改畫面、樣式或動畫時，讀 [DESIGN.md](DESIGN.md)（全站規則）和 [PAGES.md](PAGES.md)（各頁規格），並先查 Component Library。
+3. 規範和使用者的指示衝突時，照使用者的指示做。做完後，問使用者要不要更新規範。
 
 ## 專案
 
@@ -73,11 +72,11 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 - 不要新增相依套件。真的需要時，先問使用者。
 - 註解只寫程式碼看不出來的原因。
 
-## 編輯模式（前台 CMS）
+## 不明顯的坑
 
-- Ctrl+S／⌘+S 打開密碼框，密碼是 Cloudflare Pages 的 `ADMIN_SECRET`，必須是 6 位數字。
-- Journal 文章存在 R2 `data.json` 的 `journal`。不要直接改 `src/data/journal.js` 裡的文章，那只是預設值。
-- 本機的 `.env.local` 把 `/api` 代理到正式站。在本機登入或儲存會寫到正式資料。測試時先在瀏覽器裡把 `/api` 換成假的。
+1. **本機會寫到正式資料。** `.env.local` 把 `/api` 代理到正式站。測試登入或儲存之前，先在瀏覽器裡把 `/api` 換成假的。
+2. **文章不在程式碼裡。** Journal 文章在 R2 `data.json` 的 `journal`。`src/data/journal.js` 只是預設值，改它不會改到網站。
+3. **CSS 和 Canvas 的坑**（`transform` 被淡入蓋掉、Canvas 讀不到變數、假粗體……）列在 DESIGN.md 的「Don't」。
 
 ## 內容的規則
 
@@ -86,11 +85,10 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 - 從別人網站拿來的圖或文字，不可以直接上線。要先告訴使用者版權風險。
 
 ## 寫作規則
-**跟 AI 的對話、回報、commit message、規範檔（AGENTS.md、PRODUCT.md、DESIGN.md）：用 ASD-STE100，做到約八成。**
+**跟 AI 的對話、回報、commit message、規範檔（AGENTS.md、PRODUCT.md、DESIGN.md、PAGES.md）：用 ASD-STE100，做到約八成。**
 
 - 一個詞只有一個意思。同一個東西不換名稱。
-- 句子要短。英文 20 字以內，中文以同等長度為準。用主動語態。
-- 一句只講一個指示。
+- 句子要短。英文 20 字以內，中文以同等長度為準。用主動語態。一句只講一個指示。
 - 只有在照規則寫反而讓文字變差時，才可以破例。
 
 **網站上的所有文字（UI 文案、案例、About、文章、Component Library）：不用 STE，照 zh-tw-writing skill 的台灣正式中文寫法。**
@@ -116,5 +114,6 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 
 ## 維護這份規範
 
-- 決定改變時，同一個變更裡就更新 PRODUCT.md、DESIGN.md 或這份檔案。
+- 決定改變時，同一個變更裡就更新規則所在的檔案。原因寫在 commit message。
+- 全站規則放 DESIGN.md，某一頁的規格放 PAGES.md。兩者都不寫日期和「誰決定」。例外規則在同一行補半句原因，例如「行高 1.6（照 Editor.js）」。
 - 這份檔案保持在 120 行以內。細節放 DESIGN.md。
