@@ -217,7 +217,7 @@ export const GROUPS = [
       // ── Editor ──
       {
         id: 'editor',
-        name: 'Editor',
+        name: 'WYSIWYG Editor',
         file: 'src/components/Editor.jsx',
         summary: '文章內文的所見即所得編輯器，輸出 RichText 使用的文件',
         hero: { demo: 'editor', code: `<Editor key={slug} doc={getDoc(body)} onChange={setDoc} upload={upload} previewing={admin.previewing} renderPreview={(doc) => <RichText doc={doc} />} />` },

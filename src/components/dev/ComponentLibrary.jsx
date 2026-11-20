@@ -71,7 +71,8 @@ const SECTIONS = [
   ...GROUPS.map((g) => ({
     id: g.id,
     title: g.title,
-    pages: g.items.map((item) => ({
+    // Alphabetical. A family (Card) sorts by its own name, so its members stay together.
+    pages: [...g.items].sort(byName).map((item) => ({
       id: item.id,
       kind: 'component',
       name: item.name,
@@ -83,6 +84,10 @@ const SECTIONS = [
     })),
   })),
 ]
+
+function byName(a, b) {
+  return (a.family ?? a.name).localeCompare(b.family ?? b.name, 'en', { sensitivity: 'base' }) || a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })
+}
 
 const PAGES = SECTIONS.flatMap((section) => section.pages.map((p) => ({ ...p, section })))
 const PAGE_BY_ID = Object.fromEntries(PAGES.map((p) => [p.id, p]))

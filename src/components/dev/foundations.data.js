@@ -168,21 +168,6 @@ export const SPACE_RULES = [
   '圓角：小控制項 8px、卡片 12–16px、膠囊 999px',
 ]
 
-// Measured on the three reference sites. The TEKUEI column is not stored here:
-// Resources reads it live from tokens.css and the journal styles, keyed by `key`.
-export const REFERENCE_TABLE = {
-  head: ['', 'jakub.kr', 'interfaces.dev', 'Promptfolio', 'TEKUEI'],
-  rows: [
-    { key: 'background', label: '底色', refs: ['#fcfcfc（淺色）', '#101010', '#141414'] },
-    { key: 'body', label: '內文', refs: ['17 / 1.63', '18 / 1.56', '14 / 1.57'] },
-    { key: 'h2', label: '小標題', refs: ['17、字重 550', '24 / 1.33、-0.3px', '24 / 1.25'] },
-    { key: 'display', label: '大標', refs: ['—', '—', '72 / 1.06、-0.03em'] },
-    { key: 'tiers', label: '文字階', refs: ['2 階', '4 階', '2 階'] },
-    { key: 'space', label: '間距', refs: ['4、8、16、128', '4、8、12、16、32、128', '4、8、16、24、48、96'] },
-    { key: 'measure', label: '內文欄寬', refs: ['644px', '720px', '525px'] },
-  ],
-}
-
 // Sample card for the annotated spec views. Demo copy only, not a real post.
 export const SPEC_SAMPLE = {
   section: 'Journal',
