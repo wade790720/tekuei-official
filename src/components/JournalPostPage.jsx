@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { TagList } from './Tag.jsx'
 import { JournalPostBody, JournalPostEditPanel } from './journal/JournalEditPanel.jsx'
 import { RichText } from './RichText.jsx'
+import { Breadcrumbs, BreadcrumbsItem } from './Breadcrumbs.jsx'
 import { getDoc } from '../lib/richText.js'
 import { useJournal } from '../context/journal.js'
 import { getAdjacentPosts, getJournalPost, JOURNAL_POST_LABELS, postTags } from '../data/journal.js'
@@ -46,22 +47,24 @@ export default function JournalPostPage() {
 
       <article className="journal-post">
         <header className="journal-post__header">
+          {/* Wrapped so the fade-in transition does not replace the links' hover transition */}
           <div className="fade-in">
-            <BackLink className="journal-post__back">
-              <span className="journal-post__back-line" aria-hidden />
-              JOURNAL
-            </BackLink>
-            <div className="journal-post__meta">
-              <TagList tags={postTags(post)} />
-              <span aria-hidden>·</span>
-              <time dateTime={post.date.replace(/\./g, '-')}>{post.date}</time>
-              <span aria-hidden>·</span>
-              <span>{post.readMin} min read</span>
-            </div>
-            <div className="journal-post__num">{post.num}</div>
-            <h1 className="journal-post__title">{post.title}</h1>
-            <div className="journal-post__title-en">{post.titleEn}</div>
+            <Breadcrumbs label={t.crumbs} className="journal-post__crumbs">
+              <BreadcrumbsItem href="/">{t.home}</BreadcrumbsItem>
+              <BreadcrumbsItem as={BackLink}>Journal</BreadcrumbsItem>
+              <BreadcrumbsItem>{post.title}</BreadcrumbsItem>
+            </Breadcrumbs>
           </div>
+          <div className="journal-post__meta fade-in" style={{ '--i': 1 }}>
+            <TagList tags={postTags(post)} />
+            <span aria-hidden>·</span>
+            <time dateTime={post.date.replace(/\./g, '-')}>{post.date}</time>
+            <span aria-hidden>·</span>
+            <span>{post.readMin} min read</span>
+          </div>
+          <div className="journal-post__num fade-in" style={{ '--i': 2 }}>{post.num}</div>
+          <h1 className="journal-post__title fade-in" style={{ '--i': 3 }}>{post.title}</h1>
+          <div className="journal-post__title-en fade-in" style={{ '--i': 4 }}>{post.titleEn}</div>
         </header>
 
         <div className="journal-post__rule" aria-hidden />

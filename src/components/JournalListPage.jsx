@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { Skeleton } from './Skeleton.jsx'
 import { Tag, TagList } from './Tag.jsx'
 import { JOURNAL_FILTER, JOURNAL_HEADER, JOURNAL_META, postTags, tagCounts } from '../data/journal.js'
 import { useJournal } from '../context/journal.js'
@@ -19,7 +20,9 @@ export default function JournalListPage() {
   const { lang } = useLang()
   const meta = JOURNAL_META[lang]
   const header = JOURNAL_HEADER[lang]
-  const allPosts = useJournal().content.posts[lang]
+  const { content, loading } = useJournal()
+  // Until R2 answers, content holds the bundled default posts; show placeholders instead of swapping them out.
+  const allPosts = loading ? [] : content.posts[lang]
   // The chosen tag lives in the URL (?tag=AI), so a filtered list can be shared.
   const [params, setParams] = useSearchParams()
   const tag = params.get('tag')?.toUpperCase() ?? null
@@ -54,13 +57,14 @@ export default function JournalListPage() {
             </p>
           </div>
           <div className="journal-header__count" aria-hidden>
-            {String(posts.length).padStart(2, '0')} Entries
+            {loading ? '—' : String(posts.length).padStart(2, '0')} Entries
           </div>
         </div>
         <div className="journal-header__slash" aria-hidden />
       </header>
 
       <div className="journal-list">
+        {loading ? <ListSkeleton label={header.loading} /> : null}
         <TagFilter posts={allPosts} tag={tag} onChoose={chooseTag} />
         {latest ? <FeaturedPost post={latest} /> : null}
         {byYear(rest).map(([year, group]) => (
@@ -109,6 +113,53 @@ function TagFilter({ posts, tag, onChoose }) {
           {name}
         </Tag>
       ))}
+    </div>
+  )
+}
+
+/** Placeholders in the shape of the featured card and three rows, using the same grids. */
+function ListSkeleton({ label }) {
+  return (
+    <div className="journal-skeleton" role="status" aria-label={label}>
+      <div className="journal-filter tag-group">
+        {[64, 96, 88, 72].map((w) => (
+          <Skeleton key={w} className="journal-skeleton__pill" style={{ width: w }} />
+        ))}
+      </div>
+      <div className="journal-card">
+        <div className="journal-card__index">
+          <Skeleton className="journal-skeleton__num" />
+        </div>
+        <div className="journal-card__body">
+          <Skeleton className="journal-skeleton__meta" />
+          <Skeleton className="journal-skeleton__title" />
+          <Skeleton className="journal-skeleton__title journal-skeleton__title--short" />
+          <Skeleton className="journal-skeleton__line" />
+          <Skeleton className="journal-skeleton__line journal-skeleton__line--short" />
+        </div>
+      </div>
+      <div className="journal-year">
+        <div className="journal-year__label">
+          <Skeleton className="journal-skeleton__num" />
+        </div>
+        <div className="journal-year__rows">
+          {[70, 55, 62].map((w) => (
+            <div className="journal-row" key={w}>
+              <span className="journal-row__num">
+                <Skeleton className="journal-skeleton__num" />
+              </span>
+              <Skeleton className="journal-skeleton__row-title" style={{ width: `${w}%` }} />
+              <span />
+              <span className="journal-row__date">
+                <Skeleton className="journal-skeleton__num" />
+              </span>
+              <span className="journal-row__min">
+                <Skeleton className="journal-skeleton__num" />
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

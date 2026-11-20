@@ -19,6 +19,7 @@ export const HOME_HERO = {
     aside: ['想法、工具，', '和認真做的', '實驗'],
     latestLabel: '最新文章',
     viewAll: '全部文章',
+    loading: '文章載入中',
   },
   en: {
     ariaLabel: 'Home hero',
@@ -27,6 +28,7 @@ export const HOME_HERO = {
     aside: ['Ideas, tools &', 'thoughtful', 'experiments.'],
     latestLabel: 'Latest writings',
     viewAll: 'View all',
+    loading: 'Loading posts',
   },
 }
 

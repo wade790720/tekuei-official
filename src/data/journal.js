@@ -13,10 +13,12 @@ export const JOURNAL_HEADER = {
   zh: {
     pre: 'JOURNAL · 隨筆',
     desc: ['我當下遇到的事：行銷、AI、技術、實作過程。'],
+    loading: '文章載入中',
   },
   en: {
     pre: 'JOURNAL',
     desc: ['What I am working through right now: marketing, AI, engineering and the build process.'],
+    loading: 'Loading posts',
   },
 }
 
@@ -128,8 +130,8 @@ export const JOURNAL_FILTER = {
 
 /** Text on a post page outside the post itself. */
 export const JOURNAL_POST_LABELS = {
-  zh: { back: '返回 Journal', notFound: '文章不存在' },
-  en: { back: 'Back to Journal', notFound: 'Post not found' },
+  zh: { back: '返回 Journal', notFound: '文章不存在', crumbs: '導覽路徑', home: '首頁' },
+  en: { back: 'Back to Journal', notFound: 'Post not found', crumbs: 'Breadcrumb', home: 'Home' },
 }
 
 /** A post's tags. Posts saved before tags existed have one `category`, which becomes the only tag. */

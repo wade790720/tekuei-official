@@ -1,0 +1,87 @@
+/* ScrollShadow (src/components/ScrollShadow.jsx).
+   A mask fades the content at each edge that has more to scroll. The script sets
+   data-scroll-start / data-scroll-end; the fade length grows from 0 to --scroll-shadow-size. */
+
+@property --scroll-shadow-start {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --scroll-shadow-end {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+.scroll-shadow {
+  --scroll-shadow-start: 0px;
+  --scroll-shadow-end: 0px;
+  --scroll-shadow-bar: 10px; /* the scrollbar lane stays unmasked */
+
+  mask-repeat: no-repeat;
+  transition:
+    --scroll-shadow-start 0.3s var(--ease-touch),
+    --scroll-shadow-end 0.3s var(--ease-touch);
+}
+
+.scroll-shadow[data-scroll-start] {
+  --scroll-shadow-start: var(--scroll-shadow-size);
+}
+
+.scroll-shadow[data-scroll-end] {
+  --scroll-shadow-end: var(--scroll-shadow-size);
+}
+
+.scroll-shadow--vertical {
+  overflow-y: auto;
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent,
+      #000 var(--scroll-shadow-start),
+      #000 calc(100% - var(--scroll-shadow-end)),
+      transparent
+    ),
+    linear-gradient(#000, #000);
+  mask-size:
+    100% 100%,
+    var(--scroll-shadow-bar) 100%;
+  mask-position:
+    0 0,
+    100% 0;
+}
+
+.scroll-shadow--horizontal {
+  overflow-x: auto;
+  mask-image:
+    linear-gradient(
+      to right,
+      transparent,
+      #000 var(--scroll-shadow-start),
+      #000 calc(100% - var(--scroll-shadow-end)),
+      transparent
+    ),
+    linear-gradient(#000, #000);
+  mask-size:
+    100% 100%,
+    100% var(--scroll-shadow-bar);
+  mask-position:
+    0 0,
+    0 100%;
+}
+
+.scroll-shadow--no-bar {
+  --scroll-shadow-bar: 0px;
+  scrollbar-width: none;
+}
+
+.scroll-shadow--no-bar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-shadow {
+    transition: none;
+  }
+}

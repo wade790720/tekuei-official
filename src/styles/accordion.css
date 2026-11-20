@@ -1,0 +1,127 @@
+/* Accordion (src/components/Accordion.jsx). Laid out after HeroUI's Accordion:
+   16px trigger padding, a chevron that turns 180deg, a 1px line between items and none after the last. */
+
+.accordion {
+  width: 100%;
+}
+
+.accordion__item {
+  position: relative;
+}
+
+.accordion__item::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--line);
+}
+
+.accordion__item:last-child::after,
+.accordion--no-separator .accordion__item::after {
+  content: none;
+}
+
+.accordion__heading {
+  display: flex;
+  margin: 0;
+  font: inherit;
+}
+
+.accordion__trigger {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 0;
+  border-radius: 0; /* the hover fill has square corners */
+  background: transparent;
+  font-family: var(--font-serif);
+  font-size: var(--type-h3);
+  line-height: var(--type-h3-lh);
+  text-align: start;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.3s var(--ease-touch), color 0.3s var(--ease-touch);
+}
+
+@media (hover: hover) {
+  .accordion__trigger:hover:not([aria-expanded='true'], :disabled) {
+    background: var(--gray-a2);
+  }
+}
+
+.accordion__trigger:focus-visible {
+  outline: 1px solid var(--ember-line);
+  outline-offset: -1px;
+}
+
+.accordion__trigger:disabled {
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+.accordion__indicator {
+  display: flex;
+  flex-shrink: 0;
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+  transition: transform 0.25s var(--ease-touch);
+}
+
+.accordion__trigger[aria-expanded='true'] .accordion__indicator {
+  transform: rotate(-180deg);
+}
+
+.accordion__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.25s var(--ease-touch),
+    opacity 0.25s var(--ease-touch);
+}
+
+.accordion__item[data-open] .accordion__panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.accordion__panel-inner {
+  overflow: hidden;
+}
+
+.accordion__body {
+  padding: 0 var(--space-4) var(--space-4);
+  font-size: var(--type-body);
+  line-height: var(--type-body-lh);
+  color: var(--text-body);
+}
+
+/* Surface: the whole stack on a card, the lines inset from both edges */
+.accordion--surface {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+
+.accordion--surface .accordion__item::after {
+  inset-inline: 3%;
+}
+
+@media (hover: hover) {
+  .accordion--surface .accordion__trigger:hover:not([aria-expanded='true'], :disabled) {
+    background: var(--surface-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accordion__trigger,
+  .accordion__indicator,
+  .accordion__panel {
+    transition: none;
+  }
+}

@@ -1,0 +1,50 @@
+/* Skeleton (src/components/Skeleton.jsx). Copies HeroUI's Skeleton: the block is a raised surface
+   at 70%, and shimmer sweeps the same surface at 100% across it, left to right in 2s.
+   HeroUI's --surface-tertiary (#262627 in dark) maps to our --surface-3. */
+
+.skeleton {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 1em;
+  border-radius: calc(var(--radius-sm) / 2); /* 4px, HeroUI's rounded-sm */
+  background: color-mix(in oklab, var(--surface-3) 70%, transparent);
+  pointer-events: none;
+}
+
+.skeleton--shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right in oklab, transparent 0%, var(--surface-3) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: tekuei-skeleton-shimmer 2s linear infinite;
+}
+
+/* Tailwind's animate-pulse, which HeroUI uses: not one of our easings, kept to match it */
+.skeleton--pulse {
+  animation: tekuei-skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Prefixed: a browser extension (eduser.css) injects its own @keyframes skeleton-shimmer, which overrode ours */
+@keyframes tekuei-skeleton-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes tekuei-skeleton-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton--pulse {
+    animation: none;
+  }
+
+  .skeleton--shimmer::after {
+    display: none;
+  }
+}

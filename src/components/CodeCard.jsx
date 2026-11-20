@@ -3,6 +3,7 @@ import { CARD_LABELS } from '../data/cards.js'
 import { useLang } from '../i18n'
 import { tokenize } from '../lib/highlight.js'
 import { Card } from './Card.jsx'
+import { ScrollShadow } from './ScrollShadow.jsx'
 import '../styles/cards.css'
 
 const BADGE = { bash: 'SH', shell: 'SH', zsh: 'SH', javascript: 'JS', typescript: 'TS', python: 'PY', yaml: 'YML' }
@@ -48,7 +49,7 @@ export function CodeCard({ code, lang = 'ts', filename }) {
           {copied ? t.copied : ''}
         </span>
       </figcaption>
-      <pre className="code-card__pre" tabIndex={0}>
+      <ScrollShadow as="pre" orientation="horizontal" size={32} className="code-card__pre" tabIndex={0}>
         <code>
           {tokens.map((tk, i) =>
             tk.type === 'plain' ? (
@@ -60,7 +61,7 @@ export function CodeCard({ code, lang = 'ts', filename }) {
             ),
           )}
         </code>
-      </pre>
+      </ScrollShadow>
     </Card>
   )
 }

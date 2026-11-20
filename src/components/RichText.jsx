@@ -107,7 +107,7 @@ function Node({ node }) {
 /** @param {{ doc: { content?: any[] } }} props */
 export function RichText({ doc }) {
   return (doc.content ?? []).map((node, i) => (
-    <div key={i} className="fade-in">
+    <div key={i}>
       <Node node={node} />
     </div>
   ))

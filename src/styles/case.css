@@ -320,12 +320,13 @@
 }
 
 .case-prose {
-  color: var(--text-secondary);
+  max-width: var(--page-reading);
+  color: var(--text-body);
   letter-spacing: 0;
-  font-weight: var(--weight-light);
-  font-size: clamp(12px, 1.2vw, 14px);
+  font-weight: var(--weight-regular);
+  font-size: var(--type-body);
   font-family: var(--fc);
-  line-height: 2.2;
+  line-height: var(--type-body-lh);
 }
 
 .case-section--light .case-prose {

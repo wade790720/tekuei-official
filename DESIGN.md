@@ -21,6 +21,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 | 頁面背景 | `--surface-0` | `#0b0b0d` obsidian |
 | 卡片、區塊背景 | `--surface-1` | `#181719` charcoal |
 | 浮起的元素 | `--surface-2` | `#242024` |
+| 載入中的佔位方塊（Skeleton） | `--surface-3` | ivory 14% 混入 obsidian |
 | 分隔線、格線 | `--line` | ivory 8% |
 | 邊框、要看得到的分隔 | `--line-strong` | ivory 14% |
 | 強調 | `--ember` | `#c99a63` gold |
@@ -51,6 +52,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 例外：Journal 文章的段落和清單照 Editor.js 的間距，行高 1.6，段落之間 12px（`--space-3`）。（2026-11-20 Wade 決定。）
 - 需要閱讀的字至少 12px（`--type-caption`）。只有標籤可以用 11px。
 - 一行中文 35–40 字（約 640–720px）。
+- 換行：標題用 `text-wrap: balance`，段落、清單、引言、圖說用 `text-wrap: pretty`，避免最後一行只剩一個字。全站寫在 `src/index.css`。
 - 這組字級是 2026-11-19 從 jakub.kr、interfaces.dev、Promptfolio 比對後定的。
 
 ### 字重
@@ -115,10 +117,11 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 左右留白用 `--page-pad`（`clamp(20px, 4vw, 68px)`）。
 - Work 和 Journal 列表的欄寬是 `--page-column`（1104px）。容器寫 `max-width: var(--page-column-box)`，左右 padding 用 `var(--page-pad)`。
 - Journal 列表：最新一篇用大卡片，其他文章是一列一篇（約 68px），按年份分組，年份標在左欄。
-- Journal 文章頁的返回連結有兩個：頂端的「── JOURNAL」和文末（上一篇、下一篇下面）的「── 返回 Journal」。從列表點進來時，兩個都等於「上一頁」，回到列表原本的捲動位置和標籤篩選。從別處進來時，連到 `/journal`。（2026-11-20 決定。）
+- Journal 文章頁的最上面是 `Breadcrumbs`：首頁、Journal、文章標題（2026-11-21 Wade 決定，取代頂端的「── JOURNAL」）。文末（上一篇、下一篇下面）還有「── 返回 Journal」。從列表點進來時，Breadcrumbs 的 Journal 和文末的返回連結都等於「上一頁」，回到列表原本的捲動位置和標籤篩選。從別處進來時，連到 `/journal`。
 - 全站：點連結換頁時從最上面開始。瀏覽器的上一頁、下一頁回到離開時的捲動位置（`App.jsx` 的 `ScrollClasses`）。
 - Journal 列表上方有一排標籤篩選（`Tag`），一次選一個，網址帶 `?tag=`。每篇文章可以有多個標籤，英文大寫，中英文共用。標籤取代了舊的分類（category）。
-- Journal 文章頁和列表用同一個外框（`--page-column-box`）。分隔線和頁尾從左邊緣到右邊緣。其他內容（返回連結、標題、內文、圖片、程式碼、引言、輪播）離外框左右各 8px（`--space-2`），和列表同寬。卡片和文字同寬。（2026-11-19 Wade 決定拿掉 656px 的上限。）
+- Journal 文章頁的內容寬 `--page-reading`（680px，17px 字一行 40 字），比列表窄。文字、圖片、程式碼、引言、輪播全部同寬。外框是 680px 加左右各 8px（`--space-2`），分隔線和文末的頁尾從外框左邊緣到右邊緣。（2026-11-21 Wade 決定，取代 11-19 和列表同寬的決定。參考 jakub.kr 的 644px。）
+- 案例頁的內文段落（`case-prose`）也最寬 `--page-reading`，字級 `--type-body`。標題、交付項目、時間軸維持外框寬度。
 - 斷點：主要用 900px（平板以下）和 768px（手機）。新程式碼只用這兩個。
 - 線：0.5px，顏色 `--ember-line` 或 `--ember-whisper`。格線和分隔線可以用虛線。
 
@@ -127,9 +130,13 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - Easing：`--ease-touch`（`cubic-bezier(0.16, 0.08, 0.12, 1)`）。
 - 時長：hover 0.3–0.4s。淡入 0.6s。依序淡入的間隔 70ms。
 - 進場淡入：在元素加上 `fade-in` class。`src/lib/reveal.js` 的 `mountReveal` 在 App.jsx 掛一次，元素露出 15% 時加上 `is-visible`，只觸發一次。不要為淡入包元件。
-- 位移只用 `opacity` 和 `transform`。淡入的位移寫在各頁 CSS（首頁 20px、Journal 24px）。
+- 位移只用 `opacity` 和 `transform`。淡入的位移寫在各頁 CSS（首頁 20px）。
+- Journal 的淡入：位移 8px，加上 `blur(8px)` 到清楚，0.8s。文章頁首的返回連結、meta、編號、標題、副標依序出現，間隔 80ms（`--i`）。
+- Journal 文章的內文不淡入，直接顯示。讀長文時畫面不要一直在動。
 - 每個效果都要支援 `prefers-reduced-motion`：直接顯示最終畫面。
 - 效果停下後，停止 `requestAnimationFrame`。畫面外不要繼續算。
+- 載入中：資料還沒回來時，用 `Skeleton` 排出內容的形狀。不要先顯示預設資料再整批換掉。
+- 可以捲動的區塊用 `ScrollShadow`：還有內容的那一邊淡出 40px（程式碼卡 32px）。
 
 ### 招牌效果
 
@@ -151,7 +158,8 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 點擊連結和按鈕時有短音效（`src/lib/uiSound.js`），用 Web Audio 即時合成，沒有音檔。參數照抄 recent.design（2026-11-20 Wade 決定），授權不明，上線前要確認。
 - 預設開，沒有開關。減少動態效果開啟時不出聲。
 - `App.jsx` 在 document 掛一個點擊監聽，新元件不用另外接。預設：選單項目 `select`、儲存 `press`、連結 `pressGhost`、其他按鈕 `pressSoft`。
-- 要換音效或靜音，在元素上寫 `data-sound="<名稱>"` 或 `data-sound="off"`。全部音效在 Component Library 的 playSound 頁可以試聽。
+- 要換音效或靜音，在元素上寫 `data-sound="<名稱>"` 或 `data-sound="off"`。
+- 會連續點很多次的控制項不出聲。目前是 `Tag` 篩選按鈕。全部音效在 Component Library 的 playSound 頁可以試聽。
 
 ## 頁尾（Journal）
 
@@ -191,7 +199,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 選取文字時，選取處上方浮出格式工具列：轉換成（段落、前言、標題、引言、清單）、粗體、斜體、底線、連結、行內程式碼。
 - 面板頂端的「預覽」切換成正式頁的畫面，不用儲存或登出。
 - 空段落在網站上顯示成一行空白，和編輯器一樣。
-- 滑鼠移到內文的任何一行，左邊出現「+」和「⠿」（和 Notion、Editor.js 一樣）。「+」在這一行下面新增區塊，這一行是空的時直接換掉它。「⠿」拖曳移動整個區塊，點一下選取。「+」離文字 12px。游標停在空行時，那一行也出現「+」。手機和 768px 以下只在空行顯示「+」，放在空行裡面。
+- 滑鼠移到內文的任何一行，左邊出現「+」和「⠿」（和 Notion、Editor.js 一樣）。「+」在這一行下面新增區塊，這一行是空的時直接換掉它。「⠿」拖曳移動整個區塊，點一下打開區塊選單（刪除）。「+」和「⠿」都是 24px 的圖示按鈕，上下置中對齊。「+」離文字 12px。游標停在空行時，那一行也出現「+」。手機和 768px 以下只在空行顯示「+」，放在空行裡面。
 - 編輯面板從右側滑出，只放標題、英文副標、標籤、日期、閱讀時間、摘要。寬螢幕時頁面往左移，讓出面板的位置。
 - 面板頂端的按鈕：收合（>）、預覽（只有文章頁）、登出、儲存。儲存只有在有修改時才亮。
 - 收合後右下角留一顆「編輯面板」按鈕，有未儲存的修改時帶一個琥珀色圓點。

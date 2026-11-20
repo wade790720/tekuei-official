@@ -17,6 +17,10 @@ import { TextField } from '../TextField.jsx'
 import { TooltipGroup } from '../Tooltip.jsx'
 import { OtpInput } from '../OtpInput.jsx'
 import { Tag, TagList } from '../Tag.jsx'
+import { ScrollShadow } from '../ScrollShadow.jsx'
+import { Breadcrumbs, BreadcrumbsItem } from '../Breadcrumbs.jsx'
+import { Accordion, AccordionItem } from '../Accordion.jsx'
+import { Skeleton } from '../Skeleton.jsx'
 import { blocksToDoc } from '../../lib/richText.js'
 import { mountGlyphField } from '../../lib/glyphField.js'
 import { mountShatterImage } from '../../lib/shatterImage.js'
@@ -316,6 +320,139 @@ const DEMOS = {
   sounds: () => <SoundDemo />,
   tag: () => <TagList tags={['AI', 'MARKETING', 'ENGINEERING']} />,
   'tag-filter': () => <TagFilterDemo />,
+  breadcrumbs: () => (
+    <Breadcrumbs label="導覽路徑">
+      <BreadcrumbsItem href="/">首頁</BreadcrumbsItem>
+      <BreadcrumbsItem href="/journal">Journal</BreadcrumbsItem>
+      <BreadcrumbsItem>示範文章的標題</BreadcrumbsItem>
+    </Breadcrumbs>
+  ),
+  'breadcrumbs-levels': () => (
+    <div style={{ display: 'grid', gap: 16 }}>
+      {[['Work'], ['Work', 'Matsu Biennial'], ['Work', 'Matsu Biennial', '展場']].map((levels) => (
+        <Breadcrumbs key={levels.join()} label="導覽路徑">
+          <BreadcrumbsItem href="/">首頁</BreadcrumbsItem>
+          {levels.map((l, i) =>
+            i < levels.length - 1 ? (
+              <BreadcrumbsItem key={l} href="/work">
+                {l}
+              </BreadcrumbsItem>
+            ) : (
+              <BreadcrumbsItem key={l}>{l}</BreadcrumbsItem>
+            ),
+          )}
+        </Breadcrumbs>
+      ))}
+    </div>
+  ),
+  'breadcrumbs-separator': () => (
+    <Breadcrumbs label="導覽路徑" separator="/">
+      <BreadcrumbsItem href="/">首頁</BreadcrumbsItem>
+      <BreadcrumbsItem href="/journal">Journal</BreadcrumbsItem>
+      <BreadcrumbsItem>文章</BreadcrumbsItem>
+    </Breadcrumbs>
+  ),
+  accordion: () => <AccordionDemo />,
+  'accordion-surface': () => <AccordionDemo variant="surface" />,
+  'accordion-no-separator': () => <AccordionDemo hideSeparator />,
+  'accordion-multiple': () => <AccordionDemo multiple defaultOpen={['stack', 'update']} />,
+  'accordion-disabled': () => <AccordionDemo disabledId="contact" />,
+  'scroll-shadow': () => (
+    <ScrollShadow style={{ height: 240, width: '100%', maxWidth: 360 }}>
+      {Array.from({ length: 12 }, (_, i) => (
+        <p key={i} style={{ margin: '0 0 12px' }}>
+          第 {i + 1} 段示範文字。捲動時，上下還有內容的那一邊會淡出。
+        </p>
+      ))}
+    </ScrollShadow>
+  ),
+  'scroll-shadow-horizontal': () => (
+    <ScrollShadow orientation="horizontal" hideScrollBar style={{ width: '100%', maxWidth: 360 }}>
+      <div className="tag-group" style={{ flexWrap: 'nowrap', width: 'max-content' }}>
+        {['AI', 'MARKETING', 'ENGINEERING', 'DESIGN', 'CULTURE', 'NOTE', 'VISUAL'].map((t) => (
+          <Tag key={t} onClick={() => {}}>
+            {t}
+          </Tag>
+        ))}
+      </div>
+    </ScrollShadow>
+  ),
+  skeleton: () => (
+    <div className="cl-sk-stage">
+      <div className="cl-sk-panel cl-sk-card" role="status" aria-label="載入中">
+        <Skeleton className="cl-sk-r8" style={{ height: 128 }} />
+        <div className="cl-sk-stack">
+          <Skeleton className="cl-sk-r8" style={{ height: 12, width: '60%' }} />
+          <Skeleton className="cl-sk-r8" style={{ height: 12, width: '80%' }} />
+          <Skeleton className="cl-sk-r8" style={{ height: 12, width: '40%' }} />
+        </div>
+      </div>
+    </div>
+  ),
+  'skeleton-text': () => (
+    <div className="cl-sk-stage">
+      <div className="cl-sk-stack cl-sk-text" role="status" aria-label="載入中">
+        {['100%', '83%', '67%', '100%', '50%'].map((w, i) => (
+          <Skeleton key={i} style={{ height: 16, width: w }} />
+        ))}
+      </div>
+    </div>
+  ),
+  'skeleton-list': () => (
+    <div className="cl-sk-stage">
+      <div className="cl-sk-list" role="status" aria-label="載入中">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="cl-sk-item">
+            <Skeleton className="cl-sk-r8" style={{ height: 40, width: 40, flexShrink: 0 }} />
+            <div>
+              <Skeleton style={{ height: 12, width: '100%' }} />
+              <Skeleton style={{ height: 12, width: '80%' }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  ),
+  'skeleton-types': () => (
+    <div className="cl-sk-stage">
+      <div className="cl-sk-types">
+        {[
+          ['shimmer', 'Shimmer'],
+          ['pulse', 'Pulse'],
+          ['none', 'None'],
+        ].map(([type, label]) => (
+          <div key={type}>
+            <p className="cl-sk-type-label">{label}</p>
+            <div className="cl-sk-panel cl-sk-stack">
+              <Skeleton animation={type} className="cl-sk-r8" style={{ height: 80 }} />
+              <Skeleton animation={type} className="cl-sk-r8" style={{ height: 12, width: '60%' }} />
+              <Skeleton animation={type} className="cl-sk-r8" style={{ height: 12, width: '80%' }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  ),
+}
+
+const ACCORDION_DEMO = [
+  ['stack', '網站用什麼做的？', '示範文字：Vite、React 和 Cloudflare Pages，文章存在 R2。'],
+  ['update', '多久更新一次？', '示範文字：想到就寫，沒有固定的頻率。'],
+  ['contact', '怎麼聯絡？', '示範文字：頁尾有 Email 和 Instagram。'],
+]
+
+function AccordionDemo({ disabledId, ...props }) {
+  return (
+    <div style={{ width: '100%', maxWidth: 560 }}>
+      <Accordion {...props}>
+        {ACCORDION_DEMO.map(([id, title, body]) => (
+          <AccordionItem key={id} id={id} title={title} disabled={id === disabledId}>
+            {body}
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </div>
+  )
 }
 
 function TagFilterDemo() {

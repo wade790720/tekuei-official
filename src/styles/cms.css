@@ -552,7 +552,13 @@
   position: absolute;
   z-index: 2;
   display: flex;
+  align-items: center;
   translate: calc(-100% - var(--space-3)) 0; /* left is the block's left edge */
+}
+
+/* Each button sits in a DropdownMenu wrapper; flex drops the wrapper's line box, which pushed it down */
+.cms-ed-gutter .dropdown-menu {
+  display: flex;
 }
 
 .cms-ed-gutter .btn--icon {

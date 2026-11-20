@@ -1,5 +1,6 @@
 import { useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { ScrollShadow } from './ScrollShadow.jsx'
 import '../styles/drawer.css'
 
 /**
@@ -46,5 +47,5 @@ export function DrawerHeader({ title, subtitle, children }) {
 
 /** The scrolling part of the drawer. */
 export function DrawerBody({ children }) {
-  return <div className="drawer__body">{children}</div>
+  return <ScrollShadow className="drawer__body">{children}</ScrollShadow>
 }
