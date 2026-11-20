@@ -88,7 +88,7 @@ export default function JournalListPage() {
         ))}
       </div>
 
-      <JournalFooter />
+      <JournalFooter posts={allPosts} />
       <JournalListEditPanel />
     </div>
   )
@@ -164,7 +164,8 @@ function FooterLink({ href, i, children }) {
   )
 }
 
-function JournalFooter() {
+/** @param {{ posts: { slug: string, title: string }[] }} props  newest first; the Latest column lists three */
+function JournalFooter({ posts }) {
   const { lang } = useLang()
   const footer = HOME_FOOTER[lang]
   const root = useRef(null)
@@ -174,20 +175,22 @@ function JournalFooter() {
     () =>
       mountShatterImage(sea.current, {
         src: seaImage,
-        crop: [0, 389, 1280, 470],
+        crop: [0, 1166, 3840, 1410], // the bottom strip of the 3840 × 2576 image, in the canvas's 1280:470 ratio
         onPlay: () => root.current?.classList.add('is-in'),
       }),
     [],
   )
 
   const columns = [
-    { title: 'Explore', links: footer.explore },
-    { title: 'Contact', links: footer.contact },
+    { title: footer.titles.explore, links: footer.explore },
+    { title: footer.titles.latest, links: posts.slice(0, 3).map((p) => ({ label: p.title, href: `/journal/${p.slug}` })) },
+    { title: footer.titles.contact, links: footer.contact },
   ]
 
   return (
     <footer className="journal-footer" ref={root}>
       <div className="journal-footer__rules" aria-hidden>
+        <span />
         <span />
         <span />
         <span />
@@ -205,12 +208,12 @@ function JournalFooter() {
           </div>
         </div>
         {columns.map((col, c) => (
-          <div className="journal-footer__col" key={col.title}>
+          <div className="journal-footer__col" key={c}>
             <div className="journal-footer__title journal-footer__r" style={{ '--i': c * 2 + 2 }}>
               {col.title}
             </div>
             {col.links.map((link, k) => (
-              <FooterLink key={link.label} href={link.href} i={c * 2 + 3 + k}>
+              <FooterLink key={link.href} href={link.href} i={c * 2 + 3 + k}>
                 {link.label}
               </FooterLink>
             ))}

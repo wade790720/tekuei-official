@@ -6,14 +6,6 @@ TEKUEI 網站的待辦清單。2026-11-19 建立。
 
 ## 一、現在就可以做
 
-### 內容與版權
-
-- [ ] **換掉 Journal 頁尾的圖**（Wade）
-  `src/assets/journal/footer-sea.webp` 是參考網站的截圖，有版權風險。上線前要換成有授權的圖。
-- [ ] **移除首頁的舊文案**（Claude，Wade 確認）
-  PHILOSOPHY 段落（「品牌，不只是曝光流量……」）和 `tagline`（「讓有價值的人……」）是舊的「人格品牌」定位。位置在 `src/data/homepage.js`。
-- [ ] **確認 MONOLAB 的身分**（Wade）
-  About 的 CV 寫「創立」，新的自我介紹寫「共同創辦人」。選一個，兩邊改成一樣。
 
 ### 文案
 

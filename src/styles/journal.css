@@ -709,7 +709,7 @@
   inset: 0 var(--page-gutter);
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   pointer-events: none;
 }
 
@@ -721,7 +721,7 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   padding: var(--space-12) var(--page-gutter) 0;
 }
 
@@ -739,16 +739,18 @@
   font-size: var(--type-h2);
   letter-spacing: 0.4em;
   margin-right: -0.4em; /* letter-spacing trails the last glyph; keep it centred */
+  white-space: nowrap;
   color: var(--text-primary);
   text-decoration: none;
 }
 
 .journal-footer__sub,
 .journal-footer__title {
+  margin-right: calc(-1 * var(--type-label-ls)); /* letter-spacing trails the last glyph; keep it centred */
   font-family: var(--font-label);
   font-size: var(--type-label);
   letter-spacing: var(--type-label-ls);
-  color: var(--j-lamp);
+  color: var(--text-tertiary); /* gold is for the current page, focus and hover only */
   text-transform: uppercase;
 }
 
@@ -757,6 +759,7 @@
 }
 
 .journal-footer__copy {
+  margin-right: calc(-1 * var(--type-label-ls));
   font-family: var(--font-label);
   font-size: var(--type-label);
   letter-spacing: var(--type-label-ls);
@@ -764,7 +767,8 @@
 }
 
 .journal-footer__link {
-  font-size: var(--type-caption);
+  font-family: var(--font-serif); /* nav links: the same type as the header nav */
+  font-size: var(--type-nav);
   color: var(--j-text-dim);
   text-decoration: none;
   background: linear-gradient(currentColor, currentColor) 50% 100% / 0 0.5px no-repeat;
@@ -860,6 +864,15 @@
 }
 
 /* ── Responsive ── */
+/* Two narrow columns on a phone: the brand mark shrinks to stay on one line */
+@media (max-width: 768px) {
+  .journal-footer__brand {
+    font-size: var(--type-h3);
+    letter-spacing: 0.3em;
+    margin-right: -0.3em;
+  }
+}
+
 
 @media (max-width: 900px) {
   .journal-footer__cols {

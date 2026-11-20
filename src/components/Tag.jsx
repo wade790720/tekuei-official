@@ -14,7 +14,7 @@ export function Tag({ children, count, selected = false, onClick }) {
   if (!onClick) return <span className="tag">{children}</span>
   return (
     <button type="button" className="tag tag--button" aria-pressed={selected} onClick={onClick}>
-      {children}
+      <span>{children}</span>
       {count != null ? <span className="tag__count">{count}</span> : null}
     </button>
   )

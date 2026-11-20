@@ -340,6 +340,7 @@ export const GROUPS = [
           '標籤是英文大寫，中英文共用，在編輯面板用逗號分開輸入（parseTags）。',
           '舊文章只有 category，postTags 會把它當成唯一的標籤。',
           '少於兩個標籤時，篩選列不顯示。',
+          '按鈕的字用 text-box 裁到大寫字高和基線，大寫字母在膠囊裡上下置中。右側內距少一個字距，因為字距會加在最後一個字後面。不支援 text-box 的瀏覽器（Firefox）字會偏上約 1px。',
         ],
       },
 
@@ -589,7 +590,7 @@ export const GROUPS = [
         name: 'mountShatterImage',
         file: 'src/lib/shatterImage.js',
         summary: '碎片從左到右拼成一張圖，然後靜止',
-        hero: { demo: 'shatter', code: `useEffect(() => mountShatterImage(canvas.current, { src, crop: [0, 0, 1280, 470] }), [])` },
+        hero: { demo: 'shatter', code: `useEffect(() => mountShatterImage(canvas.current, { src, crop: [0, 1166, 3840, 1410] }), [])` },
         api: [
           {
             description: '圖的亮度轉成透明度，所以要用黑底、亮線條的圖',
