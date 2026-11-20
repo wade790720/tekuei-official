@@ -126,7 +126,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 - Easing：`--ease-touch`（`cubic-bezier(0.16, 0.08, 0.12, 1)`）。
 - 時長：hover 0.3–0.4s。淡入 0.6s。依序淡入的間隔 70ms。
-- 進場淡入用 `FadeIn`（`useReveal`，IntersectionObserver 觸發一次）。案例頁自己的 `case/CaseReveal` 也一樣。
+- 進場淡入：在元素加上 `fade-in` class。`src/lib/reveal.js` 的 `mountReveal` 在 App.jsx 掛一次，元素露出 15% 時加上 `is-visible`，只觸發一次。不要為淡入包元件。
 - 位移只用 `opacity` 和 `transform`。淡入的位移寫在各頁 CSS（首頁 20px、Journal 24px）。
 - 每個效果都要支援 `prefers-reduced-motion`：直接顯示最終畫面。
 - 效果停下後，停止 `requestAnimationFrame`。畫面外不要繼續算。
@@ -178,7 +178,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 文字的部分（段落、前言、小標題、引言、清單）沿用 `journal.css` 的 `journal-post__*` 樣式。
 - 編輯器裡的圖片卡就是正式的 `ImageCard`，圖說在圖片下方直接輸入。替代文字、網址、小圖置中收在右上角的「⋯」裡。沒有替代文字時顯示「缺替代文字」。
 
-- 外觀：`--paper-warm` 底、圓角 16px、1px 象牙白光環，不用邊框。樣式在 `src/styles/cards.css`。
+- 外觀：四種 card 都用 `Card` 當外框：`--surface-1` 底、圓角 16px、1px 象牙白光環，不用邊框（`src/styles/card.css`）。各 card 自己的樣式在 `src/styles/cards.css`。
 - 程式碼字型用 `--font-mono`，顏色用 `--code-*` token。上色由 `src/lib/highlight.js` 處理，只支援類 C 語法。
 - 介面文字（複製、播放等）在 `CARD_LABELS`。
 - 三種 card 的示範和完整規範在 Component Library（見下一節）。
@@ -206,10 +206,12 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 ## Component Library
 
 - 開發模式打開 `/dev/component-library`。編排參考 Radix Themes 的文件：一頁一個主題或元件，網址是 `/dev/component-library/<id>`。
-- 分類：概覽（開始使用、樣式、版面、資源）、主題（總覽、Color、Typography、Spacing、Radius、Motion、Breakpoints）、元件、效果、編輯模式。
+- 分類：概覽（開始使用、樣式、版面、資源）、主題（總覽、Color、Typography、Spacing、Radius、Motion、Breakpoints）、元件、效果、工具。
 - 每種頁面有自己的編排：指南用步驟和延伸閱讀，token 頁用色階或刻度、token 程式碼和表格，元件頁用示範、API Reference（每個零件一個小標題）、Examples、鍵盤、說明。
 - 左側目錄固定不動。右側的「本頁」列出段落，寬度 1280px 以下隱藏。手機上目錄收成一顆按鈕。
 - 文字在 `src/components/dev/`：`guides.data.js`（概覽和主題）、`componentLibrary.data.js`（元件）、`foundations.data.js`（字級、間距、色票）。這一頁只給開發用，只寫中文，不進正式 build。
+- 只列可以自由組合的元件，例如 Button、Drawer、OtpInput。現在只用一次也算，只要它不綁定某個用途。
+- 綁定某個用途的組合不列，例如 `SiteNav`、`SidePanel`（編輯面板）、`OtpGate`（密碼框）、`JournalEditPanel`、`AdminProvider`。內部的渲染器（`RichText`）也不列。
 - 新增或修改元件時，同一個變更裡更新這份資料。標「待修」的項目是已知問題。
 
 ## 無障礙

@@ -2,7 +2,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { getNextCase } from '../data/cases/index.js'
 import { useCaseCms } from '../hooks/useCmsSection.js'
-import { CaseReveal } from './case/CaseReveal.jsx'
 import '../styles/case.css'
 
 function DelGrid({ items }) {
@@ -119,7 +118,7 @@ export default function CaseStudyPage() {
         </div>
       </header>
 
-      <CaseReveal as="section" className="case-section">
+      <section className="fade-in case-section">
         <div className="case-wrap">
           <SectionHeader {...sections.overview} />
           {sections.overview.prose.map((p) => (
@@ -136,10 +135,10 @@ export default function CaseStudyPage() {
             </blockquote>
           ) : null}
         </div>
-      </CaseReveal>
+      </section>
 
-      <CaseReveal
-        className="case-img-full"
+      <div
+        className="fade-in case-img-full"
         style={!media.fullWidthImage?.url && media.fullWidthBg ? { background: media.fullWidthBg } : undefined}
       >
         {media.fullWidthImage?.url ? (
@@ -148,9 +147,9 @@ export default function CaseStudyPage() {
         {!media.fullWidthImage?.url ? (
           <span className="case-img-label">{media.fullWidthLabel}</span>
         ) : null}
-      </CaseReveal>
+      </div>
 
-      <CaseReveal as="section" className="case-section case-section--light">
+      <section className="fade-in case-section case-section--light">
         <div className="case-wrap">
           <SectionHeader {...sections.challenge} />
           {sections.challenge.prose.map((p) => (
@@ -161,9 +160,9 @@ export default function CaseStudyPage() {
           <div className="case-sec-div" aria-hidden />
           <DelGrid items={sections.challenge.deliverables} />
         </div>
-      </CaseReveal>
+      </section>
 
-      <CaseReveal as="section" className="case-section">
+      <section className="fade-in case-section">
         <div className="case-wrap">
           <SectionHeader {...sections.approach} />
           {sections.approach.prose.map((p) => (
@@ -182,11 +181,11 @@ export default function CaseStudyPage() {
             ))}
           </div>
         </div>
-      </CaseReveal>
+      </section>
 
       <div className="case-wrap">
-        <CaseReveal
-          className="case-img"
+        <div
+          className="fade-in case-img"
           style={!media.inlineImage?.url ? undefined : { background: 'transparent', border: 'none' }}
         >
           {media.inlineImage?.url ? (
@@ -194,17 +193,17 @@ export default function CaseStudyPage() {
           ) : (
             <span className="case-img-label">{media.inlineLabel}</span>
           )}
-        </CaseReveal>
+        </div>
       </div>
 
-      <CaseReveal as="section" className="case-section case-section--light">
+      <section className="fade-in case-section case-section--light">
         <div className="case-wrap">
           <SectionHeader {...sections.deliverables} />
           <DelGrid items={sections.deliverables.items} />
         </div>
-      </CaseReveal>
+      </section>
 
-      <CaseReveal as="section" className="case-section">
+      <section className="fade-in case-section">
         <div className="case-wrap">
           <SectionHeader {...sections.result} />
           {sections.result.prose.map((p) => (
@@ -218,16 +217,16 @@ export default function CaseStudyPage() {
             </blockquote>
           ) : null}
         </div>
-      </CaseReveal>
+      </section>
 
       {nextCase ? (
-        <CaseReveal className="case-next">
+        <div className="fade-in case-next">
           <div className="case-next-label">N E X T &nbsp;&nbsp; C A S E</div>
           <Link to={nextCase.href}>
             <NextCaseTitle titleEm={nextCase.titleEm} titleRest={nextCase.titleRest} />
             <div className="case-next-sub">{nextCase.subtitle}</div>
           </Link>
-        </CaseReveal>
+        </div>
       ) : null}
 
       <footer className="case-footer">

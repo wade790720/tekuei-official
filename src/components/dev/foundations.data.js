@@ -135,7 +135,7 @@ export const TYPE_DOC = {
       ['程式碼', '--font-mono', 'const gap = 24'],
     ],
   },
-  spec: '標題的實際大小、基線和 x-height，加上每段文字的字型、字級 / 行高、字重，數值都從畫面量出來。',
+  spec: '標題的實際大小、基線和 x-height，數值從畫面量出來。',
 }
 
 export const TYPE_RULES = [
@@ -177,9 +177,8 @@ export const SPEC_SAMPLE = {
   body: '每一個間距都在刻度上，每一個顏色都有用途。標註直接量自這張卡片，改了 CSS，數字就跟著變。',
   actions: ['閱讀全文', '分享'],
   captions: {
-    spacing: '粉紅色的 I 量出每個間距，數字單位是 px。卡片內距 32、段落之間 16–24、按鈕內距 12、按鈕之間 8。',
-    typography: '選取框是標題的實際大小，兩條線是基線和 x-height，右邊是每段文字的字型、字級 / 行高、字重。',
-    color: '右邊是每個元素用的 token 和實際色值。邊框和分隔線用中性的 --line，金色只留給強調。',
+    spacing: '卡片內距 32、元素之間 16、段落之間 24、按鈕之間 8，單位是 px。',
+    typography: '選取框是標題的實際大小，兩條線是基線和 x-height。',
   },
 }
 

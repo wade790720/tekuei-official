@@ -1,8 +1,6 @@
 // Live demos for the component pages. Each entry in componentLibrary.data.js names one by key.
 // Demo data only: nothing here is real content, and nothing is sent anywhere.
 import { useEffect, useRef, useState } from 'react'
-import { FadeIn } from '../FadeIn.jsx'
-import { OtpGate } from '../admin/OtpGate.jsx'
 import { CodeCard } from '../CodeCard.jsx'
 import { ImageCard } from '../ImageCard.jsx'
 import { RichText } from '../RichText.jsx'
@@ -10,7 +8,14 @@ import { SlidesCard } from '../SlidesCard.jsx'
 import { VideoCard } from '../VideoCard.jsx'
 import { Editor } from '../Editor.jsx'
 import { DropdownMenu } from '../DropdownMenu.jsx'
-import { SecretInput } from '../SecretInput.jsx'
+import { Button } from '../Button.jsx'
+import { Card } from '../Card.jsx'
+import { Drawer, DrawerBody, DrawerHeader } from '../Drawer.jsx'
+import { Switch } from '../Switch.jsx'
+import { TextArea } from '../TextArea.jsx'
+import { TextField } from '../TextField.jsx'
+import { TooltipGroup } from '../Tooltip.jsx'
+import { OtpInput } from '../OtpInput.jsx'
 import { Tag, TagList } from '../Tag.jsx'
 import { blocksToDoc } from '../../lib/richText.js'
 import { mountGlyphField } from '../../lib/glyphField.js'
@@ -34,13 +39,6 @@ const result = streamText({
     }),
   },
 });`
-
-const SAMPLE_DOC = blocksToDoc([
-  { type: 'lead', text: '前言用比內文大一階的字，帶出整篇文章。' },
-  { type: 'h2', text: '小標題' },
-  { type: 'p', text: '一般段落，字級 17px，行高 1.9，一行約 35–40 個中文字。' },
-  { type: 'quote', text: '引言放在這裡。', attr: '出處' },
-])
 
 const EDITOR_SAMPLE = blocksToDoc([
   { type: 'lead', text: '編輯器的示範，選取文字後按工具列。' },
@@ -103,9 +101,9 @@ function SoundDemo() {
   return (
     <div className="cl-sounds">
       {Object.keys(SOUNDS).map((name) => (
-        <button key={name} type="button" className="cms-btn cms-btn--ghost" data-sound={name}>
+        <Button key={name} variant="ghost" data-sound={name}>
           {name}
-        </button>
+        </Button>
       ))}
     </div>
   )
@@ -142,13 +140,13 @@ function PickerMenuDemo() {
 }
 
 // 123456 is the "right" code.
-function SecretDemo({ length = 6, startInvalid = false }) {
+function OtpInputDemo({ length = 6, startInvalid = false }) {
   const [code, setCode] = useState('')
   const [wrong, setWrong] = useState(startInvalid)
   const right = '123456'.slice(0, length)
   return (
     <div className="cl-box cl-box--row">
-      <SecretInput
+      <OtpInput
         length={length}
         value={code}
         onChange={(v) => {
@@ -168,27 +166,44 @@ function SecretDemo({ length = 6, startInvalid = false }) {
   )
 }
 
-function OtpDemo() {
-  const [open, setOpen] = useState(false)
-  const [result, setResult] = useState('')
+function FieldsDemo() {
+  const [title, setTitle] = useState('')
+  const [excerpt, setExcerpt] = useState('')
+  return (
+    <div className="cl-box cl-fields">
+      <TextField value={title} onChange={setTitle} placeholder="文章標題" aria-label="文章標題" />
+      <TextArea value={excerpt} onChange={setExcerpt} placeholder="摘要，輸入多行時會長高" aria-label="摘要" />
+    </div>
+  )
+}
+
+function SwitchDemo() {
+  const [on, setOn] = useState(false)
   return (
     <div className="cl-box cl-box--row">
-      <button type="button" className="cl-replay cl-replay--inline" onClick={() => setOpen(true)}>
-        打開密碼框
-      </button>
-      <span>示範密碼 123456 {result}</span>
-      <OtpGate
-        open={open}
-        onClose={() => setOpen(false)}
-        onVerify={async (code) => {
-          await new Promise((r) => setTimeout(r, 600))
-          return code === '123456'
-        }}
-        onUnlocked={() => {
-          setOpen(false)
-          setResult('· 已解鎖')
-        }}
-      />
+      <Switch checked={on} onChange={setOn} label="重複播放" />
+      <span>重複播放：{on ? '開' : '關'}</span>
+    </div>
+  )
+}
+
+function DrawerDemo() {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="cl-box">
+      <Button variant="ghost" onClick={() => setOpen(true)}>
+        打開 Drawer
+      </Button>
+      <Drawer open={open} label="示範面板">
+        <DrawerHeader title="示範面板" subtitle="Drawer">
+          <Button variant="ghost" onClick={() => setOpen(false)}>
+            關閉
+          </Button>
+        </DrawerHeader>
+        <DrawerBody>
+          <p className="cl-drawer-text">內容放在 DrawerBody，太長時在這裡捲動。</p>
+        </DrawerBody>
+      </Drawer>
     </div>
   )
 }
@@ -249,19 +264,46 @@ const DEMOS = {
   ),
   'menu-actions': () => <ActionMenuDemo />,
   'menu-picker': () => <PickerMenuDemo />,
-  secret: () => <SecretDemo />,
-  'secret-invalid': () => <SecretDemo startInvalid />,
-  'secret-length': () => <SecretDemo length={4} />,
-  otp: () => <OtpDemo />,
-  postdoc: () => (
-    <div className="journal-post__body doc-prose">
-      <RichText doc={SAMPLE_DOC} />
+  'otp-input': () => <OtpInputDemo />,
+  'otp-input-invalid': () => <OtpInputDemo startInvalid />,
+  'otp-input-length': () => <OtpInputDemo length={4} />,
+  drawer: () => <DrawerDemo />,
+  editor: () => <EditorDemo />,
+  card: () => (
+    <div className="cl-box">
+      <Card className="cl-card">Card</Card>
     </div>
   ),
-  editor: () => <EditorDemo />,
+  button: () => (
+    <div className="cl-box cl-box--row">
+      <Button>儲存</Button>
+      <Button variant="ghost">登出</Button>
+      <Button variant="icon" aria-label="更多">
+        ⋯
+      </Button>
+      <Button disabled>儲存</Button>
+    </div>
+  ),
+  tooltip: () => (
+    <div className="cl-box">
+      <TooltipGroup className="cl-tips" role="toolbar" aria-label="示範工具列">
+        <Button variant="icon" aria-label="粗體" data-tip="粗體" data-kbd="Ctrl B">
+          <b>B</b>
+        </Button>
+        <Button variant="icon" aria-label="斜體" data-tip="斜體" data-kbd="Ctrl I">
+          <i>I</i>
+        </Button>
+        <Button variant="icon" aria-label="連結" data-tip="連結">
+          ↗
+        </Button>
+      </TooltipGroup>
+    </div>
+  ),
+  'text-field': () => <FieldsDemo />,
+  switch: () => <SwitchDemo />,
   fade: () => (
     <Replayable>
-      <FadeIn className="cl-box">FadeIn</FadeIn>
+      <div className="fade-in cl-box">.fade-in</div>
     </Replayable>
   ),
   shatter: () => (

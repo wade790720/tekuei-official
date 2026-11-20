@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { CARD_LABELS } from '../data/cards.js'
 import { useLang } from '../i18n'
 import { tokenize } from '../lib/highlight.js'
+import { Card } from './Card.jsx'
 import '../styles/cards.css'
 
 const BADGE = { bash: 'SH', shell: 'SH', zsh: 'SH', javascript: 'JS', typescript: 'TS', python: 'PY', yaml: 'YML' }
@@ -26,7 +27,7 @@ export function CodeCard({ code, lang = 'ts', filename }) {
   }
 
   return (
-    <figure className="card code-card">
+    <Card as="figure" className="code-card">
       <figcaption className="code-card__bar">
         <span className="code-card__name">
           <span className="code-card__lang" aria-hidden>
@@ -60,7 +61,7 @@ export function CodeCard({ code, lang = 'ts', filename }) {
           )}
         </code>
       </pre>
-    </figure>
+    </Card>
   )
 }
 

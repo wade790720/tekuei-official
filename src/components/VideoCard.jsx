@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { CARD_LABELS } from '../data/cards.js'
 import { useLang } from '../i18n'
+import { Card } from './Card.jsx'
 import '../styles/cards.css'
 
 const RATES = [1, 1.5, 2]
@@ -57,7 +58,7 @@ export function VideoCard({ src, poster, caption, loop = false }) {
 
   return (
     <figure className="post-figure">
-      <div className="card video-card" ref={root} data-playing={playing || undefined}>
+      <Card className="video-card" ref={root} data-playing={playing || undefined}>
         <video
           ref={video}
           src={src}
@@ -105,7 +106,7 @@ export function VideoCard({ src, poster, caption, loop = false }) {
             <FullscreenIcon />
           </button>
         </div>
-      </div>
+      </Card>
       {caption ? <figcaption className="post-figure__caption">{caption}</figcaption> : null}
     </figure>
   )

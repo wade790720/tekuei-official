@@ -94,7 +94,7 @@ npm run dev`,
 .code-card__bar { … }       /* 元件的零件 */
 .journal-footer__link { … } /* 頁面的區塊 */
 .journal-card.is-visible { … }
-.secret-input[data-invalid] { … }`,
+.otp-input[data-invalid] { … }`,
     },
     issues: [
       {
@@ -105,12 +105,12 @@ npm run dev`,
       {
         id: 'transform',
         title: '淡入後位置跑掉',
-        text: 'FadeIn 顯示時會設定 transform，因此用 transform 置中的元素不要包在 FadeIn 裡，改用 margin 置中。',
+        text: '.fade-in 顯示時會設定 transform，因此用 transform 置中的元素不要加 fade-in，改用 margin 置中。',
       },
       {
         id: 'stacking',
         title: '浮層被導覽列蓋住',
-        text: '導覽列固定在最上層，因此浮層用 createPortal 放到 body 底下，例如 SidePanel 和 OtpGate。',
+        text: '導覽列固定在最上層，因此浮層用 createPortal 放到 body 底下，例如 Drawer 和 OtpGate。',
       },
       {
         id: 'italic',
@@ -186,7 +186,7 @@ npm run dev`,
             ['motionsites.ai', 'https://motionsites.ai/', '版畫圖由碎片組合的頁尾', 'shatterImage.js、Journal 頁尾'],
             ['aiforui.dev', 'https://aiforui.dev/', '頁首的字元雨（MatrixRain）', 'glyphField.js'],
             ['Palindrome of a Fall', 'https://palindrome-of-a-fall.vercel.app/', '粒子人形往下掉、穿過刻字石板，跟著捲動播放的節奏和數值', 'fallScene.js、About'],
-            ['recent.design', 'https://recent.design/websites', '點擊連結和按鈕的音效，參數照抄，授權不明，上線前要確認', 'uiSound.js'],
+            ['recent.design', 'https://recent.design/websites', '點擊連結和按鈕的音效', 'uiSound.js'],
           ],
         },
         {
@@ -248,7 +248,6 @@ npm run dev`,
       ['semantic', '語意 token'],
       ['backgrounds', '背景'],
       ['focus', 'Hover 和聚焦'],
-      ['spec', '實際使用'],
     ],
     intro: '兩組 12 階色階：灰階和金色，每一階都有實色和透明兩種。介面只用語意 token，語意 token 指向色階的某一階。',
     accent: '金色用在目前頁、聚焦和 hover，佔畫面約 5%，不填大面積，也不當一般的邊框。',
@@ -264,11 +263,10 @@ var(--accent-a4); /* --ember-whisper：hover 的淡底 */`,
 .dropdown-menu__list { background: var(--surface-2); }`,
     focus: 'hover 用 --ember-whisper 的淡底或 --ember-soft 的字。鍵盤聚焦框用 1px 的 --ember，文字欄位只顯示游標，不加聚焦框。',
     focusCode: `.journal-card:hover { color: var(--ember-soft); }
-.cms-btn:focus-visible {
+.btn:focus-visible {
   outline: 1px solid var(--ember);
   outline-offset: 1px;
 }`,
-    spec: '卡片裡每個元素用的 token 和實際色值都從畫面量出來。',
   },
   spacing: {
     name: 'Spacing',
@@ -318,7 +316,7 @@ var(--accent-a4); /* --ember-whisper：hover 的淡底 */`,
     easingCode: `transition: opacity 0.6s var(--ease-touch), transform 0.6s var(--ease-touch);`,
     durations: [
       ['hover', '0.3–0.4s', '顏色、底色的變化'],
-      ['淡入', '0.6s', 'FadeIn 和頁面的進場'],
+      ['淡入', '0.6s', '.fade-in 和頁面的進場'],
       ['依序淡入', '70ms', '一組項目之間的間隔'],
     ],
     durationNote: '位移只用 opacity 和 transform。',

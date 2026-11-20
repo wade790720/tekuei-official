@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { FadeIn } from './FadeIn.jsx'
 import { Tag, TagList } from './Tag.jsx'
 import { JOURNAL_FILTER, JOURNAL_HEADER, JOURNAL_META, postTags, tagCounts } from '../data/journal.js'
 import { useJournal } from '../context/journal.js'
@@ -42,7 +41,7 @@ export default function JournalListPage() {
       <header className="journal-header">
         <canvas className="journal-header__glyphs" ref={glyphs} aria-hidden />
         <div className="journal-header__inner">
-          <FadeIn>
+          <div className="fade-in">
             <div className="journal-header__pre">{header.pre}</div>
             <h1 className="journal-header__title">Journal</h1>
             <p className="journal-header__desc">
@@ -53,7 +52,7 @@ export default function JournalListPage() {
                 </span>
               ))}
             </p>
-          </FadeIn>
+          </div>
           <div className="journal-header__count" aria-hidden>
             {String(posts.length).padStart(2, '0')} Entries
           </div>
@@ -70,7 +69,7 @@ export default function JournalListPage() {
             <ol className="journal-year__rows">
               {group.map((post) => (
                 <li key={post.slug}>
-                  <FadeIn as={Link} to={`/journal/${post.slug}`} state={FROM_LIST} className="journal-row">
+                  <Link to={`/journal/${post.slug}`} state={FROM_LIST} className="fade-in journal-row">
                     <span className="journal-row__num">{post.num}</span>
                     <span className="journal-row__title">{post.title}</span>
                     <span className="journal-row__tags">
@@ -80,7 +79,7 @@ export default function JournalListPage() {
                       {post.date.slice(5)}
                     </time>
                     <span className="journal-row__min">{post.readMin} min</span>
-                  </FadeIn>
+                  </Link>
                 </li>
               ))}
             </ol>
@@ -126,7 +125,7 @@ function byYear(posts) {
 
 function FeaturedPost({ post }) {
   return (
-    <FadeIn as={Link} to={`/journal/${post.slug}`} state={FROM_LIST} className="journal-card">
+    <Link to={`/journal/${post.slug}`} state={FROM_LIST} className="fade-in journal-card">
       <div className="journal-card__index">
         <span className="journal-card__num">{post.num}</span>
         <span className="journal-card__line" aria-hidden />
@@ -147,7 +146,7 @@ function FeaturedPost({ post }) {
         <span className="journal-card__arrow-line" />
         <span>READ</span>
       </div>
-    </FadeIn>
+    </Link>
   )
 }
 

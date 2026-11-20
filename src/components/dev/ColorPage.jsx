@@ -9,7 +9,6 @@ import { Example } from './doc/Example.jsx'
 import { hex, ratio, readColors } from './doc/contrast.js'
 import { COLOR_GROUPS } from './foundations.data.js'
 import { GUIDES } from './guides.data.js'
-import { SpecView } from './SpecView.jsx'
 
 const g = GUIDES.color
 
@@ -120,10 +119,6 @@ export function ColorPage() {
             <span className="doc-focus__item doc-focus__item--focus">鍵盤聚焦</span>
           </div>
         </Example>
-      </DocSection>
-
-      <DocSection id="spec" title="實際使用" lead={g.spec}>
-        <SpecView mode="color" />
       </DocSection>
     </>
   )

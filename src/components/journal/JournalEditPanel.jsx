@@ -1,6 +1,9 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { TextInput, SidePanel, FormRow, PanelSection, TextArea } from '../SidePanel.jsx'
+import { SidePanel, FormRow, PanelSection } from '../SidePanel.jsx'
+import { TextArea } from '../TextArea.jsx'
+import { TextField } from '../TextField.jsx'
+import { Button } from '../Button.jsx'
 import { useAdmin, useAdminSave } from '../../context/admin.js'
 import { useJournal } from '../../context/journal.js'
 import { parseTags, postTags } from '../../data/journal.js'
@@ -94,19 +97,19 @@ export function JournalPostEditPanel({ slug }) {
   return (
     <SidePanel title="編輯文章" subtitle={`/journal/${slug} · ${lang === 'zh' ? '中文' : 'English'}`} preview {...panelProps}>
       <FormRow label="標題" htmlFor="cms-title">
-        <TextInput id="cms-title" value={post.title} onChange={(v) => setPost('title', v)} placeholder="文章標題" />
+        <TextField id="cms-title" value={post.title} onChange={(v) => setPost('title', v)} placeholder="文章標題" />
       </FormRow>
       <FormRow label="英文副標" htmlFor="cms-title-en">
-        <TextInput id="cms-title-en" value={post.titleEn} onChange={(v) => setPost('titleEn', v)} placeholder="English subtitle" />
+        <TextField id="cms-title-en" value={post.titleEn} onChange={(v) => setPost('titleEn', v)} placeholder="English subtitle" />
       </FormRow>
       <FormRow label="標籤" htmlFor="cms-tags" hint="用逗號分開，例如 AI, MARKETING。中英文共用">
         <TagsInput key={slug} id="cms-tags" tags={postTags(post)} onChange={(tags) => setShared('tags', tags)} />
       </FormRow>
       <FormRow label="日期" htmlFor="cms-date" hint="格式 2026.11.19，中英文共用">
-        <TextInput id="cms-date" value={post.date} onChange={(v) => setShared('date', v)} />
+        <TextField id="cms-date" value={post.date} onChange={(v) => setShared('date', v)} />
       </FormRow>
       <FormRow label="閱讀時間" htmlFor="cms-read" hint="分鐘，中英文共用">
-        <TextInput
+        <TextField
           id="cms-read"
           type="number"
           min="1"
@@ -250,7 +253,7 @@ export function JournalListEditPanel() {
       <PanelSection title="新增文章">
         <FormRow label="網址代稱" htmlFor="cms-new-slug" hint={slugError || `網址會是 /journal/${slug || 'my-post'}，之後不能改`}>
           <div className="cms-inline">
-            <TextInput
+            <TextField
               id="cms-new-slug"
               value={slug}
               onChange={(v) => setSlug(v.trim().toLowerCase())}
@@ -258,9 +261,9 @@ export function JournalListEditPanel() {
               aria-invalid={Boolean(slugError) || undefined}
               onKeyDown={(e) => e.key === 'Enter' && create()}
             />
-            <button type="button" className="cms-btn" onClick={create} disabled={!slug || Boolean(slugError)}>
+            <Button onClick={create} disabled={!slug || Boolean(slugError)}>
               建立
-            </button>
+            </Button>
           </div>
         </FormRow>
       </PanelSection>
@@ -315,7 +318,7 @@ export function JournalListEditPanel() {
 function TagsInput({ id, tags, onChange }) {
   const [text, setText] = useState(() => tags.join(', '))
   return (
-    <TextInput
+    <TextField
       id={id}
       value={text}
       onChange={(v) => {

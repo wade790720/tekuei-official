@@ -1,5 +1,4 @@
 import { Fragment } from 'react'
-import { FadeIn } from './FadeIn.jsx'
 import { CodeCard } from './CodeCard.jsx'
 import { ImageCard } from './ImageCard.jsx'
 import { SlidesCard } from './SlidesCard.jsx'
@@ -108,8 +107,8 @@ function Node({ node }) {
 /** @param {{ doc: { content?: any[] } }} props */
 export function RichText({ doc }) {
   return (doc.content ?? []).map((node, i) => (
-    <FadeIn key={i}>
+    <div key={i} className="fade-in">
       <Node node={node} />
-    </FadeIn>
+    </div>
   ))
 }

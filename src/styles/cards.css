@@ -1,15 +1,4 @@
-/* Code, image and video cards inside journal posts (src/components/journal/).
-   One card look: charcoal surface, 16px radius, a 1px ivory ring instead of a border. */
-
-.card {
-  --card-ring: 0 0 0 1px var(--line), 0 2px 6px rgba(0, 0, 0, 0.35);
-
-  position: relative;
-  overflow: hidden;
-  border-radius: 16px;
-  background: var(--surface-1);
-  box-shadow: var(--card-ring);
-}
+/* Code, image, video and slides cards inside journal posts. The surface itself is Card (card.css). */
 
 .post-figure,
 .code-card {

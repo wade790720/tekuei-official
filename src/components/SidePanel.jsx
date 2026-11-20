@@ -1,13 +1,15 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useAdmin } from '../context/admin.js'
 import { CMS_LABELS as T } from '../data/admin.js'
+import { Button } from './Button.jsx'
+import { Drawer, DrawerBody, DrawerHeader } from './Drawer.jsx'
 import '../styles/cms.css'
 
 const SAVED_MS = 1600 // how long the save button shows "已儲存" after a save
 
 /**
- * Right-side edit panel. It lies over the live page, which re-renders from the draft as you type.
+ * The edit-mode panel: a Drawer with save, logout and preview. The live page re-renders from the draft as you type.
  * Open by default; once collapsed it stays collapsed across pages until reopened from the dock button.
  * @param {{
  *   title: string, subtitle?: string,
@@ -36,74 +38,60 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
 
   const saveState = saving ? 'saving' : justSaved && !dirty ? 'saved' : error ? 'error' : 'idle'
 
-  // html.has-cms-panel moves the page and nav left (cms.css) while the panel is open.
-  useLayoutEffect(() => {
-    const root = document.documentElement
-    root.classList.toggle('has-cms-panel', panelOpen)
-    return () => root.classList.remove('has-cms-panel')
-  }, [panelOpen])
-
   const status = saving ? T.saving : error ? `${T.saveFailed}：${error}` : dirty ? T.unsaved : T.saved
 
-  // Portal to <body>: page roots such as .journal-page set z-index and would trap the panel under the nav.
-  if (!panelOpen) {
-    // The dock shows the same save states, so a Ctrl+S save while collapsed is visible.
-    return createPortal(
-      <>
-        <button type="button" className="cms-dock cms-save" data-state={saveState} onClick={() => setPanelOpen(true)} aria-label={T.expand}>
-          <SaveLabels
-            state={saveState}
-            idle={
-              <>
-                <PencilIcon />
-                {T.dock}
-              </>
-            }
-          />
-          {/* Stays while saving so the dock keeps its width; it goes once the save lands */}
-          {dirty ? <span className="cms-dock__dot" title={T.unsaved} /> : null}
-        </button>
-        {/* The button's aria-label hides its text, so the state is announced here */}
-        <span className="cms-dock__status" role="status">
-          {saveState === 'idle' ? '' : status}
-        </span>
-      </>,
-      document.body,
-    )
-  }
-
-  return createPortal(
-    <aside className="cms-panel" aria-label={title}>
-      <header className="cms-panel__head">
-        <div className="cms-panel__heading">
-          <div className="cms-panel__title">{title}</div>
-          {subtitle ? <div className="cms-panel__subtitle">{subtitle}</div> : null}
-        </div>
-        <div className="cms-panel__actions">
-          <button type="button" className="cms-btn cms-btn--ghost" onClick={() => setPanelOpen(false)} aria-label={T.collapse} title={T.collapse}>
+  return (
+    <>
+      <Drawer open={panelOpen} label={title} push className="cms-panel">
+        <DrawerHeader title={title} subtitle={subtitle}>
+          <Button variant="ghost" onClick={() => setPanelOpen(false)} aria-label={T.collapse} title={T.collapse}>
             <ChevronIcon />
-          </button>
+          </Button>
           {preview ? (
-            <button type="button" className="cms-btn cms-btn--ghost" aria-pressed={previewing} onClick={() => setPreviewing(!previewing)}>
+            <Button variant="ghost" aria-pressed={previewing} onClick={() => setPreviewing(!previewing)}>
               <EyeIcon />
               {previewing ? T.backToEdit : T.preview}
-            </button>
+            </Button>
           ) : null}
-          <button type="button" className="cms-btn cms-btn--ghost" onClick={onLogout}>
+          <Button variant="ghost" onClick={onLogout}>
             {T.logout}
-          </button>
+          </Button>
           {/* Lights up only when there is something to save */}
-          <button type="button" className="cms-btn cms-save" data-state={saveState} onClick={onSave} disabled={saving || !dirty}>
+          <Button className="cms-save" data-state={saveState} onClick={onSave} disabled={saving || !dirty}>
             <SaveLabels state={saveState} idle={T.save} />
-          </button>
+          </Button>
+        </DrawerHeader>
+        <div className="cms-panel__status" role="status" data-state={error ? 'error' : dirty ? 'dirty' : 'clean'}>
+          {status}
         </div>
-      </header>
-      <div className="cms-panel__status" role="status" data-state={error ? 'error' : dirty ? 'dirty' : 'clean'}>
-        {status}
-      </div>
-      <div className="cms-panel__body">{children}</div>
-    </aside>,
-    document.body,
+        <DrawerBody>{children}</DrawerBody>
+      </Drawer>
+      {/* Collapsed: the dock shows the same save states, so a Ctrl+S save is visible */}
+      {panelOpen
+        ? null
+        : createPortal(
+            <>
+              <button type="button" className="cms-dock cms-save" data-state={saveState} onClick={() => setPanelOpen(true)} aria-label={T.expand}>
+                <SaveLabels
+                  state={saveState}
+                  idle={
+                    <>
+                      <PencilIcon />
+                      {T.dock}
+                    </>
+                  }
+                />
+                {/* Stays while saving so the dock keeps its width; it goes once the save lands */}
+                {dirty ? <span className="cms-dock__dot" title={T.unsaved} /> : null}
+              </button>
+              {/* The button's aria-label hides its text, so the state is announced here */}
+              <span className="cms-dock__status" role="status">
+                {saveState === 'idle' ? '' : status}
+              </span>
+            </>,
+            document.body,
+          )}
+    </>
   )
 }
 
@@ -131,45 +119,6 @@ export function PanelSection({ title, action, children }) {
       </div>
       {children}
     </section>
-  )
-}
-
-export function TextInput({ value, onChange, ...rest }) {
-  return <input className="cms-input" value={value ?? ''} onChange={(e) => onChange(e.target.value)} {...rest} />
-}
-
-/** A textarea that grows with its text. */
-export function TextArea({ value, onChange, mono = false, ...rest }) {
-  const ref = useRef(null)
-  useLayoutEffect(() => {
-    const el = ref.current
-    el.style.height = 'auto'
-    el.style.height = `${el.scrollHeight}px`
-  }, [value])
-  return (
-    <textarea
-      ref={ref}
-      rows={1}
-      className={`cms-input cms-textarea${mono ? ' cms-textarea--mono' : ''}`}
-      value={value ?? ''}
-      onChange={(e) => onChange(e.target.value)}
-      {...rest}
-    />
-  )
-}
-
-export function Switch({ checked, onChange, label }) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={Boolean(checked)}
-      aria-label={label}
-      className="cms-switch"
-      onClick={() => onChange(!checked)}
-    >
-      <span className="cms-switch__knob" aria-hidden />
-    </button>
   )
 }
 

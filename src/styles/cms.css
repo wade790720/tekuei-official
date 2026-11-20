@@ -1,7 +1,6 @@
-/* Edit mode: the code gate (OtpGate) and the right-side panel (SidePanel). Wade only. */
+/* Edit mode: the code gate (OtpGate) and the edit panel (SidePanel, built on Drawer). Wade only. */
 
 :root {
-  --cms-panel-w: clamp(520px, 52vw, 820px);
   --cms-ring: 0 0 0 1px var(--line);
 }
 
@@ -112,78 +111,6 @@
    Modelled on the Framer CMS sheet: one label | value row per field, hairline dividers,
    values that look like plain text until you type, and no focus frames. */
 
-/* Wide screens: the page moves left, so it stays visible as a live preview */
-@media (min-width: 1100px) {
-  html.has-cms-panel body {
-    padding-right: var(--cms-panel-w);
-  }
-
-  /* The fixed nav spans the viewport; stop it at the panel's edge, and tighten it to fit */
-  html.has-cms-panel .site-nav {
-    right: var(--cms-panel-w);
-  }
-
-  html.has-cms-panel .site-nav__links {
-    gap: var(--space-6);
-  }
-
-  html.has-cms-panel .site-nav__links a {
-    letter-spacing: var(--type-label-ls);
-  }
-}
-
-.cms-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 20000;
-  display: flex;
-  flex-direction: column;
-  width: var(--cms-panel-w);
-  border-left: 0.5px solid var(--gray-a3);
-  background: var(--surface-1);
-  box-shadow: -24px 0 48px rgba(0, 0, 0, 0.35);
-  color: var(--text-primary);
-  font-family: var(--font-label);
-  animation: cms-slide 0.4s var(--ease-touch);
-}
-
-.cms-panel__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  padding: var(--space-6) var(--space-6);
-  border-bottom: 0.5px solid var(--gray-a3);
-}
-
-.cms-panel__heading {
-  min-width: 0;
-}
-
-.cms-panel__title {
-  font-size: var(--type-small);
-  letter-spacing: 0;
-}
-
-.cms-panel__subtitle {
-  margin-top: var(--space-1);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-family: var(--font-label);
-  font-size: var(--type-label);
-  letter-spacing: var(--type-label-ls);
-  color: var(--text-tertiary);
-}
-
-.cms-panel__actions {
-  display: flex;
-  flex-shrink: 0;
-  gap: var(--space-2);
-}
-
 .cms-panel__status {
   padding: var(--space-2) var(--space-6);
   border-bottom: 0.5px solid var(--gray-a3);
@@ -199,15 +126,6 @@
 
 .cms-panel__status[data-state='error'] {
   color: var(--danger);
-}
-
-.cms-panel__body {
-  flex: 1;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: 0 0 var(--space-24);
-  scrollbar-width: thin;
-  scrollbar-color: var(--gray-a8) transparent;
 }
 
 .cms-section + .cms-section {
@@ -269,46 +187,6 @@
   color: var(--danger);
 }
 
-.cms-input {
-  width: 100%;
-  min-width: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  font: inherit;
-  font-size: var(--type-small);
-  line-height: 1.6;
-  color: var(--text-primary);
-}
-
-.cms-input::placeholder {
-  color: var(--text-tertiary);
-}
-
-.cms-input:focus {
-  outline: none;
-}
-
-/* Numbers read as plain text too: no spin arrows. ↑ / ↓ still step the value. */
-.cms-input[type='number'] {
-  appearance: textfield;
-}
-
-.cms-input[type='number']::-webkit-inner-spin-button,
-.cms-input[type='number']::-webkit-outer-spin-button {
-  appearance: none;
-  margin: 0;
-}
-
-.cms-input[aria-invalid='true'] {
-  color: var(--danger);
-}
-
-.cms-textarea {
-  overflow: hidden;
-  resize: none;
-}
-
 .cms-inline {
   display: flex;
   align-items: center;
@@ -348,31 +226,6 @@
   color: var(--danger);
 }
 
-.cms-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: 30px;
-  padding: 0 var(--space-3);
-  border: 0;
-  border-radius: var(--radius-sm);
-  background: var(--gray-12);
-  font: inherit;
-  font-size: var(--type-caption);
-  color: var(--gray-1);
-  white-space: nowrap;
-  flex-shrink: 0;
-  cursor: pointer;
-  transition: opacity 0.15s var(--ease-touch), background-color 0.15s var(--ease-touch);
-}
-
-/* Nothing to save: the button sits back instead of glowing */
-.cms-btn:disabled {
-  background: var(--surface-2);
-  color: var(--text-faint);
-  cursor: default;
-}
-
 /* Save button: idle → saving → saved, each label blurs in (transitions.dev "Text states swap") */
 .cms-save__stack {
   display: inline-grid;
@@ -410,18 +263,9 @@
 }
 
 /* The "已儲存" flash; the button is disabled then, so override the grey disabled text */
-.cms-save[data-state='saved'] {
+.cms-save[data-state='saved'],
+.btn.cms-save[data-state='saved'] /* outranks .btn:disabled in button.css */ {
   color: var(--ember-soft);
-}
-
-.cms-btn--ghost {
-  background: transparent;
-  color: var(--text-secondary);
-}
-
-.cms-btn--ghost:hover {
-  background: var(--gray-a3);
-  color: var(--text-primary);
 }
 
 .cms-upload {
@@ -435,38 +279,6 @@
   gap: var(--space-3);
   font-size: var(--type-caption);
   color: var(--text-secondary);
-}
-
-.cms-switch {
-  position: relative;
-  flex-shrink: 0;
-  width: 30px;
-  height: 18px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-full);
-  background: var(--gray-a8);
-  cursor: pointer;
-  transition: background-color 0.2s var(--ease-touch);
-}
-
-.cms-switch[aria-checked='true'] {
-  background: var(--ember);
-}
-
-.cms-switch__knob {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--gray-12);
-  transition: transform 0.2s var(--ease-touch);
-}
-
-.cms-switch[aria-checked='true'] .cms-switch__knob {
-  transform: translateX(12px);
 }
 
 /* Journal list: drag a row by its handle (⠿) to reorder */
@@ -584,95 +396,11 @@
   translate: 0 calc(-100% - var(--space-2)); /* top/left is the selection's first line */
 }
 
-.cms-ed-btn {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  font-family: var(--font-label);
-  font-size: var(--type-small);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: background-color 0.12s, color 0.12s;
-}
-
-.cms-ed-btn:hover {
-  background: var(--gray-a5);
-  color: var(--text-primary);
-}
-
-.cms-ed-btn[aria-pressed='true'] {
-  background: var(--line);
-  color: var(--text-primary);
-}
-
 .cms-ed-sep {
   width: 0.5px;
   height: 18px;
   margin: 0 var(--space-1);
   background: var(--gray-a8);
-}
-
-/* The tooltip sits below the bar: above it the panel's scroll area would clip it. */
-.cms-ed-tip {
-  position: absolute;
-  top: calc(100% + var(--space-2));
-  left: 0;
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  background: var(--gray-12);
-  color: var(--gray-1);
-  font-size: var(--type-caption);
-  font-weight: var(--weight-regular);
-  line-height: 1.3;
-  white-space: nowrap;
-  pointer-events: none;
-  transform: translateX(calc(var(--x) - 50%));
-  animation: cms-tip-in 0.14s var(--ease-touch);
-}
-
-/* Moving between buttons while warm: the tooltip slides instead of popping */
-.cms-ed-tip[data-travel] {
-  animation: none;
-  transition: transform 0.32s var(--ease-touch);
-}
-
-.cms-ed-tip::before {
-  content: '';
-  position: absolute;
-  top: -4px;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  margin-left: -4px;
-  border-radius: 1px;
-  background: inherit;
-  transform: rotate(45deg);
-}
-
-.cms-ed-tip kbd {
-  padding: var(--space-1) var(--space-1);
-  border-radius: calc(var(--radius-sm) / 2);
-  background: color-mix(in srgb, var(--surface-0) 10%, transparent);
-  font-family: var(--font-label);
-  font-size: var(--type-label);
-  letter-spacing: var(--type-label-ls);
-  color: color-mix(in srgb, var(--surface-0) 60%, transparent);
-}
-
-@keyframes cms-tip-in {
-  from {
-    opacity: 0;
-    transform: translateX(calc(var(--x) - 50%)) translateY(-3px);
-  }
 }
 
 .cms-ed-insert {
@@ -827,14 +555,14 @@
   translate: calc(-100% - var(--space-3)) 0; /* left is the block's left edge */
 }
 
-.cms-ed-gutter .cms-ed-btn {
+.cms-ed-gutter .btn--icon {
   width: 24px;
   height: 24px; /* HANDLE in Editor.jsx */
   color: var(--text-tertiary);
 }
 
-.cms-ed-gutter__grip {
-  cursor: grab;
+.cms-ed-gutter .cms-ed-gutter__grip {
+  cursor: grab; /* outranks .btn's pointer */
 }
 
 /* No pointer to hover with, and no room beside the text on a phone:
@@ -1027,17 +755,6 @@
 }
 
 @media (max-width: 768px) {
-  .cms-panel {
-    left: 0;
-    width: auto;
-    border-left: 0;
-  }
-
-  .cms-panel__head {
-    flex-wrap: wrap;
-    padding: var(--space-4) var(--space-6);
-  }
-
   .cms-panel__status {
     padding: var(--space-2) var(--space-6);
   }
@@ -1092,12 +809,6 @@
   }
 }
 
-@keyframes cms-slide {
-  from {
-    transform: translateX(100%);
-  }
-}
-
 @keyframes cms-swap {
   from {
     opacity: 0;
@@ -1116,17 +827,10 @@
   .cms-gate,
   .cms-gate__panel,
   .cms-gate__pill,
-  .cms-panel,
   .cms-dock,
   .cms-save[data-state='error'],
   .cms-save__label[data-on] {
     animation: none;
-  }
-
-  .cms-ed-tip,
-  .cms-ed-tip[data-travel] {
-    animation: none;
-    transition: none;
   }
 
   .cms-row__hint {

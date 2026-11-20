@@ -1,4 +1,4 @@
-import '../styles/secretInput.css'
+import '../styles/otpInput.css'
 
 /**
  * A secret code field: one box per character, filled boxes show a dot, never the character.
@@ -17,7 +17,7 @@ import '../styles/secretInput.css'
  *   ref?: import('react').Ref<HTMLInputElement>,
  * }} props
  */
-export function SecretInput({
+export function OtpInput({
   value,
   onChange,
   onComplete,
@@ -37,12 +37,12 @@ export function SecretInput({
   }
 
   return (
-    <div className="secret-input" data-invalid={invalid || undefined}>
-      <div className="secret-input__slots" aria-hidden>
+    <div className="otp-input" data-invalid={invalid || undefined}>
+      <div className="otp-input__slots" aria-hidden>
         {Array.from({ length }, (_, i) => (
           <span
             key={i}
-            className="secret-input__slot"
+            className="otp-input__slot"
             data-filled={i < value.length || undefined}
             data-current={i === value.length || undefined}
           />
@@ -50,7 +50,7 @@ export function SecretInput({
       </div>
       <input
         ref={ref}
-        className="secret-input__field"
+        className="otp-input__field"
         type="password"
         inputMode={numeric ? 'numeric' : 'text'}
         autoComplete="one-time-code"

@@ -1,0 +1,41 @@
+/* TextField and TextArea (src/components/TextField.jsx, TextArea.jsx) */
+
+.text-field {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: var(--type-small);
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.text-field::placeholder {
+  color: var(--text-tertiary);
+}
+
+.text-field:focus {
+  outline: none;
+}
+
+/* Numbers read as plain text too: no spin arrows. ↑ / ↓ still step the value. */
+.text-field[type='number'] {
+  appearance: textfield;
+}
+
+.text-field[type='number']::-webkit-inner-spin-button,
+.text-field[type='number']::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.text-field[aria-invalid='true'] {
+  color: var(--danger);
+}
+
+.text-area {
+  overflow: hidden;
+  resize: none;
+}

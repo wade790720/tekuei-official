@@ -189,3 +189,18 @@
   /* Hides the grid's fine checker pattern so only the wave rings show. */
   filter: blur(2px);
 }
+
+/* A Drawer with push is open (Drawer.jsx): the fixed nav stops at the drawer's edge and tightens to fit */
+@media (min-width: 1100px) {
+  html.has-drawer .site-nav {
+    right: var(--drawer-w);
+  }
+
+  html.has-drawer .site-nav__links {
+    gap: var(--space-6);
+  }
+
+  html.has-drawer .site-nav__links a {
+    letter-spacing: var(--type-label-ls);
+  }
+}
