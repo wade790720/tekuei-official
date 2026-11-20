@@ -211,7 +211,7 @@ export const GROUPS = [
           '上色支援類 C 語法（JS、TS、CSS、JSON）和 shell 的 # 註解。',
           '複製先用 Clipboard API，瀏覽器擋住時改用 execCommand。',
           '複製成功時，螢幕閱讀器讀出「已複製」。',
-          '程式碼區可以用鍵盤聚焦，並橫向捲動。',
+          '程式碼區可以用鍵盤聚焦，並橫向捲動。左右還有程式碼時，邊緣淡出（ScrollShadow）。',
         ],
       },
       {
@@ -331,6 +331,7 @@ export const GROUPS = [
               ['onSelect', '(value) => void', '—', '必填'],
               ['triggerClassName', 'string', "'dropdown-menu__trigger'", '按鈕的 class'],
               ['tip', 'string', '—', '工具列提示的文字'],
+              ['triggerProps', 'object', '—', '加在按鈕上的其他屬性，例如 draggable、onDragStart'],
             ],
           },
         ],
@@ -381,7 +382,7 @@ export const GROUPS = [
         hero: { demo: 'editor', code: `<Editor key={slug} doc={getDoc(body)} onChange={setDoc} upload={upload} previewing={admin.previewing} renderPreview={(doc) => <RichText doc={doc} />} />` },
         api: [
           {
-            description: '沒有固定工具列。每一行左邊的「+」新增區塊、「⠿」拖曳。選取文字時浮出格式工具列：轉換成、粗體、斜體、底線、連結、行內程式碼',
+            description: '沒有固定工具列。每一行左邊的「+」新增區塊、「⠿」拖曳或打開區塊選單。選取文字時浮出格式工具列：轉換成、粗體、斜體、底線、連結、行內程式碼',
             props: [
               ['doc', 'object', '—', '必填，只在掛載時讀取，換文章時用新的 key 重新掛載'],
               ['onChange', '(doc) => void', '—', '必填，每次修改都傳出新的文件'],
@@ -405,7 +406,7 @@ export const GROUPS = [
           {
             id: 'block-gutter',
             title: '每一行左邊的 + 和 ⠿',
-            description: '滑鼠移到任何一行，左邊出現「+」和「⠿」，對齊這一行的第一行文字。「+」打開區塊選單（段落、標題、前言、引言、清單、程式碼、圖片、輪播、影片、分隔線），新區塊插在這一行下面，這一行是空的時直接換掉它。「⠿」拖曳移動整個區塊，點一下選取後可以按 Delete 刪除。游標停在空行時，那一行也出現「+」。手機和 768px 以下只在空行顯示「+」，放在空行裡面',
+            description: '滑鼠移到任何一行，左邊出現「+」和「⠿」，對齊這一行的第一行文字。「+」打開區塊選單（段落、標題、前言、引言、清單、程式碼、圖片、輪播、影片、分隔線），新區塊插在這一行下面，這一行是空的時直接換掉它。「⠿」拖曳移動整個區塊，點一下打開區塊選單，裡面有「刪除」。游標停在空行時，那一行也出現「+」。手機和 768px 以下只在空行顯示「+」，放在空行裡面',
           },
           {
             id: 'image-card',
@@ -467,6 +468,7 @@ export const GROUPS = [
         ],
         notes: [
           '標籤是英文大寫，中英文共用，在編輯面板用逗號分開輸入（parseTags）。',
+          '當按鈕時點擊不出聲（data-sound="off"）。',
           '舊文章只有 category，postTags 會把它當成唯一的標籤。',
           '少於兩個標籤時，篩選列不顯示。',
           '按鈕的字用 text-box 裁到大寫字高和基線，大寫字母在膠囊裡上下置中。右側內距少一個字距，因為字距會加在最後一個字後面。不支援 text-box 的瀏覽器（Firefox）字會偏上約 1px。',
@@ -564,7 +566,7 @@ export const GROUPS = [
           },
           {
             part: 'DrawerBody',
-            description: '可以捲動的內容，捲到底時不會帶動後面的頁面',
+            description: '可以捲動的內容，捲到底時不會帶動後面的頁面。上下還有內容時，邊緣淡出（ScrollShadow）',
             props: [['children', 'node', '—', '內容']],
           },
         ],
@@ -573,6 +575,248 @@ export const GROUPS = [
           '寬度是 --drawer-w（520–820px）。768px 以下佔滿整個寬度。',
           '打開時從右側滑入。減少動態效果開啟時直接出現。',
           '編輯模式的面板（SidePanel）用 Drawer 組成，加上儲存、登出、預覽和收合後的按鈕。',
+        ],
+      },
+
+      // ── Breadcrumbs ──
+      {
+        id: 'breadcrumbs',
+        name: 'Breadcrumbs',
+        file: 'src/components/Breadcrumbs.jsx',
+        summary: '顯示這一頁在網站裡的位置：上層的連結，最後是目前這一頁',
+        hero: {
+          demo: 'breadcrumbs',
+          code: `<Breadcrumbs label="導覽路徑">
+  <BreadcrumbsItem href="/">首頁</BreadcrumbsItem>
+  <BreadcrumbsItem href="/journal">Journal</BreadcrumbsItem>
+  <BreadcrumbsItem>{post.title}</BreadcrumbsItem>
+</Breadcrumbs>`,
+        },
+        api: [
+          {
+            part: 'Breadcrumbs',
+            description: 'nav 加上 ol，項目之間放分隔符號',
+            props: [
+              ['label', 'string', '—', '必填，nav 的無障礙名稱'],
+              ['separator', 'node', '箭頭', '換掉項目之間的箭頭'],
+              ['className', 'string', "''", '附加的 class'],
+              ['children', 'node', '—', 'BreadcrumbsItem'],
+            ],
+          },
+          {
+            part: 'BreadcrumbsItem',
+            description: '有 href 時是連結，沒有 href 時是目前這一頁（aria-current="page"）',
+            props: [
+              ['href', 'string', '—', '連結的網址'],
+              ['as', 'Component', '—', '改用其他連結元件，例如會回到上一頁的 BackLink'],
+              ['children', 'node', '—', '文字'],
+            ],
+          },
+        ],
+        examples: [
+          {
+            id: 'levels',
+            title: '層數',
+            description: '兩層、三層、四層',
+            demo: 'breadcrumbs-levels',
+            code: `<Breadcrumbs label="導覽路徑">
+  <BreadcrumbsItem href="/">首頁</BreadcrumbsItem>
+  <BreadcrumbsItem>Work</BreadcrumbsItem>
+</Breadcrumbs>`,
+          },
+          {
+            id: 'separator',
+            title: '自訂分隔符號',
+            description: '用 separator 換掉箭頭',
+            demo: 'breadcrumbs-separator',
+            code: '<Breadcrumbs label="導覽路徑" separator="/">…</Breadcrumbs>',
+          },
+        ],
+        notes: [
+          '字級 14px（--type-small）、行高 20px，字用 --font-label。連結是灰色，hover 加底線；目前這一頁是金色。',
+          '寬度不夠時，目前這一頁的文字以刪節號結尾，上層的連結不縮。',
+          '用在 Journal 文章頁的最上面：首頁、Journal、文章標題。',
+        ],
+      },
+
+      // ── Accordion ──
+      {
+        id: 'accordion',
+        name: 'Accordion',
+        file: 'src/components/Accordion.jsx',
+        summary: '一組可以展開和收合的段落。標題是按鈕，按下後內容在下面展開',
+        hero: {
+          demo: 'accordion',
+          code: `<Accordion>
+  <AccordionItem id="stack" title="網站用什麼做的？">…</AccordionItem>
+  <AccordionItem id="update" title="多久更新一次？">…</AccordionItem>
+</Accordion>`,
+        },
+        api: [
+          {
+            part: 'Accordion',
+            description: '管理哪些段落是展開的',
+            props: [
+              ['multiple', 'boolean', 'false', '可以同時展開多個段落'],
+              ['defaultOpen', 'string[]', '[]', '一開始展開的段落 id'],
+              ['variant', "'default' | 'surface'", "'default'", 'surface 放在炭灰色的卡片上'],
+              ['hideSeparator', 'boolean', 'false', '不顯示段落之間的線'],
+              ['headingLevel', '2 | 3 | 4', '3', '標題的層級'],
+              ['className', 'string', "''", '附加的 class'],
+            ],
+          },
+          {
+            part: 'AccordionItem',
+            description: '一個段落：標題按鈕和下面的內容',
+            props: [
+              ['id', 'string', '—', '必填，段落的識別'],
+              ['title', 'node', '—', '必填，標題'],
+              ['disabled', 'boolean', 'false', '不能展開'],
+              ['indicator', 'node', '箭頭', '換掉右邊的箭頭。展開時轉 180 度'],
+              ['children', 'node', '—', '展開後的內容'],
+            ],
+          },
+        ],
+        examples: [
+          {
+            id: 'surface',
+            title: 'Surface',
+            description: 'variant="surface"',
+            demo: 'accordion-surface',
+            code: '<Accordion variant="surface">…</Accordion>',
+          },
+          {
+            id: 'no-separator',
+            title: 'Without Separator',
+            description: 'hideSeparator',
+            demo: 'accordion-no-separator',
+            code: '<Accordion hideSeparator>…</Accordion>',
+          },
+          {
+            id: 'multiple',
+            title: 'Multiple Expanded',
+            description: 'multiple：展開一個時，其他的不會收起來',
+            demo: 'accordion-multiple',
+            code: '<Accordion multiple defaultOpen={["stack", "update"]}>…</Accordion>',
+          },
+          {
+            id: 'disabled',
+            title: 'Disabled',
+            description: '在 AccordionItem 加 disabled',
+            demo: 'accordion-disabled',
+            code: '<AccordionItem id="contact" title="…" disabled>…</AccordionItem>',
+          },
+        ],
+        keyboard: [
+          ['Tab', '移到下一個標題'],
+          ['Enter／Space', '展開或收合'],
+        ],
+        notes: [
+          '標題是 h3（可以用 headingLevel 改），裡面是 button，有 aria-expanded 和 aria-controls。',
+          '展開時高度和透明度在 0.25 秒內變化，箭頭轉 180 度。減少動態效果開啟時直接切換。',
+          '收合的內容加上 inert，鍵盤和螢幕閱讀器都跳過它。',
+        ],
+      },
+
+      // ── ScrollShadow ──
+      {
+        id: 'scroll-shadow',
+        name: 'ScrollShadow',
+        file: 'src/components/ScrollShadow.jsx',
+        summary: '可以捲動的區塊。還有內容沒看到的那一邊會淡出',
+        hero: { demo: 'scroll-shadow', code: '<ScrollShadow style={{ height: 240 }}>…</ScrollShadow>' },
+        api: [
+          {
+            description: '本身就是捲動的容器。淡出是蓋在內容上的遮罩，任何背景都能用',
+            props: [
+              ['as', 'string', "'div'", '要渲染的元素，例如 pre'],
+              ['orientation', "'vertical' | 'horizontal'", "'vertical'", '捲動方向'],
+              ['size', 'number', '40', '淡出的長度，單位 px'],
+              ['hideScrollBar', 'boolean', 'false', '隱藏捲軸'],
+              ['className', 'string', "''", '附加的 class，用來設定高度或寬度'],
+              ['…rest', '—', '—', '其他屬性（tabIndex、aria-*）傳給元素'],
+            ],
+          },
+        ],
+        examples: [
+          {
+            id: 'horizontal',
+            title: 'Horizontal',
+            description: '橫向捲動，左右兩邊淡出',
+            demo: 'scroll-shadow-horizontal',
+            code: '<ScrollShadow orientation="horizontal" hideScrollBar>…</ScrollShadow>',
+          },
+        ],
+        notes: [
+          '捲到最上面時只有下緣淡出，捲到最下面時只有上緣淡出。內容不夠長時都不淡出。',
+          '淡出的長度在 0.3 秒內展開或收起。減少動態效果開啟時直接切換。',
+          '捲軸那一條不加遮罩，捲軸兩端不會淡掉。',
+          '用在 CodeCard 的程式碼區和 DrawerBody。',
+        ],
+      },
+
+      // ── Skeleton ──
+      {
+        id: 'skeleton',
+        name: 'Skeleton',
+        file: 'src/components/Skeleton.jsx',
+        summary: '資料載入前的灰色佔位方塊，形狀照著之後要出現的內容',
+        hero: {
+          demo: 'skeleton',
+          code: `<div role="status" aria-label="載入中">
+  <Skeleton style={{ height: 128 }} />
+  <Skeleton style={{ height: 12, width: '60%' }} />
+  <Skeleton style={{ height: 12, width: '80%' }} />
+  <Skeleton style={{ height: 12, width: '40%' }} />
+</div>`,
+        },
+        api: [
+          {
+            description: '一個 span，預設高 1em、4px 圓角，底色是 --surface-3 的 70%。寬高用 className 或 style 設定',
+            props: [
+              ['animation', "'shimmer' | 'pulse' | 'none'", "'shimmer'", 'shimmer 是一道 --surface-3 的亮光從左掃到右，pulse 是整塊忽明忽暗，週期都是 2 秒'],
+              ['className', 'string', "''", '附加的 class'],
+              ['style', 'CSSProperties', '—', '寬高'],
+            ],
+          },
+        ],
+        examples: [
+          {
+            id: 'text-content',
+            title: 'Text Content',
+            description: '一段文字的佔位：五行，寬度不同，最後一行最短',
+            demo: 'skeleton-text',
+            code: `{['100%', '83%', '67%', '100%', '50%'].map((w) => (
+  <Skeleton key={w} style={{ height: 16, width: w }} />
+))}`,
+          },
+          {
+            id: 'list-items',
+            title: 'List Items',
+            description: '列表的佔位：左邊一個方形縮圖，右邊兩行文字',
+            demo: 'skeleton-list',
+            code: `<div className="item">
+  <Skeleton style={{ height: 40, width: 40, flexShrink: 0 }} />
+  <div>
+    <Skeleton style={{ height: 12 }} />
+    <Skeleton style={{ height: 12, width: '80%' }} />
+  </div>
+</div>`,
+          },
+          {
+            id: 'animation-types',
+            title: 'Animation Types',
+            description: '用 animation 選擇動畫：shimmer（預設）、pulse、none',
+            demo: 'skeleton-types',
+            code: `<Skeleton animation="shimmer" />
+<Skeleton animation="pulse" />
+<Skeleton animation="none" />`,
+          },
+        ],
+        notes: [
+          '螢幕閱讀器讀不到 Skeleton。外層容器要加 role="status" 和 aria-label，例如「文章載入中」。',
+          '減少動態效果開啟時不動，只顯示灰色方塊。',
+          'Journal 列表在 R2 資料回來之前，用它排出精選文章和三列文章的形狀。',
         ],
       },
     ],

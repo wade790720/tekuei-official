@@ -198,7 +198,8 @@
   padding: 0;
 }
 
-.home-latest__cards a {
+.home-latest__cards a,
+.home-latest__card {
   display: flex;
   min-height: 150px;
   background: var(--hh-charcoal);
@@ -242,6 +243,34 @@
   flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-6) 22px;
+}
+
+/* Loading placeholders: the thumb fills its column, the lines match the meta and title */
+.home-latest__card {
+  pointer-events: none;
+}
+
+.home-latest__card .home-latest__thumb {
+  height: auto;
+  border-radius: 0;
+}
+
+.home-latest__card .home-latest__body {
+  flex: 1;
+}
+
+.home-latest__skeleton-meta {
+  width: 120px;
+  height: 12px;
+}
+
+.home-latest__skeleton-title {
+  width: 85%;
+  height: 22px;
+}
+
+.home-latest__skeleton-title--short {
+  width: 55%;
 }
 
 .home-latest__meta {

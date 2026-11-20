@@ -14,9 +14,10 @@ import '../styles/dropdownMenu.css'
  *   onSelect: (value: string) => void,
  *   triggerClassName?: string,
  *   tip?: string,                  // tooltip text for the warm-tooltip toolbar
+ *   triggerProps?: Record<string, unknown>, // extra props for the trigger button, e.g. draggable
  * }} props
  */
-export function DropdownMenu({ label, trigger, items, value, onSelect, triggerClassName = 'dropdown-menu__trigger', tip }) {
+export function DropdownMenu({ label, trigger, items, value, onSelect, triggerClassName = 'dropdown-menu__trigger', tip, triggerProps }) {
   const [open, setOpen] = useState(false)
   const root = useRef(null)
   const button = useRef(null)
@@ -79,6 +80,7 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
         onMouseDown={(e) => e.preventDefault()} // keep the editor's text selection
         onClick={() => setOpen((o) => !o)}
         onKeyDown={triggerKey}
+        {...triggerProps}
       >
         {trigger}
       </button>

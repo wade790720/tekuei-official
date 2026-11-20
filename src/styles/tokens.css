@@ -72,10 +72,11 @@
   /* Text or icons placed on a solid accent (step 9) */
   --accent-contrast: var(--gray-1);
 
-  /* Surfaces: page, card, raised */
+  /* Surfaces: page, card, raised, placeholder */
   --surface-0: var(--gray-1);
   --surface-1: var(--gray-3);
   --surface-2: var(--gray-5);
+  --surface-3: var(--gray-6); /* loading placeholders (Skeleton) */
 
   /* Lines. Neutral by default; gold lines (--ember-line) only mark the current page, focus or hover. */
   --line: var(--gray-a6);
@@ -97,6 +98,8 @@
   /* Text-and-list pages (Work, Journal): column width, without --page-pad. */
   --page-column: 1104px;
   --page-column-box: calc(var(--page-column) + 2 * var(--page-pad));
+  /* Reading width: 40 CJK characters at 17px. Journal posts use it for text and cards alike. */
+  --page-reading: 680px;
 
   /* Typeface: Latin in Instrument Serif, CJK in Source Han Serif (思源宋體, Google Fonts name Noto Serif TC).
      Instrument Serif has no CJK glyphs, so the browser uses the next font for Chinese. index.html loads both. */

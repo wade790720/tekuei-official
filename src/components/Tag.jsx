@@ -13,7 +13,8 @@ import '../styles/tag.css'
 export function Tag({ children, count, selected = false, onClick }) {
   if (!onClick) return <span className="tag">{children}</span>
   return (
-    <button type="button" className="tag tag--button" aria-pressed={selected} onClick={onClick}>
+    // Silent: a filter gets clicked many times in a row
+    <button type="button" className="tag tag--button" aria-pressed={selected} onClick={onClick} data-sound="off">
       <span>{children}</span>
       {count != null ? <span className="tag__count">{count}</span> : null}
     </button>

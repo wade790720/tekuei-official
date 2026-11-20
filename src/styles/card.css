@@ -1,7 +1,7 @@
 /* Card (src/components/Card.jsx) */
 
 .card {
-  --card-ring: 0 0 0 1px var(--line), 0 2px 6px rgba(0, 0, 0, 0.35);
+  --card-ring: 0 0 0 1px var(--line), 0 2px 6px color-mix(in srgb, var(--surface-0) 35%, transparent);
 
   position: relative;
   overflow: hidden;

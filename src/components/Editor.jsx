@@ -573,6 +573,8 @@ const TEXT_BLOCKS = [
 ]
 const TEXT_LABEL = Object.fromEntries(TEXT_BLOCKS.map((x) => [x.value, x.label]))
 const BLOCKS = [...TEXT_BLOCKS, 'divider', ...INSERTS]
+// The "⠿" menu: what can be done to the block itself.
+const BLOCK_ACTIONS = [{ value: 'delete', label: '刪除', icon: <TrashIcon /> }]
 
 /** Turns the block at the cursor into `kind`, or inserts a card there. Used by the bubble and the "+". */
 function applyBlock(editor, kind) {
@@ -643,6 +645,11 @@ function BlockGutter({ editor, block, gutterRef }) {
     startBlockDrag(editor.view, block.pos, e.dataTransfer)
   }
 
+  const act = (kind) => {
+    const { node, pos } = block
+    if (kind === 'delete') editor.chain().focus().deleteRange({ from: pos, to: pos + node.nodeSize }).run()
+  }
+
   return (
     <div
       className="cms-ed-gutter"
@@ -651,16 +658,15 @@ function BlockGutter({ editor, block, gutterRef }) {
       data-empty={block.node.type.name === 'paragraph' && !block.node.content.size ? '' : undefined}
     >
       <DropdownMenu label="新增區塊" trigger={<PlusIcon />} items={BLOCKS} onSelect={add} triggerClassName="btn btn--icon" />
-      <Button
-        variant="icon"
-        className="cms-ed-gutter__grip"
-        draggable
-        onDragStart={dragStart}
-        onClick={select}
-        aria-label="拖曳移動這個區塊，點一下選取"
-      >
-        ⠿
-      </Button>
+      <DropdownMenu
+        label="拖曳移動這個區塊，點一下開啟選單"
+        trigger={<GripIcon />}
+        items={BLOCK_ACTIONS}
+        onSelect={act}
+        triggerClassName="btn btn--icon cms-ed-gutter__grip"
+        // a draggable trigger: no preventDefault on mousedown, or the drag never starts
+        triggerProps={{ draggable: true, onDragStart: dragStart, onMouseDown: undefined }}
+      />
     </div>
   )
 }
@@ -798,6 +804,22 @@ function ChevronDown() {
   return (
     <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
       <path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function GripIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
+      {[4.5, 8, 11.5].map((y) => [5.5, 10.5].map((x) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.2" />))}
+    </svg>
+  )
+}
+
+function TrashIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
+      <path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }

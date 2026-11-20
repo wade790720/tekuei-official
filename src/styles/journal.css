@@ -109,15 +109,23 @@
 
 .journal-page .fade-in {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(8px);
+  filter: blur(8px);
   transition:
-    opacity 0.9s var(--j-ease),
-    transform 0.9s var(--j-ease);
+    opacity 0.8s var(--j-ease),
+    transform 0.8s var(--j-ease),
+    filter 0.8s var(--j-ease);
 }
 
 .journal-page .fade-in.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
+  filter: none;
+}
+
+/* Post header: back link, meta, number, title and subtitle come in one after another */
+.journal-post__header .fade-in {
+  transition-delay: calc(var(--i, 0) * 80ms);
 }
 
 /* ── List header ── */
@@ -234,6 +242,57 @@
 /* Tag filter over the list (a .tag-group) */
 .journal-filter {
   margin-bottom: var(--space-12);
+}
+
+/* Loading placeholders (ListSkeleton): sized like the text they stand in for */
+.journal-skeleton {
+  pointer-events: none;
+}
+
+.journal-skeleton .journal-card,
+.journal-skeleton .journal-row {
+  align-items: center;
+}
+
+.journal-skeleton__pill {
+  height: var(--space-6); /* same as a Tag button */
+  border-radius: var(--radius-full);
+}
+
+.journal-skeleton__num {
+  width: 24px;
+  height: 12px;
+}
+
+.journal-skeleton__meta {
+  width: 200px;
+  height: 12px;
+  margin-bottom: var(--space-6);
+}
+
+.journal-skeleton__title {
+  width: 70%;
+  height: 32px;
+  margin-bottom: var(--space-3);
+}
+
+.journal-skeleton__title--short {
+  width: 45%;
+}
+
+.journal-skeleton__line {
+  width: 90%;
+  max-width: 520px;
+  height: 14px;
+  margin-top: var(--space-4);
+}
+
+.journal-skeleton__line--short {
+  width: 60%;
+}
+
+.journal-skeleton__row-title {
+  height: 18px;
 }
 
 .journal-card {
@@ -426,17 +485,22 @@
 .journal-post {
   position: relative;
   z-index: 2;
-  max-width: var(--page-column-box);
+  /* --page-reading for the content, plus its 8px inset on both sides */
+  max-width: calc(var(--page-reading) + 2 * var(--space-2) + 2 * var(--page-pad));
   margin: 0 auto;
   padding: var(--space-24) var(--page-pad);
 }
 
-/* Same frame as the list (--page-column-box). The divider and footer span it all.
+/* Narrower than the list: the reading width. The divider and footer span the frame.
    Everything else is 8px in from both edges. Cards and quotes are as wide as the text.
-   Body blocks each sit in a .fade-in div, hence > * > *. The editor's floating tools are placed by script. */
-.journal-post :is(.journal-post__back, .journal-post__meta, .journal-post__num, .journal-post__title, .journal-post__title-en),
+   Body blocks each sit in a wrapper div, hence > * > *. The editor's floating tools are placed by script. */
+.journal-post :is(.journal-post__crumbs, .journal-post__back, .journal-post__meta, .journal-post__num, .journal-post__title, .journal-post__title-en),
 .journal-post .journal-post__body > * > :not(.cms-ed-gutter, .cms-ed-bar) {
   margin-inline: var(--space-2); /* also replaces the slides card's 80px overhang */
+}
+
+.journal-post__crumbs {
+  margin-bottom: var(--space-12);
 }
 
 .journal-post__back {
@@ -465,6 +529,7 @@
 .journal-post__meta {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline; /* the tag has a shorter line box than the date; line up the text, not the boxes */
   gap: var(--space-3);
   margin-bottom: var(--space-12);
   font-family: var(--font-label);
@@ -951,6 +1016,7 @@
   .journal-page .fade-in {
     opacity: 1;
     transform: none;
+    filter: none;
     transition: none;
   }
 }
