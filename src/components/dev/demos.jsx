@@ -16,6 +16,7 @@ import { blocksToDoc } from '../../lib/richText.js'
 import { mountGlyphField } from '../../lib/glyphField.js'
 import { mountShatterImage } from '../../lib/shatterImage.js'
 import { playWaterRipple } from '../../lib/waterRipple.js'
+import { SOUNDS } from '../../lib/uiSound.js'
 import heroImage from '../../assets/hero/bg.webp'
 import cutImage from '../../assets/hero/cut.webp'
 import seaImage from '../../assets/journal/footer-sea.webp'
@@ -94,6 +95,19 @@ function RippleDemo() {
     <button type="button" className="cl-box cl-ripple" onClick={play}>
       在這裡點一下
     </button>
+  )
+}
+
+// One button per sound. data-sound picks it, the same way a real button would (App's click listener plays it).
+function SoundDemo() {
+  return (
+    <div className="cl-sounds">
+      {Object.keys(SOUNDS).map((name) => (
+        <button key={name} type="button" className="cms-btn cms-btn--ghost" data-sound={name}>
+          {name}
+        </button>
+      ))}
+    </div>
   )
 }
 
@@ -257,6 +271,7 @@ const DEMOS = {
   ),
   glyph: () => <GlyphDemo />,
   ripple: () => <RippleDemo />,
+  sounds: () => <SoundDemo />,
   tag: () => <TagList tags={['AI', 'MARKETING', 'ENGINEERING']} />,
   'tag-filter': () => <TagFilterDemo />,
 }

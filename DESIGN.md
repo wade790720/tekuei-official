@@ -145,6 +145,13 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 新效果照同樣的方式寫：`mountXxx(canvas, opts)`，回傳 cleanup。檔案開頭用一兩行說明效果和數字的來源。
 
+### 音效
+
+- 點擊連結和按鈕時有短音效（`src/lib/uiSound.js`），用 Web Audio 即時合成，沒有音檔。參數照抄 recent.design（2026-11-20 Wade 決定），授權不明，上線前要確認。
+- 預設開，沒有開關。減少動態效果開啟時不出聲。
+- `App.jsx` 在 document 掛一個點擊監聽，新元件不用另外接。預設：選單項目 `select`、儲存 `press`、連結 `pressGhost`、其他按鈕 `pressSoft`。
+- 要換音效或靜音，在元素上寫 `data-sound="<名稱>"` 或 `data-sound="off"`。全部音效在 Component Library 的 playSound 頁可以試聽。
+
 ## Logo
 
 - 頁首 logo：「TEKUEI CHU」後面接一個 8 × 2px、約 1 秒亮 1 秒暗的底線游標。只有頁首用到，所以直接寫在 SiteNav 和 NavOverlay 裡，不抽成元件（class `site-logo`）。
