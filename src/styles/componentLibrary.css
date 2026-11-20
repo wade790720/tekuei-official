@@ -1463,16 +1463,26 @@
   }
 }
 
-/* Skeleton demos: Usage, Text Content, List Items, Animation Types.
-   On the page background, as HeroUI's preview: the block is translucent, so a lighter
-   backdrop (the demo frame's --surface-1) halves the shimmer's contrast. */
-.cl-sk-stage {
+/* HeroUI's preview area, for demos copied from HeroUI (Skeleton, ScrollShadow):
+   content centred both ways on the page background, 32px padding, at least 340px tall,
+   14px corners, inside an 8px frame. The negative margin turns the preview's 24px padding into that frame.
+   The page background also matters for Skeleton: its block is translucent, so a lighter backdrop halves the shimmer. */
+.cl-stage {
   display: flex;
+  align-items: center;
   justify-content: center;
-  width: 100%;
-  padding: var(--space-8) var(--space-6);
-  border-radius: var(--radius-md);
+  width: calc(100% + 2 * (var(--space-6) - var(--space-2)));
+  min-height: 340px;
+  margin: calc(var(--space-2) - var(--space-6));
+  padding: var(--space-8);
+  border-radius: calc(var(--radius-md) + 2px);
   background: var(--surface-0);
+}
+
+@media (max-width: 768px) {
+  .cl-stage {
+    padding: var(--space-4);
+  }
 }
 
 .cl-sk-panel {
@@ -1538,4 +1548,28 @@
   .cl-sk-types {
     grid-template-columns: 1fr;
   }
+}
+
+/* ScrollShadow demo: HeroUI's Usage example. 384px wide, at most 240px tall, 16px padding,
+   ten paragraphs 16px apart in 16px text on a 28px line. */
+.cl-ss-usage {
+  width: 100%;
+  max-width: 384px;
+}
+
+.cl-ss-usage__box {
+  max-height: 240px;
+  padding: var(--space-4);
+}
+
+.cl-ss-usage__text {
+  display: grid;
+  gap: var(--space-4);
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--text-body);
+}
+
+.cl-ss-usage__text p {
+  margin: 0;
 }

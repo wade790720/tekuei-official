@@ -19,6 +19,9 @@
   --scroll-shadow-end: 0px;
   --scroll-shadow-bar: 10px; /* the scrollbar lane stays unmasked */
 
+  /* HeroUI's thin scrollbar: ivory thumb at 15%, no track */
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
   mask-repeat: no-repeat;
   transition:
     --scroll-shadow-start 0.3s var(--ease-touch),

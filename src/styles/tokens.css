@@ -80,6 +80,8 @@
 
   /* Lines. Neutral by default; gold lines (--ember-line) only mark the current page, focus or hover. */
   --line: var(--gray-a6);
+  /* Scrollbar thumb, after HeroUI: ivory at 15% on no track. The page and ScrollShadow use it. */
+  --scrollbar-thumb: color-mix(in oklch, var(--gray-12) 15%, transparent);
   --line-strong: var(--gray-a7);
 
   /* Text hierarchy, ivory at falling strength */
