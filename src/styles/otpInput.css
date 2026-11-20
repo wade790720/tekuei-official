@@ -1,11 +1,11 @@
-/* SecretInput (src/components/SecretInput.jsx) */
+/* OtpInput (src/components/OtpInput.jsx) */
 
-.secret-input {
+.otp-input {
   position: relative;
   display: inline-grid;
 }
 
-.secret-input__slots {
+.otp-input__slots {
   display: flex;
   gap: var(--space-2);
   padding: var(--space-2);
@@ -14,7 +14,7 @@
   box-shadow: 0 0 0 1px var(--line);
 }
 
-.secret-input__slot {
+.otp-input__slot {
   position: relative;
   width: 42px;
   height: 46px;
@@ -27,7 +27,7 @@
 }
 
 /* A dot, never the character */
-.secret-input__slot[data-filled]::after {
+.otp-input__slot[data-filled]::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -37,15 +37,15 @@
   margin: -4px 0 0 -4px;
   border-radius: 50%;
   background: var(--gray-12);
-  animation: secret-input-pop 0.18s var(--ease-touch);
+  animation: otp-input-pop 0.18s var(--ease-touch);
 }
 
 /* The box that takes the next character, while the field has focus */
-.secret-input:focus-within .secret-input__slot[data-current] {
+.otp-input:focus-within .otp-input__slot[data-current] {
   box-shadow: inset 0 0 0 1.5px var(--ember);
 }
 
-.secret-input:focus-within .secret-input__slot[data-current]::before {
+.otp-input:focus-within .otp-input__slot[data-current]::before {
   content: '';
   position: absolute;
   top: 13px;
@@ -53,19 +53,19 @@
   left: 50%;
   width: 1.5px;
   background: var(--ember);
-  animation: secret-input-caret 1s steps(1) infinite;
+  animation: otp-input-caret 1s steps(1) infinite;
 }
 
-.secret-input[data-invalid] .secret-input__slots {
+.otp-input[data-invalid] .otp-input__slots {
   animation: shake-damped 0.45s linear;
 }
 
-.secret-input[data-invalid] .secret-input__slot {
+.otp-input[data-invalid] .otp-input__slot {
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 60%, transparent);
 }
 
 /* Covers the boxes so a click anywhere on them focuses the real input */
-.secret-input__field {
+.otp-input__field {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -78,34 +78,34 @@
   cursor: text;
 }
 
-@keyframes secret-input-pop {
+@keyframes otp-input-pop {
   from {
     transform: scale(0.6);
     opacity: 0;
   }
 }
 
-@keyframes secret-input-caret {
+@keyframes otp-input-caret {
   50% {
     opacity: 0;
   }
 }
 
 @media (max-width: 768px) {
-  .secret-input__slot {
+  .otp-input__slot {
     width: 38px;
     height: 44px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .secret-input__slot[data-filled]::after,
-  .secret-input[data-invalid] .secret-input__slots,
-  .secret-input:focus-within .secret-input__slot[data-current]::before {
+  .otp-input__slot[data-filled]::after,
+  .otp-input[data-invalid] .otp-input__slots,
+  .otp-input:focus-within .otp-input__slot[data-current]::before {
     animation: none;
   }
 
-  .secret-input__slot {
+  .otp-input__slot {
     transition: none;
   }
 }

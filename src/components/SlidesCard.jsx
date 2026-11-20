@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { CARD_LABELS } from '../data/cards.js'
 import { useLang } from '../i18n'
+import { Card } from './Card.jsx'
 import '../styles/cards.css'
 
 // The slide whose centre is nearest the track's centre.
@@ -98,9 +99,9 @@ export function SlidesCard({ slides }) {
             aria-label={t.slide.replace('{n}', i + 1).replace('{total}', slides.length)}
             aria-hidden={i !== index || undefined}
           >
-            <div className="card slides-card__frame">
+            <Card className="slides-card__frame">
               <img src={s.src} alt={s.alt} loading="lazy" decoding="async" draggable={false} />
-            </div>
+            </Card>
             {s.caption ? <figcaption className="post-figure__caption">{s.caption}</figcaption> : null}
           </figure>
         ))}

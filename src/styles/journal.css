@@ -433,7 +433,7 @@
 
 /* Same frame as the list (--page-column-box). The divider and footer span it all.
    Everything else is 8px in from both edges. Cards and quotes are as wide as the text.
-   Body blocks each sit in a FadeIn div, hence > * > *. The editor's floating tools are placed by script. */
+   Body blocks each sit in a .fade-in div, hence > * > *. The editor's floating tools are placed by script. */
 .journal-post :is(.journal-post__back, .journal-post__meta, .journal-post__num, .journal-post__title, .journal-post__title-en),
 .journal-post .journal-post__body > * > :not(.cms-ed-gutter, .cms-ed-bar) {
   margin-inline: var(--space-2); /* also replaces the slides card's 80px overhang */

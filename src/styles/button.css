@@ -1,0 +1,62 @@
+/* Button (src/components/Button.jsx) */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 30px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--gray-12);
+  font: inherit;
+  font-size: var(--type-caption);
+  color: var(--gray-1);
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: opacity 0.15s var(--ease-touch), background-color 0.15s var(--ease-touch);
+}
+
+/* Disabled, e.g. save with nothing to save: the button sits back instead of glowing */
+.btn:disabled {
+  background: var(--surface-2);
+  color: var(--text-faint);
+  cursor: default;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn--ghost:hover {
+  background: var(--gray-a3);
+  color: var(--text-primary);
+}
+
+/* One glyph in a 32px square: editor toolbars and the block gutter */
+.btn--icon {
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-family: var(--font-label);
+  font-size: var(--type-small);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.12s, color 0.12s;
+}
+
+.btn--icon:hover {
+  background: var(--gray-a5);
+  color: var(--text-primary);
+}
+
+.btn--icon[aria-pressed='true'] {
+  background: var(--line);
+  color: var(--text-primary);
+}

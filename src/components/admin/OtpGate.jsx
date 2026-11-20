@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ADMIN_CODE_LENGTH, CMS_LABELS as T } from '../../data/admin.js'
-import { SecretInput } from '../SecretInput.jsx'
+import { OtpInput } from '../OtpInput.jsx'
 import { CheckIcon } from '../SidePanel.jsx'
 import '../../styles/cms.css'
 
 const UNLOCK_MS = 650 // how long "已解鎖" stays before the gate closes
 
 /**
- * Full-screen code gate for edit mode: dark, blurred backdrop around a SecretInput.
+ * Full-screen code gate for edit mode: dark, blurred backdrop around a OtpInput.
  * Verifies as soon as the last digit is in.
  * @param {{ open: boolean, onClose: () => void, onVerify: (code: string) => Promise<boolean>, onUnlocked: () => void }} props
  */
@@ -79,7 +79,7 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
               {status}
             </div>
           ) : (
-            <SecretInput
+            <OtpInput
               ref={input}
               length={ADMIN_CODE_LENGTH}
               value={code}

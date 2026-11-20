@@ -542,7 +542,7 @@
   overflow: hidden;
   align-items: center;
   justify-content: center;
-  /* Centred with margin, not transform: .case-reveal owns transform. Stops at --page-max. */
+  /* Centred with margin, not transform: .fade-in owns transform. Stops at --page-max. */
   margin: 0 0 0 calc(min(100vw, var(--page-max)) / -2);
   width: min(100vw, var(--page-max));
   background: linear-gradient(
@@ -637,14 +637,14 @@
 
 /* ── Scroll reveal ── */
 
-.case-reveal {
+.case-page .fade-in {
   opacity: 0;
   transition: opacity 0.8s var(--ease-touch),
   transform 0.8s var(--ease-touch);
   transform: translateY(30px);
 }
 
-.case-reveal.is-visible {
+.case-page .fade-in.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -701,7 +701,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .case-reveal {
+  .case-page .fade-in {
     opacity: 1;
     transition: none;
     transform: none;

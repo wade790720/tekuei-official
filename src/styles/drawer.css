@@ -1,0 +1,98 @@
+/* Drawer (src/components/Drawer.jsx) */
+
+:root {
+  --drawer-w: clamp(520px, 52vw, 820px);
+}
+
+/* push: on wide screens the page moves left, so it stays visible beside the drawer */
+@media (min-width: 1100px) {
+  html.has-drawer body {
+    padding-right: var(--drawer-w);
+  }
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20000;
+  display: flex;
+  flex-direction: column;
+  width: var(--drawer-w);
+  border-left: 0.5px solid var(--gray-a3);
+  background: var(--surface-1);
+  box-shadow: -24px 0 48px rgba(0, 0, 0, 0.35);
+  color: var(--text-primary);
+  font-family: var(--font-label);
+  animation: drawer-slide 0.4s var(--ease-touch);
+}
+
+.drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6);
+  border-bottom: 0.5px solid var(--gray-a3);
+}
+
+.drawer__heading {
+  min-width: 0;
+}
+
+.drawer__title {
+  font-size: var(--type-small);
+  letter-spacing: 0;
+}
+
+.drawer__subtitle {
+  margin-top: var(--space-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  color: var(--text-tertiary);
+}
+
+.drawer__actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--space-2);
+}
+
+.drawer__body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 0 var(--space-24);
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-a8) transparent;
+}
+
+@media (max-width: 768px) {
+  .drawer {
+    left: 0;
+    width: auto;
+    border-left: 0;
+  }
+
+  .drawer__head {
+    flex-wrap: wrap;
+    padding: var(--space-4) var(--space-6);
+  }
+}
+
+@keyframes drawer-slide {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer {
+    animation: none;
+  }
+}

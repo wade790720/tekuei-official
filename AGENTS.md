@@ -37,12 +37,12 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 | 路徑 | 放什麼 |
 |---|---|
 | `src/components/` | 頁面（`XxxPage.jsx`）和共用元件（`Editor.jsx`、`RichText.jsx`、`CodeCard.jsx`……），一個元件一個檔案 |
-| `src/components/<頁面>/` | 只有那一頁用的元件，例如 `journal/JournalEditPanel.jsx`、`case/CaseReveal.jsx`、`admin/OtpGate.jsx` |
+| `src/components/<頁面>/` | 只有那一頁用的元件，例如 `journal/JournalEditPanel.jsx`、`admin/OtpGate.jsx` |
 | `src/data/` | 所有文案與內容。雙語內容的形狀是 `{ zh: …, en: … }` |
 | `src/data/cases/` | 案例內容，一個案例一檔 |
 | `src/styles/` | CSS，一頁一檔。`tokens.css` 是全站 token |
 | `src/lib/` | 不依賴 React 的邏輯。Canvas 效果也放這裡 |
-| `src/hooks/` | React hook，例如 `useReveal`、`useCmsSection` |
+| `src/hooks/` | React hook，例如 `useCmsSection` |
 | `src/assets/` | 圖片，依頁面分資料夾 |
 | `functions/` | API：`/api/data`、`/api/upload`、`/api/file/*`、`/api/admin/verify` |
 | `functions/journal/`、`sitemap.xml.js`、`llms.txt.js` | SEO：把 Journal 的內文、meta、JSON-LD 寫進 HTML，並產生 sitemap 和 llms.txt。邏輯在 `src/lib/seo.js` |

@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import '../styles/hero.css'
 import '../styles/home.css'
-import { FadeIn } from './FadeIn.jsx'
 import { HomeHero } from './HomeHero.jsx'
 import { HOME_CTA, HOME_FEATURED_WORKS, HOME_FOOTER, HOME_META, HOME_WORK } from '../data/homepage.js'
 import { useLang } from '../i18n'
@@ -36,7 +35,7 @@ export default function SiteHero() {
         <HomeHero />
 
         <section className="home-work" id="work">
-          <FadeIn>
+          <div className="fade-in">
             <div className="home-section-label">{work.label}</div>
             <h2 className="home-section-title">
               {work.title.map((line) => (
@@ -46,11 +45,11 @@ export default function SiteHero() {
                 </span>
               ))}
             </h2>
-          </FadeIn>
+          </div>
 
           <div className="home-work__grid">
             {featuredWorks.map((item) => (
-              <FadeIn key={item.caseHref} as={Link} to={item.caseHref} className="home-work__item">
+              <Link key={item.caseHref} to={item.caseHref} className="fade-in home-work__item">
                 <div
                   className={imgVariantClass(item.variant)}
                   style={{ background: item.thumbBg }}
@@ -69,14 +68,14 @@ export default function SiteHero() {
                     ))}
                   </div>
                 </div>
-              </FadeIn>
+              </Link>
             ))}
           </div>
         </section>
 
         <section className="home-final-cta" id="contact">
           <div className="home-final-cta__vline" aria-hidden />
-          <FadeIn className="home-final-cta__content">
+          <div className="fade-in home-final-cta__content">
             <div className="home-section-label">{cta.label}</div>
             <h2 className="home-final-cta__title">
               {cta.title.map((line) => (
@@ -89,7 +88,7 @@ export default function SiteHero() {
             <a href={`mailto:${cta.email}`} className="home-cta">
               {cta.email} <span className="home-cta__arrow">→</span>
             </a>
-          </FadeIn>
+          </div>
         </section>
       </main>
 

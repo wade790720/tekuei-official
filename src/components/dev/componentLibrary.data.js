@@ -17,6 +17,164 @@ export const GROUPS = [
     items: [
       // ── Card ──
       {
+        id: 'card',
+        family: 'Card',
+        name: 'Card',
+        file: 'src/components/Card.jsx',
+        summary: '卡片的底：炭灰底色、16px 圓角、1px 象牙白光環，不用邊框',
+        hero: { demo: 'card', code: '<Card className="code-card">…</Card>' },
+        api: [
+          {
+            description: 'CodeCard、ImageCard、VideoCard、SlidesCard 都用它當外框。內距和內容由使用的元件決定',
+            props: [
+              ['as', 'string | Component', "'div'", '要渲染的元素，例如 figure'],
+              ['className', 'string', "''", '附加的 class'],
+              ['children', 'node', '—', '內容'],
+              ['…rest', '—', '—', '其他 props 傳給元素，包括 ref'],
+            ],
+          },
+        ],
+        examples: [],
+        notes: ['overflow 是 hidden，圖片和影片會被裁成圓角。', '光環寫在 --card-ring，要加陰影時接在它後面。'],
+      },
+
+      // ── Button ──
+      {
+        id: 'button',
+        name: 'Button',
+        file: 'src/components/Button.jsx',
+        summary: '按鈕，有實心、透明、圖示三種',
+        hero: { demo: 'button', code: '<Button onClick={save}>儲存</Button>' },
+        api: [
+          {
+            props: [
+              ['variant', "'solid' | 'ghost' | 'icon'", "'solid'", 'solid 是主要動作，ghost 是次要動作，icon 是放一個圖示的 32px 方塊'],
+              ['as', 'string | Component', "'button'", "要渲染的元素。包住檔案欄位時用 'label'，點整顆按鈕就能選檔案"],
+              ['className', 'string', "''", '附加的 class'],
+              ['…rest', '—', '—', '其他 props 傳給元素'],
+            ],
+          },
+        ],
+        examples: [
+          {
+            id: 'upload',
+            title: '選擇檔案',
+            description: "用 as='label' 包住隱藏的 input，點按鈕就打開檔案選擇",
+            code: '<Button as="label" variant="ghost">選擇檔案<input type="file" hidden onChange={pick} /></Button>',
+          },
+        ],
+        notes: [
+          '渲染成 button 時，type 預設是 button，不會送出表單。',
+          'disabled 時底色變暗，不能點。',
+          'icon 按鈕沒有文字，要加 aria-label。aria-pressed 為 true 時底色變亮。',
+        ],
+      },
+
+      // ── Switch ──
+      {
+        id: 'switch',
+        name: 'Switch',
+        file: 'src/components/Switch.jsx',
+        summary: '開和關的切換，開啟時是金色',
+        hero: { demo: 'switch', code: '<Switch checked={loop} onChange={setLoop} label="重複播放" />' },
+        api: [
+          {
+            description: "以 role='switch' 的按鈕渲染",
+            props: [
+              ['checked', 'boolean', '—', '必填'],
+              ['onChange', '(checked: boolean) => void', '—', '必填'],
+              ['label', 'string', '—', '必填，無障礙名稱'],
+            ],
+          },
+        ],
+        examples: [],
+        keyboard: [['Space / Enter', '切換']],
+        notes: ['Switch 本身沒有文字，旁邊的文字要另外寫。'],
+      },
+
+      // ── TextArea ──
+      {
+        id: 'text-area',
+        name: 'TextArea',
+        file: 'src/components/TextArea.jsx',
+        summary: '多行的 TextField，隨內容長高',
+        hero: { demo: 'text-field', code: '<TextArea value={excerpt} onChange={setExcerpt} placeholder="一兩句話說明這篇文章" />' },
+        api: [
+          {
+            description: '外觀和 TextField 相同，高度跟著內容變，裡面不會出現捲軸',
+            props: [
+              ['value', 'string', "''", '內容'],
+              ['onChange', '(value: string) => void', '—', '必填，傳入新的文字，不是事件'],
+              ['…rest', '—', '—', '其他 props 傳給 textarea，例如 id、placeholder'],
+            ],
+          },
+        ],
+        examples: [],
+        notes: [],
+      },
+
+      // ── TextField ──
+      {
+        id: 'text-field',
+        name: 'TextField',
+        file: 'src/components/TextField.jsx',
+        summary: '看起來像一般文字的單行輸入欄位',
+        hero: { demo: 'text-field', code: '<TextField value={title} onChange={setTitle} placeholder="文章標題" />' },
+        api: [
+          {
+            description: '沒有邊框和聚焦框，只顯示游標，所以要放在 FormRow 這類有欄位名稱的地方',
+            props: [
+              ['value', 'string', "''", '內容'],
+              ['onChange', '(value: string) => void', '—', '必填，傳入新的文字，不是事件'],
+              ['aria-invalid', 'boolean', '—', 'true 時文字變成 --danger'],
+              ['…rest', '—', '—', '其他 props 傳給 input，例如 id、type、placeholder'],
+            ],
+          },
+        ],
+        examples: [],
+        notes: ["type='number' 時沒有上下箭頭，↑、↓ 鍵仍然可以增減。"],
+      },
+
+      // ── Tooltip ──
+      {
+        id: 'tooltip',
+        name: 'TooltipGroup',
+        file: 'src/components/Tooltip.jsx',
+        summary: '一排按鈕共用一個提示：第一次等一下才出現，之後在按鈕間移動時立刻出現並滑過去',
+        hero: {
+          demo: 'tooltip',
+          code: `<TooltipGroup className="toolbar">
+  <Button variant="icon" aria-label="粗體" data-tip="粗體" data-kbd="Ctrl B">B</Button>
+</TooltipGroup>`,
+        },
+        api: [
+          {
+            part: 'TooltipGroup',
+            description: '包住一排按鈕，提示顯示在這一排的下方',
+            props: [
+              ['as', 'string | Component', "'div'", '要渲染的元素'],
+              ['ref', 'Ref', '—', '傳給外層元素'],
+              ['…rest', '—', '—', '其他 props 傳給元素，例如 role="toolbar"'],
+            ],
+          },
+          {
+            part: 'data-tip',
+            description: '寫在要有提示的按鈕上',
+            props: [
+              ['data-tip', 'string', '—', '提示文字'],
+              ['data-kbd', 'string', '—', '快速鍵，顯示在提示文字右邊'],
+            ],
+          },
+        ],
+        examples: [],
+        notes: [
+          '第一次停 400ms 才出現。離開後 300ms 內移到別的按鈕，提示立刻出現並滑過去。',
+          '鍵盤聚焦到按鈕時立刻出現，按下按鈕時隱藏。',
+          'TooltipGroup 要有 position（relative 或 absolute），提示才會對齊。',
+          '減少動態效果開啟時，提示不淡入也不滑動。',
+        ],
+      },
+      {
         id: 'code-card',
         family: 'Card',
         name: 'CodeCard',
@@ -199,7 +357,7 @@ export const GROUPS = [
             id: 'trigger',
             title: '自訂按鈕',
             description: '用 triggerClassName 換掉按鈕樣式，例如編輯器工具列的圖示按鈕',
-            code: `<DropdownMenu label="插入" tip="插入" trigger={<PlusIcon />} items={INSERTS} triggerClassName="cms-ed-btn" onSelect={insert} />`,
+            code: `<DropdownMenu label="插入" tip="插入" trigger={<PlusIcon />} items={INSERTS} triggerClassName="btn btn--icon" onSelect={insert} />`,
           },
         ],
         keyboard: [
@@ -269,38 +427,9 @@ export const GROUPS = [
         ],
         notes: [
           '「＋」插入程式碼、圖片、輪播、影片和分隔線。Card 的設定直接在 Card 上填。',
-          '工具列提示第一次等 400ms 才出現，之後 300ms 內移到別的按鈕，提示立刻出現並滑過去。',
+          '工具列的提示用 TooltipGroup。',
           '新增節點時，同時修改 Editor.jsx、RichText 和 src/lib/richText.js。',
         ],
-      },
-
-      // ── FadeIn ──
-      {
-        id: 'fade-in',
-        name: 'FadeIn',
-        file: 'src/components/FadeIn.jsx',
-        summary: '元素露出 15% 時淡入，並從下方移入',
-        hero: { demo: 'fade', code: `<FadeIn className="journal-card">…</FadeIn>` },
-        api: [
-          {
-            description: '用 useReveal（IntersectionObserver），顯示後加上 is-visible，位移和時長寫在各頁的 CSS',
-            props: [
-              ['as', 'string | Component', "'div'", '要渲染的元素'],
-              ['className', 'string', "''", '附加的 class'],
-              ['children', 'node', '—', '內容'],
-              ['…rest', '—', '—', '其他 props 傳給元素'],
-            ],
-          },
-        ],
-        examples: [
-          {
-            id: 'as-link',
-            title: '作為連結',
-            description: '用 as 渲染成 Link，其他 props（例如 to）會傳給它',
-            code: '<FadeIn as={Link} to={`/journal/${slug}`} className="journal-card">…</FadeIn>',
-          },
-        ],
-        notes: ['首頁位移 20px，Journal 位移 24px。', '減少動態效果開啟時直接顯示。', '包住整個區塊，不要每一行各包一次。'],
       },
 
       // ── Tag ──
@@ -344,53 +473,13 @@ export const GROUPS = [
         ],
       },
 
-      // ── RichText ──
+      // ── OtpInput ──
       {
-        id: 'rich-text',
-        name: 'RichText',
-        file: 'src/components/RichText.jsx',
-        summary: '把文章內文（Tiptap 文件）顯示成網頁',
-        hero: {
-          demo: 'postdoc',
-          code: `<div className="journal-post__body">
-  <RichText doc={getDoc(journal.content[lang][slug])} />
-</div>`,
-        },
-        api: [
-          {
-            description: '每個最上層區塊各自淡入，放在 .journal-post__body 裡，才有文章的字級和間距',
-            props: [['doc', '{ type: "doc", content }', '—', '必填，用 getDoc(body) 取得，舊格式會自動轉換']],
-          },
-        ],
-        examples: [
-          {
-            id: 'nodes',
-            title: '區塊',
-            description: '段落、前言、小標題、次標題、引言（含出處）、清單、分隔線，以及 CodeCard、ImageCard、SlidesCard、VideoCard',
-            code: `blocksToDoc([
-  { type: 'lead', text: '前言' },
-  { type: 'h2', text: '小標題' },
-  { type: 'p', text: '段落' },
-  { type: 'quote', text: '引言', attr: '出處' },
-])`,
-          },
-          {
-            id: 'marks',
-            title: '行內格式',
-            description: '粗體、斜體、底線、刪除線、行內程式碼和連結，示範在 Typography 的「行內格式」',
-            code: `{ type: 'text', text: '保持安靜', marks: [{ type: 'bold' }] }`,
-          },
-        ],
-        notes: ['連結只接受 http(s)、mailto、tel 和站內網址（safeHref），外部連結在新分頁開啟。'],
-      },
-
-      // ── SecretInput ──
-      {
-        id: 'secret-input',
-        name: 'SecretInput',
-        file: 'src/components/SecretInput.jsx',
+        id: 'otp-input',
+        name: 'OtpInput',
+        file: 'src/components/OtpInput.jsx',
         summary: '輸入固定長度的密碼或驗證碼，一格一個字元，只顯示圓點',
-        hero: { demo: 'secret', code: `<SecretInput value={code} onChange={setCode} onComplete={verify} label="密碼" />` },
+        hero: { demo: 'otp-input', code: `<OtpInput value={code} onChange={setCode} onComplete={verify} label="密碼" />` },
         api: [
           {
             description: '一排格子，上面蓋著一個實際的 input',
@@ -413,21 +502,21 @@ export const GROUPS = [
             id: 'invalid',
             title: 'Invalid',
             description: '驗證失敗時設定 invalid，並清空 value，下一次輸入時取消 invalid',
-            demo: 'secret-invalid',
-            code: `<SecretInput value={code} onChange={change} invalid={wrong} label="密碼" />`,
+            demo: 'otp-input-invalid',
+            code: `<OtpInput value={code} onChange={change} invalid={wrong} label="密碼" />`,
           },
           {
             id: 'length',
             title: 'Length',
             description: '用 length 設定格數',
-            demo: 'secret-length',
-            code: `<SecretInput length={4} value={pin} onChange={setPin} label="PIN" />`,
+            demo: 'otp-input-length',
+            code: `<OtpInput length={4} value={pin} onChange={setPin} label="PIN" />`,
           },
           {
             id: 'text',
             title: '英數字',
             description: '設定 numeric={false}，接受字母和數字',
-            code: `<SecretInput numeric={false} length={8} value={code} onChange={setCode} label="邀請碼" />`,
+            code: `<OtpInput numeric={false} length={8} value={code} onChange={setCode} label="邀請碼" />`,
           },
         ],
         notes: [
@@ -437,145 +526,53 @@ export const GROUPS = [
         ],
       },
 
-      // ── SidePanel ──
+      // ── Drawer ──
       {
-        id: 'side-panel',
-        name: 'SidePanel',
-        file: 'src/components/SidePanel.jsx',
-        summary: '從右側滑出的編輯面板，每列左邊是欄位名稱，右邊是值',
+        id: 'drawer',
+        name: 'Drawer',
+        file: 'src/components/Drawer.jsx',
+        summary: '從右側滑出的面板，有標題列和可以捲動的內容',
         hero: {
-          code: `<SidePanel title="編輯文章" dirty={dirty} saving={saving} onSave={save} onLogout={logout}>
-  <PanelSection title="文章">
-    <FormRow label="標題">
-      <TextInput value={title} onChange={setTitle} />
-    </FormRow>
-  </PanelSection>
-</SidePanel>`,
+          demo: 'drawer',
+          code: `<Drawer open={open} label="設定" push>
+  <DrawerHeader title="設定" subtitle="/journal">
+    <Button variant="ghost" onClick={close}>關閉</Button>
+  </DrawerHeader>
+  <DrawerBody>…</DrawerBody>
+</Drawer>`,
         },
         api: [
           {
-            part: 'SidePanel',
-            description: '用 portal 放在 body 底下，寬度 1100px 以上時，頁面往左移出面板的寬度',
+            part: 'Drawer',
+            description: '用 portal 放在 body 底下，蓋在導覽列上面。open 為 false 時不渲染',
             props: [
-              ['title / subtitle', 'string', '—', '面板標題和副標'],
-              ['dirty / saving / error', 'boolean / boolean / string', '—', '儲存狀態：尚未儲存、儲存中、已儲存、儲存失敗'],
-              ['onSave / onLogout', '() => void', '—', '必填，儲存按鈕只在 dirty 時可以按'],
-              ['preview', 'boolean', 'false', '頂端多一顆「預覽」，切換 useAdmin().previewing。頁面讀這個值，換成正式頁的畫面'],
-              ['children', 'node', '—', 'PanelSection 和 FormRow'],
+              ['open', 'boolean', '—', '必填，是否打開'],
+              ['label', 'string', '—', '必填，面板的無障礙名稱'],
+              ['push', 'boolean', 'false', '寬度 1100px 以上時，頁面往左移出面板的寬度，不被蓋住'],
+              ['className', 'string', "''", '附加的 class'],
+              ['children', 'node', '—', 'DrawerHeader 和 DrawerBody'],
             ],
           },
           {
-            part: 'PanelSection',
-            description: '一組欄位，有標題和選填的動作按鈕',
+            part: 'DrawerHeader',
+            description: '標題列：左邊標題和副標，右邊放按鈕',
             props: [
-              ['title', 'string', '—', '區段標題'],
-              ['action', 'node', '—', '標題右側的按鈕'],
+              ['title', 'string', '—', '標題'],
+              ['subtitle', 'string', '—', '副標，太長時以刪節號結尾'],
+              ['children', 'node', '—', '右側的按鈕'],
             ],
           },
           {
-            part: 'FormRow',
-            description: '一列：左邊欄位名稱，右邊值',
-            props: [
-              ['label', 'string', '—', '欄位名稱'],
-              ['hint', 'string', '—', '說明，聚焦時出現'],
-              ['htmlFor', 'string', '—', '對應欄位的 id'],
-            ],
-          },
-          {
-            part: 'TextInput / TextArea',
-            description: '看起來像一般文字的輸入欄位，只顯示游標，沒有聚焦框，TextArea 隨內容長高',
-            props: [
-              ['value', 'string', '—', '必填'],
-              ['onChange', '(value) => void', '—', '必填'],
-              ['mono', 'boolean', 'false', '只有 TextArea：使用等寬字'],
-            ],
-          },
-          {
-            part: 'Switch',
-            description: '開關',
-            props: [
-              ['checked', 'boolean', '—', '必填'],
-              ['onChange', '(checked) => void', '—', '必填'],
-              ['label', 'string', '—', '無障礙名稱'],
-            ],
+            part: 'DrawerBody',
+            description: '可以捲動的內容，捲到底時不會帶動後面的頁面',
+            props: [['children', 'node', '—', '內容']],
           },
         ],
         examples: [],
         notes: [
-          '儲存按鈕有三種狀態：「儲存」、轉圈的「儲存中」、打勾的「已儲存」。「已儲存」是琥珀色，1.6 秒後變回「儲存」。每次換狀態，文字都會從模糊淡入。',
-          '三種狀態疊在同一格，按鈕寬度固定是最寬的那一種，換狀態時旁邊的按鈕不會移動。',
-          '儲存失敗時，按鈕回到「儲存」並搖一下，和密碼框的錯誤用同一組動畫（tokens.css 的 shake-damped）。錯誤訊息顯示在按鈕下方的狀態列。',
-          '減少動態效果開啟時，狀態直接切換，不淡入也不搖。',
-          '收合後，右下角出現「編輯面板」按鈕，有未儲存的修改時，按鈕帶一個圓點。收合時按 Ctrl+S 儲存，這顆按鈕也會顯示「儲存中」、「已儲存」，失敗時搖一下。',
-          '面板的介面文字只寫中文。',
-        ],
-      },
-
-      // ── SiteNav ──
-      {
-        id: 'site-nav',
-        name: 'SiteNav',
-        file: 'src/components/SiteNav.jsx',
-        summary: '全站的頂部導覽：logo、導覽連結和語言切換，手機寬度改成全螢幕選單',
-        hero: { code: `<SiteNav variant="case" highlightWorkSection />` },
-        api: [
-          {
-            part: 'SiteNav',
-            description: '固定在頁面頂端，往下捲動 80px 後加上半透明底色，由 App.jsx 依路徑放置，頁面不用再放',
-            props: [
-              ['variant', "'default' | 'case'", "'default'", '案例頁用 case，一開始就有底色'],
-              ['highlightJournal', 'boolean', 'false', '把 Journal 標成目前頁'],
-              ['highlightWorkSection', 'boolean', 'false', '把 Work 標成目前頁'],
-            ],
-          },
-          {
-            part: 'SiteNavLinks',
-            description: '導覽連結清單，桌面導覽列和手機選單共用同一份，新增或刪除導覽項目時改這裡',
-            props: [
-              ['variant', "'desktop' | 'overlay'", "'desktop'", '手機選單用 overlay'],
-              ['onNavigate', '() => void', '—', '點連結後呼叫，用來關閉選單'],
-              ['highlightJournal / highlightWorkSection', 'boolean', 'false', '同 SiteNav'],
-            ],
-          },
-          {
-            part: 'NavToggle',
-            description: '寬度 900px 以下的選單按鈕，打開 NavOverlay',
-            props: [
-              ['onToggle', '() => void', '—', '必填，按下時呼叫'],
-              ['ref', 'Ref<HTMLButtonElement>', '—', '選單關閉後，焦點回到這個按鈕'],
-            ],
-          },
-          {
-            part: 'NavOverlay',
-            description: '全螢幕的導覽選單，以對話框渲染',
-            props: [
-              ['open', 'boolean', '—', '必填，是否打開'],
-              ['onClose', '() => void', '—', '必填，關閉時呼叫'],
-              ['id', 'string', "'nav-overlay'", '選單元素的 id'],
-            ],
-          },
-        ],
-        examples: [
-          {
-            id: 'case',
-            title: 'Case',
-            description: '案例頁用 variant="case"，並把 Work 標成目前頁',
-            code: `<SiteNav variant="case" highlightWorkSection />`,
-          },
-        ],
-        keyboard: [
-          ['Enter / Space', 'NavToggle 聚焦時，打開選單'],
-          ['Esc', '關閉選單，焦點回到 NavToggle'],
-          ['Tab', '在選單的連結之間移動'],
-        ],
-        notes: [
-          '目前頁的連結加上 is-active，顯示為金色。路徑相符時，NavLink 另外加上 aria-current="page"。',
-          '選單打開時，焦點移到「關閉」按鈕。',
-          'NavToggle 只在選單關閉時出現，所以用 aria-haspopup="dialog"，不用 aria-expanded。',
-          '語言按鈕的 aria-label 以畫面上的字（EN／中文）開頭，語音控制可以直接說出來。',
-          '語言按鈕顯示要切換過去的語言：中文時顯示 EN，英文時顯示 TW。兩個都是等寬字，切換時導覽列的高度不變。',
-          '按下語言按鈕，水波從點擊的位置往外擴散，0.8 秒內擴散到畫面對角，波碰到畫面邊緣不會反彈，整頁文字跟著波紋扭曲，1 秒內結束（waterRipple：波動方程式、SVG feDisplacementMap、Canvas 2D 打光）。語言在 0.3 秒時切換。動畫中再按一次，會重新計算 1 秒，用鍵盤按時則從按鈕中心開始。減少動態效果開啟時沒有水波，語言直接切換。',
-          '/checkin 不顯示導覽列。',
+          '寬度是 --drawer-w（520–820px）。768px 以下佔滿整個寬度。',
+          '打開時從右側滑入。減少動態效果開啟時直接出現。',
+          '編輯模式的面板（SidePanel）用 Drawer 組成，加上儲存、登出、預覽和收合後的按鈕。',
         ],
       },
     ],
@@ -583,7 +580,7 @@ export const GROUPS = [
   {
     id: 'effects',
     title: '效果',
-    intro: 'Canvas 視覺效果，常駐的效果每頁最多一個，寫成 mountXxx(canvas, opts) 並回傳 cleanup，而按一下才播一次的效果寫成 playXxx(…)，自己建立畫面，播完自己移除',
+    intro: '視覺效果。常駐的效果每頁最多一個，寫成 mountXxx(canvas, opts) 並回傳 cleanup。按一下才播一次的效果寫成 playXxx(…)，自己建立畫面，播完自己移除',
     items: [
       {
         id: 'shatter-image',
@@ -672,7 +669,42 @@ export const GROUPS = [
           '扭曲用 SVG feDisplacementMap，掛在 <html> 上，因為只有根元素的 filter 不會改變 position: fixed。',
           '畫面外有一圈吸收帶，波碰到邊緣不反彈。離邊緣 40px 內扭曲減到 0，避免露出白底。',
           '用在 SiteNav 的語言按鈕。',
-          '待修：Safari 和手機尚未測試。',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'utilities',
+    title: '工具',
+    intro: '不屬於介面元件、也不是視覺效果的共用函式',
+    items: [
+      {
+        id: 'reveal',
+        name: 'mountReveal',
+        file: 'src/lib/reveal.js',
+        summary: '元素露出 15% 時加上 is-visible，全站的淡入都用它',
+        hero: { demo: 'fade', code: `<Link to={href} className="fade-in journal-card">…</Link>` },
+        api: [
+          {
+            part: 'mountReveal()',
+            description: '監看全站的 .fade-in 元素，進入畫面時加上 is-visible，只觸發一次。App.jsx 呼叫一次，回傳 cleanup。新元件不用另外接',
+            props: [],
+          },
+          {
+            part: '.fade-in',
+            description: '寫在要淡入的元素上。位移和時長寫在各頁的 CSS，例如 .journal-page .fade-in',
+            props: [
+              ['fade-in', 'class', '—', '要淡入的元素'],
+              ['is-visible', 'class', '—', '進入畫面後由 mountReveal 加上，不要自己寫'],
+            ],
+          },
+        ],
+        examples: [],
+        notes: [
+          '首頁位移 20px，Journal 位移 24px，案例頁位移 30px。',
+          '減少動態效果開啟時，各頁的 CSS 直接顯示元素。',
+          '包住整個區塊，不要每一行各包一次。',
+          '淡入會設定 transform，所以用 transform 置中的元素不要加 fade-in，改用 margin 置中。',
         ],
       },
       {
@@ -724,118 +756,8 @@ export const GROUPS = [
         ],
         examples: [],
         notes: [
-          '音效參數照抄 recent.design（2026-11-20 Wade 決定）。授權不明，上線前要確認。',
-          '預設開，沒有開關。減少動態效果開啟時不出聲，和 recent.design 一樣。',
+          '預設開，沒有開關。減少動態效果開啟時不出聲。',
           '目前只有點擊會出聲。pop、open、success 這些提示聲還沒接到任何互動。',
-        ],
-      },
-    ],
-  },
-  {
-    id: 'edit-mode',
-    title: '編輯模式',
-    intro: '在網站前台編輯 Journal 的元件，只有登入後看得到',
-    items: [
-      {
-        id: 'admin-provider',
-        name: 'AdminProvider',
-        file: 'src/context/AdminProvider.jsx',
-        summary: '管理登入狀態、編輯模式和 Ctrl/⌘+S 快速鍵',
-        hero: {
-          code: `const admin = useAdmin()
-useAdminSave(admin.editing ? save : null)`,
-        },
-        api: [
-          {
-            part: 'AdminProvider',
-            description: '包在 App.jsx 最外層，並放出密碼框（OtpGate）',
-            props: [['children', 'node', '—', '整個網站']],
-          },
-          {
-            part: 'useAdmin()',
-            description: '讀取和改變編輯狀態',
-            props: [
-              ['editing', 'boolean', 'false', '是否在編輯模式，html 會加上 is-cms-editing'],
-              ['setEditing', '(on: boolean) => void', '—', '開關編輯模式'],
-              ['getToken', '() => string | null', '—', '儲存和上傳時使用的憑證'],
-              ['openGate / logout', '() => void', '—', '打開密碼框／登出，登出同時結束編輯'],
-              ['panelOpen / setPanelOpen', 'boolean / (open) => void', 'true', '編輯面板是否打開'],
-            ],
-          },
-          {
-            part: 'useAdminSave(fn)',
-            description: '編輯中按 Ctrl/⌘+S 時呼叫 fn，傳 null 取消',
-            props: [['fn', '(() => void) | null', '—', '儲存函式']],
-          },
-        ],
-        examples: [],
-        keyboard: [
-          ['Ctrl / ⌘ + S', '沒登入時打開密碼框，登入後進入編輯模式，編輯中則儲存'],
-        ],
-        notes: [
-          '密碼是 Cloudflare Pages 的 ADMIN_SECRET，6 位數字。',
-          '登入狀態存在 sessionStorage，關閉分頁後要重新輸入。',
-          'Ctrl/⌘+S 會取代瀏覽器的「另存網頁」。',
-        ],
-      },
-      {
-        id: 'otp-gate',
-        name: 'OtpGate',
-        file: 'src/components/admin/OtpGate.jsx',
-        summary: '全螢幕的密碼框，輸入滿 6 碼自動驗證',
-        hero: { demo: 'otp', code: `<OtpGate open={open} onVerify={login} onUnlocked={enter} onClose={close} />` },
-        api: [
-          {
-            description: '模糊的背景和一個 SecretInput，驗證時輸入框換成「驗證中」，成功後顯示「已解鎖」',
-            props: [
-              ['open', 'boolean', '—', '必填'],
-              ['onVerify', '(code) => Promise<boolean>', '—', '必填，回傳密碼是否正確'],
-              ['onUnlocked', '() => void', '—', '必填，顯示「已解鎖」後呼叫'],
-              ['onClose', '() => void', '—', '必填，按 Esc 或點背景時呼叫'],
-            ],
-          },
-        ],
-        examples: [],
-        keyboard: [['Esc', '關閉密碼框']],
-        notes: ['密碼錯誤時，格子搖動並清空，焦點留在輸入框，螢幕閱讀器讀出錯誤訊息。', '其他需要驗證碼的地方，直接用 SecretInput。'],
-      },
-      {
-        id: 'journal-edit-panel',
-        name: 'JournalEditPanel',
-        file: 'src/components/journal/JournalEditPanel.jsx',
-        summary: 'Journal 的編輯模式：文章頁的內文直接在頁面上編輯，面板只放標題、標籤、日期、摘要，列表頁新增、排序和刪除文章',
-        hero: { code: `<JournalPostBody slug={slug}>
-  <RichText doc={getDoc(content)} />
-</JournalPostBody>
-<JournalPostEditPanel slug={slug} />
-<JournalListEditPanel />` },
-        api: [
-          {
-            part: 'JournalPostBody',
-            description: '包住文章頁的內文。編輯模式時換成 Editor，樣式和正式頁相同。其他時候，以及編輯器還在載入時，顯示 children',
-            props: [
-              ['slug', 'string', '—', '必填，目前文章的網址代稱'],
-              ['children', 'ReactNode', '—', '必填，沒有在編輯時顯示的內文'],
-            ],
-          },
-          {
-            part: 'JournalPostEditPanel',
-            description: '放在 JournalPostPage，編輯標題、英文副標、標籤、日期、閱讀時間、摘要',
-            props: [['slug', 'string', '—', '必填，目前文章的網址代稱']],
-          },
-          {
-            part: 'JournalListEditPanel',
-            description: '放在 JournalListPage，沒有 props',
-            props: [],
-          },
-        ],
-        examples: [],
-        keyboard: [['↑ / ↓', '文章列表的 ⠿ 聚焦時，往上或往下移一格']],
-        notes: [
-          '資料存在 R2 data.json 的 journal。src/data/journal.js 只是 R2 沒有資料時的預設值。',
-          '日期、分類、閱讀時間、排序、新增和刪除套用到中英文，標題、摘要和內文只改目前的語言。',
-          '圖片上傳上限 1MB（JPG、PNG、WEBP），超過時編輯器會先自動壓縮。圖片存在 R2 的 images/，影片只能填網址。',
-          '有未儲存的修改時，登出前會先確認。',
         ],
       },
     ],

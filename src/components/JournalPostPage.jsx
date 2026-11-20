@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { FadeIn } from './FadeIn.jsx'
 import { TagList } from './Tag.jsx'
 import { JournalPostBody, JournalPostEditPanel } from './journal/JournalEditPanel.jsx'
 import { RichText } from './RichText.jsx'
@@ -47,7 +46,7 @@ export default function JournalPostPage() {
 
       <article className="journal-post">
         <header className="journal-post__header">
-          <FadeIn>
+          <div className="fade-in">
             <BackLink className="journal-post__back">
               <span className="journal-post__back-line" aria-hidden />
               JOURNAL
@@ -62,7 +61,7 @@ export default function JournalPostPage() {
             <div className="journal-post__num">{post.num}</div>
             <h1 className="journal-post__title">{post.title}</h1>
             <div className="journal-post__title-en">{post.titleEn}</div>
-          </FadeIn>
+          </div>
         </header>
 
         <div className="journal-post__rule" aria-hidden />

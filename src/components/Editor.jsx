@@ -9,7 +9,9 @@ import { NodeSelection, TextSelection } from '@tiptap/pm/state'
 import StarterKit from '@tiptap/starter-kit'
 import { DropdownMenu } from './DropdownMenu.jsx'
 import { ImageCard } from './ImageCard.jsx'
-import { Switch } from './SidePanel.jsx'
+import { Switch } from './Switch.jsx'
+import { Button } from './Button.jsx'
+import { TooltipGroup } from './Tooltip.jsx'
 import { compressImage } from '../lib/compressImage.js'
 import { safeHref } from '../lib/richText.js'
 
@@ -212,10 +214,10 @@ function ImageCardView({ node, updateAttributes, deleteNode, selected, extension
         ) : (
           <div className="cms-ed-image__empty">
             <span>在內文貼上或拖放圖片，也可以選擇檔案</span>
-            <label className="cms-btn cms-btn--ghost cms-upload">
+            <Button as="label" variant="ghost" className="cms-upload">
               {busy ? '上傳中' : '選擇檔案'}
               {fileInput}
-            </label>
+            </Button>
             <CardField label="圖片網址" value={a.src} onChange={(src) => updateAttributes({ src })} placeholder="或貼上圖片網址" />
           </div>
         )}
@@ -231,10 +233,10 @@ function ImageCardView({ node, updateAttributes, deleteNode, selected, extension
                 圖片網址
                 <span className="cms-ed-card__row">
                   <CardField label="圖片網址" value={a.src} onChange={(src) => updateAttributes({ src })} />
-                  <span className="cms-btn cms-btn--ghost cms-upload">
+                  <Button as="span" variant="ghost" className="cms-upload">
                     {busy ? '上傳中' : '換圖'}
                     {fileInput}
-                  </span>
+                  </Button>
                 </span>
               </label>
               <label className="cms-check">
@@ -243,9 +245,9 @@ function ImageCardView({ node, updateAttributes, deleteNode, selected, extension
               </label>
             </CardSettings>
           ) : null}
-          <button type="button" className="cms-ed-btn" onClick={deleteNode} aria-label="刪除圖片">
+          <Button variant="icon" onClick={deleteNode} aria-label="刪除圖片">
             ✕
-          </button>
+          </Button>
         </div>
         {err ? <div className="cms-row__error">{err}</div> : null}
       </div>
@@ -270,9 +272,9 @@ function CardSettings({ label, children }) {
   }, [open])
   return (
     <div className="cms-ed-set" ref={root}>
-      <button type="button" className="cms-ed-btn" aria-label={label} aria-expanded={open} onClick={() => setOpen((v) => !v)}>
+      <Button variant="icon" aria-label={label} aria-expanded={open} onClick={() => setOpen((v) => !v)}>
         ⋯
-      </button>
+      </Button>
       {open ? (
         <div className="cms-ed-set__pop" role="group" aria-label={label}>
           {children}
@@ -325,10 +327,10 @@ function SlidesCardView({ node, updateAttributes, deleteNode, selected, extensio
           <div className="cms-ed-slide__fields">
             <div className="cms-ed-card__row">
               <CardField label={`第 ${i + 1} 張的圖片網址`} value={s.src} onChange={(src) => setSlide(i, { src })} placeholder="圖片網址，或按右邊上傳" />
-              <label className="cms-btn cms-btn--ghost cms-upload">
+              <Button as="label" variant="ghost" className="cms-upload">
                 {busy === i ? '上傳中' : '上傳'}
                 <input type="file" accept="image/*" hidden onChange={(e) => upload(i, e.target.files?.[0])} />
-              </label>
+              </Button>
               <button
                 type="button"
                 className="cms-icon cms-icon--danger"
@@ -344,9 +346,9 @@ function SlidesCardView({ node, updateAttributes, deleteNode, selected, extensio
         </div>
       ))}
       {err ? <div className="cms-row__error">{err}</div> : null}
-      <button type="button" className="cms-btn cms-btn--ghost cms-ed-slide__add" onClick={() => setSlides([...slides, { src: '', alt: '', caption: '' }])}>
+      <Button variant="ghost" className="cms-ed-slide__add" onClick={() => setSlides([...slides, { src: '', alt: '', caption: '' }])}>
         ＋ 新增一張
-      </button>
+      </Button>
     </CardShell>
   )
 }
@@ -534,11 +536,6 @@ const KEYS = {
   ordered: `${MOD}${SHIFT}7`,
 }
 
-// Warm tooltips (after React Bits "Warm Tooltip"): the first tooltip waits, then while the bar is "warm"
-// the same tooltip slides to the next button at once.
-const TIP_DELAY = 400
-const TIP_WARM = 300
-
 const ICON = {
   paragraph: <Glyph d="M7 3h6M10 3v10M7 3a3 3 0 000 6h3" />,
   lead: <Glyph d="M3 4h10M3 8h10M3 12h6" />,
@@ -595,7 +592,7 @@ function applyBlock(editor, kind) {
 
 // ── Block gutter: "+" and "⠿" beside the line under the pointer, as in Notion and Editor.js ──
 
-const HANDLE = 24 // px, the gutter buttons' height (cms.css .cms-ed-gutter .cms-ed-btn)
+const HANDLE = 24 // px, the gutter buttons' height (cms.css .cms-ed-gutter .btn--icon)
 
 /** The top-level block at height `y` (client px), its left edge, and where its first line sits. */
 function blockAt(view, y) {
@@ -653,56 +650,19 @@ function BlockGutter({ editor, block, gutterRef }) {
       style={{ top: block.top, left: block.left }}
       data-empty={block.node.type.name === 'paragraph' && !block.node.content.size ? '' : undefined}
     >
-      <DropdownMenu label="新增區塊" trigger={<PlusIcon />} items={BLOCKS} onSelect={add} triggerClassName="cms-ed-btn" />
-      <button
-        type="button"
-        className="cms-ed-btn cms-ed-gutter__grip"
+      <DropdownMenu label="新增區塊" trigger={<PlusIcon />} items={BLOCKS} onSelect={add} triggerClassName="btn btn--icon" />
+      <Button
+        variant="icon"
+        className="cms-ed-gutter__grip"
         draggable
         onDragStart={dragStart}
         onClick={select}
         aria-label="拖曳移動這個區塊，點一下選取"
       >
         ⠿
-      </button>
+      </Button>
     </div>
   )
-}
-
-function useWarmTooltip() {
-  const bar = useRef(null)
-  const timer = useRef(0)
-  const warmUntil = useRef(0)
-  const [tip, setTip] = useState(null) // { text, kbd, x, travel }
-
-  useEffect(() => () => clearTimeout(timer.current), [])
-
-  const place = (el) => {
-    const b = bar.current.getBoundingClientRect()
-    const r = el.getBoundingClientRect()
-    setTip((t) => ({ text: el.dataset.tip, kbd: el.dataset.kbd, x: r.left - b.left + r.width / 2, travel: Boolean(t) }))
-  }
-  const hide = () => {
-    clearTimeout(timer.current)
-    if (tip) warmUntil.current = performance.now() + TIP_WARM
-    setTip(null)
-  }
-  const over = (e) => {
-    const el = e.target.closest('[data-tip]')
-    if (!el || el.dataset.tip === tip?.text) return
-    clearTimeout(timer.current)
-    if (tip || performance.now() < warmUntil.current) place(el)
-    else timer.current = setTimeout(() => place(el), TIP_DELAY)
-  }
-  const focus = (e) => {
-    const el = e.target.closest('[data-tip]')
-    if (el) place(el)
-  }
-
-  return {
-    bar,
-    tip,
-    barProps: { ref: bar, onPointerOver: over, onPointerLeave: hide, onFocus: focus, onBlur: hide, onPointerDown: hide },
-  }
 }
 
 /** The block kind at the cursor, as a TEXT_BLOCKS value. Lists and quotes win over the paragraph inside them. */
@@ -721,7 +681,7 @@ function blockKind(e) {
  * underline, link and inline code. It shows while text is selected and the editor (or the bubble) has focus.
  */
 function Toolbar({ editor }) {
-  const { bar, tip, barProps } = useWarmTooltip()
+  const bar = useRef(null)
   const [inside, setInside] = useState(false) // focus is in the bubble, e.g. in the block-kind menu
   const s = useEditorState({
     editor,
@@ -766,14 +726,14 @@ function Toolbar({ editor }) {
   }
 
   return (
-    <div
+    <TooltipGroup
+      ref={bar}
       className="cms-ed-bar"
       role="toolbar"
       aria-label="文字格式"
       style={{ top: at.top - box.top, left: at.left - box.left }}
       onPointerDownCapture={() => setInside(true)}
       onFocusCapture={() => setInside(true)}
-      {...barProps}
     >
       <DropdownMenu
         label="轉換成"
@@ -805,21 +765,14 @@ function Toolbar({ editor }) {
       <Btn label="行內程式碼" kbd={KEYS.code} on={s.code} onClick={() => run().toggleCode().run()}>
         {'<>'}
       </Btn>
-      {tip ? (
-        <div className="cms-ed-tip" role="tooltip" style={{ '--x': `${tip.x}px` }} data-travel={tip.travel || undefined}>
-          {tip.text}
-          {tip.kbd ? <kbd>{tip.kbd}</kbd> : null}
-        </div>
-      ) : null}
-    </div>
+    </TooltipGroup>
   )
 }
 
 function Btn({ on, label, kbd, onClick, children }) {
   return (
-    <button
-      type="button"
-      className="cms-ed-btn"
+    <Button
+      variant="icon"
       aria-label={label}
       aria-pressed={on}
       aria-keyshortcuts={kbd?.replace('⌘', 'Meta+').replace('Ctrl ', 'Control+').replace(/⇧|Shift /, 'Shift+')}
@@ -829,7 +782,7 @@ function Btn({ on, label, kbd, onClick, children }) {
       onClick={onClick}
     >
       {children}
-    </button>
+    </Button>
   )
 }
 

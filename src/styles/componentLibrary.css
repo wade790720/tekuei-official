@@ -379,6 +379,35 @@
   align-items: center;
 }
 
+/* Card, Tooltip and field demos */
+.cl-card {
+  display: grid;
+  place-items: center;
+  width: min(320px, 80%);
+  height: 96px;
+}
+
+.cl-tips {
+  position: relative;
+  display: flex;
+  gap: var(--space-1);
+}
+
+.cl-fields {
+  place-items: stretch;
+  align-content: center;
+  gap: var(--space-3);
+  height: auto;
+  padding: var(--space-6);
+}
+
+.cl-drawer-text {
+  margin: 0;
+  padding: var(--space-6);
+  font-size: var(--type-small);
+  color: var(--text-secondary);
+}
+
 .cl-replay--inline {
   position: static;
 }
@@ -813,8 +842,8 @@
 
 .fd-spec__stage {
   position: relative;
-  min-width: 840px;
-  padding: var(--space-12) 320px var(--space-12) var(--space-12);
+  min-width: 640px;
+  padding: var(--space-12) var(--space-24) var(--space-12) var(--space-12);
 }
 
 .fd-spec__card {
@@ -921,21 +950,9 @@
   stroke-dasharray: 3 3;
 }
 
-.fd-spec__leader polyline {
-  fill: none;
-  stroke: var(--text-faint);
-  stroke-width: 1;
-  stroke-dasharray: 1 3;
-  stroke-linecap: round;
-}
-
-.fd-spec__leader circle {
-  fill: var(--text-secondary);
-}
 
 .fd-spec__tag,
-.fd-spec__guide-label,
-.fd-spec__chip {
+.fd-spec__guide-label {
   position: absolute;
   font-family: var(--font-label);
   font-size: var(--type-label);
@@ -976,26 +993,6 @@
   color: var(--annotate);
 }
 
-.fd-spec__chip {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  transform: translateY(-50%);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  box-shadow: 0 0 0 1px var(--line-strong);
-}
-
-.fd-spec__chip b {
-  font-weight: var(--weight-regular);
-  color: var(--text-primary);
-}
-
-.fd-spec__chip small {
-  font-size: var(--type-label);
-  color: var(--text-tertiary);
-}
 
 .fd-spec__caption {
   margin-top: var(--space-3);

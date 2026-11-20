@@ -1,3 +1,4 @@
+import { Card } from './Card.jsx'
 import '../styles/cards.css'
 
 /**
@@ -13,9 +14,9 @@ import '../styles/cards.css'
 export function ImageCard({ src, alt, caption, frame = false, width, height }) {
   return (
     <figure className="post-figure">
-      <div className={`card image-card${frame ? ' image-card--frame' : ''}`}>
+      <Card className={`image-card${frame ? ' image-card--frame' : ''}`}>
         <img src={src} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
-      </div>
+      </Card>
       {caption ? <figcaption className="post-figure__caption">{caption}</figcaption> : null}
     </figure>
   )
