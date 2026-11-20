@@ -25,3 +25,7 @@ dist-ssr
 *.sln
 *.sw?
 .gstack/
+
+# Impeccable caches and generated files (config.json is tracked)
+.impeccable/*
+!.impeccable/config.json

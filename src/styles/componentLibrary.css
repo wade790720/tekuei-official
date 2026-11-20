@@ -366,6 +366,12 @@
   cursor: pointer;
 }
 
+.cl-sounds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
 .cl-box--row {
   display: flex;
   gap: var(--space-4);

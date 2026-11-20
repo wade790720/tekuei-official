@@ -9,6 +9,7 @@ import CaseRouter from './components/CaseRouter.jsx'
 import CheckinPage from './components/CheckinPage.jsx'
 import HowToCheckinPage from './components/HowToCheckinPage.jsx'
 import { SiteNav } from './components/SiteNav.jsx'
+import { mountClickSounds } from './lib/uiSound.js'
 import { AdminProvider } from './context/AdminProvider.jsx'
 import { JournalProvider } from './context/JournalProvider.jsx'
 
@@ -65,6 +66,7 @@ function AppNav() {
 }
 
 export default function App() {
+  useEffect(() => mountClickSounds(), [])
   return (
     <BrowserRouter>
       <AdminProvider>
