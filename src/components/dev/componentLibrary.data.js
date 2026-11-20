@@ -590,7 +590,7 @@ export const GROUPS = [
         name: 'mountShatterImage',
         file: 'src/lib/shatterImage.js',
         summary: '碎片從左到右拼成一張圖，然後靜止',
-        hero: { demo: 'shatter', code: `useEffect(() => mountShatterImage(canvas.current, { src, crop: [0, 1166, 3840, 1410] }), [])` },
+        hero: { demo: 'shatter', code: `useEffect(() => mountShatterImage(canvas.current, { src, crop: [0, 583, 1920, 705] }), [])` },
         api: [
           {
             description: '圖的亮度轉成透明度，所以要用黑底、亮線條的圖',

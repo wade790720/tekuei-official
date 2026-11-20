@@ -81,7 +81,7 @@ function Replayable({ children }) {
 
 function ShatterDemo() {
   const canvas = useRef(null)
-  useEffect(() => mountShatterImage(canvas.current, { src: seaImage, crop: [0, 1166, 3840, 1410] }), [])
+  useEffect(() => mountShatterImage(canvas.current, { src: seaImage, crop: [0, 583, 1920, 705] }), [])
   return <canvas ref={canvas} className="cl-shatter" aria-hidden />
 }
 
