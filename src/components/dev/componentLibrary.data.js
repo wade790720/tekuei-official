@@ -731,7 +731,16 @@ export const GROUPS = [
         name: 'ScrollShadow',
         file: 'src/components/ScrollShadow.jsx',
         summary: '可以捲動的區塊。還有內容沒看到的那一邊會淡出',
-        hero: { demo: 'scroll-shadow', code: '<ScrollShadow style={{ height: 240 }}>…</ScrollShadow>' },
+        hero: {
+          demo: 'scroll-shadow',
+          code: `<ScrollShadow className="box">
+  <div className="text">
+    {paragraphs.map((p) => <p key={p}>{p}</p>)}
+  </div>
+</ScrollShadow>
+
+/* .box { max-height: 240px; padding: 16px; } */`,
+        },
         api: [
           {
             description: '本身就是捲動的容器。淡出是蓋在內容上的遮罩，任何背景都能用',
@@ -745,15 +754,7 @@ export const GROUPS = [
             ],
           },
         ],
-        examples: [
-          {
-            id: 'horizontal',
-            title: 'Horizontal',
-            description: '橫向捲動，左右兩邊淡出',
-            demo: 'scroll-shadow-horizontal',
-            code: '<ScrollShadow orientation="horizontal" hideScrollBar>…</ScrollShadow>',
-          },
-        ],
+        examples: [],
         notes: [
           '捲到最上面時只有下緣淡出，捲到最下面時只有上緣淡出。內容不夠長時都不淡出。',
           '淡出的長度在 0.3 秒內展開或收起。減少動態效果開啟時直接切換。',

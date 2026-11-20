@@ -358,27 +358,22 @@ const DEMOS = {
   'accordion-multiple': () => <AccordionDemo multiple defaultOpen={['stack', 'update']} />,
   'accordion-disabled': () => <AccordionDemo disabledId="contact" />,
   'scroll-shadow': () => (
-    <ScrollShadow style={{ height: 240, width: '100%', maxWidth: 360 }}>
-      {Array.from({ length: 12 }, (_, i) => (
-        <p key={i} style={{ margin: '0 0 12px' }}>
-          第 {i + 1} 段示範文字。捲動時，上下還有內容的那一邊會淡出。
-        </p>
-      ))}
-    </ScrollShadow>
-  ),
-  'scroll-shadow-horizontal': () => (
-    <ScrollShadow orientation="horizontal" hideScrollBar style={{ width: '100%', maxWidth: 360 }}>
-      <div className="tag-group" style={{ flexWrap: 'nowrap', width: 'max-content' }}>
-        {['AI', 'MARKETING', 'ENGINEERING', 'DESIGN', 'CULTURE', 'NOTE', 'VISUAL'].map((t) => (
-          <Tag key={t} onClick={() => {}}>
-            {t}
-          </Tag>
-        ))}
+    <div className="cl-stage">
+      <div className="cl-ss-usage">
+        <ScrollShadow className="cl-ss-usage__box">
+          <div className="cl-ss-usage__text">
+            {Array.from({ length: 10 }, (_, i) => (
+              <p key={i}>
+                第 {i + 1} 段示範文字。這是一段用來撐出捲動高度的內容，沒有實際意義。往下捲動時，上緣開始淡出；捲到最下面時，下緣的淡出消失。內容不夠長、不需要捲動時，兩邊都不淡出。
+              </p>
+            ))}
+          </div>
+        </ScrollShadow>
       </div>
-    </ScrollShadow>
+    </div>
   ),
   skeleton: () => (
-    <div className="cl-sk-stage">
+    <div className="cl-stage">
       <div className="cl-sk-panel cl-sk-card" role="status" aria-label="載入中">
         <Skeleton className="cl-sk-r8" style={{ height: 128 }} />
         <div className="cl-sk-stack">
@@ -390,7 +385,7 @@ const DEMOS = {
     </div>
   ),
   'skeleton-text': () => (
-    <div className="cl-sk-stage">
+    <div className="cl-stage">
       <div className="cl-sk-stack cl-sk-text" role="status" aria-label="載入中">
         {['100%', '83%', '67%', '100%', '50%'].map((w, i) => (
           <Skeleton key={i} style={{ height: 16, width: w }} />
@@ -399,7 +394,7 @@ const DEMOS = {
     </div>
   ),
   'skeleton-list': () => (
-    <div className="cl-sk-stage">
+    <div className="cl-stage">
       <div className="cl-sk-list" role="status" aria-label="載入中">
         {[1, 2, 3].map((i) => (
           <div key={i} className="cl-sk-item">
@@ -414,7 +409,7 @@ const DEMOS = {
     </div>
   ),
   'skeleton-types': () => (
-    <div className="cl-sk-stage">
+    <div className="cl-stage">
       <div className="cl-sk-types">
         {[
           ['shimmer', 'Shimmer'],

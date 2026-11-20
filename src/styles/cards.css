@@ -99,8 +99,6 @@
   letter-spacing: 0;
   tab-size: 2;
   color: var(--code-plain);
-  scrollbar-width: thin;
-  scrollbar-color: var(--gray-a8) transparent;
 }
 
 .code-card__pre code {

@@ -10,6 +10,9 @@ html {
   overflow: hidden;
   background: #0b0b0d;
   -webkit-font-smoothing: antialiased;
+  /* The page scrolls on html (html.has-scroll-document): the same thin scrollbar as ScrollShadow */
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 html.home-ink {
