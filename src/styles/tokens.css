@@ -154,6 +154,7 @@
   --type-label: 11px; /* labels in --font-label, uppercase */
   --type-label-lh: 1.3;
   --type-label-ls: 0.1em;
+  --type-nav: clamp(13px, 1vw, 15px); /* nav links, header and footer: Instrument Serif below 18px on purpose (DESIGN.md) */
   --type-mono: 13px;
   --type-mono-lh: 1.65;
 

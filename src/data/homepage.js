@@ -117,6 +117,7 @@ export const HOME_CTA = {
 
 export const HOME_FOOTER = {
   zh: {
+    titles: { explore: 'Explore', latest: 'Latest', contact: 'Contact' },
     explore: [
       { label: 'About', href: '/about' },
       { label: 'Work', href: '/work' },
@@ -129,6 +130,7 @@ export const HOME_FOOTER = {
     ],
   },
   en: {
+    titles: { explore: 'Explore', latest: 'Latest', contact: 'Contact' },
     explore: [
       { label: 'About', href: '/about' },
       { label: 'Work', href: '/work' },

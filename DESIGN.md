@@ -92,6 +92,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 - Instrument Serif 排第一。它沒有中文字，所以中文自動改用思源宋體。
 - Instrument Serif 只用在 18px 以上。更小的英文改用 `--font-label`。
+- 例外：導覽連結（頁首導覽列、語言按鈕、頁尾的連結）用 Instrument Serif，字級 `--type-nav`（13–15px）。頁首和頁尾的連結要一樣。（2026-11-20 Wade 決定。）
 - CSS 一律寫 `font-family: var(--font-serif)` 或 `var(--font-label)`。頁面自己的字型變數（例如 `--j-fd`）都指向它們。不要另外寫字型名稱。
 - Canvas 不能用 CSS 變數，直接寫 `"Instrument Serif", "Noto Serif TC", "Source Han Serif TC", serif`。
 - 兩種字型都由 `index.html` 從 Google Fonts 載入。
@@ -151,6 +152,12 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 預設開，沒有開關。減少動態效果開啟時不出聲。
 - `App.jsx` 在 document 掛一個點擊監聽，新元件不用另外接。預設：選單項目 `select`、儲存 `press`、連結 `pressGhost`、其他按鈕 `pressSoft`。
 - 要換音效或靜音，在元素上寫 `data-sound="<名稱>"` 或 `data-sound="off"`。全部音效在 Component Library 的 playSound 頁可以試聽。
+
+## 頁尾（Journal）
+
+- 四欄：品牌、Explore、Latest、Contact。Latest 列出最新三篇文章，跟著 Journal 資料更新。（2026-11-20 決定，第四欄的內容之後可以換。）
+- 欄標題和品牌下的「德 溎」用 `--text-tertiary`，不用金色。連結 hover 才變金色。
+- 900px 以下排成兩欄兩列。768px 以下品牌字縮成 18px、字距 0.3em，維持一行。
 
 ## Logo
 
@@ -216,6 +223,5 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 這些項目程式碼和 PRODUCT.md 不一致。處理前先問使用者。
 
 1. **大標字級**：各頁的大標（24–80px）還是頁面自己的數字，沒有全部換成 `--type-*`。內文、說明、標籤已在 2026-11-19 換完。
-2. **Journal 頁尾的圖**（Wade 會換）：`src/assets/journal/footer-sea.webp` 是參考網站的截圖，上線前要換成有授權的圖。
 
 和紙樣式已全部移除（2026-11-18）。不要再加回和紙、水墨、紙紋的元素。
