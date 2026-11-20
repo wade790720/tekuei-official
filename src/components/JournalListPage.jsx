@@ -175,7 +175,7 @@ function JournalFooter({ posts }) {
     () =>
       mountShatterImage(sea.current, {
         src: seaImage,
-        crop: [0, 1166, 3840, 1410], // the bottom strip of the 3840 × 2576 image, in the canvas's 1280:470 ratio
+        crop: [0, 583, 1920, 705], // the bottom strip of the 1920 × 1288 image, in the canvas's 1280:470 ratio
         onPlay: () => root.current?.classList.add('is-in'),
       }),
     [],
