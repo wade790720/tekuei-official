@@ -203,6 +203,8 @@ function FeaturedPost({ post }) {
 
 function FooterLink({ href, i, children }) {
   const props = { className: 'journal-footer__link', style: { '--i': i } }
+  // An entry without an address is listed as plain text.
+  if (!href) return <span {...props}>{children}</span>
   return href.startsWith('/') ? (
     <Link to={href} {...props}>
       {children}
@@ -263,7 +265,7 @@ function JournalFooter({ posts }) {
               {col.title}
             </div>
             {col.links.map((link, k) => (
-              <FooterLink key={link.href} href={link.href} i={c * 2 + 3 + k}>
+              <FooterLink key={link.label} href={link.href} i={c * 2 + 3 + k}>
                 {link.label}
               </FooterLink>
             ))}

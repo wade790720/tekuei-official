@@ -54,6 +54,15 @@ export const HOME_HERO = {
   },
 }
 
+// The same in both languages. The order is Wade's.
+const CONTACT = [
+  { label: 'X', href: 'https://x.com/tekueichu' },
+  { label: 'YouTube' }, // no channel link yet: shown as plain text until Wade gives the address
+  { label: 'Facebook', href: 'https://www.facebook.com/tekuei.xx' },
+  { label: 'Instagram', href: 'https://www.instagram.com/tekuei.xx' },
+  { label: 'tekuei.xx@gmail.com', href: 'mailto:tekuei.xx@gmail.com' },
+]
+
 export const HOME_FOOTER = {
   zh: {
     titles: { explore: 'Explore', latest: 'Latest', contact: 'Contact' },
@@ -62,11 +71,7 @@ export const HOME_FOOTER = {
       { label: 'Work', href: '/work' },
       { label: 'Journal', href: '/journal' },
     ],
-    contact: [
-      { label: 'tekuei.xx@gmail.com', href: 'mailto:tekuei.xx@gmail.com' },
-      { label: 'Instagram', href: 'https://www.instagram.com/tekuei.xx' },
-      { label: 'Facebook', href: 'https://www.facebook.com/tekuei.xx' },
-    ],
+    contact: CONTACT,
   },
   en: {
     titles: { explore: 'Explore', latest: 'Latest', contact: 'Contact' },
@@ -75,10 +80,6 @@ export const HOME_FOOTER = {
       { label: 'Work', href: '/work' },
       { label: 'Journal', href: '/journal' },
     ],
-    contact: [
-      { label: 'tekuei.xx@gmail.com', href: 'mailto:tekuei.xx@gmail.com' },
-      { label: 'Instagram', href: 'https://www.instagram.com/tekuei.xx' },
-      { label: 'Facebook', href: 'https://www.facebook.com/tekuei.xx' },
-    ],
+    contact: CONTACT,
   },
 }

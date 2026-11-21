@@ -11,7 +11,7 @@ import '../styles/siteNav.css'
 import '../styles/navOverlay.css'
 
 // No page has a contact section, so Contact opens a new email. The address is the same in both languages.
-const CONTACT_HREF = HOME_FOOTER.zh.contact[0].href
+const CONTACT_HREF = HOME_FOOTER.zh.contact.find((link) => link.href?.startsWith('mailto:')).href
 
 function subscribeScroll(onChange) {
   window.addEventListener('scroll', onChange, { passive: true })
