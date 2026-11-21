@@ -8,7 +8,6 @@ const EXT = new Map([
 const MAX_BYTES = 1024 * 1024
 
 export async function onRequestPost({ request, env }) {
-  if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405)
   const denied = await adminGate(request, env)
   if (denied) return denied
 

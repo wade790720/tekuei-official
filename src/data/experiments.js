@@ -1,16 +1,10 @@
 // Interactive experiments listed under Work. They live in code, not in R2: each one is a live page at liveHref.
-// Thumbnails are frames captured from each live piece at 1440x900, scaled to 960x600 to match the Work thumbnail (16:10).
-import portraitThumb from '../assets/experiments/living-portrait.webp'
-// A 12s loop recorded from the live piece with a scripted mouse (hover boxes, double-click glitch); the webp is its poster.
-import portraitVideo from '../assets/experiments/living-portrait.mp4'
-import fallThumb from '../assets/experiments/falling-figure.webp'
+// Text only, so Pages Functions (sitemap, llms.txt) can import it; thumbnails are in experimentMedia.js.
 
 export const EXPERIMENTS = [
   {
     id: 'living-portrait',
     year: '2026',
-    thumb: portraitThumb,
-    thumbVideo: portraitVideo,
     zh: {
       title: 'Living Portrait',
       subtitle: 'INTERACTIVE HERO',
@@ -29,7 +23,6 @@ export const EXPERIMENTS = [
   {
     id: 'falling-figure',
     year: '2026',
-    thumb: fallThumb,
     zh: {
       title: 'Falling Figure',
       subtitle: 'SCROLL STORY',
@@ -57,17 +50,15 @@ export const EXPERIMENT_LABELS = {
   en: { category: 'EXPERIMENT', year: 'Year', credit: 'Based on', open: 'Open full screen', back: 'Back to Work', preview: 'Live preview' },
 }
 
-/** Work list cards for the experiments, numbered after the client cases. */
-export function experimentWorkItems(lang, startNum) {
-  return EXPERIMENTS.map((x, i) => ({
+/** Work list fields of each experiment, without media. */
+export function experimentLinks(lang) {
+  return EXPERIMENTS.map((x) => ({
     id: x.id,
-    num: String(startNum + i).padStart(2, '0'),
     caseHref: caseHref(x.id),
     client: EXPERIMENT_LABELS[lang].category,
     title: x[lang].title,
     subtitle: x[lang].subtitle,
     descriptionLines: [x[lang].summary],
     tags: x[lang].tags,
-    thumbImage: { url: x.thumb, video: x.thumbVideo },
   }))
 }

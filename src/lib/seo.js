@@ -4,6 +4,7 @@
 
 import { getDoc, docText, safeHref, youtubeId } from './richText.js'
 import { getDefaultJournal, postTags } from '../data/journal.js'
+import { experimentLinks } from '../data/experiments.js'
 
 export const SITE_URL = 'https://tekuei.com'
 export const SITE_NAME = 'TEKUEI 德溎'
@@ -195,6 +196,9 @@ export function injectPage(indexHtml, page) {
     .replace('<div id="root"></div>', () => `<div id="root">${page.html}</div>`)
 }
 
+/** Case pages for sitemap and llms.txt: the client cases (R2 work items), then the experiments, which live in code. */
+export const siteCases = (workItems) => [...workItems, ...experimentLinks('zh')]
+
 const STATIC_PATHS =['/', '/journal', '/work', '/about']
 
 export function sitemapXml(journal, workItems) {
@@ -239,8 +243,16 @@ export function llmsTxt(journal, workItems) {
 /** Pages Function body: the SPA's index.html with one page rendered into it. */
 export async function servePage({ request, env }, build) {
   const shell = await env.ASSETS.fetch(new URL('/', request.url))
+  if (!shell.ok) return shell
   const page = build(siteJournal(await readSiteData(env.BUCKET)))
-  if (!page || !shell.ok) return shell
+  // Unknown slug: the app still renders its own "not found", but crawlers get a 404 instead of an empty 200.
+  // Not cached: a slug can be missing only because R2 was unreachable for a moment.
+  if (!page) {
+    return new Response(shell.body, {
+      status: 404,
+      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
+    })
+  }
   return new Response(injectPage(await shell.text(), page), {
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=300' },
   })

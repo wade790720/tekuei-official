@@ -2,8 +2,7 @@ import { adminGate, json } from '../../src/lib/adminAuth.js'
 
 const DATA = 'data.json'
 
-export async function onRequestGet({ request, env }) {
-  if (request.method !== 'GET') return json({ error: 'Method not allowed' }, 405)
+export async function onRequestGet({ env }) {
   const obj = await env.BUCKET.get(DATA)
   if (!obj) {
     return json({ error: 'No data yet' }, 404)
@@ -18,7 +17,6 @@ export async function onRequestGet({ request, env }) {
 }
 
 export async function onRequestPut({ request, env }) {
-  if (request.method !== 'PUT') return json({ error: 'Method not allowed' }, 405)
   const denied = await adminGate(request, env)
   if (denied) return denied
 
