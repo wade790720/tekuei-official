@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { getNextCase } from '../data/cases/index.js'
 import { useCaseCms } from '../hooks/useCmsSection.js'
 import '../styles/case.css'
+import { VideoCard } from './VideoCard.jsx'
 
 function DelGrid({ items }) {
   return (
@@ -136,6 +137,14 @@ export default function CaseStudyPage() {
           ) : null}
         </div>
       </section>
+
+      {data.videos?.length ? (
+        <div className="case-wrap case-videos">
+          {data.videos.map((v) => (
+            <VideoCard key={v.src} {...v} loop />
+          ))}
+        </div>
+      ) : null}
 
       <div
         className="fade-in case-img-full"

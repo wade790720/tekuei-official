@@ -206,7 +206,7 @@
 }
 
 .case-hero .case-title em {
-  font-style: italic;
+  font-style: normal;
   font-family: inherit;
 }
 
@@ -605,7 +605,7 @@
 }
 
 .case-next-title em {
-  font-style: italic;
+  font-style: normal;
   font-family: inherit;
 }
 
