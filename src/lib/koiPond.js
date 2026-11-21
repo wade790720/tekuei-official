@@ -18,14 +18,17 @@ const GIRTH = 1.5 // ours: body width against ascii-koi's slim outline, for the 
 const STEP = 1 / 60
 const MAX_STEPS = 4
 const MAX_FOOD = 12
+const ZONE_PAD_PX = 64 // room around the words: half a koi body and its fins
+const ZONE_SNAP_PX = 160 // words this close to an edge of the pond are joined to it
 const FOOD_LIFE_S = 30 // a pellet nobody reaches sinks
 const BODY_CLEARANCE = 0.16 // half-width a koi keeps clear around its spine, as a share of its length
 // What a koi does when it is not after food. It picks one by weight, holds it for a while, then picks again.
 // Speed is a multiple of its cruising speed. Ours: ascii-koi cruises at one speed.
 const MOODS = [
   { weight: 6, speed: [0.8, 1.2], seconds: [3, 8] }, // cruise
-  { weight: 3, speed: [0.35, 0.55], seconds: [3, 7] }, // drift, nearly still
-  { weight: 2, speed: [2, 2.8], seconds: [0.8, 2] }, // dart
+  { weight: 3, speed: [0.2, 0.45], seconds: [3, 7] }, // drift, nearly still
+  { weight: 2, speed: [2.2, 3.2], seconds: [0.8, 2] }, // dart
+  { weight: 1, speed: [5, 8], seconds: [0.5, 1.3], bolt: true }, // bolt: a sudden, twisting rush
 ]
 const MOOD_WEIGHT = MOODS.reduce((sum, m) => sum + m.weight, 0)
 
@@ -47,6 +50,7 @@ const SUBSAMPLES = [0.25, 0.3, 0.75, 0.3, 0.25, 0.72, 0.75, 0.72]
 
 const TAU = Math.PI * 2
 const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v)
+const wrap = (v, size) => ((v % size) + size) % size
 const rand = (lo, hi) => lo + Math.random() * (hi - lo)
 
 function smoothstep(e0, e1, x) {
@@ -120,12 +124,12 @@ function inFin(u, a, rootU, tipU, tipA, breadth) {
 
 /**
  * @param {HTMLCanvasElement} canvas  size comes from CSS
- * @param {{ surface?: HTMLElement, avoid?: HTMLElement, onCount?: (count: { koi: number, food: number }) => void }} [opts]
+ * @param {{ surface?: HTMLElement, avoid?: HTMLElement[], onCount?: (count: { koi: number, food: number }) => void }} [opts]
  *   surface: the element whose clicks drop food (default: the canvas)
- *   avoid: an element the koi keep clear of, for example a large heading
+ *   avoid: elements the koi keep clear of, for example the text over the pond
  * @returns {() => void} cleanup
  */
-export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => {} } = {}) {
+export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], onCount = () => {} } = {}) {
   const ctx = canvas.getContext('2d')
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -139,14 +143,14 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
   let font = ''
   let koi = []
   let food = []
-  let zone = null // the ellipse around `avoid`, in canvas px: { x, y, rx, ry }
+  let zones = [] // one box around each element to keep clear of, in canvas px: { l, r, t, b, open }
   // One alpha and one colour index per cell, rebuilt every frame.
   let cellAlpha = new Float32Array(0)
   let cellColour = new Uint8Array(0)
 
   const report = () => onCount({ koi: koi.length, food: food.length })
 
-  // Patrol rings spread between the middle of the pond and the edge-turn margin, one lane per koi.
+  // Where the koi start: on rings between the middle of the pond and its edge, so they begin apart.
   function ringRadius(ring, L) {
     const minSide = Math.min(W, H)
     const inner = minSide * 0.16
@@ -172,10 +176,58 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
         nodes[n * 2] = x - Math.cos(heading) * seg * n
         nodes[n * 2 + 1] = y - Math.sin(heading) * seg * n
       }
-      return { id: i + 1, length, nodes, heading, speed: 30, phase: rand(0, TAU), turn: 0, wander: 0, ring, depth: size, target: null, pace: rand(0.75, 1.3), mood: 1, moodUntil: 0 }
+      return { id: i + 1, length, nodes, heading, speed: 30, phase: rand(0, TAU), turn: 0, wander: 0, depth: size, target: null, pace: rand(0.75, 1.3), mood: 1, bolt: false, moodUntil: 0 }
     })
     // Smaller (deeper) koi draw first, so the big one swims over them.
     koi.sort((a, b) => a.length - b.length)
+  }
+
+  // Read again now and then: the text changes size when the language changes.
+  function measureZones() {
+    const rect = canvas.getBoundingClientRect()
+    zones = keepClear.flatMap((el) => {
+      const box = el.getBoundingClientRect()
+      if (!box.width || !box.height) return []
+      const l = box.left - rect.left
+      const r = box.right - rect.left
+      const t = box.top - rect.top
+      const b = box.bottom - rect.top
+      // A side near the edge of the pond is closed: the box runs to that edge, so no koi gets
+      // caught in the gap. The other sides are open, and the box grows a little on them.
+      const open = [l > ZONE_SNAP_PX, W - r > ZONE_SNAP_PX, t > ZONE_SNAP_PX, H - b > ZONE_SNAP_PX]
+      return [
+        {
+          l: open[0] ? l - ZONE_PAD_PX : -Infinity,
+          r: open[1] ? r + ZONE_PAD_PX : Infinity,
+          t: open[2] ? t - ZONE_PAD_PX : -Infinity,
+          b: open[3] ? b + ZONE_PAD_PX : Infinity,
+          open,
+        },
+      ]
+    })
+  }
+
+  // Is the left and right edge (sideways) or the top and bottom edge a wall at this place along it?
+  // It is when a zone is joined to either of the two edges there: a koi that crossed would land on words.
+  function walledAt(sideways, at) {
+    return zones.some((z) =>
+      sideways ? (!z.open[0] || !z.open[1]) && at > z.t && at < z.b : (!z.open[2] || !z.open[3]) && at > z.l && at < z.r,
+    )
+  }
+
+  // The shortest way out of a zone through an open side: [distance in px, direction x, direction y].
+  // null when the point is outside the zone.
+  function wayOut(zone, px, py) {
+    if (px < zone.l || px > zone.r || py < zone.t || py > zone.b) return null
+    let best = null
+    const sides = [
+      [px - zone.l, -1, 0],
+      [zone.r - px, 1, 0],
+      [py - zone.t, 0, -1],
+      [zone.b - py, 0, 1],
+    ]
+    for (let i = 0; i < 4; i++) if (zone.open[i] && (!best || sides[i][0] < best[0])) best = sides[i]
+    return best
   }
 
   function resize() {
@@ -194,11 +246,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
     rows = Math.ceil(H / cell)
     cellAlpha = new Float32Array(cols * rows)
     cellColour = new Uint8Array(cols * rows)
-    if (avoid) {
-      const box = avoid.getBoundingClientRect()
-      // Wider than the box: the koi's body is still passing when its snout has left.
-      zone = { x: box.left - rect.left + box.width / 2, y: box.top - rect.top + box.height / 2, rx: box.width * 0.62, ry: box.height * 1.1 }
-    }
+    measureZones()
     const style = getComputedStyle(canvas)
     font = `${cell + 2}px ${style.fontFamily}`
     colours = [
@@ -237,7 +285,6 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
   }
 
   function stepKoi(dt) {
-    const minSide = Math.min(W, H)
     for (const k of koi) {
       const L = k.length
       const nodes = k.nodes
@@ -249,7 +296,9 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
       let dy = Math.sin(k.heading)
 
       // Wander: a slowly drifting offset on a circle ahead of the snout.
-      k.wander = clamp(k.wander + (Math.random() - 0.5) * dt * 3.2, -1.1, 1.1)
+      // A bolting koi throws its head about, so its path jerks from side to side.
+      const jitter = k.bolt ? 5 : 1
+      k.wander = clamp(k.wander + (Math.random() - 0.5) * dt * 3.2 * jitter, -1.1 * Math.sqrt(jitter), 1.1 * Math.sqrt(jitter))
       dx += Math.cos(k.heading + k.wander) * 0.45
       dy += Math.sin(k.heading + k.wander) * 0.45
 
@@ -269,15 +318,6 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
         huntX = (tx / d) * 3.2
         huntY = (ty / d) * 3.2
         closing = clamp(1 - d / (L * 0.9), 0, 1)
-      } else {
-        // Patrol: a lazy circuit on the koi's own ring.
-        const rx = (hx - W / 2) / (W / minSide)
-        const ry = hy - H / 2
-        const r = Math.hypot(rx, ry) || 1
-        const radius = ringRadius(k.ring, L) * (1 + 0.08 * Math.sin(time * 0.05 + k.id))
-        const radial = clamp((radius - r) / radius, -1, 1)
-        dx += (-ry / r + (rx / r) * radial * 0.9) * 0.55
-        dy += (rx / r + (ry / r) * radial * 0.9) * 0.55
       }
 
       // Give other koi room: test the snout and a point ahead of it against their bodies.
@@ -314,41 +354,46 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
         dy += (avoidY / avoid) * w
       }
 
-      // Keep clear of the heading: a soft elliptical no-swim zone, tested at the snout and ahead of it.
-      if (zone)
+      // Keep clear of the words: a no-swim zone around each block, tested at the snout and ahead of it.
+      for (const zone of zones)
         for (const [px, py] of [
           [hx, hy],
           [aheadX, aheadY],
         ]) {
-          const ex = (px - zone.x) / zone.rx
-          const ey = (py - zone.y) / zone.ry
-          const e = Math.hypot(ex, ey) || 1e-3
-          if (e >= 1) continue
-          const push = (1 - e) * (hunting ? 1 : 3)
-          dx += (ex / e) * push
-          dy += (ey / e) * push
+          const qx = wrap(px, W)
+          const qy = wrap(py, H)
+          const out = wayOut(zone, qx, qy)
+          if (!out) continue
+          let [depth, nx, ny] = out
+          // A point that has gone past an edge lands on the far side of the pond. If words are there,
+          // the koi turns back from that edge.
+          if (qx !== px) [nx, ny] = [px < 0 ? 1 : -1, 0]
+          else if (qy !== py) [nx, ny] = [0, py < 0 ? 1 : -1]
+          const push = Math.min(1, depth / ZONE_PAD_PX) * (hunting ? 1 : 6)
+          dx += nx * push
+          dy += ny * push
         }
 
-      // Stay in view: turn well before the edge. The mid-body and the tail count too,
+      // An edge is open water only where the far side is clear too. Where words sit on either side,
+      // the edge is a wall, and the koi turns well before it. The mid-body and the tail count as well,
       // because they swing wide of the snout's path in a turn.
       let walled = 0
       const margin = hunting ? L * 0.12 + 10 : L * 0.45 + 30 // a koi goes closer to the edge for food
       const mid = Math.round(NODES * 0.4) * 2
       const back = Math.round(NODES * 0.75) * 2
-      const probes = [
+      for (const [px, py, pm] of [
         [hx, hy, margin],
         [hx + Math.cos(k.heading) * k.speed * 1.2, hy + Math.sin(k.heading) * k.speed * 1.2, margin],
         [nodes[mid], nodes[mid + 1], Math.min(margin, L * 0.25 + 20)],
         [nodes[back], nodes[back + 1], Math.min(margin, L * 0.2 + 16)],
-      ]
-      for (const [px, py, pm] of probes)
+      ])
         for (const [dist, nx, ny] of [
           [px, 1, 0],
           [W - px, -1, 0],
           [py, 0, 1],
           [H - py, 0, -1],
         ]) {
-          if (dist >= pm) continue
+          if (dist >= pm || !walledAt(nx !== 0, nx !== 0 ? py : px)) continue
           const near = clamp(1 - dist / pm, 0, 1.5)
           dx += nx * near * near * 6
           dy += ny * near * near * 6
@@ -356,7 +401,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
         }
 
       // A koi cannot pivot on the spot: how fast it turns depends on how fast it swims.
-      const agility = Math.max(Math.min(hunting ? 1.9 + closing : 1, k.speed / (L * 0.18)), crowded * 1.7, walled * 1.6)
+      const agility = Math.max(Math.min(hunting ? 1.9 + closing : k.bolt ? 3 : 1, k.speed / (L * 0.18)), crowded * 1.7, walled * 1.6)
       const turned = clamp(angleDiff(k.heading, Math.atan2(dy, dx)), -agility * dt, agility * dt)
       k.heading += turned
       k.turn += (turned / dt - k.turn) * Math.min(1, dt * 3)
@@ -365,17 +410,28 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
       if (time >= k.moodUntil) {
         const mood = pickMood()
         k.mood = rand(...mood.speed)
+        k.bolt = !!mood.bolt
         k.moodUntil = time + rand(...mood.seconds)
       }
       // Each koi has its own pace. After food it bursts; otherwise its mood sets the speed.
       const cruise = (24 + L * 0.035) * k.pace
       const targetSpeed = cruise * (hunting ? 1.3 + closing * 1.2 : k.mood) * (1 - 0.25 * crowded)
       // A koi speeds up with a kick and slows down by gliding.
-      k.speed += (targetSpeed - k.speed) * Math.min(1, dt * (targetSpeed > k.speed ? 2.2 : 0.7))
-      k.phase += dt * (1.1 + k.speed / 40) // tail beats follow the speed
+      k.speed += (targetSpeed - k.speed) * Math.min(1, dt * (targetSpeed > k.speed ? (k.bolt ? 8 : 2.2) : 0.7))
+      k.phase += dt * (1.1 + k.speed / 30) // tail beats follow the speed
 
       nodes[0] += Math.cos(k.heading) * k.speed * dt
       nodes[1] += Math.sin(k.heading) * k.speed * dt
+
+      // The pond has no walls: a koi that swims out through one edge comes in through the opposite one.
+      // The whole body moves by one pond width or height. draw() shows it on both sides while it crosses.
+      const jumpX = nodes[0] < 0 ? W : nodes[0] > W ? -W : 0
+      const jumpY = nodes[1] < 0 ? H : nodes[1] > H ? -H : 0
+      if (jumpX || jumpY)
+        for (let i = 0; i < NODES; i++) {
+          nodes[i * 2] += jumpX
+          nodes[i * 2 + 1] += jumpY
+        }
 
       // Follow-the-leader spine with a stiffness limit per joint.
       const seg = L / (NODES - 1)
@@ -426,6 +482,24 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
       }
   }
 
+  // Backstop for the steering: a body that still lies on the words is eased out, a little each step.
+  // A koi going for food is left alone, so a pellet dropped on the words can still be eaten.
+  function leaveZones() {
+    for (const k of koi) {
+      if (k.target) continue
+      const n = k.nodes
+      for (const zone of zones)
+        for (let i = 0; i < NODES; i++) {
+          const out = wayOut(zone, wrap(n[i * 2], W), wrap(n[i * 2 + 1], H))
+          if (!out) continue
+          // The head moves less: moving it hard would snap the heading.
+          const move = out[0] * (i < 3 ? 0.02 : 0.06)
+          n[i * 2] += out[1] * move
+          n[i * 2 + 1] += out[2] * move
+        }
+    }
+  }
+
   function step(dt) {
     time += dt
     const before = food.length
@@ -434,6 +508,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
     if (food.length !== before) report()
     stepKoi(dt)
     separateBodies()
+    leaveZones()
   }
 
   // --- Drawing ---
@@ -534,11 +609,12 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
     return true
   }
 
-  function rasterKoi(k) {
+  // ox, oy: where to draw this koi, as an offset from its own place. Used for the far side of the pond.
+  function rasterKoi(k, ox, oy) {
     cur = k
     const L = k.length
     const n = k.nodes
-    const swim = clamp(k.speed / 45, 0.55, 1.5)
+    const swim = clamp(k.speed / 45, 0.55, 2)
     // The swimming motion: a wave that travels down the body and grows toward the tail.
     // The head hardly moves, so the path stays smooth.
     for (let i = 0; i < NODES; i++) {
@@ -552,8 +628,8 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
       ty /= tl
       const trail = 1 + 0.25 * smoothstep(TAIL[0], 1, s)
       const off = L * 0.045 * (0.06 + 0.94 * Math.pow(s, 1.8)) * swim * trail * Math.sin(k.phase - s * 4.2)
-      spine[i * 2] = n[i * 2] - ty * off
-      spine[i * 2 + 1] = n[i * 2 + 1] + tx * off
+      spine[i * 2] = n[i * 2] - ty * off + ox
+      spine[i * 2 + 1] = n[i * 2 + 1] + tx * off + oy
     }
     arc[0] = 0
     for (let i = 1; i < NODES; i++)
@@ -604,7 +680,18 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
   function draw() {
     if (!cols) return
     cellAlpha.fill(0)
-    for (const k of koi) rasterKoi(k)
+    for (const k of koi) {
+      // A koi that is crossing an edge shows on both sides of the pond.
+      const n = k.nodes
+      const reach = k.length * 0.4
+      for (const ox of [0, -W, W])
+        for (const oy of [0, -H, H]) {
+          let seen = false
+          for (let i = 0; i < NODES && !seen; i++)
+            seen = n[i * 2] + ox > -reach && n[i * 2] + ox < W + reach && n[i * 2 + 1] + oy > -reach && n[i * 2 + 1] + oy < H + reach
+          if (seen) rasterKoi(k, ox, oy)
+        }
+    }
     for (const f of food) {
       const fc = Math.floor(f.x / cell)
       const fr = Math.floor(f.y / cell)
@@ -643,6 +730,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
   let last = 0
   let acc = 0
   let onScreen = true
+  let zonesAt = 0
   const loop = (now) => {
     raf = requestAnimationFrame(loop)
     acc += Math.min(0.1, (now - last) / 1000)
@@ -651,6 +739,10 @@ export function mountKoiPond(canvas, { surface = canvas, avoid, onCount = () => 
     let steps = 0
     for (; acc >= STEP && steps < MAX_STEPS; steps++, acc -= STEP) step(STEP)
     if (steps === MAX_STEPS) acc = 0
+    if (now - zonesAt >= 1000) {
+      zonesAt = now
+      measureZones()
+    }
     draw()
   }
   const start = () => {
