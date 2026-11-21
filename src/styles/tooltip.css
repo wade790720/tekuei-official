@@ -22,7 +22,7 @@
 
 /* Hidden: a short fade before it unmounts (TIP_OUT in Tooltip.jsx) */
 .tooltip[data-closing] {
-  animation: tooltip-out 0.1s var(--ease-touch) forwards;
+  animation: tooltip-out 0.08s var(--ease-touch) forwards;
 }
 
 /* Moving between buttons while warm: the tooltip slides instead of popping */

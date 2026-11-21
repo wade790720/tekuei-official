@@ -90,7 +90,8 @@
   border: 1.5px solid var(--gray-a8);
   border-top-color: var(--gray-12);
   border-radius: 50%;
-  animation: cms-spin 0.7s linear infinite;
+  --spin-ms: 0.7s;
+  animation: cms-spin var(--spin-ms) linear infinite;
 }
 
 .cms-gate__status {
@@ -255,7 +256,7 @@
 
 /* A failed save shakes the button once, like a wrong code in the gate */
 .cms-save[data-state='error'] {
-  animation: shake-damped 0.45s linear;
+  animation: shake-damped var(--duration-shake) linear;
 }
 
 .cms-save .cms-spin {

@@ -305,8 +305,8 @@
   text-decoration: none;
   color: inherit;
   transition:
-    opacity 0.5s ease,
-    background 0.45s ease;
+    opacity 0.5s var(--ease-touch),
+    background 0.45s var(--ease-touch);
 }
 
 .journal-card:hover {
@@ -369,7 +369,7 @@
   letter-spacing: 0;
   line-height: 1.35;
   color: var(--j-warm-white);
-  transition: color 0.5s ease;
+  transition: color 0.5s var(--ease-touch);
 }
 
 .journal-card__title-en {
@@ -514,7 +514,7 @@
   letter-spacing: var(--type-label-ls);
   color: var(--j-text-ghost);
   text-decoration: none;
-  transition: color 0.4s ease;
+  transition: color 0.4s var(--ease-touch);
 }
 
 .journal-post__back:hover {
@@ -726,7 +726,7 @@
   color: inherit;
   padding: var(--space-6) 0;
   border-top: 0.5px solid var(--line);
-  transition: opacity 0.4s ease;
+  transition: opacity 0.4s var(--ease-touch);
 }
 
 .journal-post__nav-link:hover {

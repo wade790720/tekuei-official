@@ -53,11 +53,12 @@
   left: 50%;
   width: 1.5px;
   background: var(--ember);
-  animation: otp-input-caret 1s steps(1) infinite;
+  --caret-ms: 1s;
+  animation: otp-input-caret var(--caret-ms) steps(1) infinite;
 }
 
 .otp-input[data-invalid] .otp-input__slots {
-  animation: shake-damped 0.45s linear;
+  animation: shake-damped var(--duration-shake) linear;
 }
 
 .otp-input[data-invalid] .otp-input__slot {

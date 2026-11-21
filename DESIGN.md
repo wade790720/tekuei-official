@@ -156,6 +156,11 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 - Easing：`--ease-touch`（`cubic-bezier(0.16, 0.08, 0.12, 1)`）。
 - 時長：hover 0.3–0.4s。淡入 0.6s。依序淡入的間隔 70ms。
+- 關閉比打開快：選單和提示 0.08–0.1s，Drawer 0.3s。手機選單打開 0.25s（`OVERLAY_MS`），關閉約 0.2s。
+- 過渡不超過 1s。
+- 每個 `transition` 和 `animation` 都寫 easing。一般用 `--ease-touch`，循環動畫可以用 `linear` 或 `steps()`。
+- 循環動畫的時長寫成變數，例如 `--duration-shake`（tokens.css，兩處共用）、`--spin-ms`、`--skeleton-ms`。
+- 關閉的元素用 `usePresence` 留到退場動畫播完再移除。
 - 進場淡入：在元素加上 `fade-in` class。`src/lib/reveal.js` 的 `mountReveal` 在 App.jsx 掛一次，元素露出 15% 時加上 `is-visible`，只觸發一次。不要為淡入包元件。
 - 位移只用 `opacity` 和 `transform`。淡入的位移寫在各頁 CSS（首頁 20px，Journal 見 PAGES.md）。
 - 每個效果都要支援 `prefers-reduced-motion`：直接顯示最終畫面。

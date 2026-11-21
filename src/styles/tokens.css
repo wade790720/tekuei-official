@@ -185,6 +185,7 @@
 
   /* ── Motion & typography rhythm ── */
   --ease-touch: cubic-bezier(0.16, 0.08, 0.12, 1);
+  --duration-shake: 0.45s; /* shake-damped: OtpInput and the save button */
   /* Tracking: three values only. Display -0.02em (--type-display-ls), labels 0.1em (--type-label-ls), everything else 0. */
 }
 
@@ -197,7 +198,8 @@
   z-index: 9999;
   height: 2px;
   background: var(--ember);
-  animation: site-loading-progress 2.8s cubic-bezier(0.1, 0, 0.25, 1) forwards;
+  --loading-ms: 2.8s; /* slows near the end, so a quick load never shows a full bar */
+  animation: site-loading-progress var(--loading-ms) cubic-bezier(0.1, 0, 0.25, 1) forwards;
 }
 
 @keyframes site-loading-progress {
@@ -209,7 +211,7 @@
 }
 
 /* Damped error shake: each swing is smaller, like a head shake that settles (transitions.dev "Error state shake").
-   Used by OtpInput and the edit panel's save button; run it with `0.45s linear`. */
+   Used by OtpInput and the edit panel's save button; run it with `var(--duration-shake) linear`. */
 @keyframes shake-damped {
   15% { transform: translateX(-8px); }
   35% { transform: translateX(6px); }
