@@ -1,4 +1,4 @@
-import { ADMIN_SESSION_KEY } from '../data/admin.js'
+import { ADMIN_SESSION_KEY, CMS_LABELS } from '../data/admin.js'
 
 export function apiPath(path) {
   const base = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '')
@@ -43,7 +43,7 @@ export async function loginAdmin(password) {
     headers: authHeader(trimmed),
   })
   if (!res.ok) {
-    throw new Error('密碼錯誤')
+    throw new Error(res.status === 429 ? CMS_LABELS.locked : CMS_LABELS.wrong)
   }
   return { token: trimmed }
 }
@@ -52,6 +52,8 @@ export async function fetchSiteData() {
   const res = await fetch(apiPath('/api/data'), {
     headers: { Accept: 'application/json' },
   })
+  // Empty bucket: the site runs on the bundled data.json until the first save creates it.
+  if (res.status === 404) return null
   if (!res.ok) {
     throw new Error('Failed to fetch site data')
   }

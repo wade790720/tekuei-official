@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useEffectEvent, useState } from 'react'
 import { cloneSiteData, siteDefaults } from '../lib/siteData.js'
 import { fetchSiteData, isRemoteSync, saveSitePatch } from '../lib/adminApi.js'
+import { CMS_LABELS } from '../data/admin.js'
 import { LOCAL_CASES } from '../data/cases/index.js'
 import { useLang } from '../i18n'
 
@@ -16,6 +17,9 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  // The remote copy failed to load, so the content on screen is the bundled default.
+  // Saving it would replace the real section in R2, so saving is refused until a reload.
+  const [loadFailed, setLoadFailed] = useState(false)
   // Reads the latest getDefault and cloneContent without reloading when the caller passes new functions.
   const sectionContent = useEffectEvent((data) => cloneContent(data[sectionKey] ?? getDefault()))
 
@@ -24,6 +28,7 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
     async function load() {
       setLoading(true)
       setError('')
+      setLoadFailed(false)
       const fallback = () => {
         const bundled = cloneSiteData()
         setSiteData(bundled)
@@ -38,12 +43,18 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
       }
       try {
         const remote = await fetchSiteData()
-        if (!cancelled) {
+        if (cancelled) return
+        if (!remote) fallback()
+        else {
           setSiteData(remote)
           setContent(sectionContent(remote))
         }
       } catch {
-        if (!cancelled) fallback()
+        if (!cancelled) {
+          fallback()
+          setLoadFailed(true)
+          setError(CMS_LABELS.loadFailed)
+        }
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -72,6 +83,10 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
 
   const saveDraft = useCallback(async (token) => {
     if (!draft) return
+    if (loadFailed) {
+      setError(CMS_LABELS.loadFailed)
+      throw new Error(CMS_LABELS.loadFailed)
+    }
     setSaving(true)
     setError('')
     try {
@@ -87,7 +102,7 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
     } finally {
       setSaving(false)
     }
-  }, [draft, siteData, sectionKey, cloneContent])
+  }, [draft, siteData, sectionKey, cloneContent, loadFailed])
 
   return {
     content: draft ?? content,
@@ -149,7 +164,7 @@ export function useCaseCms(slug) {
       }
       try {
         const remote = await fetchSiteData()
-        if (!cancelled) apply(remote)
+        if (!cancelled) apply(remote ?? siteDefaults)
       } catch {
         if (!cancelled) apply(siteDefaults)
       } finally {

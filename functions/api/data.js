@@ -1,3 +1,5 @@
+import { adminGate } from '../../src/lib/adminAuth.js'
+
 const DATA = 'data.json'
 
 function j(body, status = 200) {
@@ -23,11 +25,8 @@ export async function onRequestGet({ request, env }) {
 
 export async function onRequestPut({ request, env }) {
   if (request.method !== 'PUT') return j({ error: 'Method not allowed' }, 405)
-  const auth = request.headers.get('Authorization') || ''
-  const secret = env.ADMIN_SECRET || ''
-  if (!secret || auth !== `Bearer ${secret}`) {
-    return j({ error: 'Unauthorized' }, 401)
-  }
+  const denied = await adminGate(request, env)
+  if (denied) return denied
 
   let body
   try {

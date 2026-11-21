@@ -32,8 +32,8 @@ export function AdminProvider({ children }) {
       sessionStorage.setItem(ADMIN_SESSION_KEY, t)
       setToken(t)
       return true
-    } catch {
-      return false
+    } catch (err) {
+      return err.message // OtpGate shows it: wrong code, or locked after too many tries
     }
   }, [])
 
