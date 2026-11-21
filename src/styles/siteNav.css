@@ -148,7 +148,9 @@
   margin-top: var(--space-8);
   padding: var(--space-1) var(--space-2);
   opacity: 0.5;
-  transition: opacity 0.3s var(--ease-touch);
+  transition:
+    opacity 0.3s var(--ease-touch),
+    color 0.3s var(--ease-touch);
 }
 
 .site-nav__lang--overlay:hover {

@@ -1,5 +1,8 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { usePresence } from '../hooks/usePresence.js'
 import '../styles/dropdownMenu.css'
+
+const EXIT_MS = 100 // matches dropdown-menu-out in dropdownMenu.css
 
 /**
  * A menu that drops down from a button: icon, label and shortcut per row, thin dividers between groups.
@@ -23,6 +26,7 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
   const button = useRef(null)
   const list = useRef(null)
   const id = useId()
+  const shown = usePresence(open, EXIT_MS)
   const choices = items.filter((it) => it !== 'divider')
 
   const focusItem = (i) => list.current?.querySelectorAll('[role^=menuitem]')[(i + choices.length) % choices.length]?.focus()
@@ -84,8 +88,17 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
       >
         {trigger}
       </button>
-      {open ? (
-        <div className="dropdown-menu__list" role="menu" id={id} aria-label={label} ref={list} onKeyDown={listKey}>
+      {shown ? (
+        <div
+          className="dropdown-menu__list"
+          role="menu"
+          id={id}
+          aria-label={label}
+          ref={list}
+          onKeyDown={listKey}
+          data-closing={open ? undefined : true}
+          inert={!open}
+        >
           {items.map((it, i) =>
             it === 'divider' ? (
               <div key={`d${i}`} className="dropdown-menu__divider" role="separator" />

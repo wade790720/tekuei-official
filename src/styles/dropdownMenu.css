@@ -18,6 +18,9 @@
   font-size: var(--type-caption);
   color: var(--text-secondary);
   cursor: pointer;
+  transition:
+    background-color 0.15s var(--ease-touch),
+    color 0.15s var(--ease-touch);
 }
 
 .dropdown-menu__trigger:hover,
@@ -41,6 +44,11 @@
   animation: dropdown-menu-in 0.14s var(--ease-touch);
 }
 
+/* Closing: a quicker fade back up before it unmounts (EXIT_MS in DropdownMenu.jsx) */
+.dropdown-menu__list[data-closing] {
+  animation: dropdown-menu-out 0.1s var(--ease-touch) forwards;
+}
+
 .dropdown-menu__item {
   display: flex;
   align-items: center;
@@ -56,6 +64,9 @@
   text-align: left;
   color: var(--text-primary);
   cursor: pointer;
+  transition:
+    background-color 0.15s var(--ease-touch),
+    color 0.15s var(--ease-touch);
 }
 
 .dropdown-menu__item:hover,
@@ -102,8 +113,20 @@
   }
 }
 
+@keyframes dropdown-menu-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .dropdown-menu__list {
+  .dropdown-menu__list,
+  .dropdown-menu__list[data-closing] {
     animation: none;
+  }
+
+  .dropdown-menu__list[data-closing] {
+    visibility: hidden;
   }
 }

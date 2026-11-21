@@ -20,6 +20,11 @@
   animation: tooltip-in 0.14s var(--ease-touch);
 }
 
+/* Hidden: a short fade before it unmounts (TIP_OUT in Tooltip.jsx) */
+.tooltip[data-closing] {
+  animation: tooltip-out 0.1s var(--ease-touch) forwards;
+}
+
 /* Moving between buttons while warm: the tooltip slides instead of popping */
 .tooltip[data-travel] {
   animation: none;
@@ -56,10 +61,22 @@
   }
 }
 
+@keyframes tooltip-out {
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--x) - 50%)) translateY(-3px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tooltip,
-  .tooltip[data-travel] {
+  .tooltip[data-travel],
+  .tooltip[data-closing] {
     animation: none;
     transition: none;
+  }
+
+  .tooltip[data-closing] {
+    visibility: hidden;
   }
 }

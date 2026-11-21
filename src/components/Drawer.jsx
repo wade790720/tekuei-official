@@ -1,7 +1,10 @@
 import { useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { ScrollShadow } from './ScrollShadow.jsx'
+import { usePresence } from '../hooks/usePresence.js'
 import '../styles/drawer.css'
+
+const EXIT_MS = 300 // matches drawer-slide-out in drawer.css
 
 /**
  * A panel that slides in from the right edge. Put DrawerHeader and DrawerBody inside.
@@ -23,9 +26,10 @@ export function Drawer({ open, label, push = false, className = '', children }) 
     return () => root.classList.remove('has-drawer')
   }, [open, push])
 
-  if (!open) return null
+  const shown = usePresence(open, EXIT_MS)
+  if (!shown) return null
   return createPortal(
-    <aside className={className ? `drawer ${className}` : 'drawer'} aria-label={label}>
+    <aside className={className ? `drawer ${className}` : 'drawer'} aria-label={label} data-closing={open ? undefined : true} inert={!open}>
       {children}
     </aside>,
     document.body,
