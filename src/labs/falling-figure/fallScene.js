@@ -2,7 +2,7 @@
 // Each act is a stone slab with its text carved on it. The figure breaks through the slab when the act begins.
 // Behaviour and numbers follow the scroll piece "Palindrome of a Fall" (github.com/0xkev21/palindrome-of-a-fall).
 import Lenis from 'lenis'
-import shatterSrc from '../assets/about/audio/stone_shatter.mp3'
+import shatterSrc from './stone_shatter.mp3'
 
 const SAMPLE_W = 420 // the figure picture is read at this width
 const WAVE_SECONDS = 1.6

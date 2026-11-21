@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import '../styles/lab.css'
-import { Button } from './Button.jsx'
-import { Card } from './Card.jsx'
-import CaseStub from './CaseStub.jsx'
-import { LAB_BY_ID, LAB_LABELS, liveHref } from '../data/labs.js'
+import './lab.css'
+import { Button } from '../components/Button.jsx'
+import { Card } from '../components/Card.jsx'
+import CaseStub from '../components/CaseStub.jsx'
+import { LAB_BY_ID, LAB_LABELS, liveHref } from './index.js'
 import { useLang } from '../i18n'
 
 /**

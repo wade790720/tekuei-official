@@ -3,7 +3,7 @@ import '../styles/homeHero.css'
 import { HOME_HERO } from '../data/homepage.js'
 import { useJournal } from '../context/journal.js'
 import { postTags } from '../data/journal.js'
-import { LivingPortrait } from './LivingPortrait.jsx'
+import { LivingPortrait } from '../labs/living-portrait/LivingPortrait.jsx'
 import { Skeleton } from './Skeleton.jsx'
 import { useLang } from '../i18n'
 

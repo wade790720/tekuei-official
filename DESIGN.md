@@ -169,9 +169,9 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 | 檔案 | 用在哪 | 效果 |
 |---|---|---|
-| `src/lib/heroFx.js` | 首頁 Hero | hover 出現追蹤框和 ASCII，雙擊出現 glitch |
+| `src/labs/living-portrait/heroFx.js` | 首頁 Hero | hover 出現追蹤框和 ASCII，雙擊出現 glitch |
 | `src/lib/glyphField.js` | Journal 頁首 | 字元雨，游標附近的字會亮 |
-| `src/lib/fallScene.js` | About | 粒子人形往下掉，穿過刻字石板 |
+| `src/labs/falling-figure/fallScene.js` | About | 粒子人形往下掉，穿過刻字石板 |
 | `src/lib/shatterImage.js` | Journal 頁尾 | 版畫圖由碎片從左到右組合，然後靜止 |
 
 另有一個小互動：`src/lib/waterRipple.js`。按下語言按鈕時，水波從點擊處擴散，整頁文字跟著扭曲，1 秒內結束，語言在 0.3 秒時切換（`playWaterRipple(x, y, onSwap)`，動完自己移除）。扭曲用 SVG 濾鏡，掛在 `<html>` 上，因為只有根元素的 filter 不會改變 `position: fixed`。

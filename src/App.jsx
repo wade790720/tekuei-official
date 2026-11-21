@@ -1,13 +1,10 @@
 ﻿import { lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom'
 import SiteHero from './components/SiteHero.jsx'
-import AboutPage from './components/AboutPage.jsx'
 import WorkListPage from './components/WorkListPage.jsx'
 import JournalListPage from './components/JournalListPage.jsx'
 import JournalPostPage from './components/JournalPostPage.jsx'
 import CaseRouter from './components/CaseRouter.jsx'
-import LabLive from './components/LabLive.jsx'
-import LabPage from './components/LabPage.jsx'
 import CheckinPage from './components/CheckinPage.jsx'
 import HowToCheckinPage from './components/HowToCheckinPage.jsx'
 import { SiteNav } from './components/SiteNav.jsx'
@@ -15,6 +12,12 @@ import { mountClickSounds } from './lib/uiSound.js'
 import { mountReveal } from './lib/reveal.js'
 import { AdminProvider } from './context/AdminProvider.jsx'
 import { JournalProvider } from './context/JournalProvider.jsx'
+
+// Labs load when first visited, so Lenis and the canvas effects stay out of the main bundle.
+// The home page imports LivingPortrait directly, so that one is in the main bundle anyway.
+const LabPage = lazy(() => import('./labs/LabPage.jsx'))
+const LabLive = lazy(() => import('./labs/LabLive.jsx'))
+const FallingFigure = lazy(() => import('./labs/falling-figure/FallingFigure.jsx').then((m) => ({ default: m.FallingFigure })))
 
 // Dev-only preview pages. The production build drops this import.
 const ComponentLibrary = import.meta.env.DEV
@@ -78,9 +81,10 @@ export default function App() {
       <JournalProvider>
       <ScrollClasses />
       <AppNav />
+      <Suspense fallback={<div className="site-loading-bar" />}>
       <Routes>
         <Route path="/" element={<SiteHero />} />
-        <Route path="/about" element={<AboutPage />} />
+        <Route path="/about" element={<FallingFigure />} />
         <Route path="/work" element={<WorkListPage />} />
         <Route path="/journal" element={<JournalListPage />} />
         <Route path="/journal/:slug" element={<JournalPostPage />} />
@@ -100,6 +104,7 @@ export default function App() {
           />
         ) : null}
       </Routes>
+      </Suspense>
       </JournalProvider>
       </AdminProvider>
     </BrowserRouter>
