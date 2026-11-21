@@ -1,20 +1,20 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import '../styles/experiment.css'
+import '../styles/lab.css'
 import AboutPage from './AboutPage.jsx'
 import CaseStub from './CaseStub.jsx'
 import { LivingPortrait } from './LivingPortrait.jsx'
 import { HOME_HERO } from '../data/homepage.js'
 import { useLang } from '../i18n'
 
-/** The bare piece behind each experiment page, without the site nav. ExperimentPage shows it in an iframe. */
-export default function ExperimentLive() {
+/** The bare piece behind each lab page, without the site nav. LabPage shows it in an iframe. */
+export default function LabLive() {
   const { slug } = useParams()
   const { lang } = useLang()
 
   useEffect(() => {
-    document.documentElement.classList.add('experiment-live-doc')
-    return () => document.documentElement.classList.remove('experiment-live-doc')
+    document.documentElement.classList.add('lab-live-doc')
+    return () => document.documentElement.classList.remove('lab-live-doc')
   }, [])
 
   if (slug === 'living-portrait') return <LivingPortrait name={HOME_HERO[lang].name} label="Living Portrait" />

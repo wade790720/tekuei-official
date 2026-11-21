@@ -36,13 +36,14 @@
 - 內文段落（`case-prose`）最寬 `--page-reading`，字級 `--type-body`。
 - 標題、交付項目、時間軸維持外框寬度。
 
-## 實驗頁
+## Labs
 
-- 自己做的互動實驗列在 Work，排在客戶案例後面，類別寫 `EXPERIMENT`。資料在 `src/data/experiments.js`，不在 R2。這個檔只放文字，sitemap 和 llms.txt 也會讀它（`siteCases`）。縮圖和影片在 `experimentMedia.js`。
-- 網址是 `/cases/<id>`。版面照 motionsites.ai 的作品頁：左邊是實際效果（16:9，手機 3:4），右邊是 240px 的資訊欄（標題、類別、說明、年份、參考來源、全螢幕開啟）。
-- 效果本身在 `/cases/<id>/live`，沒有頁首。實驗頁用 iframe 放它，所以效果自己的捲動和固定的 Canvas 不會影響外面的頁面。
-- 每個實驗都要寫參考來源。
-- Work 列表的縮圖可以是影片（`thumbVideo`）：從實際效果錄的短循環 mp4，靜音自動播放，擷取的 webp 當 poster。減少動態效果開啟時只顯示 webp。
+- 自己做的互動實驗叫 Labs。列在 Work，排在客戶案例後面，類別寫 `LABS`。資料在 `src/data/labs.js`，不在 R2。這個檔只放文字，sitemap 和 llms.txt 也會讀它（`siteCases`）。縮圖和影片在 `labMedia.js`。
+- 網址是 `/labs/<id>`。版面照 motionsites.ai 的作品頁：左邊是實際效果（16:9，手機 3:4），右邊是 240px 的資訊欄（標題、類別、說明、年份、參考來源、全螢幕開啟）。
+- 效果本身在 `/labs/<id>/live`，沒有頁首。Lab 頁用 iframe 放它，所以效果自己的捲動和固定的 Canvas 不會影響外面的頁面。
+- 舊網址 `/cases/living-portrait`、`/cases/falling-figure` 用 `public/_redirects` 301 轉到 `/labs/`。
+- 每個 lab 都要寫參考來源。
+- Work 列表的縮圖可以是影片：從實際效果錄的短循環 mp4，靜音自動播放，擷取的 webp 當 poster。減少動態效果開啟時只顯示 webp。
 - 現有兩個：`living-portrait`（`LivingPortrait`，首頁也在用）、`falling-figure`（暫時直接用 `AboutPage`）。
 
 ## 文章內的 card

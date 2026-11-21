@@ -4,7 +4,7 @@
 
 import { getDoc, docText, safeHref, youtubeId } from './richText.js'
 import { getDefaultJournal, postTags } from '../data/journal.js'
-import { experimentLinks } from '../data/experiments.js'
+import { labLinks } from '../data/labs.js'
 
 export const SITE_URL = 'https://tekuei.com'
 export const SITE_NAME = 'TEKUEI 德溎'
@@ -16,7 +16,7 @@ export const PERSON = {
   alternateName: 'TEKUEI 德溎',
   url: `${SITE_URL}/about`,
   jobTitle: '軟體工程師、策展人',
-  description: '10 年軟體工程師經歷，策劃過 10 餘檔展覽，同時是 MONOLAB 共同創辦人。目前專注記錄日常想法，以及行銷、工程、AI 相關的內容創作。',
+  description: '10 年軟體工程師經歷，策劃過 10 餘檔展覽，同時是 MONOLAB 共同創辦人。目前專注記錄日常想法，以及行銷、軟體工程、AI 相關的內容創作。',
   knowsAbout: ['軟體工程', '美學', '設計', '行銷', 'AI'],
 }
 
@@ -196,8 +196,8 @@ export function injectPage(indexHtml, page) {
     .replace('<div id="root"></div>', () => `<div id="root">${page.html}</div>`)
 }
 
-/** Case pages for sitemap and llms.txt: the client cases (R2 work items), then the experiments, which live in code. */
-export const siteCases = (workItems) => [...workItems, ...experimentLinks('zh')]
+/** Case pages for sitemap and llms.txt: the client cases (R2 work items), then the labs, which live in code. */
+export const siteCases = (workItems) => [...workItems, ...labLinks('zh')]
 
 const STATIC_PATHS =['/', '/journal', '/work', '/about']
 
