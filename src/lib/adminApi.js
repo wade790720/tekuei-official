@@ -48,6 +48,7 @@ export async function loginAdmin(password) {
   return { token: trimmed }
 }
 
+/** @returns {Promise<{ data: object, etag: string | null } | null>} null when the bucket is empty */
 export async function fetchSiteData() {
   const res = await fetch(apiPath('/api/data'), {
     headers: { Accept: 'application/json' },
@@ -57,33 +58,33 @@ export async function fetchSiteData() {
   if (!res.ok) {
     throw new Error('Failed to fetch site data')
   }
-  return res.json()
+  return { data: await res.json(), etag: res.headers.get('ETag') }
 }
 
-export async function saveAboutContent(content, token) {
-  return saveSitePatch({ about: content }, token)
-}
-
-export async function saveSitePatch(patch, token) {
+/**
+ * @param {string | null} etag  the version this editor loaded; the server refuses the save (409) if it changed since
+ * @returns {Promise<{ ok: true, etag: string }>}  etag of the saved version
+ */
+export async function saveSitePatch(patch, token, etag) {
   const res = await fetch(apiPath('/api/data'), {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       ...authHeader(token),
+      ...(etag ? { 'If-Match': etag } : {}),
     },
     body: JSON.stringify(patch),
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
-    throw new Error(data.error || '儲存失敗')
+    throw new Error(res.status === 409 ? CMS_LABELS.stale : data.error || CMS_LABELS.saveFailed)
   }
   return data
 }
 
-export async function uploadSiteImage(slot, file, token) {
+export async function uploadSiteImage(file, token) {
   const form = new FormData()
   form.append('file', file)
-  form.append('slot', slot)
   const res = await fetch(apiPath('/api/upload'), {
     method: 'POST',
     headers: authHeader(token),
@@ -95,5 +96,3 @@ export async function uploadSiteImage(slot, file, token) {
   }
   return data
 }
-
-export const uploadAboutImage = uploadSiteImage

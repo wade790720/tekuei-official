@@ -1,30 +1,24 @@
-import { adminGate } from '../../src/lib/adminAuth.js'
+import { adminGate, json } from '../../src/lib/adminAuth.js'
 
 const DATA = 'data.json'
 
-function j(body, status = 200) {
-  return new Response(typeof body === 'string' ? body : JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  })
-}
-
 export async function onRequestGet({ request, env }) {
-  if (request.method !== 'GET') return j({ error: 'Method not allowed' }, 405)
+  if (request.method !== 'GET') return json({ error: 'Method not allowed' }, 405)
   const obj = await env.BUCKET.get(DATA)
   if (!obj) {
-    return j({ error: 'No data yet' }, 404)
+    return json({ error: 'No data yet' }, 404)
   }
   return new Response(obj.body, {
     headers: {
       'Content-Type': 'application/json',
       'Cache-Control': 'private, no-store',
+      ETag: obj.httpEtag, // the editor sends it back as If-Match when it saves
     },
   })
 }
 
 export async function onRequestPut({ request, env }) {
-  if (request.method !== 'PUT') return j({ error: 'Method not allowed' }, 405)
+  if (request.method !== 'PUT') return json({ error: 'Method not allowed' }, 405)
   const denied = await adminGate(request, env)
   if (denied) return denied
 
@@ -32,14 +26,19 @@ export async function onRequestPut({ request, env }) {
   try {
     body = JSON.parse(await request.text())
   } catch {
-    return j({ error: 'Invalid JSON' }, 400)
+    return json({ error: 'Invalid JSON' }, 400)
   }
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
-    return j({ error: 'Invalid body' }, 400)
+    return json({ error: 'Invalid body' }, 400)
   }
 
-  let existing = {}
   const prev = await env.BUCKET.get(DATA)
+  // The editor sends a whole section. If another tab or device saved after this editor loaded,
+  // that section is stale and writing it would drop the other save.
+  const loaded = request.headers.get('If-Match')?.replace(/^W\/|"/g, '')
+  if (loaded && prev?.etag !== loaded) return json({ error: 'Stale', stale: true }, 409)
+
+  let existing = {}
   if (prev) {
     try {
       existing = JSON.parse(await prev.text())
@@ -48,13 +47,14 @@ export async function onRequestPut({ request, env }) {
     }
   }
 
-  const merged = { ...existing }
-  for (const key of Object.keys(body)) {
-    merged[key] = body[key]
-  }
+  // Only the sections in the body change; the others are kept as they are.
+  const merged = { ...existing, ...body }
 
-  await env.BUCKET.put(DATA, JSON.stringify(merged), {
+  // Conditional on the copy read above, so a save landing in between is not overwritten either.
+  const saved = await env.BUCKET.put(DATA, JSON.stringify(merged), {
     httpMetadata: { contentType: 'application/json' },
+    ...(prev ? { onlyIf: { etagMatches: prev.etag } } : {}),
   })
-  return j({ ok: true })
+  if (!saved) return json({ error: 'Stale', stale: true }, 409)
+  return json({ ok: true, etag: saved.httpEtag })
 }

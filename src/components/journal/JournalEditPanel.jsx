@@ -140,7 +140,7 @@ export function JournalPostBody({ slug, children }) {
     cms.updateDraft((d) => {
       d.content[lang][slug] = { doc }
     })
-  const upload = async (file) => (await uploadSiteImage('journal', file, admin.getToken())).url
+  const upload = async (file) => (await uploadSiteImage(file, admin.getToken())).url
 
   return (
     <Suspense fallback={children}>

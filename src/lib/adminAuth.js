@@ -35,7 +35,7 @@ export async function checkAdmin(request, env, now = Date.now()) {
   return ok ? 'ok' : 'denied'
 }
 
-const json = (body, status) =>
+export const json = (body, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
 
 /** The error response for a failed check, or null when the request may go on. */
