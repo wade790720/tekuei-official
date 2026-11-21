@@ -1,0 +1,91 @@
+/* LivingPortrait: full-screen picture, a big name, the cut-out figure in front. */
+
+.living-portrait {
+  position: relative;
+  background: var(--surface-0);
+  /* Fills the viewport (or the iframe on an experiment page). heroFx.js scales the picture to cover it. */
+  height: 100svh;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.living-portrait__stage {
+  position: absolute;
+  /* Wider than --page-max: the picture ends at the content edge. */
+  inset: 0 var(--page-gutter);
+  overflow: hidden;
+}
+
+/* Sits between the full picture and the cut-out figure, so the figure stands in front of it. */
+.living-portrait__name {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  translate: -50% -50%;
+  font-family: var(--font-display);
+  font-weight: var(--weight-regular);
+  font-size: min(44vw, 72svh, 840px);
+  line-height: 1;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.living-portrait__stage img,
+.living-portrait__stage canvas {
+  position: absolute;
+}
+
+/* heroFx.js positions the images. They stay hidden until it has. */
+.living-portrait__stage img {
+  max-width: none;
+  opacity: 0;
+  -webkit-user-drag: none;
+}
+
+.living-portrait[data-ready] .living-portrait__stage img:not(.living-portrait__alt) {
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+
+.living-portrait__stage canvas {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.living-portrait__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-0) 55%, transparent) 0%, transparent 16%),
+    linear-gradient(0deg, var(--surface-0) 0%, transparent 16%);
+}
+
+/* Wider than the cap: the picture stays put, its side edges fade into the background. */
+@media (min-width: 1921px) {
+  .living-portrait__scrim {
+    left: var(--page-gutter);
+    right: var(--page-gutter);
+    background:
+      linear-gradient(90deg, var(--surface-0) 0%, transparent 9%, transparent 91%, var(--surface-0) 100%),
+      linear-gradient(180deg, color-mix(in srgb, var(--surface-0) 55%, transparent) 0%, transparent 16%),
+      linear-gradient(0deg, var(--surface-0) 0%, transparent 16%);
+  }
+}
+
+@media (max-width: 699px) {
+  .living-portrait__scrim {
+    background: linear-gradient(0deg, var(--surface-0) 0%, transparent 24%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .living-portrait[data-ready] .living-portrait__stage img:not(.living-portrait__alt) {
+    transition: none;
+  }
+}

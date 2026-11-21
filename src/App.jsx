@@ -6,6 +6,7 @@ import WorkListPage from './components/WorkListPage.jsx'
 import JournalListPage from './components/JournalListPage.jsx'
 import JournalPostPage from './components/JournalPostPage.jsx'
 import CaseRouter from './components/CaseRouter.jsx'
+import ExperimentLive from './components/ExperimentLive.jsx'
 import CheckinPage from './components/CheckinPage.jsx'
 import HowToCheckinPage from './components/HowToCheckinPage.jsx'
 import { SiteNav } from './components/SiteNav.jsx'
@@ -53,7 +54,8 @@ function AppNav() {
   const { pathname } = useLocation()
   const isCheckin = pathname === '/checkin'
 
-  if (isCheckin) return null
+  // Live experiment pages are bare: they also run inside the experiment page's iframe.
+  if (isCheckin || pathname.endsWith('/live')) return null
 
   const isCase = pathname.startsWith('/cases/')
 
@@ -82,6 +84,7 @@ export default function App() {
         <Route path="/journal" element={<JournalListPage />} />
         <Route path="/journal/:slug" element={<JournalPostPage />} />
         <Route path="/cases/:slug" element={<CaseRouter />} />
+        <Route path="/cases/:slug/live" element={<ExperimentLive />} />
         <Route path="/checkin" element={<CheckinPage />} />
         <Route path="/how-to-checkin" element={<HowToCheckinPage />} />
         {ComponentLibrary ? (

@@ -1,6 +1,8 @@
 ﻿import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useWorkContent } from '../hooks/useWorkContent.js'
+import { experimentWorkItems } from '../data/experiments.js'
+import { useLang } from '../i18n'
 import '../styles/work.css'
 
 function WorkThumbGraphic({ thumbSvg }) {
@@ -47,6 +49,9 @@ function WorkThumbGraphic({ thumbSvg }) {
   )
 }
 
+// A video thumbnail shows only its poster when the system asks for less motion.
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
 function WorkCard({ item }) {
   const articleRef = useRef(null)
   const [shown, setShown] = useState(false)
@@ -85,7 +90,18 @@ function WorkCard({ item }) {
               .join(' ')}
             style={!item.thumbImage?.url ? { background: item.thumbBg } : undefined}
           >
-            {item.thumbImage?.url ? (
+            {item.thumbImage?.video && !reduceMotion ? (
+              <video
+                className="work-thumb-photo"
+                src={item.thumbImage.video}
+                poster={item.thumbImage.url}
+                autoPlay
+                loop
+                muted
+                playsInline
+                aria-hidden
+              />
+            ) : item.thumbImage?.url ? (
               <img className="work-thumb-photo" src={item.thumbImage.url} alt="" />
             ) : (
               <WorkThumbGraphic thumbSvg={item.thumbSvg} />
@@ -132,8 +148,10 @@ function WorkCard({ item }) {
 
 export default function WorkListPage() {
   const { content, loading } = useWorkContent()
+  const { lang } = useLang()
 
-  const { meta, header, footer, items } = content
+  const { meta, header, footer } = content
+  const items = [...content.items, ...experimentWorkItems(lang, content.items.length + 1)]
 
   useEffect(() => {
     document.title = meta.title

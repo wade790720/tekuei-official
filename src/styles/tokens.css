@@ -106,6 +106,8 @@
   /* Typeface: Latin in Instrument Serif, CJK in Source Han Serif (思源宋體, Google Fonts name Noto Serif TC).
      Instrument Serif has no CJK glyphs, so the browser uses the next font for Chinese. index.html loads both. */
   --font-serif: 'Instrument Serif', 'Noto Serif TC', 'Source Han Serif TC', serif;
+  /* Hero name only. Anton has one weight (400). */
+  --font-display: 'Anton', 'Arial Narrow', sans-serif;
   --font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, monospace;
   /* Labels, dates, categories, values: monospace, with the serif for any Chinese in them */
   --font-label: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, 'Noto Serif TC', monospace;

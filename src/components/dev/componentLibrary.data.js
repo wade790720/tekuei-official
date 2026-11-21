@@ -43,12 +43,12 @@ export const GROUPS = [
         id: 'button',
         name: 'Button',
         file: 'src/components/Button.jsx',
-        summary: '按鈕，有實心、透明、圖示三種',
+        summary: '按鈕，有實心、透明、圖示、浮在圖上四種',
         hero: { demo: 'button', code: '<Button onClick={save}>儲存</Button>' },
         api: [
           {
             props: [
-              ['variant', "'solid' | 'ghost' | 'icon'", "'solid'", 'solid 是主要動作，ghost 是次要動作，icon 是放一個圖示的 32px 方塊'],
+              ['variant', "'solid' | 'ghost' | 'icon' | 'overlay'", "'solid'", 'solid 是主要動作，ghost 是次要動作，icon 是放一個圖示的 32px 方塊，overlay 是放在圖片或影片上的 32px 圓鈕'],
               ['as', 'string | Component', "'button'", "要渲染的元素。包住檔案欄位時用 'label'，點整顆按鈕就能選檔案"],
               ['className', 'string', "''", '附加的 class'],
               ['…rest', '—', '—', '其他 props 傳給元素'],
@@ -67,6 +67,7 @@ export const GROUPS = [
           '渲染成 button 時，type 預設是 button，不會送出表單。',
           'disabled 時底色變暗，不能點。',
           'icon 按鈕沒有文字，要加 aria-label。aria-pressed 為 true 時底色變亮。',
+          'overlay 按鈕是半透明深底加模糊，放在任何圖片上都看得清楚，一樣要加 aria-label。',
         ],
       },
 

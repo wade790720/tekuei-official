@@ -56,6 +56,24 @@
   color: var(--text-primary);
 }
 
+/* A round icon button on a picture or video: a dark glass disc keeps it readable on any image */
+.btn--overlay {
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--surface-0) 60%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-size: var(--type-small);
+  color: var(--text-primary);
+}
+
+.btn--overlay:hover {
+  background: color-mix(in srgb, var(--surface-0) 85%, transparent);
+}
+
 .btn--icon[aria-pressed='true'] {
   background: var(--line);
   color: var(--text-primary);
