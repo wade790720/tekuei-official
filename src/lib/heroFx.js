@@ -59,16 +59,16 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
   const onSubject = (x, y) => mk[idx(x, y) + 3] > 128
 
   function layout() {
-    W = root.clientWidth
-    H = root.clientHeight
+    // The canvas fills the stage, which homeHero.css keeps inside --page-max.
+    W = canvas.clientWidth
+    H = canvas.clientHeight
     const narrow = W < 700
-    // Wide: the picture follows the width only, up to MAX_W. Past that it stays put and the sides extend.
-    // homeHero.css caps the banner height to match, so there is no gap under the picture.
-    const s = narrow ? Math.max(W / IW, (H * 0.78) / IH) : Math.min(W, MAX_W) / IW
+    // The picture covers the full-screen banner.
+    const s = Math.max(Math.min(W, MAX_W) / IW, H / IH)
     dw = IW * s
     dh = IH * s
     ox = narrow ? clamp(W / 2 - 0.55 * dw, W - dw, 0) : (W - dw) / 2
-    oy = narrow ? H - dh : 0
+    oy = 0
     for (const im of [bg, cut, alt]) {
       im.style.left = `${ox}px`
       im.style.top = `${oy}px`

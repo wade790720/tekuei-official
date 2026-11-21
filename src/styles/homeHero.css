@@ -1,6 +1,5 @@
-/* Home hero: dark banner with the interactive figure, then the latest writings. */
+/* Home: the latest writings under the portrait. */
 
-.home-banner,
 .home-latest {
   --hh-bg: var(--surface-0);
   --hh-charcoal: var(--surface-1);
@@ -14,138 +13,14 @@
   color: var(--hh-ivory);
 }
 
-.home-banner a,
 .home-latest a {
   color: inherit;
   text-decoration: none;
 }
 
-.home-banner :focus-visible,
 .home-latest :focus-visible {
   outline: 1px solid var(--hh-amber);
   outline-offset: 4px;
-}
-
-.home-banner {
-  position: relative;
-  /* Never taller than the picture at its width (1672 x 941). */
-  height: min(calc(100svh - 172px), calc(min(100vw, var(--page-max)) * 941 / 1672));
-  overflow: hidden;
-  touch-action: pan-y;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.home-banner__stage {
-  position: absolute;
-  inset: 0;
-}
-
-.home-banner__stage img,
-.home-banner__stage canvas {
-  position: absolute;
-}
-
-/* heroFx.js positions the images. They stay hidden until it has. */
-.home-banner__stage img {
-  max-width: none;
-  opacity: 0;
-  -webkit-user-drag: none;
-}
-
-.home-banner[data-ready] .home-banner__stage img:not(.home-banner__alt) {
-  opacity: 1;
-  transition: opacity 0.6s ease;
-}
-
-.home-banner__stage canvas {
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.home-banner__scrim {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--surface-0) 55%, transparent) 0%, transparent 16%),
-    linear-gradient(0deg, var(--hh-bg) 0%, transparent 16%);
-}
-
-.home-banner__lead {
-  position: absolute;
-  left: calc(var(--page-gutter) + var(--page-pad) + clamp(0px, 2vw, 32px));
-  top: 31%;
-}
-
-.home-banner h1 {
-  margin: 0 0 clamp(var(--space-6), 3.4vw, var(--space-12));
-  font-family: var(--hh-serif);
-  font-weight: 400;
-  font-size: clamp(38px, 5vw, 86px);
-  line-height: 1.1;
-}
-
-.home-banner__pill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: 15px 30px;
-  border: 1px solid var(--hh-gold);
-  border-radius: 999px;
-  font-family: var(--hh-serif);
-  font-size: clamp(18px, 1.4vw, 23px);
-  transition:
-    border-color 0.25s,
-    background 0.25s,
-    box-shadow 0.25s;
-}
-
-.home-banner__pill span {
-  color: var(--hh-gold);
-  transition: transform 0.25s;
-}
-
-.home-banner__pill:hover {
-  border-color: var(--hh-amber);
-  background: color-mix(in srgb, var(--accent-10) 7%, transparent);
-  box-shadow: 0 0 28px color-mix(in srgb, var(--accent-10) 16%, transparent);
-}
-
-.home-banner__pill:hover span {
-  transform: translate(3px, -3px);
-}
-
-.home-banner__aside {
-  position: absolute;
-  right: calc(var(--page-gutter) + var(--page-pad) + clamp(0px, 5.6vw, 96px));
-  top: 32%;
-  margin: 0;
-  padding: clamp(22px, 2.6vw, var(--space-12)) 0;
-  font-family: var(--hh-serif);
-  font-style: italic;
-  font-size: clamp(22px, 2.4vw, 40px);
-  line-height: 1.34;
-}
-
-.home-banner__aside::before,
-.home-banner__aside::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  width: 54px;
-  height: 2px;
-  background: var(--hh-gold);
-}
-
-.home-banner__aside::before {
-  top: 0;
-}
-
-.home-banner__aside::after {
-  bottom: 0;
 }
 
 .home-latest {
@@ -287,62 +162,13 @@
   line-height: 1.25;
 }
 
-/* Wider than the cap: the picture stays put, its side edges fade into the background. */
-@media (min-width: 1921px) {
-  .home-banner__scrim {
-    left: var(--page-gutter);
-    right: var(--page-gutter);
-    background:
-      linear-gradient(90deg, var(--hh-bg) 0%, transparent 9%, transparent 91%, var(--hh-bg) 100%),
-      linear-gradient(180deg, color-mix(in srgb, var(--surface-0) 55%, transparent) 0%, transparent 16%),
-      linear-gradient(0deg, var(--hh-bg) 0%, transparent 16%);
-  }
-}
-
 @media (max-width: 899px) {
-  .home-banner__aside {
-    display: none;
-  }
-
   .home-latest__cards {
     grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 699px) {
-  .home-banner {
-    height: calc(100svh - 96px);
-    min-height: 520px;
-  }
-
-  .home-banner__lead {
-    left: var(--page-pad);
-  }
-
-  .home-banner__stage img {
-    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 24%);
-    mask-image: linear-gradient(180deg, transparent 0, #000 24%);
-  }
-
-  .home-banner__scrim {
-    background: linear-gradient(0deg, var(--hh-bg) 0%, color-mix(in srgb, var(--surface-0) 78%, transparent) 26%, transparent 52%);
-  }
-
-  .home-banner__lead {
-    left: var(--page-pad);
-    top: auto;
-    bottom: 28px;
-  }
-
-  .home-banner__pill {
-    padding: 13px var(--space-6);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .home-banner[data-ready] .home-banner__stage img:not(.home-banner__alt),
-  .home-banner__pill,
-  .home-banner__pill span,
   .home-latest__cards a {
     transition: none;
   }

@@ -14,18 +14,14 @@ export const HOME_META = {
 export const HOME_HERO = {
   zh: {
     ariaLabel: '首頁主視覺',
-    headline: ['我寫程式，', '也把過程寫下來。'],
-    cta: '看看我的世界',
-    aside: ['想法、工具，', '和認真做的', '實驗'],
+    name: 'WADE',
     latestLabel: '最新文章',
     viewAll: '全部文章',
     loading: '文章載入中',
   },
   en: {
     ariaLabel: 'Home hero',
-    headline: ['I write code,', 'and write down the process.'],
-    cta: 'Explore my world',
-    aside: ['Ideas, tools &', 'thoughtful', 'experiments.'],
+    name: 'WADE',
     latestLabel: 'Latest writings',
     viewAll: 'View all',
     loading: 'Loading posts',

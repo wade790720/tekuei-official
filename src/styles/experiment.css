@@ -1,0 +1,136 @@
+/* Experiment page (ExperimentPage.jsx): live preview and details side by side, after motionsites.ai. */
+
+.experiment {
+  min-height: 100svh;
+  padding: var(--space-24) calc(var(--page-gutter) + var(--page-pad)) var(--space-24);
+  background: var(--surface-0);
+}
+
+.experiment__card {
+  display: flex;
+  align-items: stretch;
+  max-width: var(--page-column);
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.experiment__preview {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  aspect-ratio: 16 / 9;
+}
+
+.experiment__preview iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.experiment__back {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+}
+
+/* Info column: 240px, 24px padding, 20px between groups (measured on motionsites.ai). */
+.experiment__info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 240px;
+  flex-shrink: 0;
+  padding: var(--space-6);
+  border-left: 1px solid var(--line);
+}
+
+.experiment__title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: var(--weight-regular);
+  font-size: var(--type-h2);
+  line-height: var(--type-h2-lh);
+  color: var(--text-primary);
+}
+
+.experiment__category {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  color: var(--text-tertiary);
+}
+
+.experiment__summary {
+  margin: 0;
+  font-size: var(--type-small);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.experiment__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  font-size: var(--type-caption);
+}
+
+.experiment__meta dt {
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.experiment__meta dd {
+  margin: var(--space-1) 0 0;
+  color: var(--text-body);
+}
+
+.experiment__meta a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
+  transition: color 0.3s var(--ease-touch);
+}
+
+.experiment__meta a:hover {
+  color: var(--ember);
+}
+
+.experiment__open {
+  justify-content: center;
+  margin-top: auto;
+}
+
+/* Live page (ExperimentLive.jsx): no scrollbar or reserved gutter, the piece fills the frame edge to edge. */
+html.has-scroll-document.experiment-live-doc {
+  scrollbar-width: none;
+  scrollbar-gutter: auto;
+}
+
+@media (max-width: 768px) {
+  .experiment {
+    padding-inline: var(--page-pad);
+  }
+
+  .experiment__card {
+    flex-direction: column;
+  }
+
+  /* The pieces are built for a full screen; a portrait frame shows more of them on a phone. */
+  .experiment__preview {
+    aspect-ratio: 3 / 4;
+  }
+
+  .experiment__info {
+    width: auto;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
