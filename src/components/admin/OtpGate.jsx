@@ -10,12 +10,14 @@ const UNLOCK_MS = 650 // how long "已解鎖" stays before the gate closes
 /**
  * Full-screen code gate for edit mode: dark, blurred backdrop around a OtpInput.
  * Verifies as soon as the last digit is in.
- * @param {{ open: boolean, onClose: () => void, onVerify: (code: string) => Promise<boolean>, onUnlocked: () => void }} props
+ * onVerify resolves true when the code is right; a string is the error to show instead of "wrong code".
+ * @param {{ open: boolean, onClose: () => void, onVerify: (code: string) => Promise<true | string | false>, onUnlocked: () => void }} props
  */
 export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
   const input = useRef(null)
   const [code, setCode] = useState('')
   const [state, setState] = useState('idle') // idle | verifying | error | unlocked
+  const [errorText, setErrorText] = useState(T.wrong)
   const [prevOpen, setPrevOpen] = useState(open)
 
   // Every opening starts clean.
@@ -51,16 +53,17 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
   async function verify(next) {
     setState('verifying')
     const ok = await onVerify(next)
-    if (ok) {
+    if (ok === true) {
       setState('unlocked')
       setTimeout(onUnlocked, UNLOCK_MS)
     } else {
+      setErrorText(typeof ok === 'string' ? ok : T.wrong)
       setState('error')
       setCode('')
     }
   }
 
-  const status = { verifying: T.verifying, unlocked: T.verified, error: T.wrong }[state] ?? ''
+  const status = { verifying: T.verifying, unlocked: T.verified, error: errorText }[state] ?? ''
   const busy = state === 'verifying' || state === 'unlocked'
 
   return createPortal(
