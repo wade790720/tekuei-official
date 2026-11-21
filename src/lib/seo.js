@@ -4,7 +4,7 @@
 
 import { getDoc, docText, safeHref, youtubeId } from './richText.js'
 import { getDefaultJournal, postTags } from '../data/journal.js'
-import { labLinks } from '../data/labs.js'
+import { labLinks } from '../labs/index.js'
 
 export const SITE_URL = 'https://tekuei.com'
 export const SITE_NAME = 'TEKUEI 德溎'

@@ -873,12 +873,12 @@ export const GROUPS = [
       {
         id: 'hero-fx',
         name: 'mountHeroFx',
-        file: 'src/lib/heroFx.js',
+        file: 'src/labs/living-portrait/heroFx.js',
         summary: '首頁 Hero 的互動：游標移到人物上出現追蹤框和 ASCII，雙擊出現 glitch',
         hero: { code: `useEffect(() => mountHeroFx({ root, bg, cut, alt, canvas }), [])` },
         api: [
           {
-            description: '依賴 src/assets/hero/ 的圖片尺寸和焦點位置，只用在首頁',
+            description: '依賴同一個資料夾裡三張圖的尺寸和焦點位置，用在首頁和 Living Portrait',
             props: [['els', '{ root, bg, cut, alt, canvas }', '—', '必填，Hero 的根元素、三張圖和 canvas']],
           },
         ],
@@ -888,7 +888,7 @@ export const GROUPS = [
       {
         id: 'fall-scene',
         name: 'mountFallScene',
-        file: 'src/lib/fallScene.js',
+        file: 'src/labs/falling-figure/fallScene.js',
         summary: '粒子組成的人形隨捲動往下掉，穿過刻字的石板',
         hero: { code: `useEffect(() => mountFallScene({ canvas, figure, sections, acts, progressDot, onAct }), [])` },
         api: [

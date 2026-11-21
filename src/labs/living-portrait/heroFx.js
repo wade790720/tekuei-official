@@ -1,6 +1,6 @@
 // Home hero interaction. Hover on the figure: tracking boxes with ASCII and a second picture.
 // Double-click on the figure: glitch, then the second picture for two seconds with sparks on its outline.
-// Image geometry (IW/IH and the focus points in layout) fits src/assets/hero/*.webp.
+// Image geometry (IW/IH and the focus points in layout) fits bg.webp, cut.webp and alt.webp in this folder.
 
 const IW = 1672
 const IH = 941

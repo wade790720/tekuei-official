@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import 'lenis/dist/lenis.css'
-import '../styles/aboutFall.css'
-import figureSrc from '../assets/about/carving.png'
-import { ABOUT_FALL_ACTS, ABOUT_FALL_INTRO, ABOUT_FALL_META } from '../data/aboutFall.js'
-import { mountFallScene } from '../lib/fallScene.js'
-import { useLang } from '../i18n'
+import './aboutFall.css'
+import figureSrc from './carving.png'
+import { ABOUT_FALL_ACTS, ABOUT_FALL_INTRO, ABOUT_FALL_META } from './content.js'
+import { mountFallScene } from './fallScene.js'
+import { useLang } from '../../i18n'
 
-export default function AboutPage() {
+/** The About page today, and the Falling Figure lab. */
+export function FallingFigure() {
   const { lang } = useLang()
   const meta = ABOUT_FALL_META[lang]
   const intro = ABOUT_FALL_INTRO[lang]

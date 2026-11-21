@@ -43,6 +43,7 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 | `src/lib/` | 不依賴 React 的邏輯。Canvas 效果也放這裡 |
 | `src/hooks/` | React hook，例如 `useCmsSection` |
 | `src/assets/` | 圖片，依頁面分資料夾 |
+| `src/labs/` | Labs。`index.js` 是清單，每個 lab 一個資料夾，元件、樣式、效果、素材都放在一起（依類型分資料夾的例外） |
 | `functions/` | API：`/api/data`、`/api/upload`、`/api/file/*`、`/api/admin/verify` |
 | `functions/journal/`、`sitemap.xml.js`、`llms.txt.js` | SEO：把 Journal 的內文、meta、JSON-LD 寫進 HTML，並產生 sitemap 和 llms.txt。邏輯在 `src/lib/seo.js` |
 

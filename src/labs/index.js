@@ -1,5 +1,5 @@
 // Labs: interactive pieces listed under Work, after the client cases. They live in code, not in R2: each one is a live page at liveHref.
-// Text only, so Pages Functions (sitemap, llms.txt) can import it; thumbnails are in labMedia.js.
+// Text only, so Pages Functions (sitemap, llms.txt) can import it; thumbnails are in media.js.
 
 export const LABS = [
   {

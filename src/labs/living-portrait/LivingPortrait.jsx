@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
-import '../styles/livingPortrait.css'
-import bgSrc from '../assets/hero/bg.webp'
-import cutSrc from '../assets/hero/cut.webp'
-import altSrc from '../assets/hero/alt.webp'
-import { mountHeroFx } from '../lib/heroFx.js'
+import './livingPortrait.css'
+import bgSrc from './bg.webp'
+import cutSrc from './cut.webp'
+import altSrc from './alt.webp'
+import { mountHeroFx } from './heroFx.js'
 
 /**
  * Full-screen portrait with a big name between the picture and the cut-out figure.

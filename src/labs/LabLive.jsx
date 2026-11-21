@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import '../styles/lab.css'
-import AboutPage from './AboutPage.jsx'
-import CaseStub from './CaseStub.jsx'
-import { LivingPortrait } from './LivingPortrait.jsx'
+import './lab.css'
+import CaseStub from '../components/CaseStub.jsx'
+import { FallingFigure } from './falling-figure/FallingFigure.jsx'
+import { LivingPortrait } from './living-portrait/LivingPortrait.jsx'
 import { HOME_HERO } from '../data/homepage.js'
 import { useLang } from '../i18n'
 
@@ -18,7 +18,6 @@ export default function LabLive() {
   }, [])
 
   if (slug === 'living-portrait') return <LivingPortrait name={HOME_HERO[lang].name} label="Living Portrait" />
-  // shortcut: reuses the About page as is; give the fall its own component when About is redesigned.
-  if (slug === 'falling-figure') return <AboutPage />
+  if (slug === 'falling-figure') return <FallingFigure />
   return <CaseStub />
 }
