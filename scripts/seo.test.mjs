@@ -2,7 +2,8 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
 import { getDefaultJournal, JOURNAL_META } from '../src/data/journal.js'
-import { injectPage, journalIndexPage, llmsTxt, postPage, siteJournal, sitemapXml } from '../src/lib/seo.js'
+import { injectPage, journalIndexPage, llmsTxt, postPage, servePage, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.js'
+import { fakeR2 } from './fakeR2.mjs'
 
 const journal = getDefaultJournal()
 const slug = journal.posts.zh[0].slug
@@ -66,6 +67,33 @@ describe('site files', () => {
     assert.match(sitemapXml(journal, work), new RegExp(`<loc>https://tekuei.com/journal/${slug}</loc>`))
     assert.match(sitemapXml(journal, work), /<loc>https:\/\/tekuei.com\/cases\//)
     assert.match(llmsTxt(journal, work), /^# TEKUEI/)
+  })
+
+  it('lists the experiments, which live in code, after the client cases', () => {
+    const cases = siteCases(work)
+    assert.deepEqual(cases.slice(0, work.length), work)
+    assert.match(sitemapXml(journal, cases), /<loc>https:\/\/tekuei.com\/cases\/living-portrait<\/loc>/)
+    assert.match(llmsTxt(journal, cases), /\[Living Portrait\]\(https:\/\/tekuei.com\/cases\/living-portrait\)/)
+  })
+})
+
+describe('servePage', () => {
+  const ctx = (path) => ({
+    request: new Request(`https://tekuei.com${path}`),
+    env: { ASSETS: { fetch: async () => new Response(indexHtml) }, BUCKET: fakeR2() },
+  })
+
+  it('renders a known post with 200', async () => {
+    const res = await servePage(ctx(`/journal/${slug}`), (j) => postPage(j, slug))
+    assert.equal(res.status, 200)
+    assert.match(await res.text(), /<article>/)
+  })
+
+  it('answers an unknown slug with an uncached 404 that still boots the app', async () => {
+    const res = await servePage(ctx('/journal/nope'), (j) => postPage(j, 'nope'))
+    assert.equal(res.status, 404)
+    assert.equal(res.headers.get('Cache-Control'), 'no-store')
+    assert.match(await res.text(), /<div id="root"><\/div>/)
   })
 })
 

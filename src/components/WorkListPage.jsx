@@ -1,7 +1,7 @@
 ﻿import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useWorkContent } from '../hooks/useWorkContent.js'
-import { experimentWorkItems } from '../data/experiments.js'
+import { experimentWorkItems } from '../data/experimentMedia.js'
 import { useLang } from '../i18n'
 import '../styles/work.css'
 

@@ -38,7 +38,7 @@
 
 ## 實驗頁
 
-- 自己做的互動實驗列在 Work，排在客戶案例後面，類別寫 `EXPERIMENT`。資料在 `src/data/experiments.js`，不在 R2。
+- 自己做的互動實驗列在 Work，排在客戶案例後面，類別寫 `EXPERIMENT`。資料在 `src/data/experiments.js`，不在 R2。這個檔只放文字，sitemap 和 llms.txt 也會讀它（`siteCases`）。縮圖和影片在 `experimentMedia.js`。
 - 網址是 `/cases/<id>`。版面照 motionsites.ai 的作品頁：左邊是實際效果（16:9，手機 3:4），右邊是 240px 的資訊欄（標題、類別、說明、年份、參考來源、全螢幕開啟）。
 - 效果本身在 `/cases/<id>/live`，沒有頁首。實驗頁用 iframe 放它，所以效果自己的捲動和固定的 Canvas 不會影響外面的頁面。
 - 每個實驗都要寫參考來源。

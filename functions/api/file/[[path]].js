@@ -1,7 +1,4 @@
 export async function onRequestGet({ request, env }) {
-  if (request.method !== 'GET') {
-    return new Response('Method not allowed', { status: 405 })
-  }
   const u = new URL(request.url)
   const m = u.pathname.match(/^\/api\/file\/(.+)$/)
   if (!m) {
