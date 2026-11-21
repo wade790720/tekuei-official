@@ -871,14 +871,66 @@ export const GROUPS = [
         notes: ['離開畫面時停止繪製。', '減少動態效果開啟時不啟動。'],
       },
       {
+        id: 'koi-pond',
+        name: 'mountKoiPond',
+        file: 'src/lib/koiPond.js',
+        summary: '字元拼成的錦鯉在畫面裡游，點一下丟飼料，附近的錦鯉游過來吃',
+        hero: { demo: 'koi', code: `useEffect(() => mountKoiPond(canvas.current, { surface: root.current, onCount: setCount }), [])` },
+        api: [
+          {
+            description: '顏色讀取 canvas 的 CSS color（身體）、--koi-mark（斑紋）和 --koi-food（飼料），字元的字型讀取 font-family',
+            props: [
+              ['canvas', 'HTMLCanvasElement', '—', '必填，尺寸由 CSS 決定'],
+              ['opts.surface', 'HTMLElement', 'canvas', '點擊這個元素時丟飼料，連結和按鈕上的點擊不算'],
+              ['opts.avoid', 'HTMLElement', '—', '錦鯉會避開這個元素，例如大標題'],
+              ['opts.onCount', '({ koi, food }) => void', '—', '錦鯉或飼料的數量改變時呼叫'],
+            ],
+          },
+        ],
+        examples: [],
+        notes: [
+          '768px 以下三隻錦鯉、一格 7px，其他寬度七隻、一格 9px。',
+          '錦鯉有大有小，最小的是最大的一半，越小的越暗。',
+          '每隻錦鯉有自己的速度，會在巡游、漂著不動、突然衝刺之間切換。',
+          '越亮的地方字元越密，從「.」到「@」。',
+          '飼料最多 12 顆，30 秒沒被吃掉就消失。',
+          '丟飼料時從點擊處呼叫 playWaterRipple，水波會扭曲整頁。',
+          '模擬每秒固定 60 步，和螢幕更新率無關。',
+          '離開畫面時停止繪製。',
+          '減少動態效果開啟時只畫一張靜止的畫面，不能餵魚。',
+          'devicePixelRatio 上限 2。',
+        ],
+      },
+      {
+        id: 'grain-haze',
+        name: 'mountGrainHaze',
+        file: 'src/lib/grainHaze.js',
+        summary: '一塊柔邊的光碎成沙粒，明暗很慢地流動',
+        hero: { demo: 'haze', code: `useEffect(() => mountGrainHaze(canvas.current), [])` },
+        api: [
+          {
+            description: '用 WebGL 逐像素計算，顏色讀取 canvas 的 CSS color',
+            props: [['canvas', 'HTMLCanvasElement', '—', '必填，尺寸由 CSS 決定']],
+          },
+        ],
+        examples: [],
+        notes: [
+          '顆粒不會動，動的是底下的雜訊場，所以每秒只畫 10 次。',
+          '強度由 SHARE 決定，現在是 0.375。',
+          '離開畫面時停止繪製。減少動態效果開啟時只畫一張靜止的畫面。',
+          '瀏覽器不支援 WebGL 時不畫任何東西。',
+          'devicePixelRatio 上限 1.5。',
+        ],
+      },
+      {
         id: 'hero-fx',
         name: 'mountHeroFx',
         file: 'src/labs/living-portrait/heroFx.js',
-        summary: '首頁 Hero 的互動：游標移到人物上出現追蹤框和 ASCII，雙擊出現 glitch',
+        summary: 'Living Portrait 的互動：游標移到人物上出現追蹤框和 ASCII，雙擊出現 glitch',
         hero: { code: `useEffect(() => mountHeroFx({ root, bg, cut, alt, canvas }), [])` },
         api: [
           {
-            description: '依賴同一個資料夾裡三張圖的尺寸和焦點位置，用在首頁和 Living Portrait',
+            description: '依賴同一個資料夾裡三張圖的尺寸和焦點位置，只用在 Living Portrait',
             props: [['els', '{ root, bg, cut, alt, canvas }', '—', '必填，Hero 的根元素、三張圖和 canvas']],
           },
         ],

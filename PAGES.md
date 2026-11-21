@@ -7,6 +7,20 @@
 - 頁首 logo：「TEKUEI CHU」後面接一個 8 × 2px、約 1 秒亮 1 秒暗的底線游標。只有頁首用到，所以直接寫在 SiteNav 和 NavOverlay 裡，不抽成元件（class `site-logo`）。
 - 頁尾的品牌字維持字距拉開的「T E K U E I」。
 
+## 首頁
+
+- 第一屏是錦鯉池（`KoiHero`，寫在 `HomeHero.jsx`），高度一個螢幕。Canvas 在文字後面，寬度不超過 `--page-max`，底部和寬螢幕的兩側淡出。
+- 版面照 motionsites 的 Koi Pond：左上角是一行小字的標語。右上角是一段 14px 的自我介紹和聯絡連結，靠右對齊。左下角是錦鯉和飼料的計數、餵魚提示。右下角是大字「WADE CHU」，字級約是寬度的 11%（56 到 200px），這是全站唯一的大字。
+- 中間留空給錦鯉。
+- 錦鯉下面有一片顆粒狀的光（`grainHaze.js`，WebGL）：一塊柔邊的亮區碎成沙粒，明暗很慢地流動。做法和數值照 p5aholic.me 的背景，強度是她的 35 到 40%。
+- 底色不是純黑：中間是 `--surface-1`，往邊緣漸變成 `--surface-0`。
+- 錦鯉只用品牌色：身體是象牙白，斑紋是 `--ember`，飼料是 `--ember-soft`。錦鯉由等寬字元拼成（`--font-label`），越亮的地方字元越密。手機一格 7px、三隻錦鯉，其他寬度一格 9px、七隻。錦鯉有大有小，最小的是最大的一半，體型偏圓胖（照 motionsites 的 Koi Pond）。
+- 每隻錦鯉有自己的速度，平常巡游，有時幾乎停著漂，偶爾突然衝一段。錦鯉會避開右下角的大字。
+- 錦鯉各自繞一圈巡游，轉彎的速度受游速限制，互相讓路，靠近邊緣前就轉向。游動和外形的做法來自 ascii-koi（MIT）。
+- 點一下水面丟飼料，同時從點擊處播放語言按鈕的水波（`playWaterRipple`），整頁文字跟著扭曲。
+- 減少動態效果開啟時，錦鯉靜止，不能餵魚，提示隱藏。
+- 首頁只有這一屏，不能往下捲。沒有最新文章、精選案例和頁尾。頁首的 Contact 連到右上角的聯絡連結。
+
 ## Journal 列表
 
 - 欄寬 `--page-column`（見 DESIGN.md「版面」）。
@@ -45,7 +59,7 @@
 - 舊網址 `/cases/living-portrait`、`/cases/falling-figure` 用 `public/_redirects` 301 轉到 `/labs/`。
 - 每個 lab 都要寫參考來源。
 - Work 列表的縮圖可以是影片：從實際效果錄的短循環 mp4，靜音自動播放，擷取的 webp 當 poster。減少動態效果開啟時只顯示 webp。客戶案例的縮圖放在 `src/assets/work/`，對照表在 `src/data/workMedia.js`，會取代 R2 的縮圖。目前只有 Lustre Yellow 有影片。Matsu Biennial 用 R2 的縮圖，錄影放在案例頁。
-- 現有兩個：`living-portrait`（`LivingPortrait`，首頁也在用）、`falling-figure`（`FallingFigure`，目前也是 About 頁）。首頁和 About 改版後，拿掉它們對 `src/labs/` 的匯入即可。
+- 現有兩個：`living-portrait`（`LivingPortrait`，首頁改版前的 Hero）、`falling-figure`（`FallingFigure`，目前也是 About 頁）。About 改版後，拿掉它對 `src/labs/` 的匯入即可。
 
 ## 文章內的 card
 
