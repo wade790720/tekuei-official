@@ -1,7 +1,7 @@
-// Interactive experiments listed under Work. They live in code, not in R2: each one is a live page at liveHref.
-// Text only, so Pages Functions (sitemap, llms.txt) can import it; thumbnails are in experimentMedia.js.
+// Labs: interactive pieces listed under Work, after the client cases. They live in code, not in R2: each one is a live page at liveHref.
+// Text only, so Pages Functions (sitemap, llms.txt) can import it; thumbnails are in labMedia.js.
 
-export const EXPERIMENTS = [
+export const LABS = [
   {
     id: 'living-portrait',
     year: '2026',
@@ -40,22 +40,22 @@ export const EXPERIMENTS = [
   },
 ]
 
-export const EXPERIMENT_BY_ID = Object.fromEntries(EXPERIMENTS.map((x) => [x.id, x]))
+export const LAB_BY_ID = Object.fromEntries(LABS.map((x) => [x.id, x]))
 
-export const caseHref = (id) => `/cases/${id}`
-export const liveHref = (id) => `/cases/${id}/live`
+export const labHref = (id) => `/labs/${id}`
+export const liveHref = (id) => `/labs/${id}/live`
 
-export const EXPERIMENT_LABELS = {
-  zh: { category: 'EXPERIMENT', year: '年份', credit: '參考', open: '全螢幕開啟', back: '返回 Work', preview: '實際效果' },
-  en: { category: 'EXPERIMENT', year: 'Year', credit: 'Based on', open: 'Open full screen', back: 'Back to Work', preview: 'Live preview' },
+export const LAB_LABELS = {
+  zh: { category: 'LABS', year: '年份', credit: '參考', open: '全螢幕開啟', back: '返回 Work', preview: '實際效果' },
+  en: { category: 'LABS', year: 'Year', credit: 'Based on', open: 'Open full screen', back: 'Back to Work', preview: 'Live preview' },
 }
 
-/** Work list fields of each experiment, without media. */
-export function experimentLinks(lang) {
-  return EXPERIMENTS.map((x) => ({
+/** Work list fields of each lab, without media. */
+export function labLinks(lang) {
+  return LABS.map((x) => ({
     id: x.id,
-    caseHref: caseHref(x.id),
-    client: EXPERIMENT_LABELS[lang].category,
+    caseHref: labHref(x.id),
+    client: LAB_LABELS[lang].category,
     title: x[lang].title,
     subtitle: x[lang].subtitle,
     descriptionLines: [x[lang].summary],

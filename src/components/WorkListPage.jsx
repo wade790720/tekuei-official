@@ -1,7 +1,7 @@
 ﻿import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useWorkContent } from '../hooks/useWorkContent.js'
-import { experimentWorkItems } from '../data/experimentMedia.js'
+import { labWorkItems } from '../data/labMedia.js'
 import { useLang } from '../i18n'
 import '../styles/work.css'
 
@@ -151,7 +151,7 @@ export default function WorkListPage() {
   const { lang } = useLang()
 
   const { meta, header, footer } = content
-  const items = [...content.items, ...experimentWorkItems(lang, content.items.length + 1)]
+  const items = [...content.items, ...labWorkItems(lang, content.items.length + 1)]
 
   useEffect(() => {
     document.title = meta.title

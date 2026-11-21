@@ -3,7 +3,7 @@
 .living-portrait {
   position: relative;
   background: var(--surface-0);
-  /* Fills the viewport (or the iframe on an experiment page). heroFx.js scales the picture to cover it. */
+  /* Fills the viewport (or the iframe on a lab page). heroFx.js scales the picture to cover it. */
   height: 100svh;
   overflow: hidden;
   touch-action: pan-y;

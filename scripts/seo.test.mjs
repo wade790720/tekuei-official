@@ -69,11 +69,11 @@ describe('site files', () => {
     assert.match(llmsTxt(journal, work), /^# TEKUEI/)
   })
 
-  it('lists the experiments, which live in code, after the client cases', () => {
+  it('lists the labs, which live in code, after the client cases', () => {
     const cases = siteCases(work)
     assert.deepEqual(cases.slice(0, work.length), work)
-    assert.match(sitemapXml(journal, cases), /<loc>https:\/\/tekuei.com\/cases\/living-portrait<\/loc>/)
-    assert.match(llmsTxt(journal, cases), /\[Living Portrait\]\(https:\/\/tekuei.com\/cases\/living-portrait\)/)
+    assert.match(sitemapXml(journal, cases), /<loc>https:\/\/tekuei.com\/labs\/living-portrait<\/loc>/)
+    assert.match(llmsTxt(journal, cases), /\[Living Portrait\]\(https:\/\/tekuei.com\/labs\/living-portrait\)/)
   })
 })
 
