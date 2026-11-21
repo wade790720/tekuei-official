@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom'
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { labWorkItems } from '../labs/media.js'
+import { WORK_THUMBS } from '../data/workMedia.js'
 import { useLang } from '../i18n'
 import '../styles/work.css'
 
@@ -151,7 +152,10 @@ export default function WorkListPage() {
   const { lang } = useLang()
 
   const { meta, header, footer } = content
-  const items = [...content.items, ...labWorkItems(lang, content.items.length + 1)]
+  const items = [
+    ...content.items.map((item) => (WORK_THUMBS[item.id] ? { ...item, thumbImage: WORK_THUMBS[item.id] } : item)),
+    ...labWorkItems(lang, content.items.length + 1),
+  ]
 
   useEffect(() => {
     document.title = meta.title

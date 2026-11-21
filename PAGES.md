@@ -35,6 +35,7 @@
 
 - 內文段落（`case-prose`）最寬 `--page-reading`，字級 `--type-body`。
 - 標題、交付項目、時間軸維持外框寬度。
+- 案例資料可以有 `videos`（`src`、`poster`、`caption`）：用 `VideoCard` 排在「背景」段落後面，外框寬度，循環播放。影片放在 `src/assets/cases/<slug>/`，是從案例網站錄的捲動導覽。目前只有 Matsu Biennial（首頁、策展主題頁、藝術作品頁）。
 
 ## Labs
 
@@ -43,7 +44,7 @@
 - 效果本身在 `/labs/<id>/live`，沒有頁首。Lab 頁用 iframe 放它，所以效果自己的捲動和固定的 Canvas 不會影響外面的頁面。
 - 舊網址 `/cases/living-portrait`、`/cases/falling-figure` 用 `public/_redirects` 301 轉到 `/labs/`。
 - 每個 lab 都要寫參考來源。
-- Work 列表的縮圖可以是影片：從實際效果錄的短循環 mp4，靜音自動播放，擷取的 webp 當 poster。減少動態效果開啟時只顯示 webp。
+- Work 列表的縮圖可以是影片：從實際效果錄的短循環 mp4，靜音自動播放，擷取的 webp 當 poster。減少動態效果開啟時只顯示 webp。客戶案例的縮圖放在 `src/assets/work/`，對照表在 `src/data/workMedia.js`，會取代 R2 的縮圖。目前只有 Lustre Yellow 有影片。Matsu Biennial 用 R2 的縮圖，錄影放在案例頁。
 - 現有兩個：`living-portrait`（`LivingPortrait`，首頁也在用）、`falling-figure`（`FallingFigure`，目前也是 About 頁）。首頁和 About 改版後，拿掉它們對 `src/labs/` 的匯入即可。
 
 ## 文章內的 card

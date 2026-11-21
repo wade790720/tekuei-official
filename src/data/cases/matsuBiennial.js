@@ -1,3 +1,18 @@
+// Recordings of matsubiennial.tw/2025 (a scroll tour with a drawn cursor), shown on the case page.
+// Each webp is a representative frame of its video.
+import homeVideo from '../../assets/cases/matsu-biennial/home.mp4'
+import homePoster from '../../assets/cases/matsu-biennial/home.webp'
+import themeVideo from '../../assets/cases/matsu-biennial/theme.mp4'
+import themePoster from '../../assets/cases/matsu-biennial/theme.webp'
+import artworksVideo from '../../assets/cases/matsu-biennial/artworks.mp4'
+import artworksPoster from '../../assets/cases/matsu-biennial/artworks.webp'
+
+const VIDEOS = [
+  { src: homeVideo, poster: homePoster },
+  { src: themeVideo, poster: themePoster },
+  { src: artworksVideo, poster: artworksPoster },
+]
+
 const ZH = {
   slug: 'matsu-biennial',
   documentTitle: 'TEKUEI · Matsu Biennial',
@@ -11,7 +26,7 @@ const ZH = {
       { label: 'Client', lines: ['馬祖國際藝術島', 'Matsu Biennial'] },
       { label: 'Scope', lines: ['Web Design', 'Exhibition', 'Art Direction'] },
       { label: 'Year', lines: ['2025'] },
-      { label: 'Link', href: 'https://matsubiennial.tw/', lines: ['matsubiennial.tw'] },
+      { label: 'Link', href: 'https://matsubiennial.tw/2025', lines: ['matsubiennial.tw/2025'] },
     ],
   },
   media: {
@@ -19,6 +34,7 @@ const ZH = {
     fullWidthBg: 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 94%, transparent) 0%, color-mix(in srgb, var(--surface-1) 84%, transparent) 50%, rgba(16, 15, 17, 0.76) 100%)',
     inlineLabel: 'EXHIBITION · WEB VIEW',
   },
+  videos: VIDEOS.map((v, i) => ({ ...v, caption: ['網站首頁', '策展主題頁', '藝術作品頁'][i] })),
   sections: {
     overview: {
       num: '01',
@@ -90,7 +106,7 @@ const EN = {
       { label: 'Client', lines: ['Matsu Biennial', 'National Matsu Arts Festival'] },
       { label: 'Scope', lines: ['Web Design', 'Exhibition', 'Art Direction'] },
       { label: 'Year', lines: ['2025'] },
-      { label: 'Link', href: 'https://matsubiennial.tw/', lines: ['matsubiennial.tw'] },
+      { label: 'Link', href: 'https://matsubiennial.tw/2025', lines: ['matsubiennial.tw/2025'] },
     ],
   },
   media: {
@@ -98,6 +114,7 @@ const EN = {
     fullWidthBg: ZH.media.fullWidthBg,
     inlineLabel: 'EXHIBITION · WEB VIEW',
   },
+  videos: VIDEOS.map((v, i) => ({ ...v, caption: ['Home page', 'Curatorial theme page', 'Art works page'][i] })),
   sections: {
     overview: {
       num: '01',
