@@ -1,25 +1,13 @@
 import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import '../styles/hero.css'
 import '../styles/home.css'
 import { HomeHero } from './HomeHero.jsx'
-import { HOME_CTA, HOME_FEATURED_WORKS, HOME_FOOTER, HOME_META, HOME_WORK } from '../data/homepage.js'
+import { HOME_META } from '../data/homepage.js'
 import { useLang } from '../i18n'
-
-function imgVariantClass(variant) {
-  if (variant === 'alt') return 'home-work__item-img home-work__item-img--alt'
-  if (variant === 'alt2') return 'home-work__item-img home-work__item-img--alt2'
-  return 'home-work__item-img'
-}
 
 export default function SiteHero() {
   const { lang } = useLang()
-
   const meta = HOME_META[lang]
-  const work = HOME_WORK[lang]
-  const featuredWorks = HOME_FEATURED_WORKS[lang]
-  const cta = HOME_CTA[lang]
-  const footer = HOME_FOOTER[lang]
 
   useEffect(() => {
     document.title = meta.title
@@ -29,104 +17,9 @@ export default function SiteHero() {
 
   return (
     <div className="hero-root home">
-      <div className="home-ink-content">
-
-        <main>
+      <main>
         <HomeHero />
-
-        <section className="home-work" id="work">
-          <div className="fade-in">
-            <div className="home-section-label">{work.label}</div>
-            <h2 className="home-section-title">
-              {work.title.map((line) => (
-                <span key={line}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </h2>
-          </div>
-
-          <div className="home-work__grid">
-            {featuredWorks.map((item) => (
-              <Link key={item.caseHref} to={item.caseHref} className="fade-in home-work__item">
-                <div
-                  className={imgVariantClass(item.variant)}
-                  style={{ background: item.thumbBg }}
-                />
-                <div className="home-work__item-glow" aria-hidden />
-                <div className="home-work__item-content">
-                  <div className="home-work__item-num">{item.num}</div>
-                  <div className="home-work__item-label">{item.label}</div>
-                  <div className="home-work__item-title">{item.title}</div>
-                  <div className="home-work__item-desc">
-                    {item.descLines.map((line, i) => (
-                      <span key={line}>
-                        {i > 0 ? <br /> : null}
-                        {line}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <section className="home-final-cta" id="contact">
-          <div className="home-final-cta__vline" aria-hidden />
-          <div className="fade-in home-final-cta__content">
-            <div className="home-section-label">{cta.label}</div>
-            <h2 className="home-final-cta__title">
-              {cta.title.map((line) => (
-                <span key={line}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </h2>
-            <a href={`mailto:${cta.email}`} className="home-cta">
-              {cta.email} <span className="home-cta__arrow">→</span>
-            </a>
-          </div>
-        </section>
       </main>
-
-      <footer className="home-footer">
-        <div className="home-footer__grid">
-          <div>
-            <div className="home-footer__brand-name">T E K U E I</div>
-            <div className="home-footer__brand-sub">德 溎</div>
-          </div>
-          <div className="home-footer__col">
-            <div className="home-footer__col-title">EXPLORE</div>
-            {footer.explore.map((link) =>
-              link.href.startsWith('/') ? (
-                <Link key={link.href} to={link.href}>
-                  {link.label}
-                </Link>
-              ) : (
-                <a key={link.href} href={link.href}>
-                  {link.label}
-                </a>
-              ),
-            )}
-          </div>
-          <div className="home-footer__col">
-            <div className="home-footer__col-title">CONTACT</div>
-            {footer.contact.map((c) => (
-              <a key={c.label} href={c.href}>
-                {c.label}
-              </a>
-            ))}
-          </div>
-        </div>
-        <div className="home-footer__bottom">
-          <div>© 2026 TEKUEI · ALL RIGHTS RESERVED</div>
-          <div>EST. 2026 · TAIPEI</div>
-        </div>
-      </footer>
-      </div>
     </div>
   )
 }

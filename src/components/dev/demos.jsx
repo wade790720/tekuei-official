@@ -23,6 +23,8 @@ import { Accordion, AccordionItem } from '../Accordion.jsx'
 import { Skeleton } from '../Skeleton.jsx'
 import { blocksToDoc } from '../../lib/richText.js'
 import { mountGlyphField } from '../../lib/glyphField.js'
+import { mountGrainHaze } from '../../lib/grainHaze.js'
+import { mountKoiPond } from '../../lib/koiPond.js'
 import { mountShatterImage } from '../../lib/shatterImage.js'
 import { playWaterRipple } from '../../lib/waterRipple.js'
 import { SOUNDS } from '../../lib/uiSound.js'
@@ -119,6 +121,26 @@ function GlyphDemo() {
   return (
     <div className="cl-glyph">
       <canvas ref={canvas} className="journal-header__glyphs" aria-hidden />
+    </div>
+  )
+}
+
+function KoiDemo() {
+  const canvas = useRef(null)
+  useEffect(() => mountKoiPond(canvas.current), [])
+  return (
+    <div className="cl-glyph">
+      <canvas ref={canvas} className="cl-koi" aria-hidden />
+    </div>
+  )
+}
+
+function HazeDemo() {
+  const canvas = useRef(null)
+  useEffect(() => mountGrainHaze(canvas.current), [])
+  return (
+    <div className="cl-glyph">
+      <canvas ref={canvas} className="cl-koi" aria-hidden />
     </div>
   )
 }
@@ -319,6 +341,8 @@ const DEMOS = {
     </Replayable>
   ),
   glyph: () => <GlyphDemo />,
+  koi: () => <KoiDemo />,
+  haze: () => <HazeDemo />,
   ripple: () => <RippleDemo />,
   sounds: () => <SoundDemo />,
   tag: () => <TagList tags={['AI', 'MARKETING', 'ENGINEERING']} />,

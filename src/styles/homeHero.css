@@ -1,175 +1,152 @@
-/* Home: the latest writings under the portrait. */
+/* Home: the koi pond. It is the whole page. */
 
-.home-latest {
-  --hh-bg: var(--surface-0);
-  --hh-charcoal: var(--surface-1);
-  --hh-elev: var(--surface-2);
-  --hh-ivory: var(--gray-12);
-  --hh-taupe: var(--text-secondary);
-  --hh-gold: var(--ember);
-  --hh-amber: var(--ember-soft);
-  --hh-serif: var(--font-serif);
-  background: var(--hh-bg);
-  color: var(--hh-ivory);
-}
-
-.home-latest a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.home-latest :focus-visible {
-  outline: 1px solid var(--hh-amber);
-  outline-offset: 4px;
-}
-
-.home-latest {
+.home-koi {
   position: relative;
-  padding: 0 calc(var(--page-gutter) + var(--page-pad)) 72px;
-}
-
-.home-latest__bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid var(--accent-a8);
-  padding: 26px 0 var(--space-6);
-  font-size: var(--type-caption);
-  letter-spacing: var(--type-label-ls);
-  text-transform: uppercase;
-}
-
-.home-latest__bar h2 {
-  display: flex;
-  align-items: center;
-  gap: var(--space-6);
-  margin: 0;
-  font: inherit;
-  letter-spacing: inherit;
-}
-
-.home-latest__bar h2::before {
-  content: '';
-  width: 40px;
-  height: 1px;
-  background: var(--hh-gold);
-}
-
-.home-latest__bar a {
-  color: var(--hh-gold);
-  transition: color 0.2s;
-}
-
-.home-latest__bar a:hover {
-  color: var(--hh-amber);
-}
-
-.home-latest__cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(var(--space-4), 2vw, 30px);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.home-latest__cards a,
-.home-latest__card {
-  display: flex;
-  min-height: 150px;
-  background: var(--hh-charcoal);
-  border-radius: 14px;
-  overflow: hidden;
-  transition:
-    background 0.25s,
-    transform 0.25s;
-}
-
-.home-latest__cards a:hover {
-  background: var(--hh-elev);
-  transform: translateY(-3px);
-}
-
-/* Placeholder thumbnails until posts have cover images. */
-.home-latest__thumb {
-  flex: 0 0 42%;
-}
-
-.home-latest__thumb--1 {
-  background:
-    radial-gradient(120% 90% at 20% 10%, color-mix(in srgb, var(--accent-10) 34%, transparent), transparent 60%),
-    linear-gradient(135deg, #2a211a, var(--surface-0));
-}
-
-.home-latest__thumb--2 {
-  background:
-    radial-gradient(90% 80% at 50% 0%, color-mix(in srgb, var(--accent-10) 40%, transparent), transparent 62%),
-    linear-gradient(180deg, #241c16, var(--surface-0));
-}
-
-.home-latest__thumb--3 {
-  background:
-    radial-gradient(110% 90% at 80% 20%, color-mix(in srgb, var(--accent-9) 36%, transparent), transparent 60%),
-    linear-gradient(225deg, #2a211a, var(--surface-0));
-}
-
-.home-latest__body {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-6) 22px;
+  justify-content: space-between;
+  height: 100svh;
+  min-height: 560px;
+  padding: var(--space-24) calc(var(--page-gutter) + var(--page-pad)) var(--space-12);
+  overflow: hidden;
+  /* Not flat black: the middle of the pond is a shade lighter, the edges meet the page colour. */
+  background: radial-gradient(90% 80% at 50% 45%, var(--surface-1), var(--surface-0));
+  color: var(--text-primary);
+  /* A tap drops food; no double-tap zoom on the water. */
+  touch-action: manipulation;
 }
 
-/* Loading placeholders: the thumb fills its column, the lines match the meta and title */
-.home-latest__card {
-  pointer-events: none;
+/* Both canvases fill the pond and end at the content edge. grainHaze.js draws the light under the koi. */
+.home-koi__haze,
+.home-koi__pond {
+  position: absolute;
+  inset: 0 var(--page-gutter);
+  width: calc(100% - 2 * var(--page-gutter));
+  height: 100%;
+  color: var(--text-primary);
 }
 
-.home-latest__card .home-latest__thumb {
-  height: auto;
-  border-radius: 0;
-}
-
-.home-latest__card .home-latest__body {
-  flex: 1;
-}
-
-.home-latest__skeleton-meta {
-  width: 120px;
-  height: 12px;
-}
-
-.home-latest__skeleton-title {
-  width: 85%;
-  height: 22px;
-}
-
-.home-latest__skeleton-title--short {
-  width: 55%;
-}
-
-.home-latest__meta {
-  font-size: var(--type-label);
-  letter-spacing: var(--type-label-ls);
-  color: var(--hh-taupe);
-  text-transform: uppercase;
+/* koiPond.js draws here and reads the font and these three colours. */
+.home-koi__pond {
   font-family: var(--font-label);
+  --koi-mark: var(--ember);
+  --koi-food: var(--ember-soft);
+  mask-image: linear-gradient(180deg, black 82%, transparent);
 }
 
-.home-latest__title {
-  font-family: var(--hh-serif);
-  font-size: clamp(20px, 1.5vw, 26px);
-  line-height: 1.25;
+.home-koi p,
+.home-koi h1 {
+  margin: 0;
 }
 
-@media (max-width: 899px) {
-  .home-latest__cards {
-    grid-template-columns: 1fr;
+.home-koi__top,
+.home-koi__foot {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.home-koi__foot {
+  align-items: flex-end;
+}
+
+/* Top left: the motto, small. */
+.home-koi__motto {
+  font-family: var(--font-label);
+  font-size: var(--type-caption);
+  line-height: var(--type-small-lh);
+  color: var(--text-secondary);
+}
+
+/* Top right: a few small lines, set against the right edge. */
+.home-koi__intro {
+  max-width: 340px;
+  font-size: var(--type-small);
+  line-height: var(--type-small-lh);
+  text-align: right;
+  color: var(--text-secondary);
+}
+
+.home-koi__intro span {
+  display: inline-block;
+}
+
+.home-koi__label {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  line-height: var(--type-label-lh);
+  letter-spacing: var(--type-label-ls);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.home-koi__intro .home-koi__label {
+  justify-content: flex-end;
+  margin-top: var(--space-3);
+}
+
+.home-koi__label a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s var(--ease-touch);
+}
+
+.home-koi__label a:hover {
+  color: var(--ember);
+}
+
+.home-koi__label a:focus-visible {
+  outline: 1px solid var(--ember-line);
+  outline-offset: var(--space-1);
+}
+
+/* Bottom right: the name, large. The size follows the Koi Pond hero on motionsites.ai (about 11% of the width). */
+.home-koi h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(56px, 11vw, 200px);
+  font-weight: var(--weight-regular);
+  line-height: 0.85;
+  letter-spacing: var(--type-display-ls);
+  white-space: nowrap;
+}
+
+/* Wider than the cap: the pond's side edges fade into the background. */
+@media (min-width: 1921px) {
+  .home-koi__pond {
+    mask-image:
+      linear-gradient(90deg, transparent, black 9%, black 91%, transparent), linear-gradient(180deg, black 82%, transparent);
+    mask-composite: intersect;
   }
 }
 
+@media (max-width: 768px) {
+  .home-koi__top,
+  .home-koi__foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-6);
+  }
+
+  .home-koi__intro {
+    text-align: left;
+  }
+
+  .home-koi__intro .home-koi__label {
+    justify-content: flex-start;
+  }
+
+  .home-koi h1 {
+    align-self: flex-end;
+  }
+}
+
+/* The pond stands still, so a click does nothing. */
 @media (prefers-reduced-motion: reduce) {
-  .home-latest__cards a {
-    transition: none;
+  .home-koi__hint {
+    display: none;
   }
 }

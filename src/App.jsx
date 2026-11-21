@@ -14,7 +14,6 @@ import { AdminProvider } from './context/AdminProvider.jsx'
 import { JournalProvider } from './context/JournalProvider.jsx'
 
 // Labs load when first visited, so Lenis and the canvas effects stay out of the main bundle.
-// The home page imports LivingPortrait directly, so that one is in the main bundle anyway.
 const LabPage = lazy(() => import('./labs/LabPage.jsx'))
 const LabLive = lazy(() => import('./labs/LabLive.jsx'))
 const FallingFigure = lazy(() => import('./labs/falling-figure/FallingFigure.jsx').then((m) => ({ default: m.FallingFigure })))
