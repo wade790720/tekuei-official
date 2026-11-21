@@ -47,7 +47,7 @@
 
 .living-portrait[data-ready] .living-portrait__stage img:not(.living-portrait__alt) {
   opacity: 1;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.6s var(--ease-touch);
 }
 
 .living-portrait__stage canvas {

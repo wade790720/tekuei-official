@@ -57,7 +57,7 @@ html.nav-overlay-open .site-nav {
 
 .nav-overlay {
   --nav-overlay-ease: var(--ease-touch);
-  --nav-overlay-ms: 460ms;
+  --nav-overlay-ms: 250ms; /* closes at 0.82 of this, about 200ms */
 
   position: fixed;
   inset: 0;
@@ -121,11 +121,11 @@ html.nav-overlay-open .site-nav {
 }
 
 .nav-overlay.is-active .nav-overlay__mark {
-  animation: nav-fade-down 0.55s var(--nav-overlay-ease) 0.06s forwards;
+  animation: nav-fade-down 0.35s var(--nav-overlay-ease) 0.06s forwards;
 }
 
 .nav-overlay.is-active .nav-overlay__close {
-  animation: nav-fade-down 0.55s var(--nav-overlay-ease) 0.1s forwards;
+  animation: nav-fade-down 0.35s var(--nav-overlay-ease) 0.1s forwards;
   opacity: 0;
   transform: translateY(-10px);
 }
@@ -202,7 +202,7 @@ html.nav-overlay-open .site-nav {
   box-sizing: border-box;
   opacity: 0;
   transform: translateY(14px);
-  transition: color 0.35s ease;
+  transition: color 0.35s var(--ease-touch);
 }
 
 .nav-overlay.is-active .nav-overlay__link {
@@ -228,7 +228,7 @@ html.nav-overlay-open .site-nav {
 .nav-overlay.is-closing .nav-overlay__mark,
 .nav-overlay.is-closing .nav-overlay__close,
 .nav-overlay.is-closing .nav-overlay__link {
-  animation: nav-fade-out 0.34s var(--nav-overlay-ease) forwards;
+  animation: nav-fade-out 0.2s var(--nav-overlay-ease) forwards;
 }
 
 .nav-overlay__link:first-child {

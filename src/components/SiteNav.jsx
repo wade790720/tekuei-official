@@ -161,7 +161,7 @@ function SiteNavLinks({
 
 // ── NavToggle / NavOverlay ──
 
-const OVERLAY_MS = 460
+const OVERLAY_MS = 250 // also --nav-overlay-ms in navOverlay.css
 
 // Shown only while the menu is closed (SiteNav unmounts it when the menu opens),
 // so it announces "opens a dialog" instead of a live expanded state.
