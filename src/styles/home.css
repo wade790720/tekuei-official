@@ -41,128 +41,6 @@
 
 /* ── Hero ── */
 
-.home-hero {
-  position: relative;
-  min-height: 100vh;
-  padding: 0 var(--space-12);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
-  background: transparent;
-}
-
-.home-hero__vline {
-  position: absolute;
-  top: 30%;
-  bottom: 18%;
-  left: 64px;
-  width: 0.5px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    var(--ember-line) 25%,
-    var(--ember-line) 75%,
-    transparent
-  );
-  z-index: 5;
-  will-change: transform;
-}
-
-.home-hero__watermark {
-  position: absolute;
-  bottom: -8%;
-  right: -3%;
-  font-family: var(--home-fd);
-  font-style: italic;
-  font-size: clamp(140px, 28vw, 360px);
-  line-height: 0.85;
-  color: transparent;
-  -webkit-text-stroke: 0.5px var(--gray-a3);
-  z-index: 2;
-  pointer-events: none;
-  user-select: none;
-  letter-spacing: var(--type-display-ls);
-  will-change: transform;
-}
-
-.home-hero__content {
-  position: relative;
-  z-index: 10;
-  padding-left: var(--space-24);
-  max-width: 1100px;
-  will-change: transform, opacity;
-}
-
-.home-hero__label {
-  font-family: var(--home-fd);
-  font-size: var(--type-caption);
-  letter-spacing: var(--type-label-ls);
-  color: var(--home-ember);
-  margin-bottom: var(--space-8);
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: var(--space-6);
-}
-
-.home-hero__label::before {
-  content: '';
-  display: inline-block;
-  width: 28px;
-  height: 0.5px;
-  background: var(--home-ember);
-}
-
-.home-hero__headline {
-  font-family: var(--home-fc);
-  font-weight: var(--weight-light);
-  font-size: clamp(38px, 6.5vw, 76px);
-  line-height: 1.2;
-  letter-spacing: 0;
-  color: var(--home-ink);
-  margin-bottom: var(--space-6);
-}
-
-.home-hero__sub-en {
-  font-family: var(--home-fd);
-  font-style: italic;
-  font-size: clamp(18px, 2.2vw, 24px);
-  letter-spacing: 0;
-  color: var(--home-ember);
-  margin-bottom: var(--space-12);
-}
-
-.home-hero__rule {
-  width: 56px;
-  height: 0.5px;
-  background: var(--accent-a8);
-  margin-bottom: var(--space-8);
-}
-
-.home-hero__tagline {
-  font-family: var(--home-fc);
-  font-weight: var(--weight-light);
-  font-size: clamp(15px, 1.6vw, 17px);
-  line-height: 2;
-  letter-spacing: 0;
-  color: var(--home-ink-body);
-  max-width: 560px;
-  margin-bottom: var(--space-12);
-}
-
-.home-hero__cta-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-12);
-  flex-wrap: wrap;
-}
-
-.home-hero .home-cta {
-  color: var(--home-ink);
-  border-color: var(--gray-a8);
-}
-
 .home-cta {
   font-family: var(--home-fd);
   font-size: var(--type-caption);
@@ -208,10 +86,6 @@
   margin-left: var(--space-2);
 }
 
-.home-hero .home-cta--ghost {
-  color: var(--home-ink-body);
-}
-
 .home-cta--ghost {
   border: none;
   padding: var(--space-4) 0;
@@ -226,33 +100,6 @@
   color: var(--home-ember);
   background: transparent;
   letter-spacing: var(--type-label-ls);
-}
-
-.home-hero__footer {
-  position: absolute;
-  bottom: 48px;
-  left: 64px;
-  right: 64px;
-  z-index: 10;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-.home-hero__footer-l,
-.home-hero__footer-r {
-  font-family: var(--font-label);
-  font-size: var(--type-label);
-  letter-spacing: var(--type-label-ls);
-  color: var(--home-ink-decorative);
-  line-height: 2;
-}
-
-.home-hero__footer-r {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-2);
 }
 
 .home-scroll-hint span:first-child {
@@ -581,12 +428,6 @@
     transform: none;
     transition: none;
   }
-
-  .home-hero__content,
-  .home-hero__watermark {
-    transform: none !important;
-    opacity: 1 !important;
-  }
 }
 
 @media (max-width: 1024px) {
@@ -596,33 +437,8 @@
 }
 
 @media (max-width: 768px) {
-  .home-hero {
-    padding: 0 var(--space-6);
-  }
-
-  .home-hero__content {
-    padding-left: 0;
-    padding-top: var(--space-24);
-  }
-
-  .home-hero__vline {
-    display: none;
-  }
-
-  .home-hero__cta-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-4);
-  }
-
   .home-cta {
     text-align: center;
-  }
-
-  .home-hero__footer {
-    left: 28px;
-    right: 28px;
-    bottom: 28px;
   }
 
   .home-work,

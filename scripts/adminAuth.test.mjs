@@ -1,27 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { checkAdmin, MAX_FAILS, WINDOW_MS } from '../src/lib/adminAuth.js'
-
-// In-memory stand-in for an R2 bucket: get returns a snapshot with an etag, put honours onlyIf.etagMatches.
-function fakeBucket() {
-  const store = new Map()
-  let version = 0
-  return {
-    async get(key) {
-      const hit = store.get(key)
-      if (!hit) return null
-      const { body, etag } = hit
-      return { etag, json: async () => JSON.parse(body) }
-    },
-    async put(key, body, opts) {
-      await Promise.resolve() // let a parallel caller read first, like a real network round trip
-      const cur = store.get(key)
-      if (opts?.onlyIf?.etagMatches && cur?.etag !== opts.onlyIf.etagMatches) return null
-      store.set(key, { body, etag: `v${++version}` })
-      return {}
-    },
-  }
-}
+import { fakeR2 as fakeBucket } from './fakeR2.mjs'
 
 const req = (code) => new Request('https://x/api', { headers: { Authorization: `Bearer ${code}` } })
 const env = () => ({ ADMIN_SECRET: '123456', BUCKET: fakeBucket() })

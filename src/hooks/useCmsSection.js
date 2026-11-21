@@ -20,6 +20,8 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
   // The remote copy failed to load, so the content on screen is the bundled default.
   // Saving it would replace the real section in R2, so saving is refused until a reload.
   const [loadFailed, setLoadFailed] = useState(false)
+  // Version of data.json this editor loaded or last saved; a save is refused if R2 moved on since.
+  const [etag, setEtag] = useState(null)
   // Reads the latest getDefault and cloneContent without reloading when the caller passes new functions.
   const sectionContent = useEffectEvent((data) => cloneContent(data[sectionKey] ?? getDefault()))
 
@@ -46,8 +48,9 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
         if (cancelled) return
         if (!remote) fallback()
         else {
-          setSiteData(remote)
-          setContent(sectionContent(remote))
+          setSiteData(remote.data)
+          setContent(sectionContent(remote.data))
+          setEtag(remote.etag)
         }
       } catch {
         if (!cancelled) {
@@ -90,7 +93,8 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
     setSaving(true)
     setError('')
     try {
-      await saveSitePatch({ [sectionKey]: draft }, token)
+      const saved = await saveSitePatch({ [sectionKey]: draft }, token, etag)
+      setEtag(saved.etag ?? null)
       const nextSite = cloneSiteData(siteData)
       nextSite[sectionKey] = cloneContent(draft)
       setSiteData(nextSite)
@@ -102,7 +106,7 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
     } finally {
       setSaving(false)
     }
-  }, [draft, siteData, sectionKey, cloneContent, loadFailed])
+  }, [draft, siteData, sectionKey, cloneContent, loadFailed, etag])
 
   return {
     content: draft ?? content,
@@ -164,7 +168,7 @@ export function useCaseCms(slug) {
       }
       try {
         const remote = await fetchSiteData()
-        if (!cancelled) apply(remote ?? siteDefaults)
+        if (!cancelled) apply(remote?.data ?? siteDefaults)
       } catch {
         if (!cancelled) apply(siteDefaults)
       } finally {

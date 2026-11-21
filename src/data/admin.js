@@ -18,6 +18,7 @@ export const CMS_LABELS = {
   saved: '已儲存',
   unsaved: '尚未儲存',
   saveFailed: '儲存失敗',
+  stale: '文章在別的分頁或裝置存過，這次沒有存，以免蓋掉那邊的修改。請先複製你的修改，再重新整理頁面',
   loadFailed: '文章沒有從伺服器載入，現在儲存會蓋掉正式的文章，所以不能儲存。請重新整理頁面',
   logoutConfirm: '還有修改沒有儲存，確定要登出嗎？修改會被丟掉。',
   logout: '登出',
