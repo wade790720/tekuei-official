@@ -3,11 +3,15 @@
 import { forwardRef, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
 import { NavLink, useLocation } from 'react-router-dom'
+import { HOME_FOOTER } from '../data/homepage.js'
 import { NAV_LABELS, SITE_LOGO } from '../data/nav.js'
 import { useLang } from '../i18n'
 import { playWaterRipple } from '../lib/waterRipple.js'
 import '../styles/siteNav.css'
 import '../styles/navOverlay.css'
+
+// No page has a contact section, so Contact opens a new email. The address is the same in both languages.
+const CONTACT_HREF = HOME_FOOTER.zh.contact[0].href
 
 function subscribeScroll(onChange) {
   window.addEventListener('scroll', onChange, { passive: true })
@@ -145,7 +149,7 @@ function SiteNavLinks({
         Journal
       </NavLink>
       <a
-        href="/#contact"
+        href={CONTACT_HREF}
         className={overlay ? 'nav-overlay__link' : undefined}
         onClick={onNavigate}
       >

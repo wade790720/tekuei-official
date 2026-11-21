@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import '../styles/homeHero.css'
-import { HOME_FOOTER, HOME_HERO, HOME_META } from '../data/homepage.js'
+import { HOME_HERO } from '../data/homepage.js'
 import { mountGrainHaze } from '../lib/grainHaze.js'
 import { mountKoiPond } from '../lib/koiPond.js'
 import { useLang } from '../i18n'
@@ -8,14 +8,25 @@ import { useLang } from '../i18n'
 const two = (n) => String(n).padStart(2, '0')
 
 /** First screen: koi swim behind the words. A click on the water drops food (koiPond.js). */
-function KoiHero({ hero, intro, links }) {
+function KoiHero({ hero }) {
   const root = useRef(null)
   const canvas = useRef(null)
   const haze = useRef(null)
-  const name = useRef(null)
   const [count, setCount] = useState({ koi: 0, food: 0 })
 
-  useEffect(() => mountKoiPond(canvas.current, { surface: root.current, avoid: name.current, onCount: setCount }), [])
+  useEffect(
+    () =>
+      mountKoiPond(canvas.current, {
+        surface: root.current,
+        // Every block of words on the pond, and the parts of the site header above it.
+        avoid: [
+          ...root.current.querySelectorAll('.home-koi__motto, .home-koi__intro, .home-koi__foot > *'),
+          ...document.querySelectorAll('.site-nav > *'),
+        ],
+        onCount: setCount,
+      }),
+    [],
+  )
 
   useEffect(() => mountGrainHaze(haze.current), [])
 
@@ -24,21 +35,17 @@ function KoiHero({ hero, intro, links }) {
       <canvas className="home-koi__haze" ref={haze} aria-hidden />
       <canvas className="home-koi__pond" ref={canvas} aria-hidden />
       <div className="home-koi__top">
-        <p className="home-koi__motto">{hero.headline}</p>
+        <p className="home-koi__motto">
+          {hero.motto.map((line) => (
+            <span key={line}>{line}</span>
+          ))}
+        </p>
         <div className="home-koi__intro">
-          {/* One span per clause: a line can break after a comma, never inside a word. */}
+          <p className="home-koi__lead">{hero.lead}</p>
           <p>
-            {intro.split(/(?<=，)/).map((clause) => (
-              <span key={clause}>{clause}</span>
-            ))}
-          </p>
-          {/* The nav's Contact link points here. */}
-          <p className="home-koi__label" id="contact">
-            {links.map((link) => (
-              <a key={link.href} href={link.href}>
-                {link.label}
-              </a>
-            ))}
+            {hero.body.split(new RegExp(`(${hero.keywords.join('|')})`)).map((part) =>
+              hero.keywords.includes(part) ? <mark key={part}>{part}</mark> : part,
+            )}
           </p>
         </div>
       </div>
@@ -52,7 +59,7 @@ function KoiHero({ hero, intro, links }) {
           </span>
           <span className="home-koi__hint">{hero.hint}</span>
         </p>
-        <h1 ref={name}>{hero.fullName}</h1>
+        <h1>{hero.fullName}</h1>
       </div>
     </section>
   )
@@ -60,5 +67,5 @@ function KoiHero({ hero, intro, links }) {
 
 export function HomeHero() {
   const { lang } = useLang()
-  return <KoiHero hero={HOME_HERO[lang]} intro={HOME_META[lang].description} links={HOME_FOOTER[lang].contact} />
+  return <KoiHero hero={HOME_HERO[lang]} />
 }
