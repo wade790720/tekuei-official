@@ -315,28 +315,35 @@ html.has-scroll-document body, html.has-scroll-document #root {
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
   font-family: var(--font-label);
-  transition: color 0.5s,
-  gap 0.5s;
+  transition: color 0.5s;
 
   gap: var(--space-3);
+}
+
+/* The line grows and VIEW slides with transform, so nothing around them reflows */
+.work-info .arrow span {
+  transition: transform 0.5s;
 }
 
 .work-info .arrow-line {
   width: 20px;
   height: 0.5px;
   background: var(--accent-line);
-  transition: width 0.5s,
+  transform-origin: left;
+  transition: transform 0.5s,
   background 0.5s;
 }
 
 .work-grid__item:hover .arrow {
   color: var(--accent);
+}
 
-  gap: var(--space-4);
+.work-grid__item:hover .arrow span {
+  transform: translateX(var(--space-4)); /* line +12px, gap +4px */
 }
 
 .work-grid__item:hover .arrow-line {
-  width: 32px;
+  transform: scaleX(1.6); /* 20px → 32px */
   background: var(--accent);
 }
 

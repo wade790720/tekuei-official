@@ -15,7 +15,10 @@
   white-space: nowrap;
   flex-shrink: 0;
   cursor: pointer;
-  transition: opacity 0.15s var(--ease-touch), background-color 0.15s var(--ease-touch);
+  transition:
+    opacity 0.15s var(--ease-touch),
+    background-color 0.15s var(--ease-touch),
+    color 0.15s var(--ease-touch);
 }
 
 /* Disabled, e.g. save with nothing to save: the button sits back instead of glowing */

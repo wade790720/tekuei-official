@@ -210,6 +210,9 @@
   font-size: var(--type-caption);
   color: var(--text-tertiary);
   cursor: pointer;
+  transition:
+    background-color 0.15s var(--ease-touch),
+    color 0.15s var(--ease-touch);
 }
 
 .cms-icon:hover:not(:disabled) {
@@ -329,6 +332,7 @@
   color: var(--text-faint);
   cursor: grab;
   touch-action: none; /* keep the finger drag from scrolling the panel */
+  transition: color 0.15s var(--ease-touch);
 }
 
 .cms-drag:hover {
@@ -362,6 +366,7 @@
   line-height: var(--type-small-lh);
   color: var(--text-primary);
   text-decoration: none;
+  transition: color 0.3s var(--ease-touch);
 }
 
 .cms-post__title:hover {
@@ -728,6 +733,7 @@
   color: var(--text-primary);
   cursor: pointer;
   animation: cms-rise 0.3s var(--ease-touch);
+  transition: color 0.3s var(--ease-touch);
 }
 
 .cms-dock:hover {
@@ -889,6 +895,9 @@
   font-size: var(--type-caption);
   color: var(--text-secondary);
   cursor: pointer;
+  transition:
+    background-color 0.15s var(--ease-touch),
+    color 0.15s var(--ease-touch);
 }
 
 .cms-ed-style:hover,

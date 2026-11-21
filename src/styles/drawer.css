@@ -28,6 +28,11 @@
   animation: drawer-slide 0.4s var(--ease-touch);
 }
 
+/* Closing: slides back out, a little quicker than it came in (EXIT_MS in Drawer.jsx) */
+.drawer[data-closing] {
+  animation: drawer-slide-out 0.3s var(--ease-touch) forwards;
+}
+
 .drawer__head {
   display: flex;
   align-items: center;
@@ -89,8 +94,19 @@
   }
 }
 
+@keyframes drawer-slide-out {
+  to {
+    transform: translateX(100%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .drawer {
+  .drawer,
+  .drawer[data-closing] {
     animation: none;
+  }
+
+  .drawer[data-closing] {
+    visibility: hidden;
   }
 }
