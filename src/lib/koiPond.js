@@ -147,6 +147,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
   // One alpha and one colour index per cell, rebuilt every frame.
   let cellAlpha = new Float32Array(0)
   let cellColour = new Uint8Array(0)
+  let lit = [new Uint32Array(0), new Uint32Array(0), new Uint32Array(0)] // per colour: indices of the cells to draw
 
   const report = () => onCount({ koi: koi.length, food: food.length })
 
@@ -246,6 +247,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
     rows = Math.ceil(H / cell)
     cellAlpha = new Float32Array(cols * rows)
     cellColour = new Uint8Array(cols * rows)
+    lit = [0, 1, 2].map(() => new Uint32Array(cols * rows))
     measureZones()
     const style = getComputedStyle(canvas)
     font = `${cell + 2}px ${style.fontFamily}`
@@ -702,11 +704,14 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
     ctx.font = font
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
+    // One scan sorts the lit cells by colour; then one fillStyle per colour, drawn in the same order as before.
+    const count = [0, 0, 0]
+    for (let i = 0; i < cellAlpha.length; i++) if (cellAlpha[i] >= 0.03) lit[cellColour[i]][count[cellColour[i]]++] = i
     for (let colour = 0; colour < 3; colour++) {
       ctx.fillStyle = colours[colour]
-      for (let i = 0; i < cellAlpha.length; i++) {
+      for (let j = 0; j < count[colour]; j++) {
+        const i = lit[colour][j]
         const a = cellAlpha[i]
-        if (a < 0.03 || cellColour[i] !== colour) continue
         // The same value picks the glyph and its opacity. Glyphs cover less than a block, so they start brighter.
         ctx.globalAlpha = Math.min(1, 0.3 + a)
         ctx.fillText(RAMP[Math.min(RAMP.length - 1, Math.floor((a / 0.72) * RAMP.length))], (i % cols + 0.5) * cell, (Math.floor(i / cols) + 0.5) * cell)

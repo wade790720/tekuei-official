@@ -1,9 +1,9 @@
-import { createContext, useContext, useEffect, useRef } from 'react'
+import { createContext, use, useEffect, useRef } from 'react'
 
 export const AdminContext = createContext(null)
 
 export function useAdmin() {
-  const ctx = useContext(AdminContext)
+  const ctx = use(AdminContext)
   if (!ctx) throw new Error('useAdmin needs <AdminProvider>')
   return ctx
 }

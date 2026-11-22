@@ -26,7 +26,11 @@ export function mountGlyphField(canvas) {
   canvas.width = WIDTH * dpr
   canvas.height = HEIGHT * dpr
   ctx.scale(dpr, dpr)
-  const font = `12px ${getComputedStyle(canvas).fontFamily}`
+  // Read once: the site has one theme, and reading styles each frame can force a style recalculation.
+  const style = getComputedStyle(canvas)
+  const font = `12px ${style.fontFamily}`
+  const rain = style.color
+  const glow = style.getPropertyValue('--glyph-glow').trim() || rain
   ctx.font = font
   const colW = ctx.measureText('0').width * 1.7
   const cols = Math.ceil(WIDTH / colW)
@@ -70,9 +74,6 @@ export function mountGlyphField(canvas) {
     ctx.clearRect(0, 0, WIDTH, HEIGHT)
     ctx.font = font
     ctx.textBaseline = 'top'
-    const style = getComputedStyle(canvas)
-    const rain = style.color
-    const glow = style.getPropertyValue('--glyph-glow').trim() || rain
     let current = rain
     ctx.fillStyle = rain
     for (let c = 0; c < cols; c++) {

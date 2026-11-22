@@ -268,9 +268,10 @@ export async function serveCase({ request, env }, workItems) {
 
 /** Pages Function body: the SPA's index.html with one page rendered into it. */
 export async function servePage({ request, env }, build) {
+  const data = readSiteData(env.BUCKET) // runs while the shell loads; it catches its own errors
   const shell = await env.ASSETS.fetch(new URL('/', request.url))
   if (!shell.ok) return shell
-  const page = build(siteJournal(await readSiteData(env.BUCKET)))
+  const page = build(siteJournal(await data))
   // Unknown slug: the app still renders its own "not found", but crawlers get a 404 instead of an empty 200.
   // Not cached: a slug can be missing only because R2 was unreachable for a moment.
   if (!page) {

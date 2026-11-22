@@ -40,9 +40,11 @@ function useJournalEditing() {
   const saved = useMemo(() => JSON.stringify(cms.savedContent), [cms.savedContent])
   const dirty = Boolean(cms.draft) && JSON.stringify(cms.draft) !== saved
 
+  // Not `cms` itself: it is a new object on every keystroke.
+  const { isEditing, loading, startEditing } = cms
   useEffect(() => {
-    if (admin.editing && !cms.isEditing && !cms.loading) cms.startEditing()
-  }, [admin.editing, cms])
+    if (admin.editing && !isEditing && !loading) startEditing()
+  }, [admin.editing, isEditing, loading, startEditing])
 
   const save = async () => {
     if (!dirty || cms.saving) return
@@ -214,7 +216,11 @@ export function JournalListEditPanel() {
     e.currentTarget.setPointerCapture(e.pointerId)
     setDrag({ from: i, gap: i })
   }
-  const dragMove = (e) => drag && setDrag({ ...drag, gap: gapAt(e.clientY) })
+  const dragMove = (e) => {
+    if (!drag) return
+    const gap = gapAt(e.clientY)
+    if (gap !== drag.gap) setDrag({ ...drag, gap }) // pointermove fires far more often than the gap changes
+  }
   const dragEnd = () => {
     if (drag && target(drag) !== drag.from) reorder(drag.from, target(drag))
     setDrag(null)

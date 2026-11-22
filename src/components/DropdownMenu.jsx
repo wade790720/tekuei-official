@@ -81,7 +81,8 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
         aria-expanded={open}
         aria-controls={open ? id : undefined}
         data-tip={open ? undefined : tip}
-        onMouseDown={(e) => e.preventDefault()} // keep the editor's text selection
+        // Keeps the editor's text selection. A draggable trigger needs the default, or its drag never starts.
+        onMouseDown={(e) => e.currentTarget.draggable || e.preventDefault()}
         onClick={() => setOpen((o) => !o)}
         onKeyDown={triggerKey}
         {...triggerProps}

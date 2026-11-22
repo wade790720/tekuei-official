@@ -70,7 +70,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 ### 字重
 
 - 只有兩種：內文和介面 `--weight-regular`（400），大標 `--weight-light`（300）。
-- 不要用 400 以上。思源宋體只載入 200/300/400，Instrument Serif 只有 400。更粗會變成瀏覽器合成的假粗體。
+- 不要用 400 以上。思源宋體只載入 300/400，Instrument Serif 只有 400。更粗會變成瀏覽器合成的假粗體。
 - 層級靠字級和文字階，不靠字重。
 
 ### 字距
@@ -108,7 +108,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 | 用途 | Token | 字型 |
 |---|---|---|
-| 英文、中文 | `--font-serif` | Instrument Serif 400（含斜體），中文自動改用思源宋體（Noto Serif TC 200/300/400） |
+| 英文、中文 | `--font-serif` | Instrument Serif 400（含斜體），中文自動改用思源宋體（Noto Serif TC 300/400） |
 | 標籤、數值 | `--font-label` | `ui-monospace`、Cascadia Mono、Consolas，中文用思源宋體 |
 | 程式碼 | `--font-mono` | 同上，只用在程式碼卡 |
 

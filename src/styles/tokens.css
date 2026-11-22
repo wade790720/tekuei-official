@@ -106,13 +106,13 @@
   /* Typeface: Latin in Instrument Serif, CJK in Source Han Serif (思源宋體, Google Fonts name Noto Serif TC).
      Instrument Serif has no CJK glyphs, so the browser uses the next font for Chinese. index.html loads both. */
   --font-serif: 'Instrument Serif', 'Noto Serif TC', 'Source Han Serif TC', serif;
-  /* Hero name only. Anton has one weight (400). */
+  /* Living Portrait lab only, which loads it itself. Anton has one weight (400). */
   --font-display: 'Anton', 'Arial Narrow', sans-serif;
   --font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, monospace;
   /* Labels, dates, categories, values: monospace, with the serif for any Chinese in them */
   --font-label: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, 'Noto Serif TC', monospace;
 
-  /* Weights. Noto Serif TC is loaded at 200 / 300 / 400 and Instrument Serif at 400 only:
+  /* Weights. Noto Serif TC is loaded at 300 / 400 and Instrument Serif at 400 only:
      anything above 400 would be a faux bold. Body text is 400; light text on dark needs the weight. */
   --weight-light: 300; /* large headings only */
   --weight-regular: 400;
