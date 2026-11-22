@@ -1,6 +1,6 @@
 // The site's top navigation and its parts: SiteNavLinks (shared by the bar and the phone menu),
 // NavToggle (the phone menu button) and NavOverlay (the full-screen phone menu).
-import { forwardRef, useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useEffectEvent, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
 import { NavLink, useLocation } from 'react-router-dom'
 import { HOME_FOOTER } from '../data/homepage.js'
@@ -21,16 +21,11 @@ function subscribeScroll(onChange) {
 
 /**
  * @param {{
- *   highlightWorkSection?: boolean
- *   highlightJournal?: boolean
+ *   current?: 'work' | 'journal'  section to mark as the current page when the URL is a child of it
  *   variant?: 'default' | 'case'
  * }} props
  */
-export function SiteNav({
-  highlightWorkSection = false,
-  highlightJournal = false,
-  variant = 'default',
-}) {
+export function SiteNav({ current, variant = 'default' }) {
   useLocation() // re-render on route change, so `scrolled` is read again
   const [open, setOpen] = useState(false)
   const { lang, toggle } = useLang()
@@ -67,10 +62,7 @@ export function SiteNav({
         </span>
       </NavLink>
       <div className="site-nav__links site-nav__links--desktop">
-        <SiteNavLinks
-          highlightWorkSection={highlightWorkSection}
-          highlightJournal={highlightJournal}
-        />
+        <SiteNavLinks current={current} />
         <button type="button" className="site-nav__lang" onClick={switchLang} aria-label={t.lang}>
           {lang === 'zh' ? 'EN' : 'TW'}
         </button>
@@ -80,8 +72,7 @@ export function SiteNav({
         <SiteNavLinks
           variant="overlay"
           onNavigate={close}
-          highlightWorkSection={highlightWorkSection}
-          highlightJournal={highlightJournal}
+          current={current}
         />
         <button
           type="button"
@@ -105,16 +96,10 @@ export function SiteNav({
  * @param {{
  *   onNavigate?: () => void
  *   variant?: 'desktop' | 'overlay'
- *   highlightWorkSection?: boolean
- *   highlightJournal?: boolean
+ *   current?: 'work' | 'journal'
  * }} props
  */
-function SiteNavLinks({
-  onNavigate,
-  variant = 'desktop',
-  highlightWorkSection = false,
-  highlightJournal = false,
-}) {
+function SiteNavLinks({ onNavigate, variant = 'desktop', current }) {
   const overlay = variant === 'overlay'
 
   const linkClass = (active) =>
@@ -134,7 +119,7 @@ function SiteNavLinks({
       <NavLink
         to="/work"
         className={({ isActive }) =>
-          linkClass(isActive || highlightWorkSection)
+          linkClass(isActive || current === 'work')
         }
         onClick={onNavigate}
       >
@@ -143,7 +128,7 @@ function SiteNavLinks({
       <NavLink
         to="/journal"
         className={({ isActive }) =>
-          linkClass(isActive || highlightJournal)
+          linkClass(isActive || current === 'journal')
         }
         onClick={onNavigate}
       >
@@ -166,7 +151,7 @@ const OVERLAY_MS = 250 // also --nav-overlay-ms in navOverlay.css
 
 // Shown only while the menu is closed (SiteNav unmounts it when the menu opens),
 // so it announces "opens a dialog" instead of a live expanded state.
-const NavToggle = forwardRef(function NavToggle({ onToggle, className = '' }, ref) {
+function NavToggle({ ref, onToggle, className = '' }) {
   const { lang } = useLang()
   return (
     <button
@@ -182,9 +167,9 @@ const NavToggle = forwardRef(function NavToggle({ onToggle, className = '' }, re
       <span className="nav-toggle__line" aria-hidden />
     </button>
   )
-})
+}
 
-const OverlayClose = forwardRef(function OverlayClose({ onClose, label }, ref) {
+function OverlayClose({ ref, onClose, label }) {
   return (
     <button
       ref={ref}
@@ -197,7 +182,7 @@ const OverlayClose = forwardRef(function OverlayClose({ onClose, label }, ref) {
       <span className="nav-overlay__close-line" aria-hidden />
     </button>
   )
-})
+}
 
 function overlayDuration() {
   if (typeof window === 'undefined') return OVERLAY_MS
@@ -262,6 +247,11 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
     return () => window.clearTimeout(timer)
   }, [closing])
 
+  // An event, so a new onClose from each SiteNav render does not toggle inert and the listener again.
+  const onKey = useEffectEvent((e) => {
+    if (e.key === 'Escape') onClose()
+  })
+
   useEffect(() => {
     if (!mounted) return undefined
 
@@ -272,9 +262,6 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
     const app = document.getElementById('root')
     app?.setAttribute('inert', '')
 
-    const onKey = (e) => {
-      if (e.key === 'Escape') onClose()
-    }
     window.addEventListener('keydown', onKey)
 
     return () => {
@@ -282,7 +269,7 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
       app?.removeAttribute('inert')
       window.removeEventListener('keydown', onKey)
     }
-  }, [mounted, onClose])
+  }, [mounted])
 
   if (!mounted) return null
 

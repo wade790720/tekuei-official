@@ -20,6 +20,7 @@ export async function onRequestPut({ request, env }) {
   const denied = await adminGate(request, env)
   if (denied) return denied
 
+  const prevRead = env.BUCKET.get(DATA) // starts while the body is read and parsed
   let body
   try {
     body = JSON.parse(await request.text())
@@ -30,7 +31,7 @@ export async function onRequestPut({ request, env }) {
     return json({ error: 'Invalid body' }, 400)
   }
 
-  const prev = await env.BUCKET.get(DATA)
+  const prev = await prevRead
   // The editor sends a whole section. If another tab or device saved after this editor loaded,
   // that section is stale and writing it would drop the other save.
   const loaded = request.headers.get('If-Match')?.replace(/^W\/|"/g, '')

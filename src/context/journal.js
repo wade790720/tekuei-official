@@ -1,10 +1,10 @@
-import { createContext, useContext } from 'react'
+import { createContext, use } from 'react'
 
 export const JournalContext = createContext(null)
 
 /** @returns {ReturnType<typeof useCmsSection> & { content: import('../data/journal.js').JournalData }} */
 export function useJournal() {
-  const ctx = useContext(JournalContext)
+  const ctx = use(JournalContext)
   if (!ctx) throw new Error('useJournal needs <JournalProvider>')
   return ctx
 }

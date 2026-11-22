@@ -162,9 +162,18 @@ const hasBody = (c) =>
  */
 export function readableJournal(journal, lang) {
   if (lang !== 'en') return journal
-  const zh = journal.posts.zh ?? []
+  // Journal data is replaced, never mutated, so one result per object is safe. Pages call this on every render.
+  let readable = readableCache.get(journal)
+  if (!readable) readableCache.set(journal, (readable = toReadable(journal)))
+  return readable
+}
+
+const readableCache = new WeakMap()
+
+function toReadable(journal) {
+  const zh = new Map((journal.posts.zh ?? []).map((z) => [z.slug, z]))
   const en = (journal.posts.en ?? []).map((p) =>
-    hasBody(journal.content.en?.[p.slug]) ? p : { ...(zh.find((z) => z.slug === p.slug) ?? p), untranslated: true },
+    hasBody(journal.content.en?.[p.slug]) ? p : { ...(zh.get(p.slug) ?? p), untranslated: true },
   )
   const fallback = Object.fromEntries(en.filter((p) => p.untranslated).map((p) => [p.slug, journal.content.zh?.[p.slug]]))
   return {

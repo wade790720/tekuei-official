@@ -671,8 +671,7 @@ function BlockGutter({ editor, block, gutterRef }) {
         items={BLOCK_ACTIONS}
         onSelect={act}
         triggerClassName="btn btn--icon cms-ed-gutter__grip"
-        // a draggable trigger: no preventDefault on mousedown, or the drag never starts
-        triggerProps={{ draggable: true, onDragStart: dragStart, onMouseDown: undefined }}
+        triggerProps={{ draggable: true, onDragStart: dragStart }}
       />
     </div>
   )

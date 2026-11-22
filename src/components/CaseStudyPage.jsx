@@ -1,7 +1,7 @@
 ﻿import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getNextCase } from '../data/cases/index.js'
-import { useCaseCms } from '../hooks/useCmsSection.js'
+import { useCaseCms } from '../hooks/useCaseCms.js'
 import '../styles/case.css'
 import { VideoCard } from './VideoCard.jsx'
 

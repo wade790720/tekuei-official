@@ -343,7 +343,7 @@ export const GROUPS = [
               ['onSelect', '(value) => void', '—', '必填'],
               ['triggerClassName', 'string', "'dropdown-menu__trigger'", '按鈕的 class'],
               ['tip', 'string', '—', '工具列提示的文字'],
-              ['triggerProps', 'object', '—', '加在按鈕上的其他屬性，例如 draggable、onDragStart'],
+              ['triggerProps', 'object', '—', '加在按鈕上的其他屬性，例如 draggable、onDragStart。按鈕按下時不會搶走編輯器的選取，可以拖曳的按鈕例外'],
             ],
           },
         ],

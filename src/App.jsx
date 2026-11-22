@@ -4,7 +4,6 @@ import SiteHero from './components/SiteHero.jsx'
 import WorkListPage from './components/WorkListPage.jsx'
 import JournalListPage from './components/JournalListPage.jsx'
 import JournalPostPage from './components/JournalPostPage.jsx'
-import CaseRouter from './components/CaseRouter.jsx'
 import { SiteNav } from './components/SiteNav.jsx'
 import { mountClickSounds } from './lib/uiSound.js'
 import { mountReveal } from './lib/reveal.js'
@@ -17,6 +16,7 @@ import { useLang } from './i18n'
 const LabPage = lazy(() => import('./labs/LabPage.jsx'))
 const LabLive = lazy(() => import('./labs/LabLive.jsx'))
 const FallingFigure = lazy(() => import('./labs/falling-figure/FallingFigure.jsx').then((m) => ({ default: m.FallingFigure })))
+const CaseRouter = lazy(() => import('./components/CaseRouter.jsx'))
 // Only LIFF check-in visitors need the phone input and libphonenumber (about 176 kB).
 const CheckinPage = lazy(() => import('./components/CheckinPage.jsx'))
 const HowToCheckinPage = lazy(() => import('./components/HowToCheckinPage.jsx'))
@@ -116,8 +116,7 @@ function AppNav() {
   return (
     <SiteNav
       variant={isCase ? 'case' : 'default'}
-      highlightJournal={pathname.startsWith('/journal')}
-      highlightWorkSection={pathname.startsWith('/work') || isCase}
+      current={pathname.startsWith('/journal') ? 'journal' : pathname.startsWith('/work') || isCase ? 'work' : undefined}
     />
   )
 }

@@ -1,4 +1,4 @@
-import { createContext, useContext, useId, useState } from 'react'
+import { createContext, use, useId, useState } from 'react'
 import '../styles/accordion.css'
 
 const AccordionContext = createContext(null)
@@ -53,7 +53,7 @@ export function Accordion({
  * }} props
  */
 export function AccordionItem({ id, title, disabled = false, indicator = <ChevronIcon />, children }) {
-  const { open, toggle, headingLevel } = useContext(AccordionContext)
+  const { open, toggle, headingLevel } = use(AccordionContext)
   const isOpen = open.has(id)
   const base = useId()
   const Heading = `h${headingLevel}`
