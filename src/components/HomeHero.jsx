@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import '../styles/homeHero.css'
 import { HOME_HERO } from '../data/homepage.js'
 import { mountGrainHaze } from '../lib/grainHaze.js'
@@ -30,6 +30,9 @@ function KoiHero({ hero }) {
 
   useEffect(() => mountGrainHaze(haze.current), [])
 
+  // The counter re-renders the hero whenever a koi eats, so the text is split once per language.
+  const bodyParts = useMemo(() => hero.body.split(new RegExp(`(${hero.keywords.join('|')})`)), [hero])
+
   return (
     <section className="home-koi" ref={root} aria-label={hero.ariaLabel}>
       <canvas className="home-koi__haze" ref={haze} aria-hidden />
@@ -43,9 +46,7 @@ function KoiHero({ hero }) {
         <div className="home-koi__intro">
           <p className="home-koi__lead">{hero.lead}</p>
           <p>
-            {hero.body.split(new RegExp(`(${hero.keywords.join('|')})`)).map((part) =>
-              hero.keywords.includes(part) ? <mark key={part}>{part}</mark> : part,
-            )}
+            {bodyParts.map((part) => (hero.keywords.includes(part) ? <mark key={part}>{part}</mark> : part))}
           </p>
         </div>
       </div>

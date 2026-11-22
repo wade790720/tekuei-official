@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { TagList } from './Tag.jsx'
-import { JournalPostBody, JournalPostEditPanel } from './journal/JournalEditPanel.jsx'
+import { JournalPostBody } from './journal/JournalPostBody.jsx'
 import { RichText } from './RichText.jsx'
 import { Breadcrumbs, BreadcrumbsItem } from './Breadcrumbs.jsx'
 import { getDoc } from '../lib/richText.js'
@@ -11,6 +11,9 @@ import { getAdjacentPosts, getJournalPost, JOURNAL_POST_LABELS, postTags, readab
 import { useLang } from '../i18n'
 import '../styles/work.css'
 import '../styles/journal.css'
+
+// Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.
+const JournalPostEditPanel = lazy(() => import('./journal/JournalEditPanel.jsx').then((m) => ({ default: m.JournalPostEditPanel })))
 
 export default function JournalPostPage() {
   const { slug } = useParams()
@@ -27,9 +30,10 @@ export default function JournalPostPage() {
 
   const sig = lang === 'zh' ? '— 德 溎 · TEKUEI' : '— W A D E · TEKUEI'
 
+  const title = post?.title
   useEffect(() => {
-    document.title = post ? `${post.title} · Journal · TEKUEI` : 'Not Found · Journal · TEKUEI'
-  }, [post])
+    document.title = title ? `${title} · Journal · TEKUEI` : 'Not Found · Journal · TEKUEI'
+  }, [title]) // not `post`: in edit mode it is a new object on every keystroke
 
   // A post that only exists in R2 is missing until the remote data arrives.
   if ((!post || !content) && loading) return <div className="site-loading-bar" />
@@ -111,7 +115,11 @@ export default function JournalPostPage() {
         </footer>
       </article>
       </main>
-      <JournalPostEditPanel slug={slug} />
+      {editing ? (
+        <Suspense fallback={null}>
+          <JournalPostEditPanel slug={slug} />
+        </Suspense>
+      ) : null}
     </div>
   )
 }

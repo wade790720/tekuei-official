@@ -288,31 +288,12 @@ html.has-scroll-document body, html.has-scroll-document #root {
   line-height: 2.1;
 }
 
-.work-info .tags {
+.work-info .tag-list {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: var(--space-8);
 
   gap: var(--space-2);
-}
-
-.work-info .tag {
-  padding: var(--space-1) var(--space-3);
-  border: 0.5px solid var(--line-strong);
-  background: color-mix(in srgb, var(--surface-2) 35%, transparent);
-  color: var(--accent);
-  letter-spacing: var(--type-label-ls);
-  font-size: var(--type-label);
-  font-family: var(--font-label);
-  transition: border-color var(--duration-slow) var(--ease-touch),
-  color var(--duration-slow) var(--ease-touch);
-}
-
-@media (hover: hover) {
-  .work-grid__item:hover .tag {
-    border-color: var(--accent);
-    color: var(--text);
-  }
 }
 
 .work-info .arrow {

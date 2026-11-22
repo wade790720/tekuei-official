@@ -1,6 +1,6 @@
 // Rich-text editor (Tiptap): toolbar, card node views and the document schema, in one file.
 // Outputs the document format that RichText renders (see src/lib/richText.js).
-import { useEffect, useEffectEvent, useRef, useState } from 'react'
+import { memo, useEffect, useEffectEvent, useRef, useState } from 'react'
 import Blockquote from '@tiptap/extension-blockquote'
 import CodeBlock from '@tiptap/extension-code-block'
 import { Placeholder } from '@tiptap/extensions'
@@ -460,15 +460,15 @@ function editorExtensions({ upload, placeholder }) {
 
 /**
  * Rich-text editor for a post body, with a Framer-style toolbar.
- * The document is the editor's own JSON (src/lib/richText.js). It is read once on mount;
- * remount with a new key to load a different post.
+ * The document is the editor's own JSON (src/lib/richText.js). doc, onChange and upload are read once on mount;
+ * remount with a new key to load a different post. Only `previewing` re-renders it, so typing upstream does not.
  * @param {{
  *   doc: object, onChange: (doc: object) => void, upload: (file: File) => Promise<string>,
- *   previewing?: boolean, renderPreview?: (doc: object) => import('react').ReactNode,
+ *   previewing?: boolean,
  * }} props
- *   previewing swaps the editor for renderPreview(doc), the page's own rendering. The button lives with the caller.
+ *   previewing hides the editor and its toolbars but keeps it mounted. The caller draws the preview beside it.
  */
-export function Editor({ doc, onChange, upload, previewing = false, renderPreview }) {
+export const Editor = memo(function Editor({ doc, onChange, upload, previewing = false }) {
   const change = useRef(onChange)
   useEffect(() => {
     change.current = onChange
@@ -507,15 +507,22 @@ export function Editor({ doc, onChange, upload, previewing = false, renderPrevie
     },
   })
 
-  const track = (e) => place(blockAt(editor.view, e.clientY))
+  // At most one measurement per frame; mousemove can fire several times between frames.
+  const frame = useRef(0)
+  const pointerY = useRef(0)
+  const track = (e) => {
+    pointerY.current = e.clientY
+    frame.current ||= requestAnimationFrame(() => {
+      frame.current = 0
+      place(blockAt(editor.view, pointerY.current))
+    })
+  }
+  useEffect(() => () => cancelAnimationFrame(frame.current), [])
 
   return (
-    <div className="cms-ed" ref={root} onMouseMove={track}>
-      {/* Hidden, not unmounted, so the cursor and undo history survive a look at the preview. */}
-      <EditorContent editor={editor} hidden={previewing} />
-      {previewing ? (
-        renderPreview(editor.getJSON())
-      ) : (
+    <div className="cms-ed" ref={root} onMouseMove={track} hidden={previewing}>
+      <EditorContent editor={editor} />
+      {previewing ? null : (
         <>
           <BlockGutter editor={editor} block={block} gutterRef={gutter} />
           <Toolbar editor={editor} />
@@ -523,7 +530,7 @@ export function Editor({ doc, onChange, upload, previewing = false, renderPrevie
       )}
     </div>
   )
-}
+}, (a, b) => a.previewing === b.previewing)
 
 const MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent)
 const MOD = MAC ? '⌘' : 'Ctrl '
@@ -602,19 +609,19 @@ const HANDLE = 24 // px, the gutter buttons' height (cms.css .cms-ed-gutter .btn
 
 /** The top-level block at height `y` (client px), its left edge, and where its first line sits. */
 function blockAt(view, y) {
-  let hit = null
-  view.state.doc.forEach((node, pos) => {
-    if (hit) return
+  const { doc } = view.state
+  for (let i = 0, pos = 0; i < doc.childCount; pos += doc.child(i).nodeSize, i++) {
+    const node = doc.child(i)
     const dom = view.nodeDOM(pos)
-    if (!(dom instanceof HTMLElement)) return
+    if (!(dom instanceof HTMLElement)) continue
     const r = dom.getBoundingClientRect()
-    if (y >= r.bottom) return // the gap above a block belongs to that block
+    if (y >= r.bottom) continue // the gap above a block belongs to that block
     const cs = getComputedStyle(dom)
     const line = parseFloat(cs.lineHeight)
     const first = node.isAtom || !Number.isFinite(line) ? 0 : parseFloat(cs.paddingTop) + (line - HANDLE) / 2
-    hit = { pos, node, top: r.top + first, left: r.left }
-  })
-  return hit
+    return { pos, node, top: r.top + first, left: r.left }
+  }
+  return null
 }
 
 /** The same hand-off ProseMirror makes for its own drags: the drop moves the selected block. */

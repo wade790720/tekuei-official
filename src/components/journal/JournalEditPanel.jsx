@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { SidePanel, FormRow, PanelSection } from '../SidePanel.jsx'
 import { TextArea } from '../TextArea.jsx'
@@ -9,12 +9,7 @@ import { useJournal } from '../../context/journal.js'
 import { parseTags, postTags } from '../../data/journal.js'
 import { CMS_LABELS as T } from '../../data/admin.js'
 import { useLang } from '../../i18n'
-import { uploadSiteImage } from '../../lib/adminApi.js'
-import { emptyDoc, getDoc } from '../../lib/richText.js'
-import { RichText } from '../RichText.jsx'
-
-// Tiptap is large; load it only when Wade opens a post in edit mode, not for every visitor.
-const Editor = lazy(() => import('../Editor.jsx').then((m) => ({ default: m.Editor })))
+import { emptyDoc } from '../../lib/richText.js'
 
 const LANGS = ['zh', 'en']
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -38,7 +33,11 @@ function useJournalEditing() {
   const cms = useJournal()
   // The saved side changes only on load and save, so it is not serialised again on every keystroke.
   const saved = useMemo(() => JSON.stringify(cms.savedContent), [cms.savedContent])
-  const dirty = Boolean(cms.draft) && JSON.stringify(cms.draft) !== saved
+  const isDirty = (draft) => Boolean(draft) && JSON.stringify(draft) !== saved
+  // The panel's indicator can lag a keystroke: the whole journal is compared when the browser is idle.
+  // Save and leave check the current draft instead, so Ctrl+S right after typing still saves.
+  const deferredDraft = useDeferredValue(cms.draft)
+  const dirty = useMemo(() => Boolean(deferredDraft) && JSON.stringify(deferredDraft) !== saved, [deferredDraft, saved])
 
   // Not `cms` itself: it is a new object on every keystroke.
   const { isEditing, loading, startEditing } = cms
@@ -47,7 +46,7 @@ function useJournalEditing() {
   }, [admin.editing, isEditing, loading, startEditing])
 
   const save = async () => {
-    if (!dirty || cms.saving) return
+    if (!isDirty(cms.draft) || cms.saving) return
     try {
       await cms.saveDraft(admin.getToken())
     } catch {
@@ -57,7 +56,7 @@ function useJournalEditing() {
   useAdminSave(admin.editing ? save : null)
 
   const leave = (then) => {
-    if (dirty && !window.confirm(T.logoutConfirm)) return
+    if (isDirty(cms.draft) && !window.confirm(T.logoutConfirm)) return
     cms.cancelEditing()
     then()
   }
@@ -126,39 +125,6 @@ export function JournalPostEditPanel({ slug }) {
     </SidePanel>
   )
 }
-
-/**
- * The post body. In edit mode it is the editor, in place on the page, so what Wade types is what readers see.
- * Otherwise, and while Tiptap loads, it is `children` (the RichText of the saved post).
- */
-export function JournalPostBody({ slug, children }) {
-  const { lang } = useLang()
-  const admin = useAdmin()
-  const cms = useJournal()
-  const body = admin.editing && cms.isEditing ? cms.draft.content[lang]?.[slug] : null
-  if (!body) return children
-
-  // The editor saves its own document; the old block list goes away on the first edit.
-  const setDoc = (doc) =>
-    cms.updateDraft((d) => {
-      d.content[lang][slug] = { doc }
-    })
-  const upload = async (file) => (await uploadSiteImage(file, admin.getToken())).url
-
-  return (
-    <Suspense fallback={children}>
-      <Editor
-        key={`${slug}-${lang}`}
-        doc={getDoc(body)}
-        onChange={setDoc}
-        upload={upload}
-        previewing={admin.previewing}
-        renderPreview={(doc) => <RichText doc={doc} />}
-      />
-    </Suspense>
-  )
-}
-
 
 export function JournalListEditPanel() {
   const { lang } = useLang()

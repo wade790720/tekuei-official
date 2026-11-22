@@ -36,9 +36,9 @@ export function Accordion({
 
   const classes = ['accordion', `accordion--${variant}`, hideSeparator && 'accordion--no-separator', className]
   return (
-    <AccordionContext.Provider value={{ open, toggle, headingLevel }}>
+    <AccordionContext value={{ open, toggle, headingLevel }}>
       <div className={classes.filter(Boolean).join(' ')}>{children}</div>
-    </AccordionContext.Provider>
+    </AccordionContext>
   )
 }
 

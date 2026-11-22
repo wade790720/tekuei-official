@@ -1,12 +1,11 @@
 // Live demos for the component pages. Each entry in componentLibrary.data.js names one by key.
 // Demo data only: nothing here is real content, and nothing is sent anywhere.
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { CodeCard } from '../CodeCard.jsx'
 import { ImageCard } from '../ImageCard.jsx'
 import { RichText } from '../RichText.jsx'
 import { SlidesCard } from '../SlidesCard.jsx'
 import { VideoCard } from '../VideoCard.jsx'
-import { Editor } from '../Editor.jsx'
 import { DropdownMenu } from '../DropdownMenu.jsx'
 import { Button } from '../Button.jsx'
 import { Card } from '../Card.jsx'
@@ -256,13 +255,18 @@ function IoPane({ dir, title, meta, className = '', children }) {
   )
 }
 
+// Tiptap loads only on the Editor page, not on every Component Library page.
+const Editor = lazy(() => import('../Editor.jsx').then((m) => ({ default: m.Editor })))
+
 // Input (what the editor holds) on the left, output (how RichText shows it) on the right.
 function EditorDemo() {
   const [doc, setDoc] = useState(EDITOR_SAMPLE)
   return (
     <div className="cl-editor">
       <IoPane dir="in" title="Input" meta="Editor" className="journal-post__body doc-prose">
-        <Editor doc={EDITOR_SAMPLE} onChange={setDoc} upload={async (file) => URL.createObjectURL(file)} />
+        <Suspense fallback={null}>
+          <Editor doc={EDITOR_SAMPLE} onChange={setDoc} upload={async (file) => URL.createObjectURL(file)} />
+        </Suspense>
       </IoPane>
       <IoPane dir="out" title="Output" meta="RichText" className="journal-post__body doc-prose">
         <RichText doc={doc} />
@@ -346,6 +350,7 @@ const DEMOS = {
   ripple: () => <RippleDemo />,
   sounds: () => <SoundDemo />,
   tag: () => <TagList tags={['AI', 'MARKETING', 'ENGINEERING']} />,
+  'tag-outline': () => <TagList tags={['WEB DESIGN', 'EXHIBITION']} variant="outline" />,
   'tag-filter': () => <TagFilterDemo />,
   breadcrumbs: () => (
     <Breadcrumbs label="導覽路徑">

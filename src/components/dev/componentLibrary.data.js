@@ -383,16 +383,16 @@ export const GROUPS = [
         name: 'Editor',
         file: 'src/components/Editor.jsx',
         summary: '文章內文的所見即所得編輯器，輸出 RichText 使用的文件',
-        hero: { demo: 'editor', code: `<Editor key={slug} doc={getDoc(body)} onChange={setDoc} upload={upload} previewing={admin.previewing} renderPreview={(doc) => <RichText doc={doc} />} />` },
+        hero: { demo: 'editor', code: `<Editor key={slug} doc={getDoc(body)} onChange={setDoc} upload={upload} previewing={admin.previewing} />
+{admin.previewing ? <RichText doc={getDoc(body)} /> : null}` },
         api: [
           {
             description: '沒有固定工具列。每一行左邊的「+」新增區塊、「⠿」拖曳或打開區塊選單。選取文字時浮出格式工具列：轉換成、粗體、斜體、底線、連結、行內程式碼',
             props: [
               ['doc', 'object', '—', '必填，只在掛載時讀取，換文章時用新的 key 重新掛載'],
-              ['onChange', '(doc) => void', '—', '必填，每次修改都傳出新的文件'],
-              ['upload', '(file) => Promise<string>', '—', '必填，上傳圖片，回傳圖片網址'],
-              ['previewing', 'boolean', 'false', '選填。true 時把編輯器換成 renderPreview(doc)，也就是正式頁的畫面。編輯器只是隱藏，游標和復原紀錄都會保留。切換按鈕由呼叫的一方提供（文章頁放在 SidePanel）'],
-              ['renderPreview', '(doc) => ReactNode', '—', 'previewing 為 true 時必填，畫出預覽'],
+              ['onChange', '(doc) => void', '—', '必填，每次修改都傳出新的文件。只在掛載時讀取，之後換一個函式不會生效'],
+              ['upload', '(file) => Promise<string>', '—', '必填，上傳圖片，回傳圖片網址。只在掛載時讀取'],
+              ['previewing', 'boolean', 'false', '選填。true 時隱藏編輯器和工具列，預覽由呼叫的一方畫在旁邊。編輯器只是隱藏，游標和復原紀錄都會保留。切換按鈕由呼叫的一方提供（文章頁放在 SidePanel）'],
             ],
           },
         ],
@@ -452,12 +452,16 @@ export const GROUPS = [
               ['count', 'number', '—', '按鈕上的篇數，只在按鈕時顯示'],
               ['selected', 'boolean', 'false', '目前選取的標籤，框線變金色'],
               ['onClick', '() => void', '—', '有這個 prop 就變成按鈕'],
+              ['variant', "'plain' | 'outline'", "'plain'", '只對文字標籤有效。outline 是有框線的膠囊，用在 Work 的卡片，滑過卡片時框線變金色'],
             ],
           },
           {
             part: 'TagList',
             description: '一排純文字標籤，用在列表、精選文章和文章頁的 meta',
-            props: [['tags', 'string[]', '—', '必填，用 postTags(post) 取得']],
+            props: [
+              ['tags', 'string[]', '—', '必填，用 postTags(post) 取得'],
+              ['variant', "'plain' | 'outline'", "'plain'", '傳給每一個 Tag'],
+            ],
           },
         ],
         examples: [
@@ -467,6 +471,13 @@ export const GROUPS = [
             demo: 'tag-filter',
             description: 'Journal 列表上方的一排按鈕：「全部」加上每個標籤和篇數，一次選一個。選取的標籤寫在網址 ?tag=AI',
             code: '<Tag count={2} selected={tag === "AI"} onClick={() => choose("AI")}>AI</Tag>',
+          },
+          {
+            id: 'outline',
+            title: '外框',
+            demo: 'tag-outline',
+            description: 'Work 卡片上的標籤，有框線和淡底色',
+            code: '<TagList tags={item.tags} variant="outline" />',
           },
         ],
         notes: [

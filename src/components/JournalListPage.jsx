@@ -1,11 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Skeleton } from './Skeleton.jsx'
 import { Tag, TagList } from './Tag.jsx'
 import { JOURNAL_FILTER, JOURNAL_HEADER, JOURNAL_META, postTags, readableJournal, tagCounts } from '../data/journal.js'
 import { useJournal } from '../context/journal.js'
 import { useAdmin } from '../context/admin.js'
-import { JournalListEditPanel } from './journal/JournalEditPanel.jsx'
 import { HOME_FOOTER } from '../data/homepage.js'
 import { useLang } from '../i18n'
 import { mountGlyphField } from '../lib/glyphField.js'
@@ -13,6 +12,9 @@ import { mountShatterImage } from '../lib/shatterImage.js'
 import seaImage from '../assets/journal/footer-sea.webp'
 import '../styles/work.css'
 import '../styles/journal.css'
+
+// Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.
+const JournalListEditPanel = lazy(() => import('./journal/JournalEditPanel.jsx').then((m) => ({ default: m.JournalListEditPanel })))
 
 // Tells the post page it was opened from this list, so its back link can return here (JournalPostPage BackLink).
 const FROM_LIST = { fromList: 1 }
@@ -96,7 +98,11 @@ export default function JournalListPage() {
       </main>
 
       <JournalFooter posts={allPosts} />
-      <JournalListEditPanel />
+      {editing ? (
+        <Suspense fallback={null}>
+          <JournalListEditPanel />
+        </Suspense>
+      ) : null}
     </div>
   )
 }
