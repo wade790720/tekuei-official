@@ -61,9 +61,11 @@
     background-color var(--duration-base) var(--ease-touch);
 }
 
-.cl-side__link:hover {
-  color: var(--text-primary);
-  background: var(--ember-whisper);
+@media (hover: hover) {
+  .cl-side__link:hover {
+    color: var(--text-primary);
+    background: var(--ember-whisper);
+  }
 }
 
 /* A family (Card, Nav, Post): its name, then its members indented under a hairline */
@@ -138,8 +140,10 @@
   transition: color var(--duration-base) var(--ease-touch);
 }
 
-.cl-quick__link:hover {
-  color: var(--ember-soft);
+@media (hover: hover) {
+  .cl-quick__link:hover {
+    color: var(--ember-soft);
+  }
 }
 
 /* ── Page header ── */
@@ -216,8 +220,10 @@
   transition: box-shadow var(--duration-base) var(--ease-touch);
 }
 
-.cl-cat:hover {
-  box-shadow: 0 0 0 1px var(--ember-line);
+@media (hover: hover) {
+  .cl-cat:hover {
+    box-shadow: 0 0 0 1px var(--ember-line);
+  }
 }
 
 .cl-cat__head {
@@ -280,8 +286,10 @@
   text-align: right;
 }
 
-.cl-pager__link:hover {
-  color: var(--ember-soft);
+@media (hover: hover) {
+  .cl-pager__link:hover {
+    color: var(--ember-soft);
+  }
 }
 
 /* No room for the right nav: drop it and give the page the width */
@@ -342,9 +350,11 @@
   transition: color var(--duration-fast) var(--ease-touch), border-color var(--duration-fast) var(--ease-touch);
 }
 
-.cl-replay:hover {
-  border-color: var(--ember);
-  color: var(--ember);
+@media (hover: hover) {
+  .cl-replay:hover {
+    border-color: var(--ember);
+    color: var(--ember);
+  }
 }
 
 .cl-box {
@@ -521,8 +531,10 @@
   transition: text-decoration-color var(--duration-base) var(--ease-touch);
 }
 
-.cl-table a:hover {
-  text-decoration-color: var(--ember);
+@media (hover: hover) {
+  .cl-table a:hover {
+    text-decoration-color: var(--ember);
+  }
 }
 
 .cl-table td:first-child code {
@@ -1128,8 +1140,10 @@
   transition: background-color var(--duration-base) var(--ease-touch);
 }
 
-.doc-scale__step:hover {
-  background: var(--ember-whisper);
+@media (hover: hover) {
+  .doc-scale__step:hover {
+    background: var(--ember-whisper);
+  }
 }
 
 .doc-scale__aa {
@@ -1249,8 +1263,10 @@
   transition: box-shadow var(--duration-base) var(--ease-touch);
 }
 
-.doc-links__card:hover {
-  box-shadow: 0 0 0 1px var(--ember-line);
+@media (hover: hover) {
+  .doc-links__card:hover {
+    box-shadow: 0 0 0 1px var(--ember-line);
+  }
 }
 
 .doc-links__title {

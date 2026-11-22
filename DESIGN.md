@@ -64,7 +64,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 內文 17px、行高 1.9。小標題 22px、行高 1.5。大標 clamp(44–72px)。
 - 例外：Journal 文章的段落和清單照 Editor.js 的間距，行高 1.6，段落之間 12px（`--space-3`）。
 - 需要閱讀的字至少 12px（`--type-caption`）。只有標籤可以用 11px。
-- 一行中文 35–40 字（約 640–720px）。
+- 一行中文 35–40 字（約 640–720px）。英文在同一欄約 119 個字元，比一般建議的 60–75 長。這是刻意的：文字和圖片同寬優先（見 PAGES.md）。
 - 換行：標題用 `text-wrap: balance`，段落、清單、引言、圖說用 `text-wrap: pretty`，避免最後一行只剩一個字。全站寫在 `src/index.css`。
 
 ### 字重
@@ -114,6 +114,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 - Instrument Serif 排第一。它沒有中文字，所以中文自動改用思源宋體。
 - Instrument Serif 只用在 18px 以上。更小的英文改用 `--font-label`。
+- 例外：英文的文章內文用 `--type-body`（17px）的 Instrument Serif，和中文內文同一個字級，讓兩種語言的文章看起來一致。
 - 例外：導覽連結（頁首導覽列、語言按鈕、頁尾的連結）用 Instrument Serif，字級 `--type-nav`（13–15px）。頁首和頁尾的連結要一樣。這是刻意的，不要改成 `--font-label`。
 - CSS 一律寫 `font-family: var(--font-serif)` 或 `var(--font-label)`。頁面自己的字型變數（例如 `--j-fd`）都指向它們。不要另外寫字型名稱。
 - Canvas 不能用 CSS 變數。字型和顏色從 canvas 元素的 `getComputedStyle` 讀（參考 `glyphField.js`）。讀不到時，直接寫 `"Instrument Serif", "Noto Serif TC", "Source Han Serif TC", serif`。
@@ -238,7 +239,7 @@ useEffect(() => mountXxx(canvas.current), [])
 - 蓋住整頁的浮層（手機選單）打開時，`#root` 加上 `inert`，Tab 不會跑到被蓋住的頁面。浮層要 portal 到 `<body>`。
 - 頁首是固定的，`html` 設 `scroll-padding-top: var(--space-24)`，焦點和錨點不會停在頁首底下。
 - 只用 `box-shadow` 畫邊緣的元件，在 `@media (forced-colors: active)` 裡補一條 `CanvasText` 邊框。
-- hover 樣式寫在 `@media (hover: hover)` 裡，手機點一下之後不會一直亮著。目前首頁、Journal、頁首、卡片、Button、Tag、Breadcrumbs 已經改好，其他頁面還沒有。
+- hover 樣式寫在 `@media (hover: hover)` 裡，手機點一下之後不會一直亮著。和 `:focus-visible`、`.is-active` 寫在同一條規則時，只把 `:hover` 拆出去，其他狀態留在原處。
 - Canvas 是裝飾，加 `aria-hidden`。真正的標題、按鈕、連結要是 HTML 文字。
 - 手機上要順暢。粒子類效果把 `devicePixelRatio` 上限設在 1.5–2。
 

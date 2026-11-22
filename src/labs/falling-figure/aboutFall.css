@@ -218,9 +218,14 @@
   transition: color var(--duration-base) var(--ease-touch);
 }
 
-.about-fall__caption-more:hover,
 .about-fall__caption-more:focus-visible {
   color: var(--af-sky);
+}
+
+@media (hover: hover) {
+  .about-fall__caption-more:hover {
+    color: var(--af-sky);
+  }
 }
 
 .about-fall__caption-more svg {
@@ -350,9 +355,11 @@ html.about-fall-doc body::-webkit-scrollbar {
   height: 0;
 }
 
-.about-fall__sound:hover {
-  border-color: var(--af-sky);
-  background: color-mix(in srgb, var(--af-sky) 8%, transparent);
+@media (hover: hover) {
+  .about-fall__sound:hover {
+    border-color: var(--af-sky);
+    background: color-mix(in srgb, var(--af-sky) 8%, transparent);
+  }
 }
 
 .about-fall__sound:focus-visible {
@@ -382,9 +389,11 @@ html.about-fall-doc body::-webkit-scrollbar {
     border-color var(--duration-fast) var(--ease-touch);
 }
 
-.about-fall__end a:hover {
-  color: var(--af-sky);
-  border-color: var(--af-sky);
+@media (hover: hover) {
+  .about-fall__end a:hover {
+    color: var(--af-sky);
+    border-color: var(--af-sky);
+  }
 }
 
 @media (max-width: 899px) {

@@ -224,9 +224,11 @@
   inset: -7px;
 }
 
-.cms-icon:hover:not(:disabled) {
-  background: var(--gray-a3);
-  color: var(--text-primary);
+@media (hover: hover) {
+  .cms-icon:hover:not(:disabled) {
+    background: var(--gray-a3);
+    color: var(--text-primary);
+  }
 }
 
 .cms-icon:disabled {
@@ -234,8 +236,10 @@
   cursor: default;
 }
 
-.cms-icon--danger:hover:not(:disabled) {
-  color: var(--danger);
+@media (hover: hover) {
+  .cms-icon--danger:hover:not(:disabled) {
+    color: var(--danger);
+  }
 }
 
 /* Save button: idle → saving → saved, each label blurs in (transitions.dev "Text states swap") */
@@ -364,8 +368,10 @@
   transition: color var(--duration-fast) var(--ease-touch);
 }
 
-.cms-drag:hover {
-  color: var(--text-primary);
+@media (hover: hover) {
+  .cms-drag:hover {
+    color: var(--text-primary);
+  }
 }
 
 .cms-sort[data-dragging] .cms-drag {
@@ -398,8 +404,10 @@
   transition: color var(--duration-base) var(--ease-touch);
 }
 
-.cms-post__title:hover {
-  color: var(--ember);
+@media (hover: hover) {
+  .cms-post__title:hover {
+    color: var(--ember);
+  }
 }
 
 .cms-post__meta {
@@ -650,9 +658,14 @@
   transition: opacity var(--duration-base) var(--ease-touch);
 }
 
-.cms-ed-image:is(:hover, :focus-within, [data-selected]) .cms-ed-image__tools,
 .cms-ed-image__tools[data-attn] {
   opacity: 1;
+}
+
+@media (hover: hover) {
+  .cms-ed-image:is(:hover, :focus-within, [data-selected]) .cms-ed-image__tools {
+    opacity: 1;
+  }
 }
 
 @media (hover: none) {
@@ -765,8 +778,10 @@
   transition: color var(--duration-base) var(--ease-touch);
 }
 
-.cms-dock:hover {
-  color: var(--ember-soft);
+@media (hover: hover) {
+  .cms-dock:hover {
+    color: var(--ember-soft);
+  }
 }
 
 .cms-dock__dot {
@@ -925,9 +940,15 @@
     color var(--duration-fast) var(--ease-touch);
 }
 
-.cms-ed-style:hover,
 .cms-ed-style[aria-expanded='true'] {
   background: var(--gray-a5);
   color: var(--text-primary);
+}
+
+@media (hover: hover) {
+  .cms-ed-style:hover {
+    background: var(--gray-a5);
+    color: var(--text-primary);
+  }
 }
 
