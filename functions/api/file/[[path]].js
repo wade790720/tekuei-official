@@ -1,12 +1,15 @@
 export async function onRequestGet({ request, env }) {
   const u = new URL(request.url)
-  const m = u.pathname.match(/^\/api\/file\/(.+)$/)
-  if (!m) {
-    return new Response('Not found', { status: 404 })
+  let key
+  try {
+    key = decodeURIComponent(u.pathname.replace(/^\/api\/file\//, ''))
+  } catch {
+    return new Response('Bad key', { status: 400 }) // a broken % escape
   }
-  const key = decodeURIComponent(m[1])
-  if (!key || key.startsWith('/') || key.includes('..')) {
-    return new Response('Bad key', { status: 400 })
+  // Only uploaded images are public (functions/api/upload.js writes them under images/).
+  // The bucket also holds data.json and the admin attempt counter.
+  if (!key.startsWith('images/') || key.includes('..')) {
+    return new Response('Not found', { status: 404 })
   }
   const obj = await env.BUCKET.get(key)
   if (!obj) {

@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { onRequestGet, onRequestPut } from '../functions/api/data.js'
+import { onRequestGet as getFile } from '../functions/api/file/[[path]].js'
 import { fakeR2 } from './fakeR2.mjs'
 
 const SECRET = '123456'
@@ -46,4 +47,14 @@ test('the etag a save returns lets the same editor save again', async () => {
   const res = await put(e, { journal: { posts: ['b'] } }, { etag: first.etag })
   assert.equal(res.status, 200)
   assert.deepEqual(e.BUCKET.read('data.json').journal, { posts: ['b'] })
+})
+
+test('the file route serves uploaded images and nothing else in the bucket', async () => {
+  const e = { BUCKET: fakeR2({ 'images/a.webp': 'pixels', 'admin/attempts.json': { fails: 3 }, 'data.json': site() }) }
+  const file = (path) => getFile({ request: new Request(`https://x/api/file/${path}`), env: e })
+  assert.equal((await file('images/a.webp')).status, 200)
+  assert.equal((await file('admin/attempts.json')).status, 404)
+  assert.equal((await file('data.json')).status, 404)
+  assert.equal((await file('images/%2E%2E/data.json')).status, 404)
+  assert.equal((await file('images/%E0%A4%A')).status, 400)
 })

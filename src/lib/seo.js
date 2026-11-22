@@ -188,11 +188,13 @@ export function injectPage(indexHtml, page) {
     jsonLd(page.ld),
   ].join('\n    ')
   return indexHtml
-    .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(page.title)}</title>`)
-    .replace(/(<meta\s+name="description"\s+content=")[^"]*(")/, `$1${esc(page.description)}$2`)
+    // Every replacement is a function: in a replacement string, "$1" or "$&" in a title or an excerpt
+    // (a price, say) would be read as a command.
+    .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(page.title)}</title>`)
+    .replace(/(<meta\s+name="description"\s+content=")[^"]*(")/, (_, open, close) => open + esc(page.description) + close)
     .replace(/<meta property="og:(?:type|url|title|description)"[^>]*>\s*/g, '')
     .replace(/<meta name="twitter:(?:title|description)"[^>]*>\s*/g, '')
-    .replace('</head>', `    ${head}\n  </head>`)
+    .replace('</head>', () => `    ${head}\n  </head>`)
     .replace('<div id="root"></div>', () => `<div id="root">${page.html}</div>`)
 }
 
