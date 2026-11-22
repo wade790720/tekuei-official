@@ -63,7 +63,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
   font-size: var(--type-label);
   font-family: var(--font-label);
   opacity: 0;
-  animation: work-fade-up 0.9s var(--ease-touch) 0.6s forwards;
+  animation: work-fade-up var(--duration-reveal) var(--ease-touch) 0.6s forwards;
 }
 
 .work-page-header h1 {
@@ -73,7 +73,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
   font-family: var(--fd);
   line-height: 1.06;
   opacity: 0;
-  animation: work-fade-up 1s var(--ease-touch) 0.8s forwards;
+  animation: work-fade-up var(--duration-reveal) var(--ease-touch) 0.8s forwards;
 }
 
 .work-page-header .count {
@@ -82,7 +82,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
   font-size: var(--type-label);
   font-family: var(--font-label);
   opacity: 0;
-  animation: work-fade-in 1.5s var(--ease-touch) 1.2s forwards;
+  animation: work-fade-in var(--duration-reveal) var(--ease-touch) 1.2s forwards;
 }
 
 .work-header-rule {
@@ -92,7 +92,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
   padding: 0 var(--page-pad);
   max-width: var(--page-column-box);
   opacity: 0;
-  animation: work-fade-in 1.5s var(--ease-touch) 1s forwards;
+  animation: work-fade-in var(--duration-reveal) var(--ease-touch) 1s forwards;
 }
 
 .work-header-rule-line {
@@ -121,8 +121,8 @@ html.has-scroll-document body, html.has-scroll-document #root {
   display: grid;
   margin-bottom: 1px;
   opacity: 0;
-  transition: opacity 0.8s var(--ease-touch),
-  transform 0.8s var(--ease-touch);
+  transition: opacity var(--duration-reveal) var(--ease-touch),
+  transform var(--duration-reveal) var(--ease-touch);
   transform: translateY(40px);
 
   grid-template-columns: 1fr 1fr;
@@ -147,7 +147,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
   overflow: hidden;
   border: 0.5px solid var(--line-strong);
   background: var(--bg-deep);
-  transition: border-color 0.6s var(--ease-touch);
+  transition: border-color var(--duration-fade) var(--ease-touch);
 
   aspect-ratio: 16 / 10;
 }
@@ -164,7 +164,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
   justify-content: center;
   width: 100%;
   height: 100%;
-  transition: transform 1s var(--ease-touch);
+  transition: transform var(--duration-reveal) var(--ease-touch);
 }
 
 .work-thumb-img--has-photo {
@@ -175,7 +175,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
   position: absolute;
   width: 100%;
   height: 100%;
-  transition: transform 1s var(--ease-touch);
+  transition: transform var(--duration-reveal) var(--ease-touch);
 
   inset: 0;
   object-fit: fill;
@@ -188,8 +188,8 @@ html.has-scroll-document body, html.has-scroll-document #root {
 .work-thumb-mark {
   color: var(--accent);
   opacity: 0.55;
-  transition: opacity 0.6s var(--ease-touch),
-  transform 0.8s var(--ease-touch);
+  transition: opacity var(--duration-fade) var(--ease-touch),
+  transform var(--duration-reveal) var(--ease-touch);
 }
 
 .work-grid__item:hover .work-thumb-mark {
@@ -244,7 +244,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
   font-size: clamp(22px, 2.8vw, 34px);
   font-family: var(--fd);
   line-height: 1.15;
-  transition: color 0.5s var(--ease-touch);
+  transition: color var(--duration-slow) var(--ease-touch);
 }
 
 .work-info .title em {
@@ -299,8 +299,8 @@ html.has-scroll-document body, html.has-scroll-document #root {
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
   font-family: var(--font-label);
-  transition: border-color 0.5s var(--ease-touch),
-  color 0.5s var(--ease-touch);
+  transition: border-color var(--duration-slow) var(--ease-touch),
+  color var(--duration-slow) var(--ease-touch);
 }
 
 .work-grid__item:hover .tag {
@@ -315,14 +315,14 @@ html.has-scroll-document body, html.has-scroll-document #root {
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
   font-family: var(--font-label);
-  transition: color 0.5s var(--ease-touch);
+  transition: color var(--duration-slow) var(--ease-touch);
 
   gap: var(--space-3);
 }
 
 /* The line grows and VIEW slides with transform, so nothing around them reflows */
 .work-info .arrow span {
-  transition: transform 0.5s var(--ease-touch);
+  transition: transform var(--duration-slow) var(--ease-touch);
 }
 
 .work-info .arrow-line {
@@ -330,8 +330,8 @@ html.has-scroll-document body, html.has-scroll-document #root {
   height: 0.5px;
   background: var(--accent-line);
   transform-origin: left;
-  transition: transform 0.5s var(--ease-touch),
-  background 0.5s var(--ease-touch);
+  transition: transform var(--duration-slow) var(--ease-touch),
+  background var(--duration-slow) var(--ease-touch);
 }
 
 .work-grid__item:hover .arrow {
@@ -426,7 +426,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
   font-family: var(--font-label);
-  transition: color 0.4s var(--ease-touch);
+  transition: color var(--duration-slow) var(--ease-touch);
 }
 
 .case-stub__back:hover {

@@ -22,8 +22,8 @@
   background: var(--surface-2);
   box-shadow: inset 0 0 0 1px var(--line);
   transition:
-    box-shadow 0.15s var(--ease-touch),
-    background-color 0.15s var(--ease-touch);
+    box-shadow var(--duration-fast) var(--ease-touch),
+    background-color var(--duration-fast) var(--ease-touch);
 }
 
 /* A dot, never the character */
@@ -37,7 +37,7 @@
   margin: -4px 0 0 -4px;
   border-radius: 50%;
   background: var(--gray-12);
-  animation: otp-input-pop 0.18s var(--ease-touch);
+  animation: otp-input-pop var(--duration-fast) var(--ease-touch);
 }
 
 /* The box that takes the next character, while the field has focus */

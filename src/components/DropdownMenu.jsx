@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { usePresence } from '../hooks/usePresence.js'
 import '../styles/dropdownMenu.css'
 
-const EXIT_MS = 100 // matches dropdown-menu-out in dropdownMenu.css
+const EXIT_MS = 90 // --duration-exit, used by dropdown-menu-out in dropdownMenu.css
 
 /**
  * A menu that drops down from a button: icon, label and shortcut per row, thin dividers between groups.

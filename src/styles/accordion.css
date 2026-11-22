@@ -45,7 +45,7 @@
   text-align: start;
   color: var(--text-primary);
   cursor: pointer;
-  transition: background-color 0.3s var(--ease-touch), color 0.3s var(--ease-touch);
+  transition: background-color var(--duration-base) var(--ease-touch), color var(--duration-base) var(--ease-touch);
 }
 
 @media (hover: hover) {
@@ -69,7 +69,7 @@
   flex-shrink: 0;
   margin-inline-start: auto;
   color: var(--text-tertiary);
-  transition: transform 0.25s var(--ease-touch);
+  transition: transform var(--duration-base) var(--ease-touch);
 }
 
 .accordion__trigger[aria-expanded='true'] .accordion__indicator {
@@ -81,8 +81,8 @@
   grid-template-rows: 0fr;
   opacity: 0;
   transition:
-    grid-template-rows 0.25s var(--ease-touch),
-    opacity 0.25s var(--ease-touch);
+    grid-template-rows var(--duration-base) var(--ease-touch),
+    opacity var(--duration-base) var(--ease-touch);
 }
 
 .accordion__item[data-open] .accordion__panel {

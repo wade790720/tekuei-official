@@ -155,8 +155,20 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 ## 動態
 
 - Easing：`--ease-touch`（`cubic-bezier(0.16, 0.08, 0.12, 1)`）。
-- 時長：hover 0.3–0.4s。淡入 0.6s。依序淡入的間隔 70ms。
-- 關閉比打開快：選單和提示 0.08–0.1s，Drawer 0.3s。手機選單打開 0.25s（`OVERLAY_MS`），關閉約 0.2s。
+- 時長只用六個 token（`tokens.css`）：
+
+  | Token | 值 | 用途 |
+  |---|---|---|
+  | `--duration-exit` | 90ms | 選單和提示關閉 |
+  | `--duration-fast` | 150ms | 小控制項：按鈕、選單項目、輸入框 |
+  | `--duration-base` | 300ms | hover、Drawer 關閉、Accordion |
+  | `--duration-slow` | 400ms | 面板打開、導覽、比較慢的 hover |
+  | `--duration-fade` | 600ms | 淡入 |
+  | `--duration-reveal` | 800ms | 頁面進場、縮圖放大 |
+
+- 延遲（delay）和依序淡入的間隔（70ms）直接寫數字，不用 token。
+- 關閉比打開快。手機選單是例外，打開 0.25s、關閉約 0.2s，由 JS 的 `OVERLAY_MS` 控制。
+- JS 裡等動畫結束的數字（例如 `EXIT_MS`）要和對應的 token 一樣。
 - 過渡不超過 1s。
 - 每個 `transition` 和 `animation` 都寫 easing。一般用 `--ease-touch`，循環動畫可以用 `linear` 或 `steps()`。
 - 循環動畫的時長寫成變數，例如 `--duration-shake`（tokens.css，兩處共用）、`--spin-ms`、`--skeleton-ms`。

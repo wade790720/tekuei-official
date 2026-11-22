@@ -112,9 +112,9 @@
   transform: translateY(8px);
   filter: blur(8px);
   transition:
-    opacity 0.8s var(--j-ease),
-    transform 0.8s var(--j-ease),
-    filter 0.8s var(--j-ease);
+    opacity var(--duration-reveal) var(--j-ease),
+    transform var(--duration-reveal) var(--j-ease),
+    filter var(--duration-reveal) var(--j-ease);
 }
 
 .journal-page .fade-in.is-visible {
@@ -305,8 +305,8 @@
   text-decoration: none;
   color: inherit;
   transition:
-    opacity 0.5s var(--ease-touch),
-    background 0.45s var(--ease-touch);
+    opacity var(--duration-slow) var(--ease-touch),
+    background var(--duration-slow) var(--ease-touch);
 }
 
 .journal-card:hover {
@@ -369,7 +369,7 @@
   letter-spacing: 0;
   line-height: 1.35;
   color: var(--j-warm-white);
-  transition: color 0.5s var(--ease-touch);
+  transition: color var(--duration-slow) var(--ease-touch);
 }
 
 .journal-card__title-en {
@@ -407,8 +407,8 @@
   background: var(--j-line-bright);
   transform-origin: right;
   transition:
-    transform 0.6s var(--j-ease),
-    background 0.5s ease;
+    transform var(--duration-fade) var(--j-ease),
+    background var(--duration-slow) ease;
 }
 
 .journal-year {
@@ -446,7 +446,7 @@
   border-top: 0.5px solid var(--j-line);
   color: inherit;
   text-decoration: none;
-  transition: background 0.4s var(--j-ease);
+  transition: background var(--duration-slow) var(--j-ease);
 }
 
 .journal-row:hover {
@@ -474,7 +474,7 @@
   font-size: var(--type-lead);
   line-height: 1.5;
   color: var(--text-primary);
-  transition: color 0.4s var(--j-ease);
+  transition: color var(--duration-slow) var(--j-ease);
 }
 
 .journal-row:hover .journal-row__title {
@@ -514,7 +514,7 @@
   letter-spacing: var(--type-label-ls);
   color: var(--j-text-ghost);
   text-decoration: none;
-  transition: color 0.4s var(--ease-touch);
+  transition: color var(--duration-slow) var(--ease-touch);
 }
 
 .journal-post__back:hover {
@@ -726,7 +726,7 @@
   color: inherit;
   padding: var(--space-6) 0;
   border-top: 0.5px solid var(--line);
-  transition: opacity 0.4s var(--ease-touch);
+  transition: opacity var(--duration-slow) var(--ease-touch);
 }
 
 .journal-post__nav-link:hover {
@@ -839,10 +839,10 @@
   text-decoration: none;
   background: linear-gradient(currentColor, currentColor) 50% 100% / 0 0.5px no-repeat;
   transition:
-    color 0.3s var(--j-ease),
-    background-size 0.3s var(--j-ease),
-    opacity 0.6s var(--j-ease),
-    transform 0.6s var(--j-ease);
+    color var(--duration-base) var(--j-ease),
+    background-size var(--duration-base) var(--j-ease),
+    opacity var(--duration-fade) var(--j-ease),
+    transform var(--duration-fade) var(--j-ease);
 }
 
 /* Only real links react: an entry without an address is a span. */
@@ -861,8 +861,8 @@ a.journal-footer__link:hover {
 
 .journal-footer__r {
   transition:
-    opacity 0.6s var(--j-ease),
-    transform 0.6s var(--j-ease);
+    opacity var(--duration-fade) var(--j-ease),
+    transform var(--duration-fade) var(--j-ease);
   transition-delay: calc(var(--i) * 70ms);
 }
 

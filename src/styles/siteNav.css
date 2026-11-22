@@ -14,8 +14,8 @@
 
 .site-nav--scroll-aware {
   transition:
-    background 0.4s var(--ease-touch),
-    padding 0.4s var(--ease-touch);
+    background var(--duration-slow) var(--ease-touch),
+    padding var(--duration-slow) var(--ease-touch);
 }
 
 .site-nav--scroll-aware.is-scrolled {
@@ -101,7 +101,7 @@
   text-transform: uppercase;
   color: var(--text-secondary);
   text-decoration: none;
-  transition: color 0.4s var(--ease-touch);
+  transition: color var(--duration-slow) var(--ease-touch);
 }
 
 .site-nav__links a::after {
@@ -114,7 +114,7 @@
   background: var(--ember);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.45s var(--ease-touch);
+  transition: transform var(--duration-slow) var(--ease-touch);
 }
 
 .site-nav__links a:hover {
@@ -148,7 +148,7 @@
   color: var(--text-tertiary);
   margin-top: var(--space-8);
   padding: var(--space-1) var(--space-2);
-  transition: color 0.3s var(--ease-touch);
+  transition: color var(--duration-base) var(--ease-touch);
 }
 
 @media (max-width: 900px) {

@@ -75,8 +75,8 @@
   color: var(--text-secondary);
   cursor: pointer;
   transition:
-    background-color 0.2s var(--ease-touch),
-    color 0.2s var(--ease-touch);
+    background-color var(--duration-fast) var(--ease-touch),
+    color var(--duration-fast) var(--ease-touch);
 }
 
 .code-card__copy:hover {
@@ -187,8 +187,8 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   transition:
-    opacity 0.25s var(--ease-touch),
-    transform 0.25s var(--ease-touch);
+    opacity var(--duration-base) var(--ease-touch),
+    transform var(--duration-base) var(--ease-touch);
 }
 
 .video-card[data-playing] .video-card__big {
@@ -207,7 +207,7 @@
   padding: var(--space-6) var(--space-3) var(--space-2);
   background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
   color: var(--text-primary);
-  transition: opacity 0.25s var(--ease-touch);
+  transition: opacity var(--duration-base) var(--ease-touch);
 }
 
 /* While playing, the bar shows on hover or keyboard focus only */
@@ -238,7 +238,7 @@
   background: transparent;
   color: inherit;
   cursor: pointer;
-  transition: background-color 0.2s var(--ease-touch);
+  transition: background-color var(--duration-fast) var(--ease-touch);
 }
 
 .video-card__btn:hover {
@@ -419,7 +419,7 @@
   box-shadow: 0 0 0 1px var(--line);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background-color 0.2s var(--ease-touch), color 0.2s var(--ease-touch);
+  transition: background-color var(--duration-fast) var(--ease-touch), color var(--duration-fast) var(--ease-touch);
 }
 
 .slides-card__btn:hover:not(:disabled) {
