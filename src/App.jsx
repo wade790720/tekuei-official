@@ -5,8 +5,6 @@ import WorkListPage from './components/WorkListPage.jsx'
 import JournalListPage from './components/JournalListPage.jsx'
 import JournalPostPage from './components/JournalPostPage.jsx'
 import CaseRouter from './components/CaseRouter.jsx'
-import CheckinPage from './components/CheckinPage.jsx'
-import HowToCheckinPage from './components/HowToCheckinPage.jsx'
 import { SiteNav } from './components/SiteNav.jsx'
 import { mountClickSounds } from './lib/uiSound.js'
 import { mountReveal } from './lib/reveal.js'
@@ -19,6 +17,9 @@ import { useLang } from './i18n'
 const LabPage = lazy(() => import('./labs/LabPage.jsx'))
 const LabLive = lazy(() => import('./labs/LabLive.jsx'))
 const FallingFigure = lazy(() => import('./labs/falling-figure/FallingFigure.jsx').then((m) => ({ default: m.FallingFigure })))
+// Only LIFF check-in visitors need the phone input and libphonenumber (about 176 kB).
+const CheckinPage = lazy(() => import('./components/CheckinPage.jsx'))
+const HowToCheckinPage = lazy(() => import('./components/HowToCheckinPage.jsx'))
 
 // Dev-only preview pages. The production build drops this import.
 const ComponentLibrary = import.meta.env.DEV

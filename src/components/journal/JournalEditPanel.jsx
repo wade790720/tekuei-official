@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { SidePanel, FormRow, PanelSection } from '../SidePanel.jsx'
 import { TextArea } from '../TextArea.jsx'
@@ -36,7 +36,9 @@ const today = () => {
 function useJournalEditing() {
   const admin = useAdmin()
   const cms = useJournal()
-  const dirty = Boolean(cms.draft) && JSON.stringify(cms.draft) !== JSON.stringify(cms.savedContent)
+  // The saved side changes only on load and save, so it is not serialised again on every keystroke.
+  const saved = useMemo(() => JSON.stringify(cms.savedContent), [cms.savedContent])
+  const dirty = Boolean(cms.draft) && JSON.stringify(cms.draft) !== saved
 
   useEffect(() => {
     if (admin.editing && !cms.isEditing && !cms.loading) cms.startEditing()
