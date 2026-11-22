@@ -3,7 +3,10 @@
 // the video loads and when reduced motion is on. Matsu Biennial keeps its R2 thumbnail; its recordings are on the case page.
 import lustreVideo from '../assets/work/lustre-yellow.mp4'
 import lustrePoster from '../assets/work/lustre-yellow.webp'
+import sreVideo from '../assets/work/sre.mp4'
+import srePoster from '../assets/work/sre.webp'
 
 export const WORK_THUMBS = {
   'lustre-yellow': { url: lustrePoster, video: lustreVideo }, // lustreyellow.com
+  sre: { url: srePoster, video: sreVideo }, // sreglobal.com, the hero as the still
 }
