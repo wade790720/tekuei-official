@@ -28,7 +28,7 @@ export const HOME_HERO = {
     // English in both languages, on purpose: a small joke in the corner, like the counters beside it.
     hint: 'poke the water, the koi are hungry',
     lead: '一個人的工作室 安靜的創作',
-    body: '喜愛滑雪、開發程式、寫寫文章，然後好好的睡一覺',
+    body: '喜愛 滑雪、開發程式、寫寫文章，然後好好的睡一覺',
     keywords: ['滑雪', '開發程式', '寫寫文章'],
   },
   en: {
