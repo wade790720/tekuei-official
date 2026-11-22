@@ -57,8 +57,20 @@ export async function loginAdmin(password) {
   return { token: trimmed }
 }
 
+// One download per page load: Journal, Work and the case pages all read the same data.json.
+// Callers treat the result as read only. A save or a failed load clears it.
+let siteDataRequest = null
+
 /** @returns {Promise<{ data: object, etag: string | null } | null>} null when the bucket is empty */
-export async function fetchSiteData() {
+export function fetchSiteData() {
+  siteDataRequest ??= requestSiteData().catch((err) => {
+    siteDataRequest = null
+    throw err
+  })
+  return siteDataRequest
+}
+
+async function requestSiteData() {
   const res = await fetch(apiPath('/api/data'), {
     headers: { Accept: 'application/json' },
   })
@@ -88,6 +100,7 @@ export async function saveSitePatch(patch, token, etag) {
   if (!res.ok) {
     throw new Error(res.status === 409 ? CMS_LABELS.stale : data.error || CMS_LABELS.saveFailed)
   }
+  siteDataRequest = null // pages opened after this save read the new version
   return data
 }
 

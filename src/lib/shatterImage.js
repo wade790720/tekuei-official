@@ -26,7 +26,7 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
   const source = new Image()
   source.src = src
-  let W, H, final, fragments, buf, data32
+  let W, H, final, fragments, buf, data32, last
   let raf = 0
   let start = 0
   let played = false
@@ -61,6 +61,7 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
 
     const R = rng(42)
     fragments = []
+    last = 0 // when the slowest fragment lands
     for (let y = 0; y < H; y += STEP)
       for (let x = 0; x < W; x += STEP) {
         const i = (y * W + x) * 4
@@ -69,12 +70,15 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
         fragments.push({
           x,
           y,
-          c: [px[i], px[i + 1], px[i + 2], px[i + 3]],
+          rgb: pack(px[i], px[i + 1], px[i + 2], 0), // alpha is added per frame
+          alpha: px[i + 3],
           sx: x + (60 + R() * 260) * dpr,
           sy: y + (R() - 0.5) * 160 * dpr,
           d: Math.max(0, (x / W + ragged) * SWEEP + (R() - 0.5) * 0.35), // stray fragments run ahead
           dur: FLY * (0.6 + R() * 0.6),
         })
+        const p = fragments[fragments.length - 1]
+        last = Math.max(last, p.d + p.dur)
       }
     buf = ctx.createImageData(W, H)
     data32 = new Uint32Array(buf.data.buffer)
@@ -85,9 +89,7 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
   function frame(now) {
     const t = (now - start) / 1000
     data32.fill(0)
-    let last = 0
     for (const p of fragments) {
-      last = Math.max(last, p.d + p.dur)
       let k = (t - p.d) / p.dur
       if (k <= 0) continue
       if (k > 1) k = 1
@@ -96,7 +98,7 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
       const y = Math.round(p.sy + (p.y - p.sy) * e)
       if (x < 0 || y < 0 || x >= W - 1 || y >= H - 1) continue
       const a = Math.min(1, k * 1.6)
-      const col = pack(p.c[0], p.c[1], p.c[2], (p.c[3] * a) | 0)
+      const col = (p.rgb | (((p.alpha * a) | 0) << 24)) >>> 0
       const i = y * W + x
       data32[i] = data32[i + 1] = data32[i + W] = data32[i + W + 1] = col
     }

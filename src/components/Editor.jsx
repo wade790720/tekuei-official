@@ -483,15 +483,22 @@ export function Editor({ doc, onChange, upload, previewing = false, renderPrevie
   const place = (hit) => {
     if (!hit || !root.current || gutter.current?.querySelector('[aria-expanded="true"]')) return // not mounted yet, or the "+" menu is open
     const box = root.current.getBoundingClientRect()
-    setBlock({ ...hit, top: hit.top - box.top, left: hit.left - box.left })
+    const top = hit.top - box.top
+    const left = hit.left - box.left
+    // Same block, same place: keep the old object so a mousemove does not re-render the editor.
+    setBlock((b) => (b && b.pos === hit.pos && b.node === hit.node && b.top === top && b.left === left ? b : { ...hit, top, left }))
   }
 
+  // Built once. New objects on each render would make Tiptap call setOptions on every keystroke.
   // The editor keeps the upload it was created with. That is fine: it unmounts when the login changes.
-  const editor = useEditor({
+  const [options] = useState(() => ({
     extensions: editorExtensions({ upload, placeholder: '開始寫……' }),
     content: doc,
-    immediatelyRender: true,
     editorProps: { attributes: { class: 'cms-ed-content', 'aria-label': '內文', spellcheck: 'false' }, ...imagePasteProps(upload) },
+  }))
+  const editor = useEditor({
+    ...options,
+    immediatelyRender: true,
     onUpdate: ({ editor: e }) => change.current(e.getJSON()),
     // Typing hides the gutter; the cursor on an empty line shows the "+" there, as in Notion.
     // On a phone that empty-line "+" is the only one (cms.css).
