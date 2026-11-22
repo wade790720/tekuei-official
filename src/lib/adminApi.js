@@ -36,9 +36,18 @@ function authHeader(token) {
   return { Authorization: `Bearer ${token}` }
 }
 
+// The server lets one admin request through at a time: of several that arrive together, only one is
+// checked and the others are refused as "too many attempts" (src/lib/adminAuth.js). So they take turns here.
+let lastAdminRequest = Promise.resolve()
+function inTurn(send) {
+  lastAdminRequest = lastAdminRequest.then(send, send)
+  return lastAdminRequest
+}
+const adminFetch = (path, init) => inTurn(() => fetch(apiPath(path), init))
+
 export async function loginAdmin(password) {
   const trimmed = password.trim()
-  const res = await fetch(apiPath('/api/admin/verify'), {
+  const res = await adminFetch('/api/admin/verify', {
     method: 'POST',
     headers: authHeader(trimmed),
   })
@@ -66,7 +75,7 @@ export async function fetchSiteData() {
  * @returns {Promise<{ ok: true, etag: string }>}  etag of the saved version
  */
 export async function saveSitePatch(patch, token, etag) {
-  const res = await fetch(apiPath('/api/data'), {
+  const res = await adminFetch('/api/data', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -85,7 +94,7 @@ export async function saveSitePatch(patch, token, etag) {
 export async function uploadSiteImage(file, token) {
   const form = new FormData()
   form.append('file', file)
-  const res = await fetch(apiPath('/api/upload'), {
+  const res = await adminFetch('/api/upload', {
     method: 'POST',
     headers: authHeader(token),
     body: form,

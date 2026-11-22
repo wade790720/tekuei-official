@@ -53,6 +53,17 @@ describe('postPage', () => {
     const out = injectPage(indexHtml, postPage(j, slug))
     assert.ok(!out.includes('"</script><b>'))
   })
+
+  it('keeps "$" in a title or an excerpt as text', () => {
+    const j = structuredClone(journal)
+    j.posts.zh[0].title = "省下 $100 和 $& 和 $' 的方法"
+    j.posts.zh[0].excerpt = '只要 $100 就能開始'
+    const out = injectPage(indexHtml, postPage(j, slug))
+    assert.match(out, /<meta\s+name="description"\s+content="只要 \$100 就能開始"/)
+    assert.ok(out.includes('<title>省下 $100 和 $&amp; 和 $&#39; 的方法 · Journal · TEKUEI</title>'))
+    assert.ok(out.includes(`"headline":"省下 $100 和 $& 和 $' 的方法"`))
+    assert.equal(out.match(/<\/head>/g).length, 1)
+  })
 })
 
 describe('site files', () => {
