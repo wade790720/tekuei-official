@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
 import { getDefaultJournal, JOURNAL_META } from '../src/data/journal.js'
-import { injectPage, journalIndexPage, llmsTxt, postPage, servePage, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.js'
+import { injectPage, journalIndexPage, llmsTxt, postPage, serveCase, servePage, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.js'
 import { fakeR2 } from './fakeR2.mjs'
 
 const journal = getDefaultJournal()
@@ -92,6 +92,18 @@ describe('servePage', () => {
   const ctx = (path) => ({
     request: new Request(`https://tekuei.com${path}`),
     env: { ASSETS: { fetch: async () => new Response(indexHtml) }, BUCKET: fakeR2() },
+  })
+
+  it('answers case and lab pages with 200, unknown ones with 404, and moved ones with 301', async () => {
+    const status = async (path) => (await serveCase(ctx(path), work)).status
+    assert.equal(await status(work[0].caseHref), 200)
+    assert.equal(await status('/labs/living-portrait'), 200)
+    assert.equal(await status('/labs/living-portrait/'), 200)
+    assert.equal(await status('/cases/nope'), 404)
+    assert.equal(await status('/labs/nope'), 404)
+    const moved = await serveCase(ctx('/cases/falling-figure'), work)
+    assert.equal(moved.status, 301)
+    assert.equal(moved.headers.get('Location'), 'https://tekuei.com/labs/falling-figure')
   })
 
   it('renders a known post with 200', async () => {

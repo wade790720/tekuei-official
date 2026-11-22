@@ -1,4 +1,4 @@
-﻿import { lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react'
+﻿import { Component, lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom'
 import SiteHero from './components/SiteHero.jsx'
 import WorkListPage from './components/WorkListPage.jsx'
@@ -12,6 +12,8 @@ import { mountClickSounds } from './lib/uiSound.js'
 import { mountReveal } from './lib/reveal.js'
 import { AdminProvider } from './context/AdminProvider.jsx'
 import { JournalProvider } from './context/JournalProvider.jsx'
+import { PAGE_ERROR } from './data/nav.js'
+import { useLang } from './i18n'
 
 // Labs load when first visited, so Lenis and the canvas effects stay out of the main bundle.
 const LabPage = lazy(() => import('./labs/LabPage.jsx'))
@@ -62,6 +64,45 @@ function ScrollClasses() {
   return null
 }
 
+// Without this, one error while a page draws (a field missing in the saved data, a chunk that
+// failed to load) takes the whole site down to a blank screen. The header stays, so the reader can leave.
+class PageBoundary extends Component {
+  state = { failed: false }
+
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+
+  // Another page gets a fresh try.
+  componentDidUpdate(prev) {
+    if (this.state.failed && prev.path !== this.props.path) this.setState({ failed: false })
+  }
+
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children
+  }
+}
+
+function PageError() {
+  const { lang } = useLang()
+  const t = PAGE_ERROR[lang]
+  return (
+    <main className="page-error" role="alert">
+      <h1>{t.title}</h1>
+      <p>{t.hint}</p>
+    </main>
+  )
+}
+
+function Pages({ children }) {
+  const { pathname } = useLocation()
+  return (
+    <PageBoundary path={pathname} fallback={<PageError />}>
+      {children}
+    </PageBoundary>
+  )
+}
+
 function AppNav() {
   const { pathname } = useLocation()
   const isCheckin = pathname === '/checkin'
@@ -89,6 +130,7 @@ export default function App() {
       <JournalProvider>
       <ScrollClasses />
       <AppNav />
+      <Pages>
       <Suspense fallback={<div className="site-loading-bar" />}>
       <Routes>
         <Route path="/" element={<SiteHero />} />
@@ -113,6 +155,7 @@ export default function App() {
         ) : null}
       </Routes>
       </Suspense>
+      </Pages>
       </JournalProvider>
       </AdminProvider>
     </BrowserRouter>

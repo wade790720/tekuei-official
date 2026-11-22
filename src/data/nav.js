@@ -15,5 +15,11 @@ export const NAV_LABELS = {
   },
 }
 
+// Shown in place of a page that failed to draw (PageBoundary in App.jsx).
+export const PAGE_ERROR = {
+  zh: { title: '這一頁出了點問題', hint: '請重新整理，或從上方的選單到其他頁面' },
+  en: { title: 'Something went wrong on this page', hint: 'Please reload, or use the menu above to go to another page.' },
+}
+
 // Header logo. Same in both languages.
 export const SITE_LOGO = 'TEKUEI CHU'

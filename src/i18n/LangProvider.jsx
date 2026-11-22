@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { LangContext } from './langContext.js'
 
 export function LangProvider({ children }) {
-  const [lang, setLang] = useState(
-    () => localStorage.getItem('lang') ?? 'zh',
-  )
+  // Anything but "en" is Chinese. Every text lookup is keyed by this value, so a stale or
+  // hand-edited one would blank the whole site, header included.
+  const [lang, setLang] = useState(() => (localStorage.getItem('lang') === 'en' ? 'en' : 'zh'))
   const toggle = () =>
     setLang((l) => {
       const next = l === 'zh' ? 'en' : 'zh'

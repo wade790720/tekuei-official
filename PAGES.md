@@ -59,7 +59,8 @@
 - 自己做的互動實驗叫 Labs。列在 Work，排在客戶案例後面，類別寫 `LABS`。全部放在 `src/labs/`，不在 R2。`index.js` 是清單，只放文字，sitemap 和 llms.txt 也會讀它（`siteCases`）。`media.js` 放 Work 列表的縮圖和影片。每個 lab 一個資料夾，裡面是它的元件、樣式、效果和素材。Lab 頁、`/live` 頁和 About 都是用到時才載入。
 - 網址是 `/labs/<id>`。版面照 motionsites.ai 的作品頁：左邊是實際效果（16:9，手機 3:4），右邊是 240px 的資訊欄（標題、類別、說明、年份、參考來源、全螢幕開啟）。
 - 效果本身在 `/labs/<id>/live`，沒有頁首。Lab 頁用 iframe 放它，所以效果自己的捲動和固定的 Canvas 不會影響外面的頁面。
-- 舊網址 `/cases/living-portrait`、`/cases/falling-figure` 用 `public/_redirects` 301 轉到 `/labs/`。
+- 舊網址 `/cases/living-portrait`、`/cases/falling-figure` 301 轉到 `/labs/`。轉址寫在 `src/lib/seo.js` 的 `serveCase`，不在 `public/_redirects`，因為 Pages Function 會先接走這些網址。
+- 不存在的 `/cases/<slug>` 和 `/labs/<id>` 回 404 狀態碼（`functions/cases/`、`functions/labs/`），畫面仍由前端顯示。
 - 每個 lab 都要寫參考來源。
 - Work 列表的縮圖可以是影片：從實際效果錄的短循環 mp4，靜音自動播放，擷取的 webp 當 poster。減少動態效果開啟時只顯示 webp。客戶案例的縮圖放在 `src/assets/work/`，對照表在 `src/data/workMedia.js`，會取代 R2 的縮圖。目前只有 Lustre Yellow 有影片。Matsu Biennial 用 R2 的縮圖，錄影放在案例頁。
 - 現有兩個：`living-portrait`（`LivingPortrait`，首頁改版前的 Hero）、`falling-figure`（`FallingFigure`，目前也是 About 頁）。About 改版後，拿掉它對 `src/labs/` 的匯入即可。
