@@ -40,8 +40,8 @@
   opacity: 0;
   transform: translateY(20px);
   transition:
-    opacity 1s var(--home-ease),
-    transform 1s var(--home-ease);
+    opacity var(--duration-reveal) var(--home-ease),
+    transform var(--duration-reveal) var(--home-ease);
 }
 
 .fade-in.is-visible {

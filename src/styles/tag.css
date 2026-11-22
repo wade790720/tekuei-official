@@ -36,9 +36,9 @@
   color: var(--text-secondary);
   cursor: pointer;
   transition:
-    color 0.3s var(--ease-touch),
-    background-color 0.3s var(--ease-touch),
-    box-shadow 0.3s var(--ease-touch);
+    color var(--duration-base) var(--ease-touch),
+    background-color var(--duration-base) var(--ease-touch),
+    box-shadow var(--duration-base) var(--ease-touch);
 }
 
 /* Trim each line to cap height and baseline, so the capitals sit in the optical middle

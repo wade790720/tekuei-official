@@ -24,8 +24,8 @@
   scrollbar-color: var(--scrollbar-thumb) transparent;
   mask-repeat: no-repeat;
   transition:
-    --scroll-shadow-start 0.3s var(--ease-touch),
-    --scroll-shadow-end 0.3s var(--ease-touch);
+    --scroll-shadow-start var(--duration-base) var(--ease-touch),
+    --scroll-shadow-end var(--duration-base) var(--ease-touch);
 }
 
 .scroll-shadow[data-scroll-start] {

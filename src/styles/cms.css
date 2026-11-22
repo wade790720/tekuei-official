@@ -13,7 +13,7 @@
   display: grid;
   place-items: center;
   padding: var(--space-6);
-  animation: cms-fade 0.25s var(--ease-touch);
+  animation: cms-fade var(--duration-base) var(--ease-touch);
 }
 
 .cms-gate__backdrop {
@@ -34,7 +34,7 @@
   align-items: center;
   gap: var(--space-4);
   text-align: center;
-  animation: cms-rise 0.35s var(--ease-touch);
+  animation: cms-rise var(--duration-base) var(--ease-touch);
 }
 
 .cms-gate__pre {
@@ -76,7 +76,7 @@
   box-shadow: var(--cms-ring);
   font-size: var(--type-small);
   color: var(--text-primary);
-  animation: cms-pop 0.25s var(--ease-touch);
+  animation: cms-pop var(--duration-base) var(--ease-touch);
 }
 
 .cms-gate[data-state='unlocked'] .cms-gate__pill {
@@ -175,7 +175,7 @@
   overflow: hidden;
   font-size: var(--type-caption);
   color: var(--text-tertiary);
-  transition: max-height 0.2s var(--ease-touch);
+  transition: max-height var(--duration-fast) var(--ease-touch);
 }
 
 .cms-row:focus-within .cms-row__hint,
@@ -212,8 +212,8 @@
   color: var(--text-tertiary);
   cursor: pointer;
   transition:
-    background-color 0.15s var(--ease-touch),
-    color 0.15s var(--ease-touch);
+    background-color var(--duration-fast) var(--ease-touch),
+    color var(--duration-fast) var(--ease-touch);
 }
 
 .cms-icon:hover:not(:disabled) {
@@ -247,7 +247,7 @@
 /* Adding data-on starts the animation, so each state blurs in once */
 .cms-save__label[data-on] {
   visibility: visible;
-  animation: cms-swap 0.3s var(--ease-touch);
+  animation: cms-swap var(--duration-base) var(--ease-touch);
 }
 
 .cms-save__label:not([data-on]) .cms-spin {
@@ -291,7 +291,7 @@
   gap: var(--space-3);
   align-items: center;
   position: relative;
-  transition: opacity 0.15s var(--ease-touch);
+  transition: opacity var(--duration-fast) var(--ease-touch);
 }
 
 .cms-post[data-dragged] {
@@ -333,7 +333,7 @@
   color: var(--text-faint);
   cursor: grab;
   touch-action: none; /* keep the finger drag from scrolling the panel */
-  transition: color 0.15s var(--ease-touch);
+  transition: color var(--duration-fast) var(--ease-touch);
 }
 
 .cms-drag:hover {
@@ -367,7 +367,7 @@
   line-height: var(--type-small-lh);
   color: var(--text-primary);
   text-decoration: none;
-  transition: color 0.3s var(--ease-touch);
+  transition: color var(--duration-base) var(--ease-touch);
 }
 
 .cms-post__title:hover {
@@ -619,7 +619,7 @@
   border-radius: var(--radius-sm);
   background: var(--surface-2);
   opacity: 0;
-  transition: opacity 0.3s var(--ease-touch);
+  transition: opacity var(--duration-base) var(--ease-touch);
 }
 
 .cms-ed-image:is(:hover, :focus-within, [data-selected]) .cms-ed-image__tools,
@@ -733,8 +733,8 @@
   font-size: var(--type-caption);
   color: var(--text-primary);
   cursor: pointer;
-  animation: cms-rise 0.3s var(--ease-touch);
-  transition: color 0.3s var(--ease-touch);
+  animation: cms-rise var(--duration-base) var(--ease-touch);
+  transition: color var(--duration-base) var(--ease-touch);
 }
 
 .cms-dock:hover {
@@ -897,8 +897,8 @@
   color: var(--text-secondary);
   cursor: pointer;
   transition:
-    background-color 0.15s var(--ease-touch),
-    color 0.15s var(--ease-touch);
+    background-color var(--duration-fast) var(--ease-touch),
+    color var(--duration-fast) var(--ease-touch);
 }
 
 .cms-ed-style:hover,

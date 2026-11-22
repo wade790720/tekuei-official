@@ -25,12 +25,12 @@
   box-shadow: -24px 0 48px rgba(0, 0, 0, 0.35);
   color: var(--text-primary);
   font-family: var(--font-label);
-  animation: drawer-slide 0.4s var(--ease-touch);
+  animation: drawer-slide var(--duration-slow) var(--ease-touch);
 }
 
 /* Closing: slides back out, a little quicker than it came in (EXIT_MS in Drawer.jsx) */
 .drawer[data-closing] {
-  animation: drawer-slide-out 0.3s var(--ease-touch) forwards;
+  animation: drawer-slide-out var(--duration-base) var(--ease-touch) forwards;
 }
 
 .drawer__head {

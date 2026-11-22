@@ -185,6 +185,13 @@
 
   /* ── Motion & typography rhythm ── */
   --ease-touch: cubic-bezier(0.16, 0.08, 0.12, 1);
+  /* Durations: each transition and animation uses one of these. Delays and loop speeds stay literal. */
+  --duration-exit: 90ms; /* menus and tooltips closing */
+  --duration-fast: 150ms; /* small controls: buttons, menu items, inputs */
+  --duration-base: 300ms; /* hover, drawer closing, accordions */
+  --duration-slow: 400ms; /* panels opening, nav, slower hovers */
+  --duration-fade: 600ms; /* fade-in */
+  --duration-reveal: 800ms; /* page entrances and image zoom */
   --duration-shake: 0.45s; /* shake-damped: OtpInput and the save button */
   /* Tracking: three values only. Display -0.02em (--type-display-ls), labels 0.1em (--type-label-ls), everything else 0. */
 }

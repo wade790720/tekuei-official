@@ -17,18 +17,18 @@
   white-space: nowrap;
   pointer-events: none;
   transform: translateX(calc(var(--x) - 50%));
-  animation: tooltip-in 0.14s var(--ease-touch);
+  animation: tooltip-in var(--duration-fast) var(--ease-touch);
 }
 
 /* Hidden: a short fade before it unmounts (TIP_OUT in Tooltip.jsx) */
 .tooltip[data-closing] {
-  animation: tooltip-out 0.08s var(--ease-touch) forwards;
+  animation: tooltip-out var(--duration-exit) var(--ease-touch) forwards;
 }
 
 /* Moving between buttons while warm: the tooltip slides instead of popping */
 .tooltip[data-travel] {
   animation: none;
-  transition: transform 0.32s var(--ease-touch);
+  transition: transform var(--duration-base) var(--ease-touch);
 }
 
 .tooltip::before {

@@ -4,7 +4,7 @@ import { ScrollShadow } from './ScrollShadow.jsx'
 import { usePresence } from '../hooks/usePresence.js'
 import '../styles/drawer.css'
 
-const EXIT_MS = 300 // matches drawer-slide-out in drawer.css
+const EXIT_MS = 300 // --duration-base, used by drawer-slide-out in drawer.css
 
 /**
  * A panel that slides in from the right edge. Put DrawerHeader and DrawerBody inside.

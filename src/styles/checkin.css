@@ -70,8 +70,8 @@
   opacity: 0;
   transform: translateY(8px);
   transition:
-    opacity 0.55s var(--ease-touch),
-    transform 0.55s var(--ease-touch);
+    opacity var(--duration-fade) var(--ease-touch),
+    transform var(--duration-fade) var(--ease-touch);
 }
 
 .checkin-wrap.is-visible {
@@ -189,7 +189,7 @@
   border: 0.5px solid var(--checkin-border);
   border-radius: 1px 0 0 1px;
   background: transparent;
-  transition: background-color 0.15s var(--ease-touch);
+  transition: background-color var(--duration-fast) var(--ease-touch);
 }
 
 .checkin-phone-container .flag-dropdown.checkin-phone-button.open,
@@ -201,7 +201,7 @@
   width: 48px;
   padding: 0 0 0 var(--space-3);
   background: transparent;
-  transition: background-color 0.15s var(--ease-touch);
+  transition: background-color var(--duration-fast) var(--ease-touch);
 }
 
 .checkin-phone-container .selected-flag:hover,
@@ -226,7 +226,7 @@
   padding: var(--space-2) var(--space-3);
   font-size: var(--type-caption);
   color: var(--text-primary);
-  transition: background-color 0.15s var(--ease-touch);
+  transition: background-color var(--duration-fast) var(--ease-touch);
 }
 
 .checkin-phone-dropdown .country:hover,
@@ -328,8 +328,8 @@
   text-transform: uppercase;
   cursor: pointer;
   transition:
-    background 0.35s var(--ease-touch),
-    opacity 0.2s ease;
+    background var(--duration-base) var(--ease-touch),
+    opacity var(--duration-fast) ease;
 }
 
 .checkin-submit:hover:not(:disabled) {

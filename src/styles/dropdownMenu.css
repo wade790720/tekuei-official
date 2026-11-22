@@ -19,8 +19,8 @@
   color: var(--text-secondary);
   cursor: pointer;
   transition:
-    background-color 0.15s var(--ease-touch),
-    color 0.15s var(--ease-touch);
+    background-color var(--duration-fast) var(--ease-touch),
+    color var(--duration-fast) var(--ease-touch);
 }
 
 .dropdown-menu__trigger:hover,
@@ -41,12 +41,12 @@
   border-radius: var(--radius-md);
   background: var(--surface-2);
   box-shadow: 0 0 0 1px var(--line), 0 16px 40px rgba(0, 0, 0, 0.5);
-  animation: dropdown-menu-in 0.15s var(--ease-touch);
+  animation: dropdown-menu-in var(--duration-fast) var(--ease-touch);
 }
 
 /* Closing: a quicker fade back up before it unmounts (EXIT_MS in DropdownMenu.jsx) */
 .dropdown-menu__list[data-closing] {
-  animation: dropdown-menu-out 0.1s var(--ease-touch) forwards;
+  animation: dropdown-menu-out var(--duration-exit) var(--ease-touch) forwards;
 }
 
 .dropdown-menu__item {
@@ -65,8 +65,8 @@
   color: var(--text-primary);
   cursor: pointer;
   transition:
-    background-color 0.15s var(--ease-touch),
-    color 0.15s var(--ease-touch);
+    background-color var(--duration-fast) var(--ease-touch),
+    color var(--duration-fast) var(--ease-touch);
 }
 
 .dropdown-menu__item:hover,

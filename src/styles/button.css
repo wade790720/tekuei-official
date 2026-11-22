@@ -16,9 +16,9 @@
   flex-shrink: 0;
   cursor: pointer;
   transition:
-    opacity 0.15s var(--ease-touch),
-    background-color 0.15s var(--ease-touch),
-    color 0.15s var(--ease-touch);
+    opacity var(--duration-fast) var(--ease-touch),
+    background-color var(--duration-fast) var(--ease-touch),
+    color var(--duration-fast) var(--ease-touch);
 }
 
 /* Disabled, e.g. save with nothing to save: the button sits back instead of glowing */
@@ -32,8 +32,8 @@
   background: transparent;
   color: var(--text-secondary);
   transition:
-    background-color 0.15s var(--ease-touch),
-    color 0.15s var(--ease-touch);
+    background-color var(--duration-fast) var(--ease-touch),
+    color var(--duration-fast) var(--ease-touch);
 }
 
 .btn--ghost:hover {
@@ -55,8 +55,8 @@
   color: var(--text-secondary);
   cursor: pointer;
   transition:
-    background-color 0.12s var(--ease-touch),
-    color 0.12s var(--ease-touch);
+    background-color var(--duration-fast) var(--ease-touch),
+    color var(--duration-fast) var(--ease-touch);
 }
 
 .btn--icon:hover {
@@ -76,7 +76,7 @@
   backdrop-filter: blur(8px);
   font-size: var(--type-small);
   color: var(--text-primary);
-  transition: background-color 0.15s var(--ease-touch);
+  transition: background-color var(--duration-fast) var(--ease-touch);
 }
 
 .btn--overlay:hover {

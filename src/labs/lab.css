@@ -96,7 +96,7 @@
   text-decoration: underline;
   text-decoration-color: var(--line-strong);
   text-underline-offset: 3px;
-  transition: color 0.3s var(--ease-touch);
+  transition: color var(--duration-base) var(--ease-touch);
 }
 
 .lab__meta a:hover {

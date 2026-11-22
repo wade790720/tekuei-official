@@ -5,7 +5,7 @@ import '../styles/tooltip.css'
 // the same tooltip slides to the next trigger at once.
 const TIP_DELAY = 400
 const TIP_WARM = 300
-const TIP_OUT = 80 // matches tooltip-out in tooltip.css
+const TIP_OUT = 90 // --duration-exit, used by tooltip-out in tooltip.css
 
 /**
  * A row of triggers that share one tooltip. Mark each trigger with data-tip (and data-kbd for a shortcut).
