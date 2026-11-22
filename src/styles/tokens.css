@@ -179,7 +179,7 @@
   /* Between page sections: 96px on phones, up to 128px on desktop. Page rhythm, not a step of the scale. */
   --section-gap: clamp(var(--space-24), 10vw, 128px);
 
-  /* Corner radius: small controls 8, cards 12–16, pills full */
+  /* Corner radius: small controls 8, menus and inputs 12, cards 16, pills full */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;

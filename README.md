@@ -76,7 +76,7 @@ npm run dev:pages                # build 後用 wrangler 跑，http://localhost:
 
 1. 在網站上按 Ctrl+S（Mac 是 ⌘+S）。
 2. 輸入 6 位數密碼，也就是 Pages 的 `ADMIN_SECRET`。
-3. 編輯面板從右側滑出，頁面變成即時預覽。
+3. 編輯面板從右側滑出，內文直接在頁面上編輯。
 4. 修改後再按一次 Ctrl+S，或按面板上的「儲存」。
 
 只有 Journal 可以在前台編輯。About、Work、案例頁的內容改在 `src/data/`。
@@ -179,7 +179,7 @@ public/                    原樣複製到 dist/，不要放測試檔
 
 ### 備份內容
 
-後台下載 JSON，覆蓋 `src/data/data.json`，再 commit。
+用瀏覽器打開正式站的 `/api/data`，存成 JSON，覆蓋 `src/data/data.json`，再 commit。
 
 ## 授權
 

@@ -51,7 +51,7 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 
 - 文案不要寫死在元件裡。放進 `src/data/`，並同時提供 `zh` 和 `en`。
 - 顏色、線條、easing 只用 `tokens.css` 的 token。不要寫新的色碼。細節見 DESIGN.md。
-- 新的 class 用「頁面或區塊前綴 + BEM」，例如 `journal-footer__link`、`is-in`。
+- 新的 class 用「頁面或區段前綴 + BEM」，例如 `journal-footer__link`、`is-in`。
 - Canvas 效果寫成 `mountXxx(canvas, opts)`，回傳 cleanup 函式。元件在 `useEffect` 裡呼叫它。參考 `src/lib/glyphField.js`。
 - 每個動畫都要支援 `prefers-reduced-motion`。效果停下後要停止 `requestAnimationFrame`。
 - 樣式一個元件或一頁一個檔案，放在 `src/styles/`，檔名和元件或頁面相同。
@@ -86,13 +86,9 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 - 從別人網站拿來的圖或文字，不可以直接上線。要先告訴使用者版權風險。
 
 ## 寫作規則
-**跟 AI 的對話、回報、commit message、規範檔（AGENTS.md、PRODUCT.md、DESIGN.md、PAGES.md）：用 ASD-STE100，做到約八成。**
+同一個東西只用一個名稱。固定的用詞列在 DESIGN.md 的「用詞」。
 
-- 一個詞只有一個意思。同一個東西不換名稱。
-- 句子要短。英文 20 字以內，中文以同等長度為準。用主動語態。一句只講一個指示。
-- 只有在照規則寫反而讓文字變差時，才可以破例。
-
-**網站上的所有文字（UI 文案、案例、About、文章、Component Library）：不用 STE，照 zh-tw-writing skill 的台灣正式中文寫法。**
+**網站上的所有文字（UI 文案、案例、About、文章、Component Library）：照 zh-tw-writing skill 的台灣正式中文寫法。**
 
 - 同一個主題的短句用逗號接成一句，講完一個意思才用句號。
 - 名詞片語、標題、表格儲存格、按鈕和標籤，結尾不加句號。
