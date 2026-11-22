@@ -48,6 +48,15 @@ function ScrollClasses() {
     entry.current = key
     if (type === 'POP') window.scrollTo({ top: scrollByEntry.get(key) ?? 0, left: 0, behavior: 'instant' })
     else if (pathname !== lastPath.current) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    // A new page (not the first load): move focus to its h1, so a screen reader announces where you are
+    if (lastPath.current !== null && pathname !== lastPath.current) {
+      requestAnimationFrame(() => {
+        const h1 = document.querySelector('main h1')
+        if (!h1) return
+        h1.setAttribute('tabindex', '-1')
+        h1.focus({ preventScroll: true })
+      })
+    }
     lastPath.current = pathname
   }, [key, pathname, type])
   return null

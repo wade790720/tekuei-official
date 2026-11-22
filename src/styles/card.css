@@ -9,3 +9,10 @@
   background: var(--surface-1);
   box-shadow: var(--card-ring);
 }
+
+/* Windows high contrast removes box-shadow; draw the edge with a system color there */
+@media (forced-colors: active) {
+  .card {
+    border: 1px solid CanvasText;
+  }
+}

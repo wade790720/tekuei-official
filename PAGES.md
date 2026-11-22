@@ -32,6 +32,7 @@
 
 ## Journal 文章頁
 
+- 文章還沒有英文翻譯時（英文內文是空的），英文版顯示中文的文章，標題下方加一行「This post is only in Chinese for now.」，文章加 `lang="zh-Hant"`。Journal 列表也顯示中文標題。只有讀者看到的畫面這樣做，編輯模式仍然顯示英文的草稿（`readableJournal`）。
 - 最上面是 `Breadcrumbs`：首頁、Journal、文章標題。
 - 文末（上一篇、下一篇下面）有「── 返回 Journal」。
 - 從列表點進來時，Breadcrumbs 的 Journal 和文末的返回連結都等於「上一頁」，回到列表原本的捲動位置和標籤篩選。從別處進來時，連到 `/journal`。

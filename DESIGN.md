@@ -26,10 +26,10 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 | 載入中的佔位方塊（Skeleton） | `--surface-3` | ivory 14% 混入 obsidian |
 | 分隔線、格線 | `--line` | ivory 8% |
 | 邊框、要看得到的分隔 | `--line-strong` | ivory 14% |
-| 強調 | `--ember` | `#c99a63` gold |
+| 強調、聚焦框 | `--ember` | `#c99a63` gold |
 | hover、光暈 | `--ember-soft` | `#e4b57b` amber |
-| 聚焦框、目前頁的底線 | `--ember-line` | gold 30% |
-| hover 的淡底 | `--ember-whisper` | gold 14% |
+| 目前頁的底線、裝飾線 | `--ember-line` | gold 30% |
+| hover 的淡底、選取的標籤底色 | `--ember-whisper` | gold 14% |
 | 錯誤 | `--danger` | `#e8907c` |
 
 - 比例：約 70% 黑與炭灰、25% 象牙白文字、5% 金色。
@@ -60,6 +60,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 ## 字級
 
 - 字級、行高、字距都是 token：`--type-display`、`--type-h1`……`--type-mono`，各自帶 `-lh`（行高），大標和標籤另有 `-ls`（字距）。
+- 字級 token 用 rem，讀者在瀏覽器調大字級時，網站跟著變大。根字級是 16px，token 旁的註解寫 px。
 - 內文 17px、行高 1.9。小標題 22px、行高 1.5。大標 clamp(44–72px)。
 - 例外：Journal 文章的段落和清單照 Editor.js 的間距，行高 1.6，段落之間 12px（`--space-3`）。
 - 需要閱讀的字至少 12px（`--type-caption`）。只有標籤可以用 11px。
@@ -230,6 +231,14 @@ useEffect(() => mountXxx(canvas.current), [])
 - 內文對比至少 4.5:1。內文字級 16px 以上。
 - 點擊範圍：手機上至少 44 × 44px，桌面的編輯面板至少 40 × 40px。外觀小的按鈕用 `::before` 撐大，有 `overflow: hidden` 的元素改用 padding 加上相同的負 margin。相鄰的點擊範圍不能重疊，排得太密時，點擊範圍只撐到兩者間距的一半。
 - 圖示線寬一律 1.5（文字都是 400 字重）。
+- 聚焦框用 `--ember`（7.76:1）。`--ember-line` 只有 1.69:1，不可用在聚焦框。聚焦框和元件邊界至少 3:1。
+- 狀態不能只靠顏色。例如選取的標籤，除了金色框線，還要有填滿的底色。
+- `<html lang>` 跟著語言切換：中文 `zh-Hant`，英文 `en`。一段文字的語言和頁面不同時，在那一段加 `lang`。
+- 每頁的主要內容包在一個 `<main>` 裡。換頁後，焦點移到新頁面的 `<h1>`（`App.jsx` 的 `ScrollClasses`）。
+- 蓋住整頁的浮層（手機選單）打開時，`#root` 加上 `inert`，Tab 不會跑到被蓋住的頁面。浮層要 portal 到 `<body>`。
+- 頁首是固定的，`html` 設 `scroll-padding-top: var(--space-24)`，焦點和錨點不會停在頁首底下。
+- 只用 `box-shadow` 畫邊緣的元件，在 `@media (forced-colors: active)` 裡補一條 `CanvasText` 邊框。
+- hover 樣式寫在 `@media (hover: hover)` 裡，手機點一下之後不會一直亮著。目前首頁、Journal、頁首、卡片、Button、Tag、Breadcrumbs 已經改好，其他頁面還沒有。
 - Canvas 是裝飾，加 `aria-hidden`。真正的標題、按鈕、連結要是 HTML 文字。
 - 手機上要順暢。粒子類效果把 `devicePixelRatio` 上限設在 1.5–2。
 

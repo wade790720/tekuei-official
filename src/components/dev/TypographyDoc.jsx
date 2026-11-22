@@ -9,6 +9,9 @@ import { Example } from './doc/Example.jsx'
 import { RuleList } from './doc/RuleList.jsx'
 import { TypeScalePicker } from './doc/TypeScalePicker.jsx'
 import { rootVar } from './doc/tokens.js'
+
+// Sizes are rem in tokens.css; the docs show the px a 16px root gives
+const toPx = (v) => v.replace(/(\d*\.?\d+)rem/g, (_, n) => `${+n * 16}px`)
 import { TYPE_DOC, TYPE_RULES, TYPE_STEPS } from './foundations.data.js'
 import { SpecView } from './SpecView.jsx'
 
@@ -36,7 +39,7 @@ function readValues() {
     steps: TYPE_STEPS.map((s) => [
       s.name,
       s.token,
-      rootVar(s.token),
+      toPx(rootVar(s.token)),
       rootVar(`${s.token}-lh`),
       s.tracking ? rootVar(`${s.token}-ls`) : '0',
       s.use,

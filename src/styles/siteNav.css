@@ -117,13 +117,20 @@
   transition: transform var(--duration-slow) var(--ease-touch);
 }
 
-.site-nav__links a:hover {
-  color: var(--text-primary);
+@media (hover: hover) {
+  .site-nav__links a:hover {
+    color: var(--text-primary);
+  }
 }
 
-.site-nav__links a:hover::after,
 .site-nav__links a.is-active::after {
   transform: scaleX(1);
+}
+
+@media (hover: hover) {
+  .site-nav__links a:hover::after {
+    transform: scaleX(1);
+  }
 }
 
 .site-nav__links a.is-active {
@@ -137,8 +144,10 @@
   cursor: pointer;
 }
 
-.site-nav__lang:hover {
-  color: var(--text-primary);
+@media (hover: hover) {
+  .site-nav__lang:hover {
+    color: var(--text-primary);
+  }
 }
 
 .site-nav__lang--overlay {

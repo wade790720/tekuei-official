@@ -40,12 +40,14 @@
   text-decoration: none;
 }
 
-a.breadcrumbs__link:hover {
-  text-decoration: underline;
+@media (hover: hover) {
+  a.breadcrumbs__link:hover {
+    text-decoration: underline;
+  }
 }
 
 .breadcrumbs__link:focus-visible {
-  outline: 1px solid var(--ember-line);
+  outline: 1px solid var(--ember); /* --ember-line is 1.69:1 on the page; a focus ring needs 3:1 */
   outline-offset: 2px;
   border-radius: 2px;
 }

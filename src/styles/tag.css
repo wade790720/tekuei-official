@@ -65,18 +65,22 @@
   text-box: trim-both cap alphabetic;
 }
 
-.tag--button:hover {
-  background: var(--ember-whisper);
-  color: var(--text-primary);
+@media (hover: hover) {
+  .tag--button:hover {
+    background: var(--ember-whisper);
+    color: var(--text-primary);
+  }
 }
 
 .tag--button[aria-pressed='true'] {
+  /* Filled as well as gold, so the choice does not rest on color alone */
+  background: var(--ember-whisper);
   box-shadow: inset 0 0 0 0.5px var(--ember);
   color: var(--ember-soft);
 }
 
 .tag--button:focus-visible {
-  outline: 1px solid var(--ember-line);
+  outline: 1px solid var(--ember); /* --ember-line is 1.69:1 on the page; a focus ring needs 3:1 */
   outline-offset: 2px;
 }
 

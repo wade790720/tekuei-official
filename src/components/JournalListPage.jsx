@@ -2,8 +2,9 @@ import { useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Skeleton } from './Skeleton.jsx'
 import { Tag, TagList } from './Tag.jsx'
-import { JOURNAL_FILTER, JOURNAL_HEADER, JOURNAL_META, postTags, tagCounts } from '../data/journal.js'
+import { JOURNAL_FILTER, JOURNAL_HEADER, JOURNAL_META, postTags, readableJournal, tagCounts } from '../data/journal.js'
 import { useJournal } from '../context/journal.js'
+import { useAdmin } from '../context/admin.js'
 import { JournalListEditPanel } from './journal/JournalEditPanel.jsx'
 import { HOME_FOOTER } from '../data/homepage.js'
 import { useLang } from '../i18n'
@@ -21,8 +22,9 @@ export default function JournalListPage() {
   const meta = JOURNAL_META[lang]
   const header = JOURNAL_HEADER[lang]
   const { content, loading } = useJournal()
+  const { editing } = useAdmin()
   // Until R2 answers, content holds the bundled default posts; show placeholders instead of swapping them out.
-  const allPosts = loading ? [] : content.posts[lang]
+  const allPosts = loading ? [] : (editing ? content : readableJournal(content, lang)).posts[lang]
   // The chosen tag lives in the URL (?tag=AI), so a filtered list can be shared.
   const [params, setParams] = useSearchParams()
   const tag = params.get('tag')?.toUpperCase() ?? null
@@ -41,6 +43,7 @@ export default function JournalListPage() {
 
   return (
     <div className="journal-page">
+      <main>
       <header className="journal-header">
         <canvas className="journal-header__glyphs" ref={glyphs} aria-hidden />
         <div className="journal-header__inner">
@@ -90,6 +93,7 @@ export default function JournalListPage() {
           </section>
         ))}
       </div>
+      </main>
 
       <JournalFooter posts={allPosts} />
       <JournalListEditPanel />

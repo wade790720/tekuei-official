@@ -15,6 +15,7 @@
   white-space: nowrap;
   flex-shrink: 0;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent; /* the press scale is the feedback */
   transition:
     opacity var(--duration-fast) var(--ease-touch),
     background-color var(--duration-fast) var(--ease-touch),
@@ -38,9 +39,11 @@
     transform var(--duration-fast) var(--ease-touch);
 }
 
-.btn--ghost:hover {
-  background: var(--gray-a3);
-  color: var(--text-primary);
+@media (hover: hover) {
+  .btn--ghost:hover {
+    background: var(--gray-a3);
+    color: var(--text-primary);
+  }
 }
 
 /* One glyph in a 32px square: editor toolbars and the block gutter */
@@ -62,9 +65,11 @@
     transform var(--duration-fast) var(--ease-touch);
 }
 
-.btn--icon:hover {
-  background: var(--gray-a5);
-  color: var(--text-primary);
+@media (hover: hover) {
+  .btn--icon:hover {
+    background: var(--gray-a5);
+    color: var(--text-primary);
+  }
 }
 
 /* A round icon button on a picture or video: a dark glass disc keeps it readable on any image */
@@ -84,8 +89,10 @@
     transform var(--duration-fast) var(--ease-touch);
 }
 
-.btn--overlay:hover {
-  background: color-mix(in srgb, var(--surface-0) 85%, transparent);
+@media (hover: hover) {
+  .btn--overlay:hover {
+    background: color-mix(in srgb, var(--surface-0) 85%, transparent);
+  }
 }
 
 .btn--icon[aria-pressed='true'] {

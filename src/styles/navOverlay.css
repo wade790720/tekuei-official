@@ -235,9 +235,14 @@ html.nav-overlay-open .site-nav {
   border-top: 0.5px solid var(--line);
 }
 
-.nav-overlay__link.is-active,
-.nav-overlay__link:hover {
+.nav-overlay__link.is-active {
   color: var(--ember);
+}
+
+@media (hover: hover) {
+  .nav-overlay__link:hover {
+    color: var(--ember);
+  }
 }
 
 @keyframes nav-overlay-in {
