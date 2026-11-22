@@ -16,7 +16,7 @@ import { compressImage } from '../lib/compressImage.js'
 import { safeHref } from '../lib/richText.js'
 
 
-// In-editor views for the custom journal nodes (see extensions.js).
+// In-editor views for the custom journal nodes.
 // Text inside quotes and code is edited in place; card settings use small fields on the card.
 
 // Pasted and dropped images: the card shows a preview at once, and its view swaps in the
@@ -596,7 +596,7 @@ function applyBlock(editor, kind) {
   else run.insertContent({ type: { image: 'imageCard', slides: 'slidesCard', video: 'videoCard' }[kind] }).run()
 }
 
-// ── Block gutter: "+" and "⠿" beside the line under the pointer, as in Notion and Editor.js ──
+// Block gutter: "+" and "⠿" beside the line under the pointer, as in Notion and Editor.js
 
 const HANDLE = 24 // px, the gutter buttons' height (cms.css .cms-ed-gutter .btn--icon)
 

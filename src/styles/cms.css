@@ -107,7 +107,7 @@
   color: var(--text-tertiary);
 }
 
-/* ── Panel ──
+/* Panel
    Modelled on the Framer CMS sheet: one label | value row per field, hairline dividers,
    values that look like plain text until you type, and no focus frames. */
 
@@ -420,7 +420,7 @@
   color: var(--text-tertiary);
 }
 
-/* ── Rich-text editor (Editor): no box; the toolbar is a few small pill groups ── */
+/* Rich-text editor (Editor): no box; the toolbar is a few small pill groups */
 
 /* The formatting bubble over selected text: one rounded bar of icon buttons, with warm tooltips (Editor) */
 .cms-ed-bar {

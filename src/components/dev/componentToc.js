@@ -3,7 +3,7 @@
 /** Heading id for one API part, e.g. 'NavOverlay' → 'api-navoverlay'. */
 export const partId = (name) => `api-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`
 
-/** [id, label, level?][] — level 3 entries are indented under the h2 before them. */
+/** [id, label, level?][]. Level 3 entries are indented under the h2 before them. */
 export function componentToc(item) {
   return [
     ['api', 'API Reference'],

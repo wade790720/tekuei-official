@@ -228,7 +228,7 @@
   );
 }
 
-/* ── List: the latest post as a card, the rest as rows grouped by year ── */
+/* List: the latest post as a card, the rest as rows grouped by year */
 
 .journal-list {
   position: relative;

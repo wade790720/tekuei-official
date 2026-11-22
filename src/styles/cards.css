@@ -364,7 +364,7 @@
   }
 }
 
-/* ── Slides (SlidesCard) ──
+/* Slides (SlidesCard)
    After the interfaces.dev slider: each slide is the track width minus 160px, so the neighbours
    peek in 80px on each side, and the edges fade into the page. */
 

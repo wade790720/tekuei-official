@@ -71,7 +71,7 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 - 新增或修改元件時，同一個變更裡更新 Component Library：`componentLibrary.data.js` 的說明，有需要時加 `demos.jsx` 的示範。
 - 回報時列出：用了哪些既有元件、擴充了哪一個、新增了哪一個以及原因。
 - 不要新增相依套件。真的需要時，先問使用者。
-- 註解只寫程式碼看不出來的原因。
+- 註解只寫程式碼看不出來、而且我們改不了的原因（外部規則、授權、API 說明）。自己的程式碼很怪時改程式碼，不寫註解辯解。`npm run lint` 的 `no-slop` 會擋下區塊橫幅、日期、lint 抑制、em dash、AI 用詞、指向不存在的檔案（`scripts/noSlop.mjs`），Claude Code 每次改檔也會跑。
 
 ## 不明顯的坑
 
