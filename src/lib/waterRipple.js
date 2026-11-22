@@ -6,6 +6,8 @@
 // position: fixed (CSS Filter Effects spec). A Canvas 2D overlay adds gold light on the crests.
 // Everything is removed, and requestAnimationFrame stops, once the surface is still.
 
+import { cssRgb } from './cssRgb.js'
+
 const STEP_MS = 1000 / 360 // fixed rate, whatever the screen's refresh rate
 const WAVE_SPEED = Math.SQRT1_2 // cells per step: the speed of this grid's wave equation
 const REACH_MS = 800 // the front crosses the whole screen diagonal in this time; sets the cell size
@@ -92,11 +94,20 @@ function createSim() {
   let last = start
   let pending = 0
   let energy = Infinity
+  // Cells the waves can have reached. A step moves a wave at most one cell, so this box grows by one
+  // cell per step from the drops, and everything outside it is still zero.
+  let x0 = gw, x1 = 0, y0 = gh, y1 = 0
+  let frames = 0
+  let lastScroll = ''
 
   function step() {
+    x0 = Math.max(1, x0 - 1)
+    y0 = Math.max(1, y0 - 1)
+    x1 = Math.min(gw - 2, x1 + 1)
+    y1 = Math.min(gh - 2, y1 + 1)
     let energy = 0
-    for (let j = 1; j < gh - 1; j++) {
-      for (let i = 1; i < gw - 1; i++) {
+    for (let j = y0; j <= y1; j++) {
+      for (let i = x0; i <= x1; i++) {
         const k = j * gw + i
         const v = ((cur[k - 1] + cur[k + 1] + cur[k - gw] + cur[k + gw]) / 2 - prev[k]) * damp[k]
         prev[k] = v
@@ -107,7 +118,7 @@ function createSim() {
     return energy
   }
 
-  function draw() {
+  function draw(scrollLeft, scrollTop) {
     const l = lightImg.data
     const m = mapImg.data
     for (let j = 0; j < h; j++) {
@@ -134,12 +145,18 @@ function createSim() {
     mapCtx.putImageData(mapImg, 0, 0)
 
     // The root filter works in document coordinates: keep the map over the viewport as the page scrolls.
-    const box = { x: scrollX, y: scrollY, width: vw, height: vh }
-    for (const [k, v] of Object.entries(box)) {
-      filter.setAttribute(k, v)
-      image.setAttribute(k, v)
+    const scroll = `${scrollLeft},${scrollTop}`
+    if (scroll !== lastScroll) {
+      lastScroll = scroll
+      const box = { x: scrollLeft, y: scrollTop, width: vw, height: vh }
+      for (const [k, v] of Object.entries(box)) {
+        filter.setAttribute(k, v)
+        image.setAttribute(k, v)
+      }
     }
-    image.setAttribute('href', map.toDataURL())
+    // Encoding the map as a PNG is the costly part, so it happens every other frame; the light still moves every frame.
+    // toBlob would not block, but Chrome encodes it in idle time, up to a second late, longer than the whole ripple.
+    if (frames++ % 2 === 0) image.setAttribute('href', map.toDataURL())
   }
 
   function stop() {
@@ -152,6 +169,9 @@ function createSim() {
   }
 
   function frame(now) {
+    // Read the scroll position before this frame writes any style, so the read does not force a layout.
+    const scrollLeft = scrollX
+    const scrollTop = scrollY
     for (let n = swaps.length - 1; n >= 0; n--) {
       if (now >= swaps[n][0]) swaps.splice(n, 1)[0][1]()
     }
@@ -165,7 +185,7 @@ function createSim() {
     const fade = Math.min(1, energy / 20, (start + MAX_MS - now) / FADE_MS)
     displace.setAttribute('scale', String(BEND_PX * Math.max(0, fade)))
     light.style.opacity = String(Math.max(0, fade))
-    draw()
+    draw(scrollLeft, scrollTop)
     if ((energy < 0.5 && !swaps.length) || now - start > MAX_MS) {
       stop()
       return
@@ -187,6 +207,10 @@ function createSim() {
           cur[jj * gw + ii] -= DROP * 0.5 * (1 + Math.cos(Math.PI * Math.sqrt(d2)))
         }
       }
+      x0 = Math.min(x0, ci - DROP_R)
+      x1 = Math.max(x1, ci + DROP_R)
+      y0 = Math.min(y0, cj - DROP_R)
+      y1 = Math.max(y1, cj + DROP_R)
       start = performance.now()
       if (onSwap) swaps.push([start + SWAP_MS, onSwap])
       if (!raf) raf = requestAnimationFrame(frame)
@@ -223,7 +247,7 @@ function emberRgb() {
   const probe = document.createElement('span')
   probe.style.color = 'var(--ember)'
   document.body.append(probe)
-  const m = getComputedStyle(probe).color.match(/\d+/g) ?? [201, 154, 99]
+  const rgb = cssRgb(getComputedStyle(probe).color)
   probe.remove()
-  return m.slice(0, 3).map(Number)
+  return rgb
 }
