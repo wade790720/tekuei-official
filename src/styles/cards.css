@@ -22,7 +22,6 @@
   white-space: nowrap;
 }
 
-/* ── Code ── */
 
 .code-card__bar {
   display: flex;
@@ -132,7 +131,6 @@
 .code-card__tok--comment { color: var(--code-comment); font-style: italic; }
 .code-card__tok--punct { color: var(--code-punct); }
 
-/* ── Image ── */
 
 .image-card img {
   display: block;
@@ -155,7 +153,6 @@
   box-shadow: 0 0 0 1px var(--line);
 }
 
-/* ── Video ── */
 
 .video-card {
   background: var(--surface-0); /* letterbox behind the video */

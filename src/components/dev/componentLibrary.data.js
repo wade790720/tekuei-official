@@ -15,7 +15,6 @@ export const GROUPS = [
     title: '元件',
     intro: '可以在多個地方使用的介面元件',
     items: [
-      // ── Card ──
       {
         id: 'card',
         family: 'Card',
@@ -38,7 +37,6 @@ export const GROUPS = [
         notes: ['overflow 是 hidden，圖片和影片會被裁成圓角。', '光環寫在 --card-ring，要加陰影時接在它後面。'],
       },
 
-      // ── Button ──
       {
         id: 'button',
         name: 'Button',
@@ -72,7 +70,6 @@ export const GROUPS = [
         ],
       },
 
-      // ── Switch ──
       {
         id: 'switch',
         name: 'Switch',
@@ -94,7 +91,6 @@ export const GROUPS = [
         notes: ['Switch 本身沒有文字，旁邊的文字要另外寫。'],
       },
 
-      // ── TextArea ──
       {
         id: 'text-area',
         name: 'TextArea',
@@ -115,7 +111,6 @@ export const GROUPS = [
         notes: [],
       },
 
-      // ── TextField ──
       {
         id: 'text-field',
         name: 'TextField',
@@ -137,7 +132,6 @@ export const GROUPS = [
         notes: ["type='number' 時沒有上下箭頭，↑、↓ 鍵仍然可以增減。"],
       },
 
-      // ── Tooltip ──
       {
         id: 'tooltip',
         name: 'TooltipGroup',
@@ -325,7 +319,6 @@ export const GROUPS = [
         ],
       },
 
-      // ── DropdownMenu ──
       {
         id: 'dropdown-menu',
         name: 'DropdownMenu',
@@ -385,7 +378,6 @@ export const GROUPS = [
       },
 
 
-      // ── Editor ──
       {
         id: 'editor',
         name: 'Editor',
@@ -445,7 +437,6 @@ export const GROUPS = [
         ],
       },
 
-      // ── Tag ──
       {
         id: 'tag',
         name: 'Tag',
@@ -489,7 +480,6 @@ export const GROUPS = [
         ],
       },
 
-      // ── OtpInput ──
       {
         id: 'otp-input',
         name: 'OtpInput',
@@ -542,7 +532,6 @@ export const GROUPS = [
         ],
       },
 
-      // ── Drawer ──
       {
         id: 'drawer',
         name: 'Drawer',
@@ -592,7 +581,6 @@ export const GROUPS = [
         ],
       },
 
-      // ── Breadcrumbs ──
       {
         id: 'breadcrumbs',
         name: 'Breadcrumbs',
@@ -653,7 +641,6 @@ export const GROUPS = [
         ],
       },
 
-      // ── Accordion ──
       {
         id: 'accordion',
         name: 'Accordion',
@@ -732,7 +719,6 @@ export const GROUPS = [
         ],
       },
 
-      // ── ScrollShadow ──
       {
         id: 'scroll-shadow',
         name: 'ScrollShadow',
@@ -770,7 +756,6 @@ export const GROUPS = [
         ],
       },
 
-      // ── Skeleton ──
       {
         id: 'skeleton',
         name: 'Skeleton',

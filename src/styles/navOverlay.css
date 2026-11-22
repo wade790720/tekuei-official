@@ -39,7 +39,6 @@
   top: 28px;
 }
 
-/* 開啟時隱藏底層 nav，避免 TEKUEI 與選單重疊 */
 html.nav-overlay-open {
   overflow: hidden;
 }
@@ -53,11 +52,9 @@ html.nav-overlay-open .site-nav {
   pointer-events: none;
 }
 
-/* ── 全螢幕 Overlay（portal 至 body）── */
 
 .nav-overlay {
   --nav-overlay-ease: var(--ease-touch);
-  --nav-overlay-ms: 250ms; /* closes at 0.82 of this, about 200ms */
 
   position: fixed;
   inset: 0;
@@ -87,17 +84,6 @@ html.nav-overlay-open .site-nav {
 .nav-overlay.is-closing {
   animation: nav-overlay-out calc(var(--nav-overlay-ms) * 0.82) var(--nav-overlay-ease) forwards;
   pointer-events: none;
-}
-
-/* 防禦性重置：不受其他頁面 nav 規則影響 */
-.nav-overlay nav {
-  position: static;
-  inset: auto;
-  opacity: 1;
-  animation: none;
-  padding: 0;
-  margin: 0;
-  pointer-events: auto;
 }
 
 .nav-overlay__bar {

@@ -20,7 +20,7 @@
   animation: tooltip-in var(--duration-fast) var(--ease-touch);
 }
 
-/* Hidden: a short fade before it unmounts (TIP_OUT in Tooltip.jsx) */
+/* Hidden: a short fade before it unmounts */
 .tooltip[data-closing] {
   animation: tooltip-out var(--duration-exit) var(--ease-touch) forwards;
 }

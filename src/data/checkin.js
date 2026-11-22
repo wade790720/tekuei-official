@@ -6,10 +6,7 @@ export const CHECKIN_META = {
 /** LINE LIFF ID */
 export const CHECKIN_LIFF_ID = '2010388258-lu3PdhFT'
 
-/**
- * Cloudflare Worker 端點（部署後替換為實際網址）
- * 可透過 .env 設定：VITE_CHECKIN_WORKER_URL
- */
+/** Cloudflare Worker 端點，預設是 workers.dev 網址。可用 VITE_CHECKIN_WORKER_URL 覆寫 */
 export const CHECKIN_WORKER_URL =
   import.meta.env.VITE_CHECKIN_WORKER_URL ||
   'https://tekuei-checkin.tekuei-xx.workers.dev/checkin'

@@ -60,7 +60,7 @@
   }
 }
 
-/* Closing: a quicker fade back up before it unmounts (EXIT_MS in DropdownMenu.jsx) */
+/* Closing: a quicker fade back up before it unmounts */
 .dropdown-menu__list[data-closing] {
   opacity: 0;
   transform: translateY(-4px);

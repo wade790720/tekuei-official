@@ -18,7 +18,7 @@ export function digitsToE164(value, country = null) {
     : undefined
   const dial = String(country?.dialCode || '').replace(/\D/g, '')
 
-  // 1) 優先用 libphonenumber 依國家解析（會自動去掉 trunk prefix）
+  // 優先用 libphonenumber 依國家解析（會自動去掉 trunk prefix）
   if (iso) {
     let national = digits
     if (dial && digits.startsWith(dial)) {
@@ -30,13 +30,12 @@ export function digitsToE164(value, country = null) {
     }
   }
 
-  // 2) 已是 +E.164 可解析
   const parsedPlus = parsePhoneNumberFromString(`+${digits}`)
   if (parsedPlus) {
     return parsedPlus.format('E.164')
   }
 
-  // 3) fallback：手動去掉國碼後的開頭 0（各國 trunk prefix 習性）
+  // fallback：手動去掉國碼後的開頭 0（各國 trunk prefix 習性）
   if (dial && digits.startsWith(dial)) {
     const national = digits.slice(dial.length).replace(/^0+/, '')
     if (national) return `+${dial}${national}`

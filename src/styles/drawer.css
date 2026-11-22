@@ -35,7 +35,7 @@
   }
 }
 
-/* Closing: slides back out, a little quicker than it came in (EXIT_MS in Drawer.jsx) */
+/* Closing: slides back out, a little quicker than it came in */
 .drawer[data-closing] {
   transform: translateX(100%);
   transition-duration: var(--duration-base);

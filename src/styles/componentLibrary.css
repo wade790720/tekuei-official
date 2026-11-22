@@ -94,7 +94,6 @@
   background: var(--ember-whisper);
 }
 
-/* ── Body: the page and the "本頁" nav ── */
 
 .cl-body {
   padding: calc(var(--cl-top) + var(--space-12)) var(--cl-edge) var(--space-24);
@@ -146,7 +145,6 @@
   }
 }
 
-/* ── Page header ── */
 
 .cl-head {
   margin-bottom: var(--space-12);
@@ -199,7 +197,6 @@
   color: var(--text-secondary);
 }
 
-/* ── Intro: category cards ── */
 
 .cl-cats {
   display: grid;
@@ -252,7 +249,6 @@
   color: var(--text-secondary);
 }
 
-/* ── Previous / next ── */
 
 .cl-pager {
   display: flex;
@@ -445,7 +441,6 @@
   --koi-food: var(--ember-soft);
 }
 
-/* ── Rules, props, notes ── */
 
 .cl-rules {
   display: grid;
@@ -545,7 +540,6 @@
   margin: 0;
 }
 
-/* ── Narrow ── */
 
 @media (max-width: 900px) {
   /* Phones and tablets: the sidebar sits above the page instead of beside it */
@@ -662,7 +656,6 @@
   }
 }
 
-/* Editor demo: editor and rendered result side by side */
 /* Editor demo: Input (Editor) and Output (RichText) side by side, filling the example card */
 .cl-editor {
   display: grid;
@@ -744,7 +737,6 @@
   }
 }
 
-/* ── Foundations: colour, type, spacing ── */
 
 .fd-body {
   margin-top: var(--space-6);

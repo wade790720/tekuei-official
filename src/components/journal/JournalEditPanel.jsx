@@ -76,7 +76,6 @@ function useJournalEditing() {
   }
 }
 
-// ── Post page ──
 
 export function JournalPostEditPanel({ slug }) {
   const { lang } = useLang()
@@ -160,7 +159,6 @@ export function JournalPostBody({ slug, children }) {
   )
 }
 
-// ── List page ──
 
 export function JournalListEditPanel() {
   const { lang } = useLang()

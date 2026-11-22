@@ -1,4 +1,4 @@
-// Home hero interaction. Hover on the figure: tracking boxes with ASCII and a second picture.
+// Hover on the figure: tracking boxes with ASCII and a second picture.
 // Double-click on the figure: glitch, then the second picture for two seconds with sparks on its outline.
 // Image geometry (IW/IH and the focus points in layout) fits bg.webp, cut.webp and alt.webp in this folder.
 
@@ -59,7 +59,7 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
   const onSubject = (x, y) => mk[idx(x, y) + 3] > 128
 
   function layout() {
-    // The canvas fills the stage, which homeHero.css keeps inside --page-max.
+    // The canvas fills the stage, which livingPortrait.css keeps inside --page-max.
     W = canvas.clientWidth
     H = canvas.clientHeight
     const narrow = W < 700
