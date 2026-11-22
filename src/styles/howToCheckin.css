@@ -198,9 +198,11 @@
   gap: var(--space-2);
 }
 
-.howto-checkin-step__cta:hover {
-  border-color: var(--ember);
-  background: var(--ember);
+@media (hover: hover) {
+  .howto-checkin-step__cta:hover {
+    border-color: var(--ember);
+    background: var(--ember);
+  }
 }
 
 .howto-checkin-step__cta-arrow {

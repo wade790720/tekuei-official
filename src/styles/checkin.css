@@ -192,9 +192,14 @@
   transition: background-color var(--duration-fast) var(--ease-touch);
 }
 
-.checkin-phone-container .flag-dropdown.checkin-phone-button.open,
-.checkin-phone-container .flag-dropdown.checkin-phone-button:hover {
+.checkin-phone-container .flag-dropdown.checkin-phone-button.open {
   background: color-mix(in srgb, var(--surface-2) 95%, transparent);
+}
+
+@media (hover: hover) {
+  .checkin-phone-container .flag-dropdown.checkin-phone-button:hover {
+    background: color-mix(in srgb, var(--surface-2) 95%, transparent);
+  }
 }
 
 .checkin-phone-container .selected-flag {
@@ -204,10 +209,15 @@
   transition: background-color var(--duration-fast) var(--ease-touch);
 }
 
-.checkin-phone-container .selected-flag:hover,
 .checkin-phone-container .selected-flag:focus,
 .checkin-phone-container .flag-dropdown.open .selected-flag {
   background: transparent;
+}
+
+@media (hover: hover) {
+  .checkin-phone-container .selected-flag:hover {
+    background: transparent;
+  }
 }
 
 .checkin-phone-dropdown.country-list {
@@ -229,9 +239,14 @@
   transition: background-color var(--duration-fast) var(--ease-touch);
 }
 
-.checkin-phone-dropdown .country:hover,
 .checkin-phone-dropdown .country.highlight {
   background: var(--accent-a3);
+}
+
+@media (hover: hover) {
+  .checkin-phone-dropdown .country:hover {
+    background: var(--accent-a3);
+  }
 }
 
 .checkin-phone-dropdown .dial-code {
@@ -332,8 +347,10 @@
     opacity var(--duration-fast) ease;
 }
 
-.checkin-submit:hover:not(:disabled) {
-  background: var(--ember);
+@media (hover: hover) {
+  .checkin-submit:hover:not(:disabled) {
+    background: var(--ember);
+  }
 }
 
 .checkin-submit:active:not(:disabled) {

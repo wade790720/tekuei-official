@@ -89,8 +89,10 @@
   gap: var(--space-2);
 }
 
-.case-site-nav__back:hover {
-  color: var(--accent);
+@media (hover: hover) {
+  .case-site-nav__back:hover {
+    color: var(--accent);
+  }
 }
 
 .case-site-nav__back-line {
@@ -258,9 +260,11 @@
   border-color var(--duration-slow) var(--ease-touch);
 }
 
-.meta-value a:hover {
-  border-color: var(--accent);
-  color: var(--text);
+@media (hover: hover) {
+  .meta-value a:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
 }
 
 /* ── Sections ── */
@@ -609,8 +613,10 @@
   font-family: inherit;
 }
 
-.case-next a:hover .case-next-title {
-  color: var(--accent);
+@media (hover: hover) {
+  .case-next a:hover .case-next-title {
+    color: var(--accent);
+  }
 }
 
 .case-next-sub {

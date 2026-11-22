@@ -99,8 +99,10 @@
   transition: color var(--duration-base) var(--ease-touch);
 }
 
-.lab__meta a:hover {
-  color: var(--ember);
+@media (hover: hover) {
+  .lab__meta a:hover {
+    color: var(--ember);
+  }
 }
 
 .lab__open {

@@ -23,10 +23,16 @@
     color var(--duration-fast) var(--ease-touch);
 }
 
-.dropdown-menu__trigger:hover,
 .dropdown-menu__trigger[aria-expanded='true'] {
   background: var(--line);
   color: var(--text-primary);
+}
+
+@media (hover: hover) {
+  .dropdown-menu__trigger:hover {
+    background: var(--line);
+    color: var(--text-primary);
+  }
 }
 
 .dropdown-menu__list {
@@ -81,10 +87,16 @@
     color var(--duration-fast) var(--ease-touch);
 }
 
-.dropdown-menu__item:hover,
 .dropdown-menu__item:focus-visible {
   outline: none;
   background: var(--line);
+}
+
+@media (hover: hover) {
+  .dropdown-menu__item:hover {
+    outline: none;
+    background: var(--line);
+  }
 }
 
 .dropdown-menu__icon {

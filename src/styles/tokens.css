@@ -141,7 +141,8 @@
   /* Type scale, in rem so a reader's browser font size still applies (16px root: the comments give px).
      Hierarchy comes from size and text tier, plus 300 for large headings.
      Chinese needs more leading than Latin, so body text sits near 1.9.
-     Reading text is 12px or more; Instrument Serif only from 18px (it is a display face). */
+     Reading text is 12px or more; Instrument Serif only from 18px (it is a display face),
+     except English post body text at --type-body, which matches the Chinese size (DESIGN.md). */
   --type-display: clamp(2.75rem, 6vw, 4.5rem); /* 44–72px */ /* one per page: Journal, About headers */
   --type-display-lh: 1.05;
   --type-display-ls: -0.02em;
