@@ -88,3 +88,35 @@ export function mergeWorkImages(enWork, cmsWork) {
     })),
   }
 }
+
+// Client work kept in code, listed after the R2 items. SRE has no case page, so its card links to the live site.
+// Copy comes from Wade's CV (src/labs/falling-figure/content.js).
+const sre = {
+  id: 'sre',
+  caseHref: 'https://www.sreglobal.com/',
+  titleEm: false,
+  title: 'SRE',
+  thumbBg: 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, transparent) 0%, color-mix(in srgb, var(--surface-1) 88%, transparent) 45%, rgba(16, 15, 17, 0.8) 100%)',
+  thumbImage: { url: '' },
+}
+
+export const CODE_WORK_ITEMS = {
+  zh: [
+    {
+      ...sre,
+      client: 'SRE · 風睿能源',
+      subtitle: '官 方 網 站',
+      descriptionLines: ['開發風睿能源的官方網站，', '負責技術、架構決策與整合。'],
+      tags: ['Web Development', 'Architecture'],
+    },
+  ],
+  en: [
+    {
+      ...sre,
+      client: 'SRE · Synera Renewable Energy',
+      subtitle: 'OFFICIAL WEBSITE',
+      descriptionLines: ['The official site for Synera Renewable Energy:', 'technology, architecture and delivery.'],
+      tags: ['Web Development', 'Architecture'],
+    },
+  ],
+}
