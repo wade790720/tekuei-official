@@ -8,10 +8,12 @@ import '../styles/tag.css'
  *   count?: number,
  *   selected?: boolean,
  *   onClick?: () => void,
+ *   variant?: 'plain' | 'outline',
  * }} props
+ *   variant applies to the plain tag only: outline is a framed pill, as on the Work cards.
  */
-export function Tag({ children, count, selected = false, onClick }) {
-  if (!onClick) return <span className="tag">{children}</span>
+export function Tag({ children, count, selected = false, onClick, variant = 'plain' }) {
+  if (!onClick) return <span className={variant === 'outline' ? 'tag tag--outline' : 'tag'}>{children}</span>
   return (
     // Silent: a filter gets clicked many times in a row
     <button type="button" className="tag tag--button" aria-pressed={selected} onClick={onClick} data-sound="off">
@@ -24,12 +26,14 @@ export function Tag({ children, count, selected = false, onClick }) {
 // A filter bar is a row of Tag buttons inside a .tag-group (role="group" with an aria-label).
 
 /** Several tags in a row, for list rows, cards and post headers. */
-export function TagList({ tags }) {
+export function TagList({ tags, variant }) {
   if (!tags.length) return null
   return (
     <span className="tag-list">
       {tags.map((t) => (
-        <Tag key={t}>{t}</Tag>
+        <Tag key={t} variant={variant}>
+          {t}
+        </Tag>
       ))}
     </span>
   )

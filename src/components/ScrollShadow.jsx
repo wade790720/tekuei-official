@@ -26,7 +26,8 @@ export function ScrollShadow({
 }) {
   const ref = useRef(null)
 
-  // Re-measure when the children change: new content can make the box scrollable without resizing it.
+  // Subscribes once. New content can make the box scrollable without resizing it, so a
+  // MutationObserver re-measures and watches new children. Depending on `children` would re-subscribe every render.
   useLayoutEffect(() => {
     const el = ref.current
     const horizontal = orientation === 'horizontal'
@@ -41,11 +42,17 @@ export function ScrollShadow({
     const ro = new ResizeObserver(update)
     ro.observe(el)
     for (const child of el.children) ro.observe(child)
+    const mo = new MutationObserver(() => {
+      for (const child of el.children) ro.observe(child) // observing twice is a no-op
+      update()
+    })
+    mo.observe(el, { childList: true, subtree: true, characterData: true })
     return () => {
       el.removeEventListener('scroll', update)
       ro.disconnect()
+      mo.disconnect()
     }
-  }, [orientation, children])
+  }, [orientation])
 
   const classes = ['scroll-shadow', `scroll-shadow--${orientation}`, hideScrollBar && 'scroll-shadow--no-bar', className]
   return (

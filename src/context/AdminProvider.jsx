@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ADMIN_SESSION_KEY } from '../data/admin.js'
 import { getAdminToken, loginAdmin } from '../lib/adminApi.js'
-import { OtpGate } from '../components/admin/OtpGate.jsx'
 import { AdminContext } from './admin.js'
+
+// Only Wade opens the code gate, so it and cms.css load on first use, not for every visitor.
+const OtpGate = lazy(() => import('../components/admin/OtpGate.jsx').then((m) => ({ default: m.OtpGate })))
 
 // Ctrl+S (Windows) or ⌘+S (Mac):
 //   not logged in -> the code gate
@@ -14,6 +16,9 @@ const isSaveKey = (e) =>
 export function AdminProvider({ children }) {
   const [token, setToken] = useState(() => getAdminToken() || null)
   const [gateOpen, setGateOpen] = useState(false)
+  // Stays mounted after the first opening, so its closing animation can play.
+  const [gateLoaded, setGateLoaded] = useState(false)
+  if (gateOpen && !gateLoaded) setGateLoaded(true)
   const [editing, setEditingState] = useState(false)
   // The panel opens with edit mode and stays as Wade leaves it (collapsed or not) across pages.
   const [panelOpen, setPanelOpen] = useState(true)
@@ -77,17 +82,21 @@ export function AdminProvider({ children }) {
   )
 
   return (
-    <AdminContext.Provider value={value}>
+    <AdminContext value={value}>
       {children}
-      <OtpGate
-        open={gateOpen}
-        onClose={() => setGateOpen(false)}
-        onVerify={login}
-        onUnlocked={() => {
-          setGateOpen(false)
-          setEditing(true)
-        }}
-      />
-    </AdminContext.Provider>
+      {gateLoaded ? (
+        <Suspense fallback={null}>
+          <OtpGate
+            open={gateOpen}
+            onClose={() => setGateOpen(false)}
+            onVerify={login}
+            onUnlocked={() => {
+              setGateOpen(false)
+              setEditing(true)
+            }}
+          />
+        </Suspense>
+      ) : null}
+    </AdminContext>
   )
 }

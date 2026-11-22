@@ -6,5 +6,5 @@ import { JournalContext } from './journal.js'
 // share it, so an unsaved draft survives moving between pages.
 export function JournalProvider({ children }) {
   const cms = useCmsSection('journal', getDefaultJournal, cloneJournal)
-  return <JournalContext.Provider value={cms}>{children}</JournalContext.Provider>
+  return <JournalContext value={cms}>{children}</JournalContext>
 }

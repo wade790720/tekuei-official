@@ -27,8 +27,8 @@ export function LangProvider({ children }) {
     document.documentElement.lang = lang === 'en' ? 'en' : 'zh-Hant'
   }, [lang])
   return (
-    <LangContext.Provider value={{ lang, toggle }}>
+    <LangContext value={{ lang, toggle }}>
       {children}
-    </LangContext.Provider>
+    </LangContext>
   )
 }

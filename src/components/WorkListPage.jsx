@@ -4,6 +4,7 @@ import { useWorkContent } from '../hooks/useWorkContent.js'
 import { labWorkItems } from '../labs/media.js'
 import { WORK_THUMBS } from '../data/workMedia.js'
 import { useLang } from '../i18n'
+import { TagList } from './Tag.jsx'
 import '../styles/work.css'
 
 function WorkThumbGraphic({ thumbSvg }) {
@@ -130,13 +131,7 @@ function WorkCard({ item }) {
               </span>
             ))}
           </div>
-          <div className="tags">
-            {item.tags.map((t) => (
-              <span key={t} className="tag">
-                {t}
-              </span>
-            ))}
-          </div>
+          <TagList tags={item.tags} variant="outline" />
           <div className="arrow">
             <div className="arrow-line" />
             <span>V I E W</span>
