@@ -242,6 +242,30 @@ export function llmsTxt(journal, workItems) {
   ].join('\n')
 }
 
+// The two labs used to live under /cases/ and are already in search indexes. A Pages Function answers
+// a path before public/_redirects is read, so the redirects for /cases/* are here.
+const MOVED = {
+  '/cases/living-portrait': '/labs/living-portrait',
+  '/cases/falling-figure': '/labs/falling-figure',
+}
+
+/**
+ * Pages Function body for /cases/:slug and /labs/:slug: the SPA's index.html, with status 404 when no
+ * such page exists. The app draws its own "not found" either way; the status is for crawlers.
+ * @param {{ caseHref?: string }[]} workItems  the client cases; the labs are added here
+ */
+export async function serveCase({ request, env }, workItems) {
+  const url = new URL(request.url)
+  const path = url.pathname.replace(/\/$/, '')
+  if (MOVED[path]) return Response.redirect(new URL(MOVED[path], url).href, 301)
+  const shell = await env.ASSETS.fetch(new URL('/', url))
+  if (!shell.ok || siteCases(workItems).some((w) => w.caseHref === path)) return shell
+  return new Response(shell.body, {
+    status: 404,
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
+  })
+}
+
 /** Pages Function body: the SPA's index.html with one page rendered into it. */
 export async function servePage({ request, env }, build) {
   const shell = await env.ASSETS.fetch(new URL('/', request.url))
