@@ -183,7 +183,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
     koi.sort((a, b) => a.length - b.length)
   }
 
-  // Read again now and then: the text changes size when the language changes.
+  // Read again when the text changes size, for example when the language changes.
   function measureZones() {
     const rect = canvas.getBoundingClientRect()
     zones = keepClear.flatMap((el) => {
@@ -449,9 +449,11 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
       }
 
       const mouth = L * 0.05 + 8
-      const before = food.length
-      food = food.filter((f) => (f.x - nodes[0]) ** 2 + (f.y - nodes[1]) ** 2 > mouth * mouth)
-      if (food.length !== before) report()
+      if (food.length) {
+        const before = food.length
+        food = food.filter((f) => (f.x - nodes[0]) ** 2 + (f.y - nodes[1]) ** 2 > mouth * mouth)
+        if (food.length !== before) report()
+      }
     }
   }
 
@@ -504,10 +506,12 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
 
   function step(dt) {
     time += dt
-    const before = food.length
-    for (const f of food) f.age += dt
-    food = food.filter((f) => f.age < FOOD_LIFE_S)
-    if (food.length !== before) report()
+    if (food.length) {
+      const before = food.length
+      for (const f of food) f.age += dt
+      food = food.filter((f) => f.age < FOOD_LIFE_S)
+      if (food.length !== before) report()
+    }
     stepKoi(dt)
     separateBodies()
     leaveZones()
@@ -532,7 +536,8 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
   }
 
   // Is the point on the current koi? Body coordinates: s along the spine, a across it.
-  function sample(px, py) {
+  // detail = false only answers "is this point on the koi": shade and mark are not worked out.
+  function sample(px, py, detail = true) {
     const L = cur.length
     let best = Infinity
     let s = 0
@@ -565,6 +570,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
 
     const w = halfWidth(s) * GIRTH * L
     if (a <= w) {
+      if (!detail) return true
       const across = a / (w || 1)
       // A rounded back lit from the top left; the flanks fall into shadow.
       const facing = (-ty * sign * -0.6 + tx * sign * -0.8) * across
@@ -584,6 +590,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
       const round = t > 0.8 ? Math.sqrt(Math.max(0, 1 - ((t - 0.8) / 0.2) ** 2)) : 1
       const outer = L * (0.014 + spread * Math.pow(smoothstep(0, 0.85, t), 0.75)) * round
       if (a <= outer && a >= L * fork * smoothstep(0.6, 1, t)) {
+        if (!detail) return true
         hit.fin = true
         hit.shade = 0.4 + 0.3 * (1 - a / (outer || 1))
         hit.mark = t < 0.2
@@ -604,6 +611,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
         FIN_BREADTH,
       )
     if (ft < 0) return false
+    if (!detail) return true
     hit.fin = true
     hit.shade = 0.38 + 0.3 * (1 - ft)
     hit.mark = ft < 0.2
@@ -664,10 +672,10 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
         const x = c * cell
         const y = r * cell
         let hits = sample(x + cell / 2, y + cell / 2) ? 1 : 0
-        if (!hits && hit.dist > reach + cell * 1.5) continue
+        if (!hits && hit.dist > reach + cell) continue // subsamples sit within 0.35 cell of the centre
         let { fin, shade, mark } = hit
         for (let i = 0; i < SUBSAMPLES.length; i += 2)
-          if (sample(x + SUBSAMPLES[i] * cell, y + SUBSAMPLES[i + 1] * cell)) {
+          if (sample(x + SUBSAMPLES[i] * cell, y + SUBSAMPLES[i + 1] * cell, !hits)) {
             if (!hits) ({ fin, shade, mark } = hit)
             hits++
           }
@@ -727,14 +735,19 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
     draw()
   })
   ro.observe(canvas)
+  const zonesRo = new ResizeObserver(measureZones)
+  for (const el of keepClear) zonesRo.observe(el)
 
-  if (still) return () => ro.disconnect()
+  if (still)
+    return () => {
+      ro.disconnect()
+      zonesRo.disconnect()
+    }
 
   let raf = 0
   let last = 0
   let acc = 0
   let onScreen = true
-  let zonesAt = 0
   const loop = (now) => {
     raf = requestAnimationFrame(loop)
     acc += Math.min(0.1, (now - last) / 1000)
@@ -743,10 +756,6 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
     let steps = 0
     for (; acc >= STEP && steps < MAX_STEPS; steps++, acc -= STEP) step(STEP)
     if (steps === MAX_STEPS) acc = 0
-    if (now - zonesAt >= 1000) {
-      zonesAt = now
-      measureZones()
-    }
     draw()
   }
   const start = () => {
@@ -777,6 +786,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
     cancelAnimationFrame(raf)
     io.disconnect()
     ro.disconnect()
+    zonesRo.disconnect()
     surface.removeEventListener('click', onClick)
   }
 }

@@ -7,6 +7,7 @@ const SWEEP = 1.9 // s, time for the reveal edge to cross the width
 const FLY = 0.9 // s, mean flight time of one fragment
 const FADE = 0.35 // s, crossfade from fragments to the full image
 const DARK = 75 // r+g+b below this counts as background: no fragment, and cut to black
+const SLOT = 0.05 // s; fragments are grouped by start time, so a frame skips the groups that have not started
 
 function rng(seed) {
   return () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296
@@ -26,10 +27,11 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
   const source = new Image()
   source.src = src
-  let W, H, final, fragments, buf, data32, last
+  let W, H, final, slots, buf, data32, last
   let raf = 0
   let start = 0
   let played = false
+  let pausedAt = 0 // when the canvas left the screen mid-animation
   let disposed = false
 
   function build() {
@@ -60,14 +62,14 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
     g.putImageData(img, 0, 0)
 
     const R = rng(42)
-    fragments = []
+    slots = []
     last = 0 // when the slowest fragment lands
     for (let y = 0; y < H; y += STEP)
       for (let x = 0; x < W; x += STEP) {
         const i = (y * W + x) * 4
         if (px[i + 3] === 0) continue
         const ragged = Math.sin(y * 0.045) * 0.05 + Math.sin(y * 0.13 + 2) * 0.03 // jagged reveal edge
-        fragments.push({
+        const p = {
           x,
           y,
           rgb: pack(px[i], px[i + 1], px[i + 2], 0), // alpha is added per frame
@@ -76,8 +78,8 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
           sy: y + (R() - 0.5) * 160 * dpr,
           d: Math.max(0, (x / W + ragged) * SWEEP + (R() - 0.5) * 0.35), // stray fragments run ahead
           dur: FLY * (0.6 + R() * 0.6),
-        })
-        const p = fragments[fragments.length - 1]
+        }
+        ;(slots[Math.floor(p.d / SLOT)] ??= []).push(p)
         last = Math.max(last, p.d + p.dur)
       }
     buf = ctx.createImageData(W, H)
@@ -89,19 +91,20 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
   function frame(now) {
     const t = (now - start) / 1000
     data32.fill(0)
-    for (const p of fragments) {
-      let k = (t - p.d) / p.dur
-      if (k <= 0) continue
-      if (k > 1) k = 1
-      const e = ease(k)
-      const x = Math.round(p.sx + (p.x - p.sx) * e)
-      const y = Math.round(p.sy + (p.y - p.sy) * e)
-      if (x < 0 || y < 0 || x >= W - 1 || y >= H - 1) continue
-      const a = Math.min(1, k * 1.6)
-      const col = (p.rgb | (((p.alpha * a) | 0) << 24)) >>> 0
-      const i = y * W + x
-      data32[i] = data32[i + 1] = data32[i + W] = data32[i + W + 1] = col
-    }
+    for (let s = 0; s < slots.length && s * SLOT < t; s++)
+      for (const p of slots[s] ?? []) {
+        let k = (t - p.d) / p.dur
+        if (k <= 0) continue
+        if (k > 1) k = 1
+        const e = ease(k)
+        const x = Math.round(p.sx + (p.x - p.sx) * e)
+        const y = Math.round(p.sy + (p.y - p.sy) * e)
+        if (x < 0 || y < 0 || x >= W - 1 || y >= H - 1) continue
+        const a = Math.min(1, k * 1.6)
+        const col = (p.rgb | (((p.alpha * a) | 0) << 24)) >>> 0
+        const i = y * W + x
+        data32[i] = data32[i + 1] = data32[i + W] = data32[i + W + 1] = col
+      }
     ctx.putImageData(buf, 0, 0)
     const f = (t - last) / FADE
     if (f > 0) {
@@ -124,11 +127,20 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
     raf = requestAnimationFrame(frame)
   }
 
+  // Starts the first time the canvas is 35% on screen. Off screen mid-animation it pauses, then resumes where it was.
   const io = new IntersectionObserver(
     ([e]) => {
-      if (!e.isIntersecting) return
-      io.disconnect()
-      play()
+      if (!played) {
+        if (e.isIntersecting) play()
+      } else if (!e.isIntersecting && raf) {
+        cancelAnimationFrame(raf)
+        raf = 0
+        pausedAt = performance.now()
+      } else if (e.isIntersecting && pausedAt) {
+        start += performance.now() - pausedAt
+        pausedAt = 0
+        raf = requestAnimationFrame(frame)
+      }
     },
     { threshold: 0.35 },
   )
@@ -138,7 +150,10 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
     clearTimeout(rt)
     rt = setTimeout(() => {
       build()
-      if (played && !raf) showFinal()
+      if (played && !raf) {
+        pausedAt = 0 // a resize while paused skips to the end
+        showFinal()
+      }
     }, 200)
   }
 

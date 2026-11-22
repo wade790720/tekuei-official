@@ -150,6 +150,18 @@ export const parseTags = (text) => [...new Set(text.split(/[,，、]/).map((t) =
 export const getDefaultJournal = () => ({ posts: JOURNAL_POSTS, content: JOURNAL_CONTENT })
 export const cloneJournal = (j) => structuredClone(j)
 
+/**
+ * The copy each journal edit works on, made on every keystroke. Edits change post lists, post fields and
+ * which body a slug points to, but never a body's inside: the editor always hands over a new document.
+ * So the lists, posts and content maps are copied and the bodies are shared. An edit that changes a body
+ * in place would also change the saved version; replace the body instead.
+ */
+export const copyJournalDraft = (j) => ({
+  ...j,
+  posts: Object.fromEntries(Object.entries(j.posts).map(([l, list]) => [l, list.map((p) => ({ ...p }))])),
+  content: Object.fromEntries(Object.entries(j.content).map(([l, c]) => [l, { ...c }])),
+})
+
 /** @param {JournalData} journal @param {string} slug */
 // The editor starts every translation as one empty paragraph, so "has a key" is not "has a body".
 const hasBody = (c) =>

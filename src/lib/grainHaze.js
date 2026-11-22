@@ -4,6 +4,8 @@
 // The shader is written for this site. Her grain and blur textures are replaced by a hash and a formula.
 // The colour comes from CSS `color`.
 
+import { cssRgb } from './cssRgb.js'
+
 const P5_CONTRAST = 0.45 // her lightest grey (0.5) over her background (0.05)
 const SHARE = 0.375 // ours is 35 to 40% as strong as hers
 const FRAME_MS = 100 // the field drifts too slowly to need more than ten frames a second
@@ -115,7 +117,7 @@ export function mountGrainHaze(canvas) {
   gl.vertexAttribPointer(corner, 2, gl.FLOAT, false, 0, 0)
 
   const uniform = (name) => gl.getUniformLocation(program, name)
-  const [r, g, b] = (getComputedStyle(canvas).color.match(/[\d.]+/g) ?? [255, 255, 255]).map(Number)
+  const [r, g, b] = cssRgb(getComputedStyle(canvas).color)
   gl.uniform3f(uniform('tint'), r / 255, g / 255, b / 255)
   gl.uniform1f(uniform('strength'), P5_CONTRAST * SHARE)
   gl.uniform1f(uniform('seed'), Math.random() * 100)

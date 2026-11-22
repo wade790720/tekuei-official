@@ -121,8 +121,9 @@ export function mountGlyphField(canvas) {
   })
 
   // Glyphs within REACH of the pointer light up at once, then fade with GLOW_DECAY.
-  let redraw = false
+  let redraw = 0 // the pending redraw frame
   const onMove = (e) => {
+    if (!onScreen) return // the header has scrolled away: skip the layout read
     const rect = canvas.getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
@@ -138,9 +139,8 @@ export function mountGlyphField(canvas) {
         columns[c].glows[r] = Math.max(columns[c].glows[r], 0.95 * (1 - d / REACH) ** 1.5)
       }
     if (redraw) return
-    redraw = true
-    requestAnimationFrame(() => {
-      redraw = false
+    redraw = requestAnimationFrame(() => {
+      redraw = 0
       draw()
     })
   }
@@ -151,6 +151,7 @@ export function mountGlyphField(canvas) {
 
   return () => {
     cancelAnimationFrame(raf)
+    cancelAnimationFrame(redraw)
     io.disconnect()
     window.removeEventListener('pointermove', onMove)
   }

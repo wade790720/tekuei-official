@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useEffectEvent, useState } from 'react'
-import { cloneSiteData } from '../lib/siteData.js'
+import { siteDefaults } from '../lib/siteData.js'
 import { fetchSiteData, isRemoteSync, saveSitePatch } from '../lib/adminApi.js'
 import { CMS_LABELS } from '../data/admin.js'
 
 /**
  * @param {string} sectionKey
  * @param {() => unknown} getDefault
- * @param {(v: unknown) => unknown} cloneContent
+ * @param {(v: unknown) => unknown} cloneContent  a deep copy
+ * @param {(v: unknown) => unknown} [copyDraft]  the copy each edit works on; it may share what edits only replace
  */
-export function useCmsSection(sectionKey, getDefault, cloneContent) {
-  const [siteData, setSiteData] = useState(() => cloneSiteData())
+export function useCmsSection(sectionKey, getDefault, cloneContent, copyDraft = cloneContent) {
   const [content, setContent] = useState(() => cloneContent(getDefault()))
   const [draft, setDraft] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -29,11 +29,7 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
       setLoading(true)
       setError('')
       setLoadFailed(false)
-      const fallback = () => {
-        const bundled = cloneSiteData()
-        setSiteData(bundled)
-        setContent(sectionContent(bundled))
-      }
+      const fallback = () => setContent(sectionContent(siteDefaults))
       if (!isRemoteSync()) {
         if (!cancelled) {
           fallback()
@@ -46,7 +42,6 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
         if (cancelled) return
         if (!remote) fallback()
         else {
-          setSiteData(remote.data)
           setContent(sectionContent(remote.data))
           setEtag(remote.etag)
         }
@@ -76,11 +71,11 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
 
   const updateDraft = useCallback((updater) => {
     setDraft((prev) => {
-      const next = cloneContent(prev)
+      const next = copyDraft(prev)
       updater(next)
       return next
     })
-  }, [cloneContent])
+  }, [copyDraft])
 
   const saveDraft = useCallback(async (token) => {
     if (!draft) return
@@ -93,9 +88,6 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
     try {
       const saved = await saveSitePatch({ [sectionKey]: draft }, token, etag)
       setEtag(saved.etag ?? null)
-      const nextSite = cloneSiteData(siteData)
-      nextSite[sectionKey] = cloneContent(draft)
-      setSiteData(nextSite)
       setContent(cloneContent(draft))
       setDraft(cloneContent(draft))
     } catch (err) {
@@ -104,12 +96,11 @@ export function useCmsSection(sectionKey, getDefault, cloneContent) {
     } finally {
       setSaving(false)
     }
-  }, [draft, siteData, sectionKey, cloneContent, loadFailed, etag])
+  }, [draft, sectionKey, cloneContent, loadFailed, etag])
 
   return {
     content: draft ?? content,
     savedContent: content, // last loaded or saved version; compare with draft for unsaved changes
-    siteData,
     draft,
     loading,
     saving,
