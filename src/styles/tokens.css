@@ -217,6 +217,30 @@
   100% { width: 89%; }
 }
 
+/* Icon swap: a state icon (copy → check, play → pause) grows in from small and blurred (jakub.kr "Animate icons contextually").
+   Give the icon's wrapper class icon-swap and a new key on each change; data-animate turns the motion on. */
+.icon-swap {
+  display: inline-flex;
+}
+
+.icon-swap[data-animate] {
+  animation: icon-swap var(--duration-fast) var(--ease-touch);
+}
+
+@keyframes icon-swap {
+  from {
+    opacity: 0;
+    transform: scale(0.25);
+    filter: blur(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-swap[data-animate] {
+    animation: none;
+  }
+}
+
 /* Damped error shake: each swing is smaller, like a head shake that settles (transitions.dev "Error state shake").
    Used by OtpInput and the edit panel's save button; run it with `var(--duration-shake) linear`. */
 @keyframes shake-damped {

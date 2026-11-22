@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CARD_LABELS } from '../data/cards.js'
 import { useLang } from '../i18n'
+import { useHasChanged } from '../hooks/useHasChanged.js'
 import { tokenize } from '../lib/highlight.js'
 import { Card } from './Card.jsx'
 import { ScrollShadow } from './ScrollShadow.jsx'
@@ -16,6 +17,7 @@ export function CodeCard({ code, lang = 'ts', filename }) {
   const t = CARD_LABELS[ui]
   const tokens = useMemo(() => tokenize(code, lang), [code, lang])
   const [copied, setCopied] = useState(false)
+  const swapped = useHasChanged(copied)
   const timer = useRef(0)
 
   useEffect(() => () => clearTimeout(timer.current), [])
@@ -43,7 +45,9 @@ export function CodeCard({ code, lang = 'ts', filename }) {
           aria-label={t.copy}
           data-copied={copied || undefined}
         >
-          {copied ? <CheckIcon /> : <CopyIcon />}
+          <span key={copied ? 'check' : 'copy'} className="icon-swap" data-animate={swapped || undefined}>
+            {copied ? <CheckIcon /> : <CopyIcon />}
+          </span>
         </button>
         <span className="card__sr" role="status">
           {copied ? t.copied : ''}

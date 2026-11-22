@@ -213,6 +213,7 @@ export const GROUPS = [
           '上色支援類 C 語法（JS、TS、CSS、JSON）和 shell 的 # 註解。',
           '複製先用 Clipboard API，瀏覽器擋住時改用 execCommand。',
           '複製成功時，螢幕閱讀器讀出「已複製」。',
+          '複製圖示換成打勾時，新圖示從小、模糊放大到清楚（icon-swap）。頁面剛載入時不播放。',
           '程式碼區可以用鍵盤聚焦，並橫向捲動。左右還有程式碼時，邊緣淡出（ScrollShadow）。',
         ],
       },
@@ -316,6 +317,7 @@ export const GROUPS = [
         notes: [
           '播放時，控制列只在游標移入或鍵盤聚焦時出現，觸控裝置上則一直顯示。',
           '手機寬度不顯示總長度。',
+          '播放和暫停圖示切換時，新圖示從小、模糊放大到清楚（icon-swap）。頁面剛載入時不播放。',
           'iOS Safari 上，全螢幕作用在 video 元素本身。',
           '影片用 -movflags +faststart 輸出，才能邊下載邊播放。',
           'YouTube 影片在訪客按下播放前不載入 YouTube 的 cookie。正式站的 HTML 裡寫成一個連到 YouTube 的連結，給搜尋引擎讀。',

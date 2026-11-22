@@ -250,6 +250,11 @@
   animation: cms-swap var(--duration-base) var(--ease-touch);
 }
 
+/* The check and pencil also grow in, like every state icon (icon-swap in tokens.css) */
+.cms-save__label[data-on] > svg {
+  animation: icon-swap var(--duration-fast) var(--ease-touch);
+}
+
 .cms-save__label:not([data-on]) .cms-spin {
   animation: none;
 }
@@ -842,7 +847,8 @@
   .cms-gate__pill,
   .cms-dock,
   .cms-save[data-state='error'],
-  .cms-save__label[data-on] {
+  .cms-save__label[data-on],
+  .cms-save__label[data-on] > svg {
     animation: none;
   }
 
