@@ -60,6 +60,8 @@ const CONTACT = [
   { label: 'YouTube' }, // no channel link yet: shown as plain text until Wade gives the address
   { label: 'Facebook', href: 'https://www.facebook.com/tekuei.xx' },
   { label: 'Instagram', href: 'https://www.instagram.com/tekuei.xx' },
+  { label: 'GitHub', href: 'https://github.com/wade790720' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/wade790720/' },
   { label: 'tekuei.xx@gmail.com', href: 'mailto:tekuei.xx@gmail.com' },
 ]
 

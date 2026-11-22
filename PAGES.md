@@ -12,6 +12,7 @@
 - 首頁 Hero 是一池錦鯉（`KoiHero`，寫在 `HomeHero.jsx`），高度一個螢幕。Canvas 在文字後面，寬度不超過 `--page-max`，寬螢幕的兩側淡出。
 - 版面照 motionsites 的 Koi Pond：左上角是幾行小字的自我介紹（出生地、信念、使命，照 p5aholic.me 的寫法），每一行斷在哪裡寫在資料裡。右上角靠右對齊：一行 18px 的金色短句，下面是一行小字，幾個關鍵字用象牙白標出，沒有底線。Hero 的文字不能選取，因為連點水面會選到字。首頁不放聯絡連結。Hero 的小字都用 `--font-serif`，字級是 `--type-nav`，和頁首導覽相同。左下角是錦鯉和飼料的計數，和一句英文的小玩笑（中英文版都是英文）。右下角是大字「WADE CHU」，字級約是寬度的 11%（56 到 200px），這是全站唯一的大字。
 - 中間留空給錦鯉。
+- 手機（767px 以下）只留錦鯉、「WADE CHU」和它下方那句英文的小玩笑。左上的自我介紹、右上的短句和計數都隱藏，從平板（768px）開始才出現。
 - 錦鯉下面有一片顆粒狀的光（`grainHaze.js`，WebGL）：一塊柔邊的亮區碎成沙粒，明暗很慢地流動。做法和數值照 p5aholic.me 的背景，強度是她的 35 到 40%。
 - 底色不是純黑：中間是 `--surface-1`，往邊緣漸變成 `--surface-0`。
 - 錦鯉只用品牌色：身體是象牙白，斑紋是 `--ember`，飼料是 `--ember-soft`。錦鯉由等寬字元拼成（`--font-label`），越亮的地方字元越密。手機一格 7px、三隻錦鯉，其他寬度一格 9px、七隻。錦鯉有大有小，最小的是最大的一半，體型偏圓胖（照 motionsites 的 Koi Pond）。
@@ -56,14 +57,25 @@
 
 ## Labs
 
-- 自己做的互動實驗叫 Labs。列在 Work，排在客戶案例後面，類別寫 `LABS`。全部放在 `src/labs/`，不在 R2。`index.js` 是清單，只放文字，sitemap 和 llms.txt 也會讀它（`siteCases`）。`media.js` 放 Work 列表的縮圖和影片。每個 lab 一個資料夾，裡面是它的元件、樣式、效果和素材。Lab 頁、`/live` 頁和 About 都是用到時才載入。
+- 自己做的互動實驗叫 Labs。列在 Work，排在客戶案例後面，類別寫 `LABS`。全部放在 `src/labs/`，不在 R2。`index.js` 是清單，只放文字，sitemap 和 llms.txt 也會讀它（`siteCases`）。`media.js` 放 Work 列表的縮圖和影片。每個 lab 一個資料夾，裡面是它的元件、樣式、效果和素材。Lab 頁和 `/live` 頁都是用到時才載入。
 - 網址是 `/labs/<id>`。版面照 motionsites.ai 的作品頁：左邊是實際效果（16:9，手機 3:4），右邊是 240px 的資訊欄（標題、類別、說明、年份、參考來源、全螢幕開啟）。
 - 效果本身在 `/labs/<id>/live`，沒有頁首。Lab 頁用 iframe 放它，所以效果自己的捲動和固定的 Canvas 不會影響外面的頁面。
 - 舊網址 `/cases/living-portrait`、`/cases/falling-figure` 301 轉到 `/labs/`。轉址寫在 `src/lib/seo.js` 的 `serveCase`，不在 `public/_redirects`，因為 Pages Function 會先接走這些網址。
 - 不存在的 `/cases/<slug>` 和 `/labs/<id>` 回 404 狀態碼（`functions/cases/`、`functions/labs/`），畫面仍由前端顯示。
 - 每個 lab 都要寫參考來源。
 - Work 列表的縮圖可以是影片：從實際效果錄的短循環 mp4，靜音自動播放，擷取的 webp 當 poster。減少動態效果開啟時只顯示 webp。客戶案例的縮圖放在 `src/assets/work/`，對照表在 `src/data/workMedia.js`，會取代 R2 的縮圖。目前只有 Lustre Yellow 有影片。Matsu Biennial 用 R2 的縮圖，錄影放在案例頁。
-- 現有兩個：`living-portrait`（`LivingPortrait`，首頁改版前的 Hero）、`falling-figure`（`FallingFigure`，目前也是 About 頁）。About 改版後，拿掉它對 `src/labs/` 的匯入即可。
+- 現有兩個：`living-portrait`（`LivingPortrait`，首頁改版前的 Hero）、`falling-figure`（`FallingFigure`，About 改版前的 About 頁）。
+
+## About
+
+- 版面照 manuelmoreale.com/about：只有標題「About」和一篇內文，用 Journal 文章頁的欄寬和樣式（`AboutPage`）。
+- 背景和首頁 Hero 相同：中間 `--surface-1` 往邊緣漸變成 `--surface-0`，上面一層 `grainHaze.js` 的顆粒光。背景固定不動，捲動時只有內容移動。
+- 內文是 Tiptap 文件，存在 R2 `data.json` 的 `aboutPage`（`{ zh: { doc }, en: { doc } }`），編輯方式和 Journal 文章的內文相同，照片和排版都在頁面上用「+」插入。`src/data/about.js` 只是 R2 還沒有資料時的預設值。
+- 不用 `about` 這個 key：它存著舊定位的 About 文案，沒有頁面在讀。
+- 內文下面是「合作過的單位」：兩排 `Marquee`，方向相反，欄寬 `--page-column`。名單寫在 `src/data/about.js` 的 `ABOUT_CLIENTS`，不在 R2。有 logo 的單位顯示 logo（`src/assets/about/clients/`，SVG 優先），沒有的顯示名稱。logo 檔當遮罩，填上 `--text-secondary`，所以全部是同一個顏色，原本的品牌色不會出現。logo 高 32px、最寬 140px。
+- 最下面是 `SiteFooter`：一列的頁尾，品牌靠左、連結置中、圖示靠右。圖示在桌面排成交錯的兩排（上 4 下 3，下排往右錯開半個圖示），避免和中間的連結擠在一起。768px 以下分成三行：品牌、圖示（一排）、連結，內容有品牌字、© 年份、About、Work、Journal、Contact 連結，以及和 Journal 頁尾相同的社群圖示（X、YouTube、Facebook、Instagram、GitHub、LinkedIn、Email），還沒有網址的帳號只顯示圖示、不是連結。目前頁有金色底線，滑鼠或鍵盤移到其他連結時，底線滑過去（`--duration-base`）。連結和社群帳號讀 `HOME_FOOTER`。
+- 編輯面板沒有欄位，只有儲存、預覽和登出。
+- 英文內文是空的時，英文版顯示中文內文，加 `lang="zh-Hant"`。
 
 ## 文章內的卡片
 
@@ -106,7 +118,7 @@
 - 面板沒有聚焦框：文字欄位和編輯器只顯示游標。按鈕保留鍵盤聚焦框。
 - 面板的字小於 18px，所以一律用 `--font-label`：英文是等寬字，中文是思源宋體。日期、編號、狀態加標籤字距 0.1em。
 - 面板和密碼框只給 Wade 用，介面文字只寫中文。
-- 只有 Journal 可以編輯。About、Work、案例頁刻意不提供編輯面板，內容改在程式碼裡。
+- Journal 和 About 可以編輯。Work、案例頁刻意不提供編輯面板，內容改在程式碼裡。
 
 ## Component Library
 

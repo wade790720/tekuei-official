@@ -143,6 +143,28 @@
   }
 }
 
+/* Phones show only the pond, the name and the line under it. The motto, the introduction and the
+   counts come back from tablet width (768px). */
+@media (max-width: 767px) {
+  .home-koi {
+    justify-content: flex-end;
+  }
+
+  .home-koi__top,
+  .home-koi__label > :not(.home-koi__hint) {
+    display: none;
+  }
+
+  .home-koi__foot {
+    align-items: flex-end;
+    gap: var(--space-4);
+  }
+
+  .home-koi__label {
+    order: 1;
+  }
+}
+
 /* The pond stands still, so a click does nothing. */
 @media (prefers-reduced-motion: reduce) {
   .home-koi__hint {
