@@ -138,31 +138,32 @@
   --danger: #e8907c;
   --annotate: #ff6fae; /* dev only: spec annotations in the component library */
 
-  /* Type scale. Hierarchy comes from size and text tier, plus 300 for large headings.
+  /* Type scale, in rem so a reader's browser font size still applies (16px root: the comments give px).
+     Hierarchy comes from size and text tier, plus 300 for large headings.
      Chinese needs more leading than Latin, so body text sits near 1.9.
      Reading text is 12px or more; Instrument Serif only from 18px (it is a display face). */
-  --type-display: clamp(44px, 6vw, 72px); /* one per page: Journal, About headers */
+  --type-display: clamp(2.75rem, 6vw, 4.5rem); /* 44–72px */ /* one per page: Journal, About headers */
   --type-display-lh: 1.05;
   --type-display-ls: -0.02em;
-  --type-h1: 32px; /* post title */
+  --type-h1: 2rem; /* 32px */ /* post title */
   --type-h1-lh: 1.35;
-  --type-h2: 22px; /* section heading in a post */
+  --type-h2: 1.375rem; /* 22px */ /* section heading in a post */
   --type-h2-lh: 1.5;
-  --type-h3: 18px;
+  --type-h3: 1.125rem; /* 18px */
   --type-h3-lh: 1.6;
-  --type-lead: 18px; /* opening paragraph */
+  --type-lead: 1.125rem; /* 18px */ /* opening paragraph */
   --type-lead-lh: 1.9;
-  --type-body: 17px; /* reading text; jakub.kr 17px, interfaces.dev 18px */
+  --type-body: 1.0625rem; /* 17px */ /* reading text; jakub.kr 17px, interfaces.dev 18px */
   --type-body-lh: 1.9;
-  --type-small: 14px; /* UI text, secondary copy */
+  --type-small: 0.875rem; /* 14px */ /* UI text, secondary copy */
   --type-small-lh: 1.6;
-  --type-caption: 13px; /* captions, meta */
+  --type-caption: 0.8125rem; /* 13px */ /* captions, meta */
   --type-caption-lh: 1.5;
-  --type-label: 11px; /* labels in --font-label, uppercase */
+  --type-label: 0.6875rem; /* 11px */ /* labels in --font-label, uppercase */
   --type-label-lh: 1.3;
   --type-label-ls: 0.1em;
-  --type-nav: clamp(13px, 1vw, 15px); /* nav links, header and footer: Instrument Serif below 18px on purpose (DESIGN.md) */
-  --type-mono: 13px;
+  --type-nav: clamp(0.8125rem, 1vw, 0.9375rem); /* 13–15px */ /* nav links, header and footer: Instrument Serif below 18px on purpose (DESIGN.md) */
+  --type-mono: 0.8125rem; /* 13px */
   --type-mono-lh: 1.65;
 
   /* Spacing: eight steps on a 4px grid (4 8 12 16 24 32 48 96). Space outside a group is always larger than space inside it. */

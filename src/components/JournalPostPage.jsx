@@ -6,7 +6,8 @@ import { RichText } from './RichText.jsx'
 import { Breadcrumbs, BreadcrumbsItem } from './Breadcrumbs.jsx'
 import { getDoc } from '../lib/richText.js'
 import { useJournal } from '../context/journal.js'
-import { getAdjacentPosts, getJournalPost, JOURNAL_POST_LABELS, postTags } from '../data/journal.js'
+import { useAdmin } from '../context/admin.js'
+import { getAdjacentPosts, getJournalPost, JOURNAL_POST_LABELS, postTags, readableJournal } from '../data/journal.js'
 import { useLang } from '../i18n'
 import '../styles/work.css'
 import '../styles/journal.css'
@@ -16,7 +17,10 @@ export default function JournalPostPage() {
   const { lang } = useLang()
   const fromList = useLocation().state?.fromList
   const t = JOURNAL_POST_LABELS[lang]
-  const { content: journal, loading } = useJournal()
+  const { content: stored, loading } = useJournal()
+  const { editing } = useAdmin()
+  // While editing, the page shows the real English draft, even when it is still empty
+  const journal = editing ? stored : readableJournal(stored, lang)
   const post = getJournalPost(journal, slug, lang)
   const content = slug ? journal.content[lang]?.[slug] : null
   const { prev, next } = getAdjacentPosts(journal, slug ?? '', lang)
@@ -44,8 +48,8 @@ export default function JournalPostPage() {
 
   return (
     <div className="journal-page journal-page--post">
-
-      <article className="journal-post">
+      <main>
+      <article className="journal-post" lang={post.untranslated ? 'zh-Hant' : undefined}>
         <header className="journal-post__header">
           {/* Wrapped so the fade-in transition does not replace the links' hover transition */}
           <div className="fade-in">
@@ -65,6 +69,11 @@ export default function JournalPostPage() {
           <div className="journal-post__num fade-in" style={{ '--i': 2 }}>{post.num}</div>
           <h1 className="journal-post__title fade-in" style={{ '--i': 3 }}>{post.title}</h1>
           <div className="journal-post__title-en fade-in" style={{ '--i': 4 }}>{post.titleEn}</div>
+          {post.untranslated ? (
+            <p className="journal-post__notice fade-in" lang="en" style={{ '--i': 5 }}>
+              {t.untranslated}
+            </p>
+          ) : null}
         </header>
 
         <div className="journal-post__rule" aria-hidden />
@@ -101,6 +110,7 @@ export default function JournalPostPage() {
           </BackLink>
         </footer>
       </article>
+      </main>
       <JournalPostEditPanel slug={slug} />
     </div>
   )

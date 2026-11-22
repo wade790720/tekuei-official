@@ -36,9 +36,9 @@ export const COLOR_GROUPS = [
     title: '強調',
     note: '金色只佔畫面約 5%，只用在三個地方：目前頁、聚焦、hover。不要填大面積，也不要當一般的邊框。',
     swatches: [
-      ['--ember', '目前頁、強調的標籤'],
+      ['--ember', '目前頁、強調的標籤、聚焦框'],
       ['--ember-soft', 'hover、光暈、未儲存的提示'],
-      ['--ember-line', '聚焦框、目前頁的底線'],
+      ['--ember-line', '目前頁的底線、裝飾線。對比只有 1.69:1，不可當聚焦框'],
       ['--ember-whisper', 'hover 的淡底'],
     ],
   },

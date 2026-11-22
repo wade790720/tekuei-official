@@ -266,6 +266,10 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
 
     const root = document.documentElement
     root.classList.add('nav-overlay-open')
+    // The menu covers the page; inert keeps Tab and screen readers out of what is hidden behind it.
+    // The menu is portalled to <body>, outside #root.
+    const app = document.getElementById('root')
+    app?.setAttribute('inert', '')
 
     const onKey = (e) => {
       if (e.key === 'Escape') onClose()
@@ -274,6 +278,7 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
 
     return () => {
       root.classList.remove('nav-overlay-open')
+      app?.removeAttribute('inert')
       window.removeEventListener('keydown', onKey)
     }
   }, [mounted, onClose])

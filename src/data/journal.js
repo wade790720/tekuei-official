@@ -130,8 +130,8 @@ export const JOURNAL_FILTER = {
 
 /** Text on a post page outside the post itself. */
 export const JOURNAL_POST_LABELS = {
-  zh: { back: '返回 Journal', notFound: '文章不存在', crumbs: '導覽路徑', home: '首頁' },
-  en: { back: 'Back to Journal', notFound: 'Post not found', crumbs: 'Breadcrumb', home: 'Home' },
+  zh: { back: '返回 Journal', notFound: '文章不存在', crumbs: '導覽路徑', home: '首頁', untranslated: '這篇文章目前只有中文' },
+  en: { back: 'Back to Journal', notFound: 'Post not found', crumbs: 'Breadcrumb', home: 'Home', untranslated: 'This post is only in Chinese for now.' },
 }
 
 /** A post's tags. Posts saved before tags existed have one `category`, which becomes the only tag. */
@@ -151,6 +151,29 @@ export const getDefaultJournal = () => ({ posts: JOURNAL_POSTS, content: JOURNAL
 export const cloneJournal = (j) => structuredClone(j)
 
 /** @param {JournalData} journal @param {string} slug */
+// The editor starts every translation as one empty paragraph, so "has a key" is not "has a body".
+const hasBody = (c) =>
+  Boolean(c) && (c.blocks ? c.blocks.length > 0 : /"text":"[^"]|"type":"(imageCard|videoCard|slidesCard)"/.test(JSON.stringify(c.doc ?? c)))
+
+/**
+ * The journal as readers see it: an English post with no body yet shows the Chinese post, marked `untranslated`.
+ * For display only. The edit panel reads the draft, so saving never writes Chinese into English.
+ * @param {JournalData} journal @param {'zh' | 'en'} lang
+ */
+export function readableJournal(journal, lang) {
+  if (lang !== 'en') return journal
+  const zh = journal.posts.zh ?? []
+  const en = (journal.posts.en ?? []).map((p) =>
+    hasBody(journal.content.en?.[p.slug]) ? p : { ...(zh.find((z) => z.slug === p.slug) ?? p), untranslated: true },
+  )
+  const fallback = Object.fromEntries(en.filter((p) => p.untranslated).map((p) => [p.slug, journal.content.zh?.[p.slug]]))
+  return {
+    ...journal,
+    posts: { ...journal.posts, en },
+    content: { ...journal.content, en: { ...journal.content.en, ...fallback } },
+  }
+}
+
 export function getJournalPost(journal, slug, lang = 'zh') {
   return (journal.posts[lang] ?? journal.posts.zh).find((p) => p.slug === slug) ?? null
 }

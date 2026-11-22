@@ -10,6 +10,8 @@ html {
   overflow: hidden;
   background: #0b0b0d;
   -webkit-font-smoothing: antialiased;
+  /* The header is fixed (about 92px on phones): keep focused and anchored elements below it */
+  scroll-padding-top: var(--space-24);
   /* The page scrolls on html (html.has-scroll-document): the same thin scrollbar as ScrollShadow */
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) transparent;
