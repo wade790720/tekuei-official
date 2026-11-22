@@ -29,6 +29,12 @@ TEKUEI 網站的待辦清單
 
 ### SEO
 
+- [ ] **把案例頁和 Labs 頁的內容寫進 HTML**（Claude）
+  目前爬蟲拿到的 `#root` 是空的，也沒有 canonical。`serveCase`（`src/lib/seo.js`）只處理轉址和 404。照 `servePage` 的寫法補上標題、description、canonical、內文。
+- [ ] **把首頁、`/work`、`/about` 的內容寫進 HTML**（Claude）
+  這三頁沒有 Function。`/work` 和 `/about` 的 title、description 都是首頁的。
+- [ ] **決定舊文章要不要下架**（Wade）
+  「留白的建築」「水墨與黑白」「新東方主義」「死神美學的啟示」可能是舊定位的文章，在 R2 裡，`llms.txt` 和 sitemap 都會列出。
 - [ ] **Google Search Console**（Wade）
   驗證網域，提交 `https://tekuei.com/sitemap.xml`。
 - [ ] **Bing Webmaster Tools**（Wade，選填）
