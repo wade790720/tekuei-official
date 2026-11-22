@@ -8,7 +8,7 @@ export const COLOR_GROUPS = [
     note: '三層深淺，越上層越亮。',
     swatches: [
       ['--surface-0', '頁面背景'],
-      ['--surface-1', '卡片、面板、區塊'],
+      ['--surface-1', '卡片、Drawer、區段'],
       ['--surface-2', '浮起的元素：選單、工具列、浮層'],
     ],
   },
@@ -22,13 +22,13 @@ export const COLOR_GROUPS = [
   },
   {
     title: '文字',
-    note: '四階：標題、內文、說明、輔助。faint 只用在裝飾。右邊是在頁面背景和卡片上的對比值。',
+    note: '四階：標題、內文、說明、meta。faint 只用在裝飾。右邊是在頁面背景和卡片上的對比值。',
     text: true,
     swatches: [
       ['--text-primary', '標題、最先要讀的字'],
       ['--text-body', '內文段落'],
       ['--text-secondary', '說明、圖說'],
-      ['--text-tertiary', '日期、提示、meta，仍要達到 4.5:1'],
+      ['--text-tertiary', '日期、操作說明、meta，仍要達到 4.5:1'],
       ['--text-faint', '只當裝飾（字元雨、浮水印），不可用在要讀的字'],
     ],
   },
@@ -37,14 +37,14 @@ export const COLOR_GROUPS = [
     note: '金色只佔畫面約 5%，只用在三個地方：目前頁、聚焦、hover。不要填大面積，也不要當一般的邊框。',
     swatches: [
       ['--ember', '目前頁、強調的標籤、聚焦框'],
-      ['--ember-soft', 'hover、光暈、未儲存的提示'],
+      ['--ember-soft', 'hover、光暈、未儲存的圓點'],
       ['--ember-line', '目前頁的底線、裝飾線。對比只有 1.69:1，不可當聚焦框'],
       ['--ember-whisper', 'hover 的淡底'],
     ],
   },
   {
     title: '狀態與程式碼',
-    note: '錯誤只用一個顏色，程式碼顏色只用在程式碼卡。',
+    note: '錯誤只用一個顏色，程式碼顏色只用在 CodeCard。',
     text: true,
     swatches: [
       ['--danger', '錯誤訊息、刪除'],
@@ -121,7 +121,7 @@ export const TYPE_DOC = {
   },
   scale: '一套 10 階的字級，中英文共用，每一階都有字級和行高，大標和標籤另有字距，三者成組使用。點或滑過上面的 Aa 換一階。',
   weight: {
-    lead: '只有兩種字重。思源宋體只載入 200、300、400，Instrument Serif 只有 400，更粗會變成瀏覽器合成的假粗體。',
+    lead: '只有兩種字重。思源宋體只載入 300、400，Instrument Serif 只有 400，更粗會變成瀏覽器合成的假粗體。',
     rows: [
       ['Light', '--weight-light', '大標：Display、H1'],
       ['Regular', '--weight-regular', '內文、介面、其他全部'],
@@ -139,7 +139,7 @@ export const TYPE_DOC = {
 }
 
 export const TYPE_RULES = [
-  '字重只有兩種：內文和介面 400，大標 300。不要用 400 以上，思源宋體只載入 200、300、400，更粗會變成瀏覽器合成的假粗體',
+  '字重只有兩種：內文和介面 400，大標 300。不要用 400 以上，思源宋體只載入 300、400，更粗會變成瀏覽器合成的假粗體',
   '層級靠「字級＋文字階」，不靠字重',
   '內文 17px，需要閱讀的字至少 12px',
   'Instrument Serif 只用在 18px 以上，更小的英文細節會糊，因此改用等寬的標籤字',
@@ -155,17 +155,17 @@ export const SPACE_SCALE = [
   ['--space-3', '按鈕和輸入框的左右內距'],
   ['--space-4', '不相關的元素、卡片內距'],
   ['--space-6', '段落到段落、卡片標題到內容、捲動後的導覽列上下內距'],
-  ['--space-8', '一個區塊裡的大塊之間、圖片上下'],
-  ['--space-12', '一組一組的區塊之間、區塊標題到內容、文章小標題的上方'],
-  ['--space-24', '頁面大段落之間（手機），桌面最多 128px，見 --section-gap'],
+  ['--space-8', '一個區段裡的小組之間、圖片上下'],
+  ['--space-12', '區段裡的大組之間、區段標題到內容、文章小標題的上方'],
+  ['--space-24', '頁面的區段之間（手機），桌面最多 128px，見 --section-gap'],
 ]
 
 export const SPACE_RULES = [
-  '三種節奏就夠：元件內 4–12px、段落之間 24px、區塊之間 --section-gap（96–128px，跟著螢幕寬度變）',
+  '三種節奏就夠：元件內 4–12px、段落之間 24px、區段之間 --section-gap（96–128px，跟著螢幕寬度變）',
   '外面的間距永遠大於裡面的間距，越往外間距越大，關係才看得出來',
   '全部用刻度上的值，不在刻度上的數字（28、36、52）改成最近的刻度',
   '文章小標題的上方約是下方的 3 倍，讓標題靠近它帶領的內容',
-  '圓角：小控制項 8px、卡片 12–16px、膠囊 999px',
+  '圓角：小控制項 8px、選單和輸入框 12px、卡片 16px、膠囊 999px',
 ]
 
 // Sample card for the annotated spec views. Demo copy only, not a real post.

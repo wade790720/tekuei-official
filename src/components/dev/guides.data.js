@@ -9,14 +9,14 @@ export const GUIDES = {
   // ── Overview ──
   introduction: {
     name: '開始使用',
-    lead: '用 tokens.css 的變數和這份文件裡的元件組頁面',
+    lead: '用 tokens.css 的變數和 Component Library 裡的元件組頁面',
     toc: [
       ['how', '組成'],
       ['steps', '步驟'],
       ['next', '延伸閱讀'],
     ],
     intro:
-      'TEKUEI 的介面分成三層：tokens.css 的設計變數、src/components/ 的元件、每頁一個的 CSS。這份文件只在開發模式出現，不進正式 build。',
+      'TEKUEI 的介面分成三層：tokens.css 的設計變數、src/components/ 的元件、每頁一個的 CSS。Component Library 只在開發模式出現，不進正式 build。',
     steps: [
       {
         id: 'step-tokens',
@@ -33,7 +33,7 @@ export const GUIDES = {
       {
         id: 'step-components',
         title: '2. 使用元件',
-        text: '先找這份文件裡已有的元件，從 src/components/ 匯入。',
+        text: '先找 Component Library 裡已有的元件，從 src/components/ 匯入。',
         lang: 'jsx',
         code: `import { ImageCard } from '../components/ImageCard.jsx'
 
@@ -60,7 +60,7 @@ npm run dev`,
     ],
     next: [
       { to: to('styling'), title: '樣式', text: '命名、token 的用法和常見問題' },
-      { to: to('layout'), title: '版面', text: '最大寬度、留白和區塊間距' },
+      { to: to('layout'), title: '版面', text: '最大寬度、留白和區段間距' },
       { to: to('theme'), title: '主題', text: '設計變數的組成' },
       { to: to('color'), title: 'Color', text: '色階和語意 token' },
       { to: to('typography'), title: 'Typography', text: '字級、字重和字型' },
@@ -92,7 +92,7 @@ npm run dev`,
       text: 'class 用頁面或元件的前綴加 BEM，狀態用 is-*，資料狀態用 data-*。',
       code: `.code-card { … }            /* 元件 */
 .code-card__bar { … }       /* 元件的零件 */
-.journal-footer__link { … } /* 頁面的區塊 */
+.journal-footer__link { … } /* 頁面的區段 */
 .journal-card.is-visible { … }
 .otp-input[data-invalid] { … }`,
     },
@@ -121,15 +121,15 @@ npm run dev`,
   },
   layout: {
     name: '版面',
-    lead: '頁面寬度、左右留白和區塊間距',
+    lead: '頁面寬度、左右留白和區段間距',
     toc: [
       ['max-width', '最大寬度'],
       ['full-bleed', '滿版的元素'],
       ['decoration', '絕對定位的裝飾'],
-      ['sections', '區塊間距'],
+      ['sections', '區段間距'],
     ],
     maxWidth: {
-      text: '所有內容最寬 1920px，螢幕更寬時內容置中，只有背景延伸到兩側。區塊的左右留白用 --page-gutter 加 --page-pad。',
+      text: '所有內容最寬 1920px，螢幕更寬時內容置中，只有背景延伸到兩側。區段的左右留白用 --page-gutter 加 --page-pad。',
       code: `.journal-section {
   padding-inline: calc(var(--page-gutter) + var(--page-pad));
 }`,
@@ -154,7 +154,7 @@ npm run dev`,
 }`,
     },
     sections: {
-      text: '頁面大區塊之間用 --section-gap，隨螢幕寬度在 96px 和 128px 之間。',
+      text: '頁面的區段之間用 --section-gap，隨螢幕寬度在 96px 和 128px 之間。',
       code: `.journal-section + .journal-section {
   margin-top: var(--section-gap);
 }`,
@@ -198,7 +198,7 @@ npm run dev`,
           title: '字級與內容頁',
           rows: [
             ['nan.fyi', 'https://www.nan.fyi/', '內容頁的細節、字體', 'Journal 內頁'],
-            ['jakub.kr', 'https://jakub.kr/', '字級、間距、小細節，文章內的程式碼、圖片、影片 card，圖示切換時的 opacity、scale、blur', 'tokens.css、CodeCard、ImageCard、VideoCard'],
+            ['jakub.kr', 'https://jakub.kr/', '字級、間距、小細節，文章內的程式碼、圖片、影片卡片，圖示切換時的 opacity、scale、blur', 'tokens.css、CodeCard、ImageCard、VideoCard'],
             ['interfaces.dev', 'https://interfaces.dev/', '字級、間距、圖片輪播', 'tokens.css、SlidesCard'],
           ],
         },
@@ -283,11 +283,11 @@ var(--accent-a4); /* --ember-whisper：hover 的淡底 */`,
       ['rules', '原則'],
     ],
     scale: '8 階，以 4px 為基礎，只用刻度上的值。',
-    rhythm: '三種節奏：元件內 4–12px、段落之間 24px、區塊之間 --section-gap。外面的間距永遠大於裡面的間距。',
+    rhythm: '三種節奏：元件內 4–12px、段落之間 24px、區段之間 --section-gap。外面的間距永遠大於裡面的間距。',
     rhythmRows: [
       ['元件內', '--space-1 – --space-3', '4–12px', '按鈕內距、圖示和文字之間'],
       ['段落之間', '--space-6', '24px', '段落、卡片之間'],
-      ['區塊之間', '--section-gap', '96–128px', '頁面的大區塊之間'],
+      ['區段之間', '--section-gap', '96–128px', '頁面的區段之間'],
     ],
     spec: '粉紅色的 I 是實際的間距，數字單位是 px。',
   },
@@ -320,10 +320,10 @@ var(--accent-a4); /* --ember-whisper：hover 的淡底 */`,
     easing: '一條 easing：--ease-touch，起步快，結尾慢慢停下。',
     easingCode: `transition: opacity var(--duration-fade) var(--ease-touch), transform var(--duration-fade) var(--ease-touch);`,
     durations: [
-      ['選單、提示關閉', '--duration-exit（90ms）', 'DropdownMenu、TooltipGroup 的退場'],
+      ['選單、Tooltip 關閉', '--duration-exit（90ms）', 'DropdownMenu、TooltipGroup 的退場'],
       ['小控制項', '--duration-fast（150ms）', 'Button、選單項目、輸入框'],
       ['hover', '--duration-base（300ms）', '顏色、底色的變化，Drawer 關閉、Accordion'],
-      ['面板、導覽', '--duration-slow（400ms）', 'Drawer 打開、頁首、比較慢的 hover'],
+      ['Drawer、導覽', '--duration-slow（400ms）', 'Drawer 打開、頁首、比較慢的 hover'],
       ['淡入', '--duration-fade（600ms）', '.fade-in'],
       ['頁面進場', '--duration-reveal（800ms）', '案例頁、Work 的進場，縮圖放大'],
       ['依序淡入', '70ms', '一組項目之間的間隔，間隔不用 token'],

@@ -32,7 +32,7 @@
   line-height: 1.85;
 }
 
-/* 環境光：多層霧金漸層，與首頁同邏輯、無 blur 光圈 */
+/* 環境光：幾層金色徑向漸層疊出來，不用 blur */
 .journal-atmosphere {
   position: fixed;
   inset: 0;

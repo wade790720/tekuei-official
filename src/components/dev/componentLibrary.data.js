@@ -25,7 +25,7 @@ export const GROUPS = [
         hero: { demo: 'card', code: '<Card className="code-card">…</Card>' },
         api: [
           {
-            description: 'CodeCard、ImageCard、VideoCard、SlidesCard 都用它當外框。內距和內容由使用的元件決定',
+            description: 'CodeCard、ImageCard、VideoCard、SlidesCard 都用它當外殼。內距和內容由使用的元件決定',
             props: [
               ['as', 'string | Component', "'div'", '要渲染的元素，例如 figure'],
               ['className', 'string', "''", '附加的 class'],
@@ -295,7 +295,7 @@ export const GROUPS = [
             props: [
               ['src', 'string', '—', '必填。影片檔建議 mp4（H.264），也可以是 YouTube 連結（youtu.be、watch、shorts、embed）'],
               ['poster', 'string', '—', '播放前顯示的圖。YouTube 影片用 YouTube 的縮圖，不用這個'],
-              ['caption', 'string', '—', '說明'],
+              ['caption', 'string', '—', '圖說'],
               ['loop', 'boolean', 'false', '播完重新播放'],
             ],
           },
@@ -388,7 +388,7 @@ export const GROUPS = [
       // ── Editor ──
       {
         id: 'editor',
-        name: 'WYSIWYG Editor',
+        name: 'Editor',
         file: 'src/components/Editor.jsx',
         summary: '文章內文的所見即所得編輯器，輸出 RichText 使用的文件',
         hero: { demo: 'editor', code: `<Editor key={slug} doc={getDoc(body)} onChange={setDoc} upload={upload} previewing={admin.previewing} renderPreview={(doc) => <RichText doc={doc} />} />` },
@@ -459,7 +459,7 @@ export const GROUPS = [
             props: [
               ['children', 'node', '—', '標籤文字，英文大寫'],
               ['count', 'number', '—', '按鈕上的篇數，只在按鈕時顯示'],
-              ['selected', 'boolean', 'false', '目前選取的標籤，外框變金色'],
+              ['selected', 'boolean', 'false', '目前選取的標籤，框線變金色'],
               ['onClick', '() => void', '—', '有這個 prop 就變成按鈕'],
             ],
           },
@@ -483,7 +483,7 @@ export const GROUPS = [
           '當按鈕時點擊不出聲（data-sound="off"）。',
           '舊文章只有 category，postTags 會把它當成唯一的標籤。',
           '少於兩個標籤時，篩選列不顯示。',
-          '選取的標籤有金色框線和淡金色底色，不只靠顏色區分。鍵盤聚焦時是 1px 的 --ember 外框。',
+          '選取的標籤有金色框線和淡金色底色，不只靠顏色區分。鍵盤聚焦時是 1px 的 --ember 聚焦框。',
           '768px 以下，按鈕高 32px，列與列相隔 12px，每顆的點擊範圍撐到 44px 也不會和下一列重疊。',
           '按鈕的字用 text-box 裁到大寫字高和基線，大寫字母在膠囊裡上下置中。右側內距少一個字距，因為字距會加在最後一個字後面。不支援 text-box 的瀏覽器（Firefox）字會偏上約 1px。',
         ],
@@ -547,7 +547,7 @@ export const GROUPS = [
         id: 'drawer',
         name: 'Drawer',
         file: 'src/components/Drawer.jsx',
-        summary: '從右側滑出的面板，有標題列和可以捲動的內容',
+        summary: '從右側滑出，有標題列和可以捲動的內容',
         hero: {
           demo: 'drawer',
           code: `<Drawer open={open} label="設定" push>
@@ -563,8 +563,8 @@ export const GROUPS = [
             description: '用 portal 放在 body 底下，蓋在導覽列上面。open 變成 false 後，滑出動畫播完才移除',
             props: [
               ['open', 'boolean', '—', '必填，是否打開'],
-              ['label', 'string', '—', '必填，面板的無障礙名稱'],
-              ['push', 'boolean', 'false', '寬度 1100px 以上時，頁面往左移出面板的寬度，不被蓋住'],
+              ['label', 'string', '—', '必填，Drawer 的無障礙名稱'],
+              ['push', 'boolean', 'false', '寬度 1100px 以上時，頁面往左移出 Drawer 的寬度，不被蓋住'],
               ['className', 'string', "''", '附加的 class'],
               ['children', 'node', '—', 'DrawerHeader 和 DrawerBody'],
             ],
@@ -658,7 +658,7 @@ export const GROUPS = [
         id: 'accordion',
         name: 'Accordion',
         file: 'src/components/Accordion.jsx',
-        summary: '一組可以展開和收合的段落。標題是按鈕，按下後內容在下面展開',
+        summary: '一組可以展開和收合的項目。標題是按鈕，按下後內容在下面展開',
         hero: {
           demo: 'accordion',
           code: `<Accordion>
@@ -669,21 +669,21 @@ export const GROUPS = [
         api: [
           {
             part: 'Accordion',
-            description: '管理哪些段落是展開的',
+            description: '管理哪些項目是展開的',
             props: [
-              ['multiple', 'boolean', 'false', '可以同時展開多個段落'],
-              ['defaultOpen', 'string[]', '[]', '一開始展開的段落 id'],
+              ['multiple', 'boolean', 'false', '可以同時展開多個項目'],
+              ['defaultOpen', 'string[]', '[]', '一開始展開的項目 id'],
               ['variant', "'default' | 'surface'", "'default'", 'surface 放在炭灰色的卡片上'],
-              ['hideSeparator', 'boolean', 'false', '不顯示段落之間的線'],
+              ['hideSeparator', 'boolean', 'false', '不顯示項目之間的線'],
               ['headingLevel', '2 | 3 | 4', '3', '標題的層級'],
               ['className', 'string', "''", '附加的 class'],
             ],
           },
           {
             part: 'AccordionItem',
-            description: '一個段落：標題按鈕和下面的內容',
+            description: '一個項目：標題按鈕和下面的內容',
             props: [
-              ['id', 'string', '—', '必填，段落的識別'],
+              ['id', 'string', '—', '必填，項目的識別'],
               ['title', 'node', '—', '必填，標題'],
               ['disabled', 'boolean', 'false', '不能展開'],
               ['indicator', 'node', '箭頭', '換掉右邊的箭頭。展開時轉 180 度'],
@@ -737,7 +737,7 @@ export const GROUPS = [
         id: 'scroll-shadow',
         name: 'ScrollShadow',
         file: 'src/components/ScrollShadow.jsx',
-        summary: '可以捲動的區塊。還有內容沒看到的那一邊會淡出',
+        summary: '可以捲動的容器。還有內容沒看到的那一邊會淡出',
         hero: {
           demo: 'scroll-shadow',
           code: `<ScrollShadow className="box">
@@ -1015,7 +1015,7 @@ export const GROUPS = [
         notes: [
           '首頁位移 20px，Journal 位移 24px，案例頁位移 30px。',
           '減少動態效果開啟時，各頁的 CSS 直接顯示元素。',
-          '包住整個區塊，不要每一行各包一次。',
+          '包住整個區段，不要每一行各包一次。',
           '淡入會設定 transform，所以用 transform 置中的元素不要加 fade-in，改用 margin 置中。',
         ],
       },
@@ -1049,27 +1049,27 @@ export const GROUPS = [
           },
           {
             part: '音效',
-            description: '全部的音效。press 開頭的是按壓聲，其他是狀態的提示聲',
+            description: '全部的音效。press 開頭的是按壓聲，其他是狀態音',
             props: [
               ['press', 'press', '—', '實心的主要按鈕'],
-              ['pressOutline', 'press', '—', '外框按鈕'],
+              ['pressOutline', 'press', '—', 'outline 樣式的按鈕'],
               ['pressSoft', 'press', '—', '淡底按鈕，全站按鈕的預設'],
               ['pressGhost', 'press', '—', '透明按鈕和連結，全站連結的預設'],
-              ['pop', '提示', '—', '勾選'],
-              ['select', '提示', '—', '選單選項'],
-              ['toggleOn / toggleOff', '提示', '—', '開關'],
-              ['open / close', '提示', '—', '打開和關閉面板'],
-              ['success / error', '提示', '—', '成功和錯誤'],
-              ['copy', '提示', '—', '複製'],
-              ['save / unsave', '提示', '—', '收藏和取消'],
-              ['hover', '提示', '—', '滑過'],
+              ['pop', '狀態', '—', '勾選'],
+              ['select', '狀態', '—', '選單選項'],
+              ['toggleOn / toggleOff', '狀態', '—', '開關'],
+              ['open / close', '狀態', '—', '打開和關閉 Drawer、選單'],
+              ['success / error', '狀態', '—', '成功和錯誤'],
+              ['copy', '狀態', '—', '複製'],
+              ['save / unsave', '狀態', '—', '收藏和取消'],
+              ['hover', '狀態', '—', '滑過'],
             ],
           },
         ],
         examples: [],
         notes: [
           '預設開，沒有開關。減少動態效果開啟時不出聲。',
-          '目前只有點擊會出聲。pop、open、success 這些提示聲還沒接到任何互動。',
+          '目前只有點擊會出聲。pop、open、success 這些狀態音還沒接到任何互動。',
         ],
       },
     ],

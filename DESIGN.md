@@ -14,6 +14,22 @@ TEKUEI 全站共用的視覺與動態規則。改畫面、樣式或動畫之前�
 - 喜歡：乾淨整齊的格線、量測和標註線、暗淡的字元背景、真實影像轉成字元或粒子的質感。
 - 不要：鮮豔的大色塊、超大的字、復古風、3D 遊戲感、插畫角色、太空的極簡、和紙、水墨、紙紋。
 
+## 用詞
+
+規範檔和 Component Library 裡，這些詞只有一個意思。
+
+| 詞 | 只指 | 其他東西改叫 |
+|---|---|---|
+| 區塊 | 編輯器裡的一個 block（段落、標題、圖片……） | 頁面的 section 叫「區段」，可以捲動的容器叫「捲動區」或「容器」 |
+| 區段 | 頁面上的一個 section，彼此間距是 `--section-gap` | |
+| 面板 | 編輯面板（`SidePanel`） | `Drawer`、選單直接寫名稱 |
+| 提示 | Tooltip | 給讀者的說明小字叫「操作說明」，音效的類別叫「狀態音」 |
+| 卡片 | 文章內的 `CodeCard`、`ImageCard`、`VideoCard`、`SlidesCard`，以及它們共用的 `Card` | 不寫「卡」或「card」 |
+| 外殼 | `Card` 的底色、圓角和光環 | |
+| 外欄 | Journal 文章的 696px 欄寬（680px 加左右各 8px） | 選取的框叫「框線」，鍵盤聚焦的叫「聚焦框」 |
+| 首頁 Hero | 首頁唯一的一屏（錦鯉池） | 不寫「第一屏」 |
+| 圖說 | 圖片和影片下方的 `caption` | |
+
 ## 顏色
 
 Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1…12`、`--accent-1…12`，各有透明版本（`-a1…a12`）。語意 token 指向色階，新程式碼只用這張表的語意 token。
@@ -21,7 +37,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 | 用途 | Token | 值 |
 |---|---|---|
 | 頁面背景 | `--surface-0` | `#0b0b0d` obsidian |
-| 卡片、區塊背景 | `--surface-1` | `#181719` charcoal |
+| 卡片、區段背景 | `--surface-1` | `#181719` charcoal |
 | 浮起的元素 | `--surface-2` | `#242024` |
 | 載入中的佔位方塊（Skeleton） | `--surface-3` | ivory 14% 混入 obsidian |
 | 分隔線、格線 | `--line` | ivory 8% |
@@ -54,7 +70,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 | `--text-primary` | 標題、最先要讀的字 |
 | `--text-body` | 內文段落 |
 | `--text-secondary` | 說明、圖說 |
-| `--text-tertiary` | 日期、提示、meta。最暗但仍達 4.5:1 |
+| `--text-tertiary` | 日期、操作說明、meta。最暗但仍達 4.5:1 |
 | `--text-faint` | 只當裝飾，不可用在要讀的字 |
 
 ## 字級
@@ -91,7 +107,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 三種節奏：
   - 元件內：4–12px。
   - 段落之間：24px。Journal 文章是 12px（見「字級」）。
-  - 區塊之間：`--section-gap`（96–128px，跟著螢幕寬度變）。
+  - 區段之間：`--section-gap`（96–128px，跟著螢幕寬度變）。
 - 外面的間距永遠大於裡面的間距。
 - 圓角：`--radius-sm` 8px（小控制項）、`--radius-md` 12px、`--radius-lg` 16px（卡片）、`--radius-full`（膠囊）。
 - 完整示範在 Component Library 的「基礎」。間距、字級、色值都標在真的介面上，數值從 DOM 即時量測。
@@ -110,7 +126,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 |---|---|---|
 | 英文、中文 | `--font-serif` | Instrument Serif 400（含斜體），中文自動改用思源宋體（Noto Serif TC 300/400） |
 | 標籤、數值 | `--font-label` | `ui-monospace`、Cascadia Mono、Consolas，中文用思源宋體 |
-| 程式碼 | `--font-mono` | 同上，只用在程式碼卡 |
+| 程式碼 | `--font-mono` | 同上，只用在 `CodeCard` |
 
 - Instrument Serif 排第一。它沒有中文字，所以中文自動改用思源宋體。
 - Instrument Serif 只用在 18px 以上。更小的英文改用 `--font-label`。
@@ -128,7 +144,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 所有內容最寬 `--page-max`（1920px）。螢幕更寬時，內容置中，只有兩側的背景延伸。
 - 「內容」包括文字、按鈕、圖片、Canvas 效果、跟內容對齊的裝飾（浮水印、軸線、格線）。
 - 可以延伸到全寬的只有：背景色、背景漸層、整條的分隔線、導覽列和讀取條的底色。
-- 寫法：區塊左右留白用 `calc(var(--page-gutter) + var(--page-pad))`。`--page-gutter` 在 1920 以下是 0。
+- 寫法：區段左右留白用 `calc(var(--page-gutter) + var(--page-pad))`。`--page-gutter` 在 1920 以下是 0。
 - 絕對定位的裝飾：`left`、`right` 也要加上 `var(--page-gutter)`。
 - 全寬的圖帶：寬度用 `min(100vw, var(--page-max))`，置中用 `margin`，不要用 `transform`（淡入動畫會覆寫 `transform`）。
 - 會被螢幕邊緣切掉的大圖：寬螢幕上改在內容邊緣切掉，或讓邊緣淡出（例如 `mask-image`）。
@@ -161,10 +177,10 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
   | Token | 值 | 用途 |
   |---|---|---|
-  | `--duration-exit` | 90ms | 選單和提示關閉 |
+  | `--duration-exit` | 90ms | 選單和 Tooltip 關閉 |
   | `--duration-fast` | 150ms | 小控制項：按鈕、選單項目、輸入框 |
   | `--duration-base` | 300ms | hover、Drawer 關閉、Accordion |
-  | `--duration-slow` | 400ms | 面板打開、導覽、比較慢的 hover |
+  | `--duration-slow` | 400ms | Drawer 打開、導覽、比較慢的 hover |
   | `--duration-fade` | 600ms | 淡入 |
   | `--duration-reveal` | 800ms | 頁面進場、縮圖放大 |
 
@@ -175,7 +191,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 每個 `transition` 和 `animation` 都寫 easing。一般用 `--ease-touch`，循環動畫可以用 `linear` 或 `steps()`。
 - 循環動畫的時長寫成變數，例如 `--duration-shake`（tokens.css，兩處共用）、`--spin-ms`、`--skeleton-ms`。
 - 關閉的元素用 `usePresence` 留到退場動畫播完再移除。
-- 會打開和關閉的面板（選單、Drawer）用 `transition`，不用 keyframes。進場寫在 `@starting-style`，退場寫在 `[data-closing]`。這樣動到一半改變方向時，會從目前的位置接著動。提示（Tooltip）例外，維持 keyframes：它只淡出 90ms，而 transitions-agent 會把它滑動用的 300ms 誤判成打開的時長。
+- 會打開和關閉的選單和 Drawer 用 `transition`，不用 keyframes。進場寫在 `@starting-style`，退場寫在 `[data-closing]`。這樣動到一半改變方向時，會從目前的位置接著動。Tooltip 例外，維持 keyframes：它只淡出 90ms，而 transitions-agent 會把它滑動用的 300ms 誤判成打開的時長。
 - 依狀態切換的圖示（複製 → 打勾、播放 → 暫停）用 `icon-swap`：兩個圖示放在同一格，隱藏的那個加 `data-off`，用 opacity、`scale(0.25)`、`blur(4px)` 交叉淡入淡出，時長 `--duration-fast`。transition 在第一次渲染時不會播放，所以頁面剛載入時不會動。
 - `Button` 按下時縮成 `scale(0.96)`，不要小於 0.95。
 - 進場淡入：在元素加上 `fade-in` class。`src/lib/reveal.js` 的 `mountReveal` 在 App.jsx 掛一次，元素露出 15% 時加上 `is-visible`，只觸發一次。不要為淡入包元件。
@@ -183,7 +199,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 每個效果都要支援 `prefers-reduced-motion`：直接顯示最終畫面。
 - 效果停下後，停止 `requestAnimationFrame`。畫面外不要繼續算。
 - 載入中：資料還沒回來時，用 `Skeleton` 排出內容的形狀。不要先顯示預設資料再整批換掉。
-- 可以捲動的區塊用 `ScrollShadow`：還有內容的那一邊淡出 40px（程式碼卡 32px）。
+- 可以捲動的容器用 `ScrollShadow`：還有內容的那一邊淡出 40px（`CodeCard` 32px）。
 
 ### 招牌效果
 

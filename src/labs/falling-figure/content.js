@@ -29,7 +29,7 @@ export const ABOUT_FALL_INTRO = {
   en: {
     label: 'ABOUT',
     headline: ['All the way down.', 'Every stretch is a chapter.'],
-    body: 'I am Wade Zhu. Ten years across software engineering, product management and cross-team work. I build systems, teams and processes from zero.',
+    body: 'I am Wade Chu. Ten years across software engineering, product management and cross-team work. I build systems, teams and processes from zero.',
     hint: 'Scroll down',
     soundOn: 'SOUND: ON',
     soundOff: 'SOUND: OFF',
