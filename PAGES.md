@@ -72,7 +72,7 @@
 - 背景和首頁 Hero 相同：中間 `--surface-1` 往邊緣漸變成 `--surface-0`，上面一層 `grainHaze.js` 的顆粒光。背景固定不動，捲動時只有內容移動。
 - 內文是 Tiptap 文件，存在 R2 `data.json` 的 `aboutPage`（`{ zh: { doc }, en: { doc } }`），編輯方式和 Journal 文章的內文相同，照片和排版都在頁面上用「+」插入。`src/data/about.js` 只是 R2 還沒有資料時的預設值。
 - 不用 `about` 這個 key：它存著舊定位的 About 文案，沒有頁面在讀。
-- 內文下面是「合作過的單位」：兩排 `Marquee`，方向相反，欄寬 `--page-column`。名單寫在 `src/data/about.js` 的 `ABOUT_CLIENTS`，不在 R2。有 logo 的單位顯示 logo（`src/assets/about/clients/`，SVG 優先），沒有的顯示名稱。logo 檔當遮罩，填上 `--text-secondary`，所以全部是同一個顏色，原本的品牌色不會出現。logo 高 32px、最寬 140px。
+- 內文下面是「合作過的單位」：兩排 `Marquee`，方向相反，欄寬 `--page-column`。名單寫在 `src/data/about.js` 的 `ABOUT_CLIENTS`，不在 R2。有 logo 的單位顯示 logo（`src/assets/about/clients/`，全部是 SVG），沒有的顯示名稱。logo 檔當遮罩，填上 `--text-secondary`，所以全部是同一個顏色，原本的品牌色不會出現。logo 高 32px、最寬 140px。
 - 最下面是 `SiteFooter`：一列的頁尾，品牌靠左、連結置中、圖示靠右。圖示在桌面排成交錯的兩排（上 4 下 3，下排往右錯開半個圖示），避免和中間的連結擠在一起。768px 以下分成三行：品牌、圖示（一排）、連結，內容有品牌字、© 年份、About、Work、Journal、Contact 連結，以及和 Journal 頁尾相同的社群圖示（X、YouTube、Facebook、Instagram、GitHub、LinkedIn、Email），還沒有網址的帳號只顯示圖示、不是連結。目前頁有金色底線，滑鼠或鍵盤移到其他連結時，底線滑過去（`--duration-base`）。連結和社群帳號讀 `HOME_FOOTER`。
 - 編輯面板沒有欄位，只有儲存、預覽和登出。
 - 英文內文是空的時，英文版顯示中文內文，加 `lang="zh-Hant"`。
