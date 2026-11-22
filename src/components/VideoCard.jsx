@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { CARD_LABELS } from '../data/cards.js'
 import { useLang } from '../i18n'
-import { useHasChanged } from '../hooks/useHasChanged.js'
 import { youtubeId } from '../lib/richText.js'
 import { Card } from './Card.jsx'
 import '../styles/cards.css'
@@ -50,7 +49,6 @@ function FileVideo({ src, poster, caption, loop = false }) {
   const root = useRef(null)
   const video = useRef(null)
   const [playing, setPlaying] = useState(false)
-  const swapped = useHasChanged(playing)
   const [time, setTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [rate, setRate] = useState(1)
@@ -115,8 +113,13 @@ function FileVideo({ src, poster, caption, loop = false }) {
         </button>
         <div className="video-card__bar">
           <button type="button" className="video-card__btn" onClick={toggle} aria-label={playing ? t.pause : t.play}>
-            <span key={playing ? 'pause' : 'play'} className="icon-swap" data-animate={swapped || undefined}>
-              {playing ? <PauseIcon /> : <PlayIcon />}
+            <span className="icon-swap">
+              <span data-off={playing || undefined}>
+                <PlayIcon />
+              </span>
+              <span data-off={!playing || undefined}>
+                <PauseIcon />
+              </span>
             </span>
           </button>
           <span className="video-card__time">{clock(time)}</span>

@@ -41,6 +41,24 @@
     box-shadow var(--duration-base) var(--ease-touch);
 }
 
+/* Touch: taller pills and rows 44px apart, so each pill's hit area reaches 44px without overlapping the next row */
+@media (max-width: 768px) {
+  .tag-group {
+    row-gap: var(--space-3);
+  }
+
+  .tag--button {
+    position: relative;
+    min-height: var(--space-8);
+  }
+
+  .tag--button::before {
+    content: '';
+    position: absolute;
+    inset: calc(var(--space-3) / -2) calc(var(--space-2) / -2);
+  }
+}
+
 /* Trim each line to cap height and baseline, so the capitals sit in the optical middle
    (the font's line box has more room below them than above) */
 .tag--button > * {

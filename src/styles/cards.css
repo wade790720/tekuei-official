@@ -66,17 +66,25 @@
   display: grid;
   flex-shrink: 0;
   place-items: center;
+  position: relative;
   width: 28px;
   height: 28px;
   padding: 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: calc(var(--radius-md) - var(--space-2)); /* concentric with the bar: 12px minus its 8px padding */
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
   transition:
     background-color var(--duration-fast) var(--ease-touch),
     color var(--duration-fast) var(--ease-touch);
+}
+
+/* 44px hit area around the 28px button */
+.code-card__copy::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--space-2) * -1);
 }
 
 .code-card__copy:hover {
@@ -230,6 +238,7 @@
   display: grid;
   flex-shrink: 0;
   place-items: center;
+  position: relative;
   min-width: 28px;
   height: 28px;
   padding: 0 var(--space-1);
@@ -239,6 +248,13 @@
   color: inherit;
   cursor: pointer;
   transition: background-color var(--duration-fast) var(--ease-touch);
+}
+
+/* 44px tall hit area; sideways it stops halfway into the 8px gap, so neighbours never overlap */
+.video-card__btn::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--space-2) * -1) calc(var(--space-2) / -2);
 }
 
 .video-card__btn:hover {

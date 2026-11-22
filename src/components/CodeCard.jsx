@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CARD_LABELS } from '../data/cards.js'
 import { useLang } from '../i18n'
-import { useHasChanged } from '../hooks/useHasChanged.js'
 import { tokenize } from '../lib/highlight.js'
 import { Card } from './Card.jsx'
 import { ScrollShadow } from './ScrollShadow.jsx'
@@ -17,7 +16,6 @@ export function CodeCard({ code, lang = 'ts', filename }) {
   const t = CARD_LABELS[ui]
   const tokens = useMemo(() => tokenize(code, lang), [code, lang])
   const [copied, setCopied] = useState(false)
-  const swapped = useHasChanged(copied)
   const timer = useRef(0)
 
   useEffect(() => () => clearTimeout(timer.current), [])
@@ -45,8 +43,13 @@ export function CodeCard({ code, lang = 'ts', filename }) {
           aria-label={t.copy}
           data-copied={copied || undefined}
         >
-          <span key={copied ? 'check' : 'copy'} className="icon-swap" data-animate={swapped || undefined}>
-            {copied ? <CheckIcon /> : <CopyIcon />}
+          <span className="icon-swap">
+            <span data-off={copied || undefined}>
+              <CopyIcon />
+            </span>
+            <span data-off={!copied || undefined}>
+              <CheckIcon />
+            </span>
           </span>
         </button>
         <span className="card__sr" role="status">
@@ -90,7 +93,7 @@ async function writeClipboard(text) {
 
 function CopyIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <rect x="5.5" y="5.5" width="8" height="8" rx="1.8" />
       <path d="M10.5 3.5v-.3A1.7 1.7 0 0 0 8.8 1.5H3.2A1.7 1.7 0 0 0 1.5 3.2v5.6c0 .94.76 1.7 1.7 1.7h.3" />
     </svg>

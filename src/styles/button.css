@@ -18,7 +18,8 @@
   transition:
     opacity var(--duration-fast) var(--ease-touch),
     background-color var(--duration-fast) var(--ease-touch),
-    color var(--duration-fast) var(--ease-touch);
+    color var(--duration-fast) var(--ease-touch),
+    transform var(--duration-fast) var(--ease-touch);
 }
 
 /* Disabled, e.g. save with nothing to save: the button sits back instead of glowing */
@@ -33,7 +34,8 @@
   color: var(--text-secondary);
   transition:
     background-color var(--duration-fast) var(--ease-touch),
-    color var(--duration-fast) var(--ease-touch);
+    color var(--duration-fast) var(--ease-touch),
+    transform var(--duration-fast) var(--ease-touch);
 }
 
 .btn--ghost:hover {
@@ -56,7 +58,8 @@
   cursor: pointer;
   transition:
     background-color var(--duration-fast) var(--ease-touch),
-    color var(--duration-fast) var(--ease-touch);
+    color var(--duration-fast) var(--ease-touch),
+    transform var(--duration-fast) var(--ease-touch);
 }
 
 .btn--icon:hover {
@@ -76,7 +79,9 @@
   backdrop-filter: blur(8px);
   font-size: var(--type-small);
   color: var(--text-primary);
-  transition: background-color var(--duration-fast) var(--ease-touch);
+  transition:
+    background-color var(--duration-fast) var(--ease-touch),
+    transform var(--duration-fast) var(--ease-touch);
 }
 
 .btn--overlay:hover {
@@ -86,4 +91,15 @@
 .btn--icon[aria-pressed='true'] {
   background: var(--line);
   color: var(--text-primary);
+}
+
+/* Press: a small shrink gives the click a physical feel (0.96, never below 0.95) */
+.btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active:not(:disabled) {
+    transform: none;
+  }
 }

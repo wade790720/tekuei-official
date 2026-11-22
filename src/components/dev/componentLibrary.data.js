@@ -68,6 +68,7 @@ export const GROUPS = [
           'disabled 時底色變暗，不能點。',
           'icon 按鈕沒有文字，要加 aria-label。aria-pressed 為 true 時底色變亮。',
           'overlay 按鈕是半透明深底加模糊，放在任何圖片上都看得清楚，一樣要加 aria-label。',
+          '按下時縮成 0.96 倍，減少動態效果開啟時不縮。',
         ],
       },
 
@@ -213,7 +214,7 @@ export const GROUPS = [
           '上色支援類 C 語法（JS、TS、CSS、JSON）和 shell 的 # 註解。',
           '複製先用 Clipboard API，瀏覽器擋住時改用 execCommand。',
           '複製成功時，螢幕閱讀器讀出「已複製」。',
-          '複製圖示換成打勾時，新圖示從小、模糊放大到清楚（icon-swap）。頁面剛載入時不播放。',
+          '複製和打勾兩個圖示交叉淡入淡出（icon-swap），隱藏的那個縮小、模糊。頁面剛載入時不動。',
           '程式碼區可以用鍵盤聚焦，並橫向捲動。左右還有程式碼時，邊緣淡出（ScrollShadow）。',
         ],
       },
@@ -317,7 +318,7 @@ export const GROUPS = [
         notes: [
           '播放時，控制列只在游標移入或鍵盤聚焦時出現，觸控裝置上則一直顯示。',
           '手機寬度不顯示總長度。',
-          '播放和暫停圖示切換時，新圖示從小、模糊放大到清楚（icon-swap）。頁面剛載入時不播放。',
+          '播放和暫停兩個圖示交叉淡入淡出（icon-swap），隱藏的那個縮小、模糊。頁面剛載入時不動。',
           'iOS Safari 上，全螢幕作用在 video 元素本身。',
           '影片用 -movflags +faststart 輸出，才能邊下載邊播放。',
           'YouTube 影片在訪客按下播放前不載入 YouTube 的 cookie。正式站的 HTML 裡寫成一個連到 YouTube 的連結，給搜尋引擎讀。',
@@ -482,6 +483,7 @@ export const GROUPS = [
           '當按鈕時點擊不出聲（data-sound="off"）。',
           '舊文章只有 category，postTags 會把它當成唯一的標籤。',
           '少於兩個標籤時，篩選列不顯示。',
+          '768px 以下，按鈕高 32px，列與列相隔 12px，每顆的點擊範圍撐到 44px 也不會和下一列重疊。',
           '按鈕的字用 text-box 裁到大寫字高和基線，大寫字母在膠囊裡上下置中。右側內距少一個字距，因為字距會加在最後一個字後面。不支援 text-box 的瀏覽器（Firefox）字會偏上約 1px。',
         ],
       },

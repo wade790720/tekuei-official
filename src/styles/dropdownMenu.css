@@ -41,12 +41,24 @@
   border-radius: var(--radius-md);
   background: var(--surface-2);
   box-shadow: 0 0 0 1px var(--line), 0 16px 40px rgba(0, 0, 0, 0.5);
-  animation: dropdown-menu-in var(--duration-fast) var(--ease-touch);
+  /* Transitions, not keyframes: reopening mid-close turns back from where it is */
+  transition:
+    opacity var(--duration-fast) var(--ease-touch),
+    transform var(--duration-fast) var(--ease-touch);
+}
+
+@starting-style {
+  .dropdown-menu__list {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
 }
 
 /* Closing: a quicker fade back up before it unmounts (EXIT_MS in DropdownMenu.jsx) */
 .dropdown-menu__list[data-closing] {
-  animation: dropdown-menu-out var(--duration-exit) var(--ease-touch) forwards;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition-duration: var(--duration-exit);
 }
 
 .dropdown-menu__item {
@@ -106,24 +118,9 @@
   background: var(--line);
 }
 
-@keyframes dropdown-menu-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-}
-
-@keyframes dropdown-menu-out {
-  to {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .dropdown-menu__list,
-  .dropdown-menu__list[data-closing] {
-    animation: none;
+  .dropdown-menu__list {
+    transition: none;
   }
 
   .dropdown-menu__list[data-closing] {

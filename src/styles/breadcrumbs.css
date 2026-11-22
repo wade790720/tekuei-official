@@ -30,6 +30,9 @@
   font-family: var(--font-label);
   font-size: var(--type-small);
   line-height: 20px;
+  /* 44px hit area: overflow is hidden for the ellipsis, so padding grows the box and the margin keeps the layout */
+  margin-block: calc(var(--space-3) * -1);
+  padding-block: var(--space-3);
   letter-spacing: 0;
   text-overflow: ellipsis;
   white-space: nowrap;

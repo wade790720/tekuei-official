@@ -78,14 +78,15 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
         <div className="cms-gate__field">
           {busy ? (
             <div className="cms-gate__pill">
-              {state === 'verifying' ? (
-                <span className="cms-spin" aria-hidden />
-              ) : (
-                // Only mounts after verifying, so it always animates
-                <span className="icon-swap" data-animate>
+              <span className="icon-swap">
+                {/* The wrapper scales; the spinner keeps its own rotation */}
+                <span data-off={state !== 'verifying' || undefined}>
+                  <span className="cms-spin" aria-hidden />
+                </span>
+                <span data-off={state === 'verifying' || undefined}>
                   <CheckIcon />
                 </span>
-              )}
+              </span>
               {status}
             </div>
           ) : (
