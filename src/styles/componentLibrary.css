@@ -10,7 +10,7 @@
   font-family: var(--font-serif);
 }
 
-/* ── Sidebar: stays in place; scrolls on its own when it is taller than the screen ── */
+/* Sidebar: stays in place; scrolls on its own when it is taller than the screen */
 
 .cl-side {
   position: fixed;
@@ -1016,7 +1016,7 @@
 }
 
 
-/* ── Doc parts (src/components/dev/doc/): section, example, scale picker ── */
+/* Doc parts (src/components/dev/doc/): section, example, scale picker */
 
 .doc-section {
   margin-top: var(--space-12);

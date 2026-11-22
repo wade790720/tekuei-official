@@ -12,7 +12,7 @@
   --gold: #c99a63; /* accent */
   --amber: #e4b57b; /* hover, glow */
 
-  /* ── Color scales ──
+  /* Color scales
      Two 12-step scales, each with a solid and an alpha (transparent ivory or gold) variant.
      Steps by job: 1–2 backgrounds, 3–5 interactive, 6–8 borders, 9–10 solid, 11–12 text.
      The brand colours are anchors (gray 1, 3, 5, 12; accent 9, 10); the steps between are mixes.
@@ -127,7 +127,7 @@
   --code-punct: var(--gray-a10);
   --code-plain: var(--gray-a12);
 
-  /* ── Foundations ── Shown with examples on /dev/component-library (Theme). */
+  /* Foundations. Shown with examples on /dev/component-library (Theme). */
 
   /* Text tiers: four steps on the gray alpha scale. Faint is for decoration, never for reading. */
   --text-primary: var(--gray-12); /* headings, the thing to read first */

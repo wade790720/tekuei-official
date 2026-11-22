@@ -27,7 +27,7 @@
   animation: tekuei-skeleton-pulse var(--skeleton-ms) cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Prefixed: a browser extension (eduser.css) injects its own @keyframes skeleton-shimmer, which overrode ours */
+/* Prefixed: a browser extension injects its own @keyframes skeleton-shimmer, which overrode ours */
 @keyframes tekuei-skeleton-shimmer {
   to {
     transform: translateX(100%);
