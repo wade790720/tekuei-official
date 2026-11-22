@@ -1,13 +1,12 @@
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { SidePanel, FormRow, PanelSection } from '../SidePanel.jsx'
 import { TextArea } from '../TextArea.jsx'
 import { TextField } from '../TextField.jsx'
 import { Button } from '../Button.jsx'
-import { useAdmin, useAdminSave } from '../../context/admin.js'
 import { useJournal } from '../../context/journal.js'
 import { parseTags, postTags } from '../../data/journal.js'
-import { CMS_LABELS as T } from '../../data/admin.js'
+import { useCmsEditing } from '../../hooks/useCmsEditing.js'
 import { useLang } from '../../i18n'
 import { emptyDoc } from '../../lib/richText.js'
 
@@ -24,57 +23,10 @@ const today = () => {
   return [d.getFullYear(), d.getMonth() + 1, d.getDate()].map((n) => String(n).padStart(2, '0')).join('.')
 }
 
-/**
- * Edit mode glue for journal pages: starts the journal draft when edit mode turns on,
- * saves on Ctrl/⌘+S, and asks before throwing away unsaved changes.
- */
 function useJournalEditing() {
-  const admin = useAdmin()
   const cms = useJournal()
-  // The saved side changes only on load and save, so it is not serialised again on every keystroke.
-  const saved = useMemo(() => JSON.stringify(cms.savedContent), [cms.savedContent])
-  const isDirty = (draft) => Boolean(draft) && JSON.stringify(draft) !== saved
-  // The panel's indicator can lag a keystroke: the whole journal is compared when the browser is idle.
-  // Save and leave check the current draft instead, so Ctrl+S right after typing still saves.
-  const deferredDraft = useDeferredValue(cms.draft)
-  const dirty = useMemo(() => Boolean(deferredDraft) && JSON.stringify(deferredDraft) !== saved, [deferredDraft, saved])
-
-  // Not `cms` itself: it is a new object on every keystroke.
-  const { isEditing, loading, startEditing } = cms
-  useEffect(() => {
-    if (admin.editing && !isEditing && !loading) startEditing()
-  }, [admin.editing, isEditing, loading, startEditing])
-
-  const save = async () => {
-    if (!isDirty(cms.draft) || cms.saving) return
-    try {
-      await cms.saveDraft(admin.getToken())
-    } catch {
-      /* cms.error holds the message */
-    }
-  }
-  useAdminSave(admin.editing ? save : null)
-
-  const leave = (then) => {
-    if (isDirty(cms.draft) && !window.confirm(T.logoutConfirm)) return
-    cms.cancelEditing()
-    then()
-  }
-
-  return {
-    admin,
-    cms,
-    ready: admin.editing && cms.isEditing,
-    panelProps: {
-      dirty,
-      saving: cms.saving,
-      error: cms.error,
-      onSave: save,
-      onLogout: () => leave(admin.logout),
-    },
-  }
+  return { cms, ...useCmsEditing(cms) }
 }
-
 
 export function JournalPostEditPanel({ slug }) {
   const { lang } = useLang()

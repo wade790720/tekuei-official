@@ -17,7 +17,7 @@ TEKUEI 德溎，Wade 的個人網站。文章是主角，案例第二，聯絡�
 | 前端 | Vite、React 19、React Router 7（library 模式，`BrowserRouter`） |
 | 後端 | Cloudflare Pages Functions（`functions/`）、一個 R2 bucket `tekuei-cms` |
 | 語言 | 中英雙語。目前用 `localStorage` 的 `lang` 切換，網址不變 |
-| 動畫 | 原生 Canvas 2D、IntersectionObserver。About 頁用 Lenis |
+| 動畫 | 原生 Canvas 2D、IntersectionObserver。Falling Figure lab 用 Lenis |
 
 PRODUCT.md 寫的「React Router framework 模式」和「語言放進網址」是目標，還沒做。沒有被要求時，不要順便遷移。
 

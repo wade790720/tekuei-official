@@ -653,6 +653,36 @@ export const GROUPS = [
       },
 
       {
+        id: 'marquee',
+        name: 'Marquee',
+        file: 'src/components/Marquee.jsx',
+        summary: '一排不停往側邊捲動的項目，左右兩端淡出。兩排可以往相反的方向走',
+        hero: {
+          demo: 'marquee',
+          code: `<Marquee items={['LG', 'GQ', 'Starbucks']} />
+<Marquee items={['AUO', 'PTS', 'TAICCA']} reverse />`,
+        },
+        api: [
+          {
+            description: '項目排成一排，整排以固定速度往左捲，捲到底接回開頭',
+            props: [
+              ['items', 'node[]', '—', '必填，每一項是一段文字或一張圖'],
+              ['reverse', 'boolean', 'false', '往右捲'],
+              ['speed', 'number', '14', '每秒移動的像素'],
+              ['label', 'string', '—', '有填時整排是一個 region，用它當名稱'],
+            ],
+          },
+        ],
+        examples: [],
+        notes: [
+          '項目之間 64px，文字是 18px 的 --font-serif、--text-secondary。左右各 10% 用 mask-image 淡出。',
+          '項目太少、一份清單比容器窄時，清單會自動重複，畫面上不會出現空隙。',
+          '第二份清單和重複的項目加上 aria-hidden，螢幕閱讀器只讀一次。',
+          '減少動態效果開啟時不捲動，項目置中換行排列。',
+        ],
+      },
+
+      {
         id: 'accordion',
         name: 'Accordion',
         file: 'src/components/Accordion.jsx',

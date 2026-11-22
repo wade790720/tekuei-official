@@ -208,7 +208,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 | 檔案 | 用在哪 | 效果 |
 |---|---|---|
 | `src/lib/koiPond.js` | 首頁 Hero | 字元拼成的錦鯉在文字後面游，點一下水面丟飼料，附近的錦鯉游過來吃 |
-| `src/lib/grainHaze.js` | 首頁 Hero，錦鯉的背景 | 一塊柔邊的光碎成沙粒，明暗很慢地流動。它和錦鯉算同一個招牌效果 |
+| `src/lib/grainHaze.js` | 首頁 Hero，錦鯉的背景；About 的背景 | 一塊柔邊的光碎成沙粒，明暗很慢地流動。在首頁它和錦鯉算同一個招牌效果，在 About 它是那一頁唯一的效果 |
 | `src/labs/living-portrait/heroFx.js` | Labs 的 Living Portrait | hover 出現追蹤框和 ASCII，雙擊出現 glitch |
 | `src/lib/glyphField.js` | Journal 頁首 | 字元雨，游標附近的字會亮 |
 | `src/labs/falling-figure/fallScene.js` | About | 粒子人形往下掉，穿過刻字石板 |

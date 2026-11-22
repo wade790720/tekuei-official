@@ -20,6 +20,7 @@ import { ScrollShadow } from '../ScrollShadow.jsx'
 import { Breadcrumbs, BreadcrumbsItem } from '../Breadcrumbs.jsx'
 import { Accordion, AccordionItem } from '../Accordion.jsx'
 import { Skeleton } from '../Skeleton.jsx'
+import { Marquee } from '../Marquee.jsx'
 import { blocksToDoc } from '../../lib/richText.js'
 import { mountGlyphField } from '../../lib/glyphField.js'
 import { mountGrainHaze } from '../../lib/grainHaze.js'
@@ -383,6 +384,12 @@ const DEMOS = {
       <BreadcrumbsItem href="/journal">Journal</BreadcrumbsItem>
       <BreadcrumbsItem>文章</BreadcrumbsItem>
     </Breadcrumbs>
+  ),
+  marquee: () => (
+    <div style={{ display: 'grid', gap: 'var(--space-8)', width: '100%' }}>
+      <Marquee items={['LG', 'GQ', 'Starbucks', 'Hahow', 'W Hotel']} />
+      <Marquee items={['AUO', 'PTS', 'TAICCA', 'Uni-President']} reverse />
+    </div>
   ),
   accordion: () => <AccordionDemo />,
   'accordion-surface': () => <AccordionDemo variant="surface" />,

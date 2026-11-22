@@ -15,7 +15,7 @@ import { useLang } from './i18n'
 // Labs load when first visited, so Lenis and the canvas effects stay out of the main bundle.
 const LabPage = lazy(() => import('./labs/LabPage.jsx'))
 const LabLive = lazy(() => import('./labs/LabLive.jsx'))
-const FallingFigure = lazy(() => import('./labs/falling-figure/FallingFigure.jsx').then((m) => ({ default: m.FallingFigure })))
+const AboutPage = lazy(() => import('./components/AboutPage.jsx'))
 const CaseRouter = lazy(() => import('./components/CaseRouter.jsx'))
 // Only LIFF check-in visitors need the phone input and libphonenumber.
 const CheckinPage = lazy(() => import('./components/CheckinPage.jsx'))
@@ -134,7 +134,7 @@ export default function App() {
       <Suspense fallback={<div className="site-loading-bar" />}>
       <Routes>
         <Route path="/" element={<SiteHero />} />
-        <Route path="/about" element={<FallingFigure />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/work" element={<WorkListPage />} />
         <Route path="/journal" element={<JournalListPage />} />
         <Route path="/journal/:slug" element={<JournalPostPage />} />
