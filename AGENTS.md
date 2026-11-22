@@ -51,7 +51,7 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 
 - 文案不要寫死在元件裡。放進 `src/data/`，並同時提供 `zh` 和 `en`。
 - 顏色、線條、easing 只用 `tokens.css` 的 token。不要寫新的色碼。細節見 DESIGN.md。
-- 新的 class 用「頁面或區段前綴 + BEM」，例如 `journal-footer__link`、`is-in`。
+- 新的 class 用「頁面或區段前綴 + BEM」，例如 `site-footer__logo`、`is-in`。
 - Canvas 效果寫成 `mountXxx(canvas, opts)`，回傳 cleanup 函式。元件在 `useEffect` 裡呼叫它。參考 `src/lib/glyphField.js`。
 - 每個動畫都要支援 `prefers-reduced-motion`。效果停下後要停止 `requestAnimationFrame`。
 - 樣式一個元件或一頁一個檔案，放在 `src/styles/`，檔名和元件或頁面相同。

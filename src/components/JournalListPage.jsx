@@ -5,11 +5,9 @@ import { Tag, TagList } from './Tag.jsx'
 import { JOURNAL_FILTER, JOURNAL_HEADER, JOURNAL_META, postTags, readableJournal, tagCounts } from '../data/journal.js'
 import { useJournal } from '../context/journal.js'
 import { useAdmin } from '../context/admin.js'
-import { HOME_FOOTER } from '../data/homepage.js'
 import { useLang } from '../i18n'
 import { mountGlyphField } from '../lib/glyphField.js'
-import { mountShatterImage } from '../lib/shatterImage.js'
-import seaImage from '../assets/journal/footer-sea.webp'
+import { SiteFooter } from './SiteFooter.jsx'
 import '../styles/work.css'
 import '../styles/journal.css'
 
@@ -97,7 +95,7 @@ export default function JournalListPage() {
       </div>
       </main>
 
-      <JournalFooter posts={allPosts} />
+      <SiteFooter />
       {editing ? (
         <Suspense fallback={null}>
           <JournalListEditPanel />
@@ -208,81 +206,5 @@ function FeaturedPost({ post }) {
         <span>READ</span>
       </div>
     </Link>
-  )
-}
-
-function FooterLink({ href, i, children }) {
-  const props = { className: 'journal-footer__link', style: { '--i': i } }
-  // An entry without an address is listed as plain text.
-  if (!href) return <span {...props}>{children}</span>
-  return href.startsWith('/') ? (
-    <Link to={href} {...props}>
-      {children}
-    </Link>
-  ) : (
-    <a href={href} {...props}>
-      {children}
-    </a>
-  )
-}
-
-/** @param {{ posts: { slug: string, title: string }[] }} props  newest first; the Latest column lists three */
-function JournalFooter({ posts }) {
-  const { lang } = useLang()
-  const footer = HOME_FOOTER[lang]
-  const root = useRef(null)
-  const sea = useRef(null)
-
-  useEffect(
-    () =>
-      mountShatterImage(sea.current, {
-        src: seaImage,
-        crop: [0, 583, 1920, 705], // the bottom strip of the 1920 × 1288 image, in the canvas's 1280:470 ratio
-        onPlay: () => root.current?.classList.add('is-in'),
-      }),
-    [],
-  )
-
-  const columns = [
-    { title: footer.titles.explore, links: footer.explore },
-    { title: footer.titles.latest, links: posts.slice(0, 3).map((p) => ({ label: p.title, href: `/journal/${p.slug}` })) },
-    { title: footer.titles.contact, links: footer.contact },
-  ]
-
-  return (
-    <footer className="journal-footer" ref={root}>
-      <div className="journal-footer__rules" aria-hidden>
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="journal-footer__cols">
-        <div className="journal-footer__col">
-          <Link to="/" className="journal-footer__brand journal-footer__r" style={{ '--i': 0 }}>
-            T E K U E I
-          </Link>
-          <div className="journal-footer__sub journal-footer__r" style={{ '--i': 1 }}>
-            德 溎
-          </div>
-          <div className="journal-footer__copy journal-footer__r" style={{ '--i': 3 }}>
-            © 2026 TEKUEI
-          </div>
-        </div>
-        {columns.map((col, c) => (
-          <div className="journal-footer__col" key={c}>
-            <div className="journal-footer__title journal-footer__r" style={{ '--i': c * 2 + 2 }}>
-              {col.title}
-            </div>
-            {col.links.map((link, k) => (
-              <FooterLink key={link.label} href={link.href} i={c * 2 + 3 + k}>
-                {link.label}
-              </FooterLink>
-            ))}
-          </div>
-        ))}
-      </div>
-      <canvas className="journal-footer__sea" ref={sea} aria-hidden />
-    </footer>
   )
 }

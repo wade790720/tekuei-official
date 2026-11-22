@@ -4,6 +4,7 @@ import './lab.css'
 import CaseStub from '../components/CaseStub.jsx'
 import { FallingFigure } from './falling-figure/FallingFigure.jsx'
 import { LivingPortrait } from './living-portrait/LivingPortrait.jsx'
+import { ShatterFooterStage } from './shatter-footer/ShatterFooter.jsx'
 import { HOME_HERO } from '../data/homepage.js'
 import { useLang } from '../i18n'
 
@@ -19,5 +20,6 @@ export default function LabLive() {
 
   if (slug === 'living-portrait') return <LivingPortrait name={HOME_HERO[lang].name} label="Living Portrait" />
   if (slug === 'falling-figure') return <FallingFigure />
+  if (slug === 'shatter-footer') return <ShatterFooterStage />
   return <CaseStub />
 }

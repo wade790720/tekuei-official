@@ -44,8 +44,8 @@ export const GUIDES = {
         text: '每頁一個 CSS 檔，放在 src/styles/。class 用「頁面前綴 + BEM」，狀態用 is-*。',
         lang: 'css',
         code: `/* src/styles/journal.css */
-.journal-footer__link { … }
-.journal-footer__link.is-active { … }`,
+.journal-row__title { … }
+.journal-row:hover { … }`,
       },
       {
         id: 'step-check',
@@ -91,7 +91,7 @@ npm run dev`,
       text: 'class 用頁面或元件的前綴加 BEM，狀態用 is-*，資料狀態用 data-*。',
       code: `.code-card { … }            /* 元件 */
 .code-card__bar { … }       /* 元件的零件 */
-.journal-footer__link { … } /* 頁面的區段 */
+.journal-row__title { … }   /* 頁面的區段 */
 .journal-card.is-visible { … }
 .otp-input[data-invalid] { … }`,
     },
@@ -140,7 +140,7 @@ npm run dev`,
     },
     fullBleed: {
       text: '可以延伸到全寬的只有：背景色、背景漸層、整條分隔線、導覽列的底色。全寬的圖帶寬度用 min(100vw, var(--page-max))，用 margin 置中。',
-      code: `.journal-footer__art {
+      code: `.shatter-footer__sea {
   width: min(100vw, var(--page-max));
   margin-inline: auto;
 }`,
@@ -182,7 +182,7 @@ npm run dev`,
             ['Radix UI', 'https://www.radix-ui.com/', '文件的分類、每頁的編排、Typography 頁', 'Component Library'],
             ['React Bits Pro', 'https://pro.reactbits.dev/', '下拉選單', 'DropdownMenu'],
             ['pixelui：Tracked Butterfly ASCII', 'https://pixelui.dev/components/tracked-butterfly-ascii', 'hover 時的 ASCII 追蹤框和第二張圖', 'heroFx.js'],
-            ['motionsites.ai', 'https://motionsites.ai/', '版畫圖由碎片組合的頁尾', 'shatterImage.js、Journal 頁尾'],
+            ['motionsites.ai', 'https://motionsites.ai/', '版畫圖由碎片組合的頁尾', 'shatterImage.js、Shatter Footer'],
             ['motionsites.ai：Koi Pond', 'https://motionsites.ai/?prompt=koi-pond', '錦鯉在文字後面游、四個角落的排法、右下角的大字名字', 'koiPond.js、首頁 Hero'],
             ['p5aholic.me', 'https://p5aholic.me/', '背景的做法和數值：自己扭曲自己的雜訊場、六次方、每個像素固定的顆粒偏移，左上角幾行小字的自我介紹和斷行方式', 'grainHaze.js、首頁 Hero'],
             ['ascii-koi', 'https://github.com/Ahmet-Dedeler/ascii-koi', '錦鯉的轉向、脊椎、身體和魚鰭的外形、斑紋', 'koiPond.js'],
@@ -341,7 +341,7 @@ var(--accent-a4); /* --ember-whisper：hover 的淡底 */`,
       ['mountHeroFx', 'Living Portrait', '游標移入出現追蹤框和 ASCII，雙擊出現 glitch'],
       ['mountGlyphField', 'Journal 頁首', '暗淡的字元落下，游標附近變亮'],
       ['mountFallScene', 'About', '粒子人形隨捲動往下掉'],
-      ['mountShatterImage', 'Journal 頁尾', '碎片從左到右拼成一張圖'],
+      ['mountShatterImage', 'Labs 的 Shatter Footer', '碎片從左到右拼成一張圖'],
     ],
   },
   breakpoints: {
