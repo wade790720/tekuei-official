@@ -173,7 +173,9 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 每個 `transition` 和 `animation` 都寫 easing。一般用 `--ease-touch`，循環動畫可以用 `linear` 或 `steps()`。
 - 循環動畫的時長寫成變數，例如 `--duration-shake`（tokens.css，兩處共用）、`--spin-ms`、`--skeleton-ms`。
 - 關閉的元素用 `usePresence` 留到退場動畫播完再移除。
-- 依狀態切換的圖示（複製 → 打勾、播放 → 暫停）用 `icon-swap`：opacity、`scale(0.25)`、`blur(4px)` 一起變到正常，時長 `--duration-fast`。包圖示的元素換 `key`，並用 `useHasChanged` 讓頁面剛載入時不播放。
+- 會打開和關閉的面板（選單、Drawer）用 `transition`，不用 keyframes。進場寫在 `@starting-style`，退場寫在 `[data-closing]`。這樣動到一半改變方向時，會從目前的位置接著動。提示（Tooltip）例外，維持 keyframes：它只淡出 90ms，而 transitions-agent 會把它滑動用的 300ms 誤判成打開的時長。
+- 依狀態切換的圖示（複製 → 打勾、播放 → 暫停）用 `icon-swap`：兩個圖示放在同一格，隱藏的那個加 `data-off`，用 opacity、`scale(0.25)`、`blur(4px)` 交叉淡入淡出，時長 `--duration-fast`。transition 在第一次渲染時不會播放，所以頁面剛載入時不會動。
+- `Button` 按下時縮成 `scale(0.96)`，不要小於 0.95。
 - 進場淡入：在元素加上 `fade-in` class。`src/lib/reveal.js` 的 `mountReveal` 在 App.jsx 掛一次，元素露出 15% 時加上 `is-visible`，只觸發一次。不要為淡入包元件。
 - 位移只用 `opacity` 和 `transform`。淡入的位移寫在各頁 CSS（首頁 20px，Journal 見 PAGES.md）。
 - 每個效果都要支援 `prefers-reduced-motion`：直接顯示最終畫面。
@@ -226,6 +228,8 @@ useEffect(() => mountXxx(canvas.current), [])
 ## 無障礙
 
 - 內文對比至少 4.5:1。內文字級 16px 以上。
+- 點擊範圍：手機上至少 44 × 44px，桌面的編輯面板至少 40 × 40px。外觀小的按鈕用 `::before` 撐大，有 `overflow: hidden` 的元素改用 padding 加上相同的負 margin。相鄰的點擊範圍不能重疊，排得太密時，點擊範圍只撐到兩者間距的一半。
+- 圖示線寬一律 1.5（文字都是 400 字重）。
 - Canvas 是裝飾，加 `aria-hidden`。真正的標題、按鈕、連結要是 HTML 文字。
 - 手機上要順暢。粒子類效果把 `devicePixelRatio` 上限設在 1.5–2。
 

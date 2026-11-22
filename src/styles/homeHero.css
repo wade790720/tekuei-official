@@ -92,6 +92,11 @@
   white-space: nowrap;
 }
 
+/* The counts change while you watch. Instrument Serif has no tabular figures, so the digits use the label font (monospace) */
+.home-koi__num {
+  font-family: var(--font-label);
+}
+
 .home-koi__label {
   display: flex;
   flex-wrap: wrap;

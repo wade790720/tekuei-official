@@ -52,10 +52,10 @@ function KoiHero({ hero }) {
       <div className="home-koi__foot">
         <p className="home-koi__label" aria-hidden>
           <span>
-            {hero.koiLabel} {two(count.koi)}
+            {hero.koiLabel} <span className="home-koi__num">{two(count.koi)}</span>
           </span>
           <span>
-            {hero.foodLabel} {two(count.food)}
+            {hero.foodLabel} <span className="home-koi__num">{two(count.food)}</span>
           </span>
           <span className="home-koi__hint">{hero.hint}</span>
         </p>

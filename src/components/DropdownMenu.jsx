@@ -131,7 +131,7 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
 
 function CheckIcon() {
   return (
-    <svg className="dropdown-menu__check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+    <svg className="dropdown-menu__check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M3.5 8.5l3 3 6-7" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )

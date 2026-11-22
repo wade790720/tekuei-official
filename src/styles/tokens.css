@@ -217,27 +217,32 @@
   100% { width: 89%; }
 }
 
-/* Icon swap: a state icon (copy → check, play → pause) grows in from small and blurred (jakub.kr "Animate icons contextually").
-   Give the icon's wrapper class icon-swap and a new key on each change; data-animate turns the motion on. */
+/* Icon swap: two state icons share one cell and cross-fade (jakub.kr "Animate icons contextually").
+   The hidden one, marked data-off, is shrunk, blurred and transparent. Transitions skip the first render,
+   so nothing moves on page load, and a quick second click turns back from where it is. */
 .icon-swap {
-  display: inline-flex;
+  display: inline-grid;
+  place-items: center;
 }
 
-.icon-swap[data-animate] {
-  animation: icon-swap var(--duration-fast) var(--ease-touch);
+.icon-swap > * {
+  grid-area: 1 / 1;
+  display: grid;
+  transition:
+    opacity var(--duration-fast) var(--ease-touch),
+    transform var(--duration-fast) var(--ease-touch),
+    filter var(--duration-fast) var(--ease-touch);
 }
 
-@keyframes icon-swap {
-  from {
-    opacity: 0;
-    transform: scale(0.25);
-    filter: blur(4px);
-  }
+.icon-swap > [data-off] {
+  opacity: 0;
+  transform: scale(0.25);
+  filter: blur(4px);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .icon-swap[data-animate] {
-    animation: none;
+  .icon-swap > * {
+    transition: none;
   }
 }
 

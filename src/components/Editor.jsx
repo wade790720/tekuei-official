@@ -539,8 +539,8 @@ const KEYS = {
 const ICON = {
   paragraph: <Glyph d="M7 3h6M10 3v10M7 3a3 3 0 000 6h3" />,
   lead: <Glyph d="M3 4h10M3 8h10M3 12h6" />,
-  h2: <Glyph d="M3 3v10M9 3v10M3 8h6M12 9.5a1.5 1.5 0 113 0c0 1-3 2-3 3.5h3" small />,
-  h3: <Glyph d="M3 3v10M9 3v10M3 8h6M12 8.5a1.5 1.2 0 113 .3c0 .7-1.5.7-1.5.7s1.5 0 1.5 .8a1.5 1.2 0 01-3 .2" small />,
+  h2: <Glyph d="M3 3v10M9 3v10M3 8h6M12 9.5a1.5 1.5 0 113 0c0 1-3 2-3 3.5h3" />,
+  h3: <Glyph d="M3 3v10M9 3v10M3 8h6M12 8.5a1.5 1.2 0 113 .3c0 .7-1.5.7-1.5.7s1.5 0 1.5 .8a1.5 1.2 0 01-3 .2" />,
   code: <Glyph d="M5.5 4.5L2 8l3.5 3.5M10.5 4.5L14 8l-3.5 3.5" />,
   image: <Glyph d="M2.5 3.5h11v9h-11zM2.5 10.5l3-3 3 3 2-2 3 3" />,
   slides: <Glyph d="M4.5 4.5h7v7h-7zM2 6v4M14 6v4" />,
@@ -792,9 +792,9 @@ function Btn({ on, label, kbd, onClick, children }) {
   )
 }
 
-function Glyph({ d, small = false }) {
+function Glyph({ d }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={small ? 1.2 : 1.4} aria-hidden>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d={d} strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
@@ -802,7 +802,7 @@ function Glyph({ d, small = false }) {
 
 function ChevronDown() {
   return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
@@ -818,7 +818,7 @@ function GripIcon() {
 
 function TrashIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
@@ -834,7 +834,7 @@ function PlusIcon() {
 
 function LinkIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M6.5 9.5l3-3M7 4.5l1-1a2.8 2.8 0 014 4l-1 1M9 11.5l-1 1a2.8 2.8 0 01-4-4l1-1" strokeLinecap="round" />
     </svg>
   )
@@ -842,7 +842,7 @@ function LinkIcon() {
 
 function ListIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M6 4h8M6 8h8M6 12h8" strokeLinecap="round" />
       <circle cx="2.5" cy="4" r="1" fill="currentColor" stroke="none" />
       <circle cx="2.5" cy="8" r="1" fill="currentColor" stroke="none" />
@@ -853,7 +853,7 @@ function ListIcon() {
 
 function OrderedIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M6 4h8M6 8h8M6 12h8" strokeLinecap="round" />
       <text x="0.5" y="5.5" fontSize="5" fill="currentColor" stroke="none">
         1

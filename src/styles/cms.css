@@ -202,6 +202,7 @@
 .cms-icon {
   display: grid;
   place-items: center;
+  position: relative;
   width: 26px;
   height: 26px;
   padding: 0;
@@ -214,6 +215,13 @@
   transition:
     background-color var(--duration-fast) var(--ease-touch),
     color var(--duration-fast) var(--ease-touch);
+}
+
+/* 40px hit area around the 26px button (desktop panel) */
+.cms-icon::before {
+  content: '';
+  position: absolute;
+  inset: -7px;
 }
 
 .cms-icon:hover:not(:disabled) {
@@ -242,17 +250,32 @@
   align-items: center;
   gap: var(--space-2);
   visibility: hidden;
+  opacity: 0;
+  filter: blur(4px);
+  transform: translateY(4px);
+  /* Transitions, so a state that changes mid-swap turns back from where it is; visibility flips at the end */
+  transition:
+    opacity var(--duration-base) var(--ease-touch),
+    filter var(--duration-base) var(--ease-touch),
+    transform var(--duration-base) var(--ease-touch),
+    visibility var(--duration-base);
 }
 
-/* Adding data-on starts the animation, so each state blurs in once */
 .cms-save__label[data-on] {
   visibility: visible;
-  animation: cms-swap var(--duration-base) var(--ease-touch);
+  opacity: 1;
+  filter: none;
+  transform: none;
 }
 
-/* The check and pencil also grow in, like every state icon (icon-swap in tokens.css) */
+/* The check and pencil also grow and shrink, like every state icon (icon-swap in tokens.css) */
+.cms-save__label > svg {
+  transform: scale(0.25);
+  transition: transform var(--duration-fast) var(--ease-touch);
+}
+
 .cms-save__label[data-on] > svg {
-  animation: icon-swap var(--duration-fast) var(--ease-touch);
+  transform: none;
 }
 
 .cms-save__label:not([data-on]) .cms-spin {
@@ -827,14 +850,6 @@
   }
 }
 
-@keyframes cms-swap {
-  from {
-    opacity: 0;
-    filter: blur(4px);
-    transform: translateY(4px);
-  }
-}
-
 @keyframes cms-spin {
   to {
     transform: rotate(360deg);
@@ -846,10 +861,13 @@
   .cms-gate__panel,
   .cms-gate__pill,
   .cms-dock,
-  .cms-save[data-state='error'],
-  .cms-save__label[data-on],
-  .cms-save__label[data-on] > svg {
+  .cms-save[data-state='error'] {
     animation: none;
+  }
+
+  .cms-save__label,
+  .cms-save__label > svg {
+    transition: none;
   }
 
   .cms-row__hint {

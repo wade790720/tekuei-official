@@ -508,7 +508,9 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-4);
-  margin-bottom: var(--space-12);
+  /* 44px hit area: padding grows the box, the negative margin keeps the layout */
+  margin: calc(var(--space-3) * -1) 0 calc(var(--space-12) - var(--space-3));
+  padding: var(--space-3) 0;
   font-family: var(--font-label);
   font-size: var(--type-label);
   letter-spacing: var(--type-label-ls);
@@ -838,11 +840,23 @@
   color: var(--j-text-dim);
   text-decoration: none;
   background: linear-gradient(currentColor, currentColor) 50% 100% / 0 0.5px no-repeat;
+  position: relative;
   transition:
     color var(--duration-base) var(--j-ease),
     background-size var(--duration-base) var(--j-ease),
     opacity var(--duration-fade) var(--j-ease),
     transform var(--duration-fade) var(--j-ease);
+}
+
+/* Hit area: fills the 36px row pitch without reaching the next link, and is at least 44px wide (short labels such as X) */
+a.journal-footer__link::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--space-3) / -2);
+  bottom: calc(var(--space-3) / -2);
+  left: 50%;
+  width: max(100%, 44px);
+  transform: translateX(-50%);
 }
 
 /* Only real links react: an entry without an address is a span. */
