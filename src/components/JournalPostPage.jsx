@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { SiteFooter } from './SiteFooter.jsx'
 import { TagList } from './Tag.jsx'
 import { JournalPostBody } from './journal/JournalPostBody.jsx'
 import { RichText } from './RichText.jsx'
@@ -115,6 +116,7 @@ export default function JournalPostPage() {
         </footer>
       </article>
       </main>
+      <SiteFooter />
       {editing ? (
         <Suspense fallback={null}>
           <JournalPostEditPanel slug={slug} />

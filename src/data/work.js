@@ -14,13 +14,6 @@ export const WORK_EN = {
     title: 'Work',
     countSuffix: 'Projects',
   },
-  footer: {
-    belief: [
-      'Building aesthetic language for creators,',
-      'so every light reaches where it belongs.',
-    ],
-    mark: 'T E K U E I · 2 0 2 6',
-  },
   items: [
     {
       id: 'matsu-biennial',

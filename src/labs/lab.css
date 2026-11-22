@@ -1,24 +1,63 @@
-/* Experiment page (LabPage.jsx): live preview and details side by side, after motionsites.ai. */
+/* Lab page (LabPage.jsx), after a Framer Marketplace component page: heading and actions, a playable preview, the write-up, the other labs. */
 
 .lab {
-  min-height: 100svh;
-  padding: var(--space-24) calc(var(--page-gutter) + var(--page-pad)) var(--space-24);
-  background: var(--surface-0);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  max-width: var(--page-column-box);
+  margin-inline: auto;
+  padding: var(--space-24) var(--page-pad);
 }
 
-.lab__card {
+.lab__head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: var(--space-6) var(--space-8);
+}
+
+.lab__crumbs {
+  grid-column: 1 / -1;
+}
+
+.lab__heading {
   display: flex;
-  align-items: stretch;
-  max-width: var(--page-column);
-  margin-inline: auto;
-  overflow: hidden;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.lab__title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: var(--weight-light);
+  font-size: var(--type-h1);
+  line-height: var(--type-h1-lh);
+  color: var(--text-primary);
+}
+
+.lab__summary {
+  margin: 0;
+  max-width: var(--page-reading);
+  font-size: var(--type-small);
+  line-height: var(--type-small-lh);
+  color: var(--text-secondary);
+}
+
+.lab__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.lab__copy {
+  gap: var(--space-2);
 }
 
 .lab__preview {
   position: relative;
-  flex: 1;
-  min-width: 0;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
 }
 
 .lab__preview iframe {
@@ -29,25 +68,15 @@
   border: 0;
 }
 
-.lab__back {
-  position: absolute;
-  top: var(--space-4);
-  left: var(--space-4);
+.lab__about {
+  display: grid;
+  grid-template-columns: minmax(0, var(--page-reading)) 240px;
+  justify-content: space-between;
+  gap: var(--space-12);
 }
 
-/* Info column: 240px, 24px padding, 20px between groups (measured on motionsites.ai). */
-.lab__info {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 240px;
-  flex-shrink: 0;
-  padding: var(--space-6);
-  border-left: 1px solid var(--line);
-}
-
-.lab__title {
-  margin: 0;
+.lab__subtitle {
+  margin: 0 0 var(--space-4);
   font-family: var(--font-serif);
   font-weight: var(--weight-regular);
   font-size: var(--type-h2);
@@ -55,26 +84,20 @@
   color: var(--text-primary);
 }
 
-.lab__category {
-  margin: var(--space-1) 0 0;
-  font-family: var(--font-label);
-  font-size: var(--type-label);
-  letter-spacing: var(--type-label-ls);
-  color: var(--text-tertiary);
-}
-
-.lab__summary {
-  margin: 0;
-  font-size: var(--type-small);
-  line-height: 1.7;
-  color: var(--text-secondary);
+.lab__prose p {
+  margin: 0 0 var(--space-4);
+  font-size: var(--type-body);
+  line-height: var(--type-body-lh);
+  color: var(--text-body);
 }
 
 .lab__meta {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-4);
   margin: 0;
+  padding-top: var(--space-4);
+  border-top: 0.5px solid var(--line);
   font-size: var(--type-caption);
 }
 
@@ -99,15 +122,64 @@
   transition: color var(--duration-base) var(--ease-touch);
 }
 
-@media (hover: hover) {
-  .lab__meta a:hover {
-    color: var(--ember);
-  }
+.lab__more {
+  padding-top: var(--space-12);
+  border-top: 0.5px solid var(--line);
 }
 
-.lab__open {
-  justify-content: center;
-  margin-top: auto;
+.lab__more-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lab__more-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  color: inherit;
+  text-decoration: none;
+}
+
+.lab__more-thumb {
+  margin-bottom: var(--space-2);
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.lab__more-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease-touch);
+}
+
+.lab__more-title {
+  font-size: var(--type-small);
+  color: var(--text-primary);
+  transition: color var(--duration-base) var(--ease-touch);
+}
+
+.lab__more-sub {
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  color: var(--text-tertiary);
+}
+
+@media (hover: hover) {
+  .lab__meta a:hover,
+  .lab__more-link:hover .lab__more-title {
+    color: var(--ember);
+  }
+
+  .lab__more-link:hover .lab__more-thumb img {
+    transform: scale(1.03);
+  }
 }
 
 /* Live page (LabLive.jsx): no scrollbar or reserved gutter, the piece fills the frame edge to edge. */
@@ -116,23 +188,34 @@ html.has-scroll-document.lab-live-doc {
   scrollbar-gutter: auto;
 }
 
-@media (max-width: 768px) {
-  .lab {
-    padding-inline: var(--page-pad);
+@media (max-width: 900px) {
+  .lab__about {
+    grid-template-columns: 1fr;
   }
 
-  .lab__card {
-    flex-direction: column;
+  .lab__more-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .lab__head {
+    grid-template-columns: 1fr;
+  }
+
+  .lab__actions > * {
+    flex: 1;
+    justify-content: center;
   }
 
   /* The pieces are built for a full screen; a portrait frame shows more of them on a phone. */
   .lab__preview {
     aspect-ratio: 3 / 4;
   }
+}
 
-  .lab__info {
-    width: auto;
-    border-left: 0;
-    border-top: 1px solid var(--line);
+@media (prefers-reduced-motion: reduce) {
+  .lab__more-thumb img {
+    transition: none;
   }
 }

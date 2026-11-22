@@ -55,12 +55,12 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 ```css
 /* BAD：寫色碼，或直接用色階 */
-.journal-footer__link:hover { color: #c99a63; }
-.journal-footer { --j-lamp: var(--accent-9); }
+.journal-row:hover { color: #c99a63; }
+.journal-page { --j-lamp: var(--accent-9); }
 
 /* GOOD：語意 token；頁面變數指向語意 token */
-.journal-footer__link:hover { color: var(--ember); }
-.journal-footer { --j-lamp: var(--ember); }
+.journal-row:hover { color: var(--ember); }
+.journal-page { --j-lamp: var(--ember); }
 ```
 
 ### 文字四階
@@ -212,7 +212,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 | `src/labs/living-portrait/heroFx.js` | Labs 的 Living Portrait | hover 出現追蹤框和 ASCII，雙擊出現 glitch |
 | `src/lib/glyphField.js` | Journal 頁首 | 字元雨，游標附近的字會亮 |
 | `src/labs/falling-figure/fallScene.js` | About | 粒子人形往下掉，穿過刻字石板 |
-| `src/lib/shatterImage.js` | Journal 頁尾 | 版畫圖由碎片從左到右組合，然後靜止 |
+| `src/labs/shatter-footer/shatterImage.js` | Labs 的 Shatter Footer | 版畫圖由碎片從左到右組合，然後靜止 |
 
 另有一個小互動：`src/lib/waterRipple.js`。按下語言按鈕時，水波從點擊處擴散，整頁文字跟著扭曲，1 秒內結束，語言在 0.3 秒時切換（`playWaterRipple(x, y, onSwap)`，動完自己移除）。扭曲用 SVG 濾鏡，掛在 `<html>` 上，因為只有根元素的 filter 不會改變 `position: fixed`。
 

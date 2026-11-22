@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom'
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { labWorkItems } from '../labs/media.js'
+import { SiteFooter } from './SiteFooter.jsx'
 import { WORK_THUMBS } from '../data/workMedia.js'
 import { CODE_WORK_ITEMS } from '../data/work.js'
 import { useLang } from '../i18n'
@@ -147,7 +148,7 @@ export default function WorkListPage() {
   const { content, loading } = useWorkContent()
   const { lang } = useLang()
 
-  const { meta, header, footer } = content
+  const { meta, header } = content
   const clientItems = [...content.items, ...CODE_WORK_ITEMS[lang]].map((item, i) => ({
     ...item,
     num: item.num ?? String(i + 1).padStart(2, '0'),
@@ -187,19 +188,9 @@ export default function WorkListPage() {
             ))}
           </section>
 
-          <footer className="work-page-footer">
-            <div className="belief">
-              {footer.belief.map((line, i) => (
-                <span key={line}>
-                  {i > 0 ? <br /> : null}
-                  {line}
-                </span>
-              ))}
-            </div>
-            <div className="mark">{footer.mark}</div>
-          </footer>
         </>
       )}
+      <SiteFooter />
     </div>
   )
 }

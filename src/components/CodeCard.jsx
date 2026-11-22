@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { CARD_LABELS } from '../data/cards.js'
 import { useLang } from '../i18n'
 import { tokenize } from '../lib/highlight.js'
+import { writeClipboard } from '../lib/clipboard.js'
 import { Card } from './Card.jsx'
 import { ScrollShadow } from './ScrollShadow.jsx'
 import '../styles/cards.css'
@@ -73,25 +74,7 @@ export function CodeCard({ code, lang = 'ts', filename }) {
   )
 }
 
-// In-app browsers (LINE, Instagram) can block the Clipboard API; execCommand still works in most of them.
-async function writeClipboard(text) {
-  try {
-    await navigator.clipboard.writeText(text)
-    return true
-  } catch {
-    const area = document.createElement('textarea')
-    area.value = text
-    area.setAttribute('readonly', '')
-    area.style.cssText = 'position:fixed;top:0;left:0;opacity:0'
-    document.body.append(area)
-    area.select()
-    const ok = document.execCommand('copy')
-    area.remove()
-    return ok
-  }
-}
-
-function CopyIcon() {
+export function CopyIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <rect x="5.5" y="5.5" width="8" height="8" rx="1.8" />
@@ -100,7 +83,7 @@ function CopyIcon() {
   )
 }
 
-function CheckIcon() {
+export function CheckIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M3 8.5l3.2 3L13 4.5" strokeLinecap="round" strokeLinejoin="round" />

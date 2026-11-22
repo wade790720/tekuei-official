@@ -870,7 +870,7 @@ export const GROUPS = [
       {
         id: 'shatter-image',
         name: 'mountShatterImage',
-        file: 'src/lib/shatterImage.js',
+        file: 'src/labs/shatter-footer/shatterImage.js',
         summary: '碎片從左到右拼成一張圖，然後靜止',
         hero: { demo: 'shatter', code: `useEffect(() => mountShatterImage(canvas.current, { src, crop: [0, 583, 1920, 705] }), [])` },
         api: [

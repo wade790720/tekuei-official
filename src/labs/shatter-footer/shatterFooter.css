@@ -1,0 +1,210 @@
+/* Shatter Footer: the Journal's old footer, with an engraved sea that assembles from fragments (shatterImage.js). */
+
+/* The live page: the footer fills one screen, the way a reader reaches it. The sea shrinks to fit
+   under the links, so the whole piece shows in the lab page's preview frame too. A short frame (a phone
+   preview) keeps 40% of its height for the sea and scrolls instead of hiding it. */
+.shatter-footer-stage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  background: var(--surface-0);
+  color: var(--text-primary);
+}
+
+.shatter-footer-stage .shatter-footer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.shatter-footer-stage .shatter-footer__sea-box {
+  display: flex;
+  flex: 1 1 0;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 40svh;
+  margin-top: var(--space-12);
+  container-type: size;
+}
+
+/* The largest 1280:470 strip that fits the box */
+.shatter-footer-stage .shatter-footer__sea {
+  width: min(100cqw, 100cqh * 1280 / 470);
+  margin: 0;
+}
+
+.shatter-footer {
+  position: relative;
+  overflow: hidden;
+  border-top: 0.5px dashed var(--line-strong);
+}
+
+/* Columns, rules and sea stop at --page-max; past that the sides extend. */
+.shatter-footer__rules {
+  position: absolute;
+  inset: 0 var(--page-gutter);
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  pointer-events: none;
+}
+
+.shatter-footer__rules span + span {
+  border-left: 0.5px dashed var(--line);
+}
+
+.shatter-footer__cols {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: var(--space-12) var(--page-gutter) 0;
+}
+
+.shatter-footer__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-6);
+  text-align: center;
+}
+
+.shatter-footer__brand {
+  font-family: var(--font-serif);
+  font-size: var(--type-h2);
+  letter-spacing: 0.4em;
+  margin-right: -0.4em; /* letter-spacing trails the last glyph; keep it centred */
+  white-space: nowrap;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.shatter-footer__sub,
+.shatter-footer__title {
+  margin-right: calc(-1 * var(--type-label-ls)); /* letter-spacing trails the last glyph; keep it centred */
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  color: var(--text-tertiary); /* gold is for the current page, focus and hover only */
+  text-transform: uppercase;
+}
+
+.shatter-footer__title {
+  margin-bottom: var(--space-2);
+}
+
+.shatter-footer__copy {
+  margin-right: calc(-1 * var(--type-label-ls));
+  font-family: var(--font-label);
+  font-size: var(--type-label);
+  letter-spacing: var(--type-label-ls);
+  color: var(--text-secondary);
+}
+
+.shatter-footer__link {
+  font-family: var(--font-serif); /* nav links: the same type as the header nav */
+  font-size: var(--type-nav);
+  color: var(--text-secondary);
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 50% 100% / 0 0.5px no-repeat;
+  position: relative;
+  transition:
+    color var(--duration-base) var(--ease-touch),
+    background-size var(--duration-base) var(--ease-touch),
+    opacity var(--duration-fade) var(--ease-touch),
+    transform var(--duration-fade) var(--ease-touch);
+}
+
+/* Hit area: fills the 36px row pitch without reaching the next link, and is at least 44px wide (short labels such as X) */
+a.shatter-footer__link::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--space-3) / -2);
+  bottom: calc(var(--space-3) / -2);
+  left: 50%;
+  width: max(100%, 44px);
+  transform: translateX(-50%);
+}
+
+/* Only real links react: an entry without an address is a span. */
+@media (hover: hover) {
+  a.shatter-footer__link:hover {
+    color: var(--ember);
+    background-size: 100% 0.5px;
+  }
+}
+
+/* Text fades in one item after another when the sea starts to assemble */
+.shatter-footer__r,
+.shatter-footer__link {
+  opacity: 0;
+  transform: translateY(6px);
+  transition-delay: calc(var(--i) * 70ms);
+}
+
+.shatter-footer__r {
+  transition:
+    opacity var(--duration-fade) var(--ease-touch),
+    transform var(--duration-fade) var(--ease-touch);
+  transition-delay: calc(var(--i) * 70ms);
+}
+
+.shatter-footer.is-in .shatter-footer__r,
+.shatter-footer.is-in .shatter-footer__link {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: hover) {
+  .shatter-footer.is-in a.shatter-footer__link:hover {
+    transition-delay: 0s;
+  }
+}
+
+/* Source crop is 1280 x 470 */
+.shatter-footer__sea {
+  display: block;
+  width: min(100%, var(--page-max));
+  aspect-ratio: 1280 / 470;
+  margin: var(--space-12) auto 0;
+}
+
+/* Wider than --page-max: fade the sea's cut edges into the extended sides */
+@media (min-width: 1921px) {
+  .shatter-footer__sea {
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shatter-footer__r,
+  .shatter-footer__link {
+    transition: none;
+  }
+}
+
+/* Two narrow columns on a phone: the brand mark shrinks to stay on one line */
+@media (max-width: 768px) {
+  .shatter-footer__brand {
+    font-size: var(--type-h3);
+    letter-spacing: 0.3em;
+    margin-right: -0.3em;
+  }
+}
+
+@media (max-width: 900px) {
+  .shatter-footer__cols {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: var(--space-12);
+  }
+
+  .shatter-footer__rules {
+    display: none;
+  }
+
+  .shatter-footer__col {
+    padding: 0 var(--space-4);
+  }
+}

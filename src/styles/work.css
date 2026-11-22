@@ -356,30 +356,6 @@ html.has-scroll-document body, html.has-scroll-document #root {
   opacity: 0.35;
 }
 
-.work-page-footer {
-  position: relative;
-  z-index: 2;
-  padding: var(--space-24) calc(var(--page-gutter) + var(--page-pad)) var(--space-12);
-  border-top: 0.5px solid var(--line-strong);
-  text-align: center;
-}
-
-.work-page-footer .belief {
-  margin-bottom: var(--space-12);
-  color: var(--text-secondary);
-  letter-spacing: 0;
-  font-weight: var(--weight-light);
-  font-size: var(--type-caption);
-  font-family: var(--fc);
-  line-height: 2.2;
-}
-
-.work-page-footer .mark {
-  color: var(--gray-a8);
-  letter-spacing: var(--type-label-ls);
-  font-size: var(--type-label);
-  font-family: var(--font-label);
-}
 
 
 .case-stub {
@@ -491,11 +467,6 @@ html.has-scroll-document body, html.has-scroll-document #root {
   .work-thumb .num {
     top: 16px;
     left: 20px;
-  }
-
-  .work-page-footer {
-    padding-top: var(--space-12);
-    padding-bottom: var(--space-12);
   }
 
   .case-stub {

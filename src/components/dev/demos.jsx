@@ -25,12 +25,12 @@ import { blocksToDoc } from '../../lib/richText.js'
 import { mountGlyphField } from '../../lib/glyphField.js'
 import { mountGrainHaze } from '../../lib/grainHaze.js'
 import { mountKoiPond } from '../../lib/koiPond.js'
-import { mountShatterImage } from '../../lib/shatterImage.js'
+import { mountShatterImage } from '../../labs/shatter-footer/shatterImage.js'
 import { playWaterRipple } from '../../lib/waterRipple.js'
 import { SOUNDS } from '../../lib/uiSound.js'
 import heroImage from '../../labs/living-portrait/bg.webp'
 import cutImage from '../../labs/living-portrait/cut.webp'
-import seaImage from '../../assets/journal/footer-sea.webp'
+import seaImage from '../../labs/shatter-footer/sea.webp'
 import demoClip from '../../assets/dev/demo-clip.mp4'
 
 const SAMPLE_CODE = `// Stream a reply and let the model call two tools.
@@ -288,7 +288,7 @@ const DEMOS = {
     <SlidesCard
       slides={[
         { src: heroImage, alt: '示範：Hero 背景圖', caption: '第一張' },
-        { src: seaImage, alt: '示範：Journal 頁尾的海浪', caption: '第二張' },
+        { src: seaImage, alt: '示範：Shatter Footer 的海浪', caption: '第二張' },
         { src: cutImage, alt: '示範：人物去背圖', caption: '第三張' },
       ]}
     />
