@@ -173,6 +173,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 每個 `transition` 和 `animation` 都寫 easing。一般用 `--ease-touch`，循環動畫可以用 `linear` 或 `steps()`。
 - 循環動畫的時長寫成變數，例如 `--duration-shake`（tokens.css，兩處共用）、`--spin-ms`、`--skeleton-ms`。
 - 關閉的元素用 `usePresence` 留到退場動畫播完再移除。
+- 依狀態切換的圖示（複製 → 打勾、播放 → 暫停）用 `icon-swap`：opacity、`scale(0.25)`、`blur(4px)` 一起變到正常，時長 `--duration-fast`。包圖示的元素換 `key`，並用 `useHasChanged` 讓頁面剛載入時不播放。
 - 進場淡入：在元素加上 `fade-in` class。`src/lib/reveal.js` 的 `mountReveal` 在 App.jsx 掛一次，元素露出 15% 時加上 `is-visible`，只觸發一次。不要為淡入包元件。
 - 位移只用 `opacity` 和 `transform`。淡入的位移寫在各頁 CSS（首頁 20px，Journal 見 PAGES.md）。
 - 每個效果都要支援 `prefers-reduced-motion`：直接顯示最終畫面。
