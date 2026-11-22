@@ -2,7 +2,7 @@
 // NavToggle (the phone menu button) and NavOverlay (the full-screen phone menu).
 import { useEffect, useEffectEvent, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { HOME_FOOTER } from '../data/homepage.js'
 import { NAV_LABELS, SITE_LOGO } from '../data/nav.js'
 import { useLang } from '../i18n'
@@ -11,7 +11,7 @@ import '../styles/siteNav.css'
 import '../styles/navOverlay.css'
 
 // No page has a contact section, so Contact opens a new email. The address is the same in both languages.
-// This runs when the file loads, so it must not throw: with no email in the list, Contact goes to About.
+// With no email in the list, Contact goes to About.
 const CONTACT_HREF = HOME_FOOTER.zh.contact.find((link) => link.href?.startsWith('mailto:'))?.href ?? '/about'
 
 function subscribeScroll(onChange) {
@@ -26,7 +26,6 @@ function subscribeScroll(onChange) {
  * }} props
  */
 export function SiteNav({ current, variant = 'default' }) {
-  useLocation() // re-render on route change, so `scrolled` is read again
   const [open, setOpen] = useState(false)
   const { lang, toggle } = useLang()
   const t = NAV_LABELS[lang]
@@ -42,7 +41,6 @@ export function SiteNav({ current, variant = 'default' }) {
   // The toggle unmounts while the menu is open; give it focus back once the menu has gone.
   const onMenuExited = () => toggleRef.current?.focus()
 
-  // Read on every render too, so a route change (which re-renders the nav) picks up the new position.
   const scrolled = useSyncExternalStore(subscribeScroll, () => window.scrollY > 80)
 
   const navClass = [
@@ -90,7 +88,6 @@ export function SiteNav({ current, variant = 'default' }) {
   )
 }
 
-// ── SiteNavLinks ──
 
 /**
  * @param {{
@@ -145,9 +142,8 @@ function SiteNavLinks({ onNavigate, variant = 'desktop', current }) {
   )
 }
 
-// ── NavToggle / NavOverlay ──
 
-const OVERLAY_MS = 250 // also --nav-overlay-ms in navOverlay.css
+const OVERLAY_MS = 250 // sets --nav-overlay-ms on the overlay; it closes at 0.82 of this (navOverlay.css)
 
 // Shown only while the menu is closed (SiteNav unmounts it when the menu opens),
 // so it announces "opens a dialog" instead of a live expanded state.

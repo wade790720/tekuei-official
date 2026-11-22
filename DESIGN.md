@@ -186,7 +186,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 
 - 延遲（delay）和依序淡入的間隔（70ms）直接寫數字，不用 token。
 - 關閉比打開快。手機選單是例外，打開 0.25s、關閉約 0.2s，由 JS 的 `OVERLAY_MS` 控制。
-- JS 裡等動畫結束的數字（例如 `EXIT_MS`）要和對應的 token 一樣。
+- JS 要等動畫結束時，用 `tokenMs('--duration-xxx')`（`src/lib/tokenMs.js`）讀 token，不另寫數字。`usePresence` 直接收 token 名稱。
 - 過渡不超過 1s。
 - 每個 `transition` 和 `animation` 都寫 easing。一般用 `--ease-touch`，循環動畫可以用 `linear` 或 `steps()`。
 - 循環動畫的時長寫成變數，例如 `--duration-shake`（tokens.css，兩處共用）、`--spin-ms`、`--skeleton-ms`。

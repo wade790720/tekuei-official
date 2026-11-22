@@ -34,7 +34,6 @@
   inset: 0;
 }
 
-/* ── Hero ── */
 
 .case-hero {
   position: relative;
@@ -200,7 +199,6 @@
   }
 }
 
-/* ── Sections ── */
 
 .case-wrap {
   margin: 0 auto;
@@ -575,7 +573,6 @@
   font-family: var(--font-label);
 }
 
-/* ── Scroll reveal ── */
 
 .case-page .fade-in {
   opacity: 0;

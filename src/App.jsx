@@ -17,7 +17,7 @@ const LabPage = lazy(() => import('./labs/LabPage.jsx'))
 const LabLive = lazy(() => import('./labs/LabLive.jsx'))
 const FallingFigure = lazy(() => import('./labs/falling-figure/FallingFigure.jsx').then((m) => ({ default: m.FallingFigure })))
 const CaseRouter = lazy(() => import('./components/CaseRouter.jsx'))
-// Only LIFF check-in visitors need the phone input and libphonenumber (about 176 kB).
+// Only LIFF check-in visitors need the phone input and libphonenumber.
 const CheckinPage = lazy(() => import('./components/CheckinPage.jsx'))
 const HowToCheckinPage = lazy(() => import('./components/HowToCheckinPage.jsx'))
 

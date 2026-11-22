@@ -1,6 +1,6 @@
 // Rich-text editor (Tiptap): toolbar, card node views and the document schema, in one file.
 // Outputs the document format that RichText renders (see src/lib/richText.js).
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import Blockquote from '@tiptap/extension-blockquote'
 import CodeBlock from '@tiptap/extension-code-block'
 import { Placeholder } from '@tiptap/extensions'
@@ -15,7 +15,6 @@ import { TooltipGroup } from './Tooltip.jsx'
 import { compressImage } from '../lib/compressImage.js'
 import { safeHref } from '../lib/richText.js'
 
-// ── Card node views ──
 
 // In-editor views for the custom journal nodes (see extensions.js).
 // Text inside quotes and code is edited in place; card settings use small fields on the card.
@@ -185,13 +184,13 @@ function ImageCardView({ node, updateAttributes, deleteNode, selected, extension
     follow(compressImage(file).then(extension.options.upload))
   }
 
-  // A pasted or dropped image: finish the upload that imagePasteProps started.
+  // A pasted or dropped image: finish the upload that imagePasteProps started for the preview URL the card was made with.
+  const [pasted] = useState(() => pendingUploads.get(a.src))
+  const finishPasted = useEffectEvent(() => follow(pasted))
   useEffect(() => {
-    const job = pendingUploads.get(a.src)
-    const settle = () => follow(job)
-    if (job) job.then(settle, settle) // after it settles, so no state is set inside the effect itself
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once, for the preview URL the card was made with
-  }, [])
+    const settle = () => finishPasted()
+    if (pasted) pasted.then(settle, settle) // after it settles, so no state is set inside the effect itself
+  }, [pasted])
 
   const fileInput = <input type="file" accept="image/*" hidden onChange={(e) => upload(e.target.files?.[0])} />
   // The caption is typed in place, in the caption's own style. ImageCard takes it as its caption.
@@ -353,7 +352,6 @@ function SlidesCardView({ node, updateAttributes, deleteNode, selected, extensio
   )
 }
 
-// ── Schema ──
 
 // Tiptap extensions for the journal editor. The node names and attributes match src/lib/richText.js,
 // which documents the stored format, and RichText.jsx, which renders it on the site.
@@ -459,7 +457,6 @@ function editorExtensions({ upload, placeholder }) {
   ]
 }
 
-// ── Editor ──
 
 /**
  * Rich-text editor for a post body, with a Framer-style toolbar.

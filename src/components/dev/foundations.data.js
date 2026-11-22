@@ -1,6 +1,5 @@
 // Brand foundations shown at the top of /dev/component-library: colour, type, spacing.
 // Values live in src/styles/tokens.css; this file only says what each token is for.
-// Cross-checked against jakub.kr, interfaces.dev and promptfolio-dark.framer.website (measured 2026-11-19).
 
 export const COLOR_GROUPS = [
   {

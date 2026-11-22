@@ -1,8 +1,7 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useId, useRef, useState } from 'react'
 import { usePresence } from '../hooks/usePresence.js'
 import '../styles/dropdownMenu.css'
 
-const EXIT_MS = 90 // --duration-exit, used by dropdown-menu-out in dropdownMenu.css
 
 /**
  * A menu that drops down from a button: icon, label and shortcut per row, thin dividers between groups.
@@ -26,21 +25,22 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
   const button = useRef(null)
   const list = useRef(null)
   const id = useId()
-  const shown = usePresence(open, EXIT_MS)
+  const shown = usePresence(open, '--duration-exit')
   const choices = items.filter((it) => it !== 'divider')
 
   const focusItem = (i) => list.current?.querySelectorAll('[role^=menuitem]')[(i + choices.length) % choices.length]?.focus()
 
   // Opening moves focus into the list: to the checked item, or the first one.
+  const focusChecked = useEffectEvent(() => focusItem(Math.max(0, choices.findIndex((c) => c.value === value))))
   useEffect(() => {
     if (!open) return undefined
-    focusItem(Math.max(0, choices.findIndex((c) => c.value === value)))
+    focusChecked()
     const away = (e) => {
       if (!root.current?.contains(e.target)) setOpen(false)
     }
     document.addEventListener('pointerdown', away)
     return () => document.removeEventListener('pointerdown', away)
-  }, [open]) // eslint-disable-line react-hooks/exhaustive-deps -- focus once per opening, not on every value change
+  }, [open])
 
   const close = (refocus = true) => {
     setOpen(false)

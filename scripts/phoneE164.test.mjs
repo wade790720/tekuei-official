@@ -11,7 +11,6 @@ import {
  * expected = 標準 E.164
  */
 const CASES = [
-  // ── 亞洲（≥5）：含馬來西亞、新加坡 ──
   {
     region: 'asia',
     name: 'Taiwan',
@@ -82,7 +81,6 @@ const CASES = [
     input: '62081234567890',
     expected: '+6281234567890',
   },
-  // ── 其他地區 ──
   {
     region: 'other',
     name: 'United States',

@@ -1,12 +1,4 @@
-/**
- * 將 src/data/data.json 上傳至 R2
- *
- * 用法（專案根目錄）：
- *   npm run seed
- *
- * 或手動：
- *   npx wrangler r2 object put tekuei-cms/data.json --file=src/data/data.json --content-type=application/json --remote
- */
+/** 將 src/data/data.json 上傳至 R2 */
 
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'

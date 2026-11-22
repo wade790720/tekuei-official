@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { tokenMs } from '../lib/tokenMs.js'
 import '../styles/tooltip.css'
 
 // Warm tooltips (after React Bits "Warm Tooltip"): the first one waits, then while the group is "warm"
 // the same tooltip slides to the next trigger at once.
 const TIP_DELAY = 400
 const TIP_WARM = 300
-const TIP_OUT = 90 // --duration-exit, used by tooltip-out in tooltip.css
 
 /**
  * A row of triggers that share one tooltip. Mark each trigger with data-tip (and data-kbd for a shortcut).
@@ -28,7 +28,7 @@ export function TooltipGroup({ as: Tag = 'div', ref, children, ...rest }) {
   // A hidden tooltip keeps its text while it fades out, then goes.
   useEffect(() => {
     if (!tip?.closing) return undefined
-    const id = setTimeout(() => setTip(null), TIP_OUT)
+    const id = setTimeout(() => setTip(null), tokenMs('--duration-exit'))
     return () => clearTimeout(id)
   }, [tip])
 

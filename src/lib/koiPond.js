@@ -513,7 +513,6 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
     leaveZones()
   }
 
-  // --- Drawing ---
 
   const spine = new Float32Array(NODES * 2)
   const arc = new Float32Array(NODES)

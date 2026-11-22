@@ -4,7 +4,6 @@
   --cms-ring: 0 0 0 1px var(--line);
 }
 
-/* ── Code gate ── */
 
 .cms-gate {
   position: fixed;

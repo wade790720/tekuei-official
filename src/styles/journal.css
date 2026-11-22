@@ -128,7 +128,6 @@
   transition-delay: calc(var(--i, 0) * 80ms);
 }
 
-/* ── List header ── */
 
 .journal-header {
   position: relative;
@@ -491,7 +490,6 @@
   }
 }
 
-/* ── Post page ── */
 
 .journal-post {
   position: relative;
@@ -626,7 +624,7 @@
 .journal-post__body .ProseMirror > p {
   margin: 0 0 var(--space-3);
   font-size: var(--type-body);
-  line-height: 1.6; /* Editor.js spacing, Wade's pick on 2026-11-20 */
+  line-height: 1.6; /* Editor.js spacing */
   color: var(--j-text-dim);
 }
 
@@ -646,7 +644,7 @@
   margin: 0 0 var(--space-3);
   padding-left: 1.4em;
   font-size: var(--type-body);
-  line-height: 1.6; /* Editor.js spacing, Wade's pick on 2026-11-20 */
+  line-height: 1.6; /* Editor.js spacing */
   color: var(--j-text-dim);
 }
 
@@ -783,7 +781,6 @@
   margin: var(--space-12) auto 0; /* overrides the header link's 8px inset and bottom gap */
 }
 
-/* ── Footer / 404 ── */
 
 /* Engraved sea that assembles from fragments (src/lib/shatterImage.js) */
 .journal-footer {
@@ -971,7 +968,6 @@ a.journal-footer__link::before {
   color: var(--j-lamp);
 }
 
-/* ── Responsive ── */
 /* Two narrow columns on a phone: the brand mark shrinks to stay on one line */
 @media (max-width: 768px) {
   .journal-footer__brand {

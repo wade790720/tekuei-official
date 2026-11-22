@@ -37,9 +37,7 @@ html.has-scroll-document body, html.has-scroll-document #root {
   height: auto;
 }
 
-/* ── Fixed nav：見 tekueiSiteNav.css ── */
 
-/* ── Header ── */
 
 .work-page-header {
   position: relative;
@@ -106,7 +104,6 @@ html.has-scroll-document body, html.has-scroll-document #root {
   );
 }
 
-/* ── Work grid ── */
 
 .work-grid {
   position: relative;
@@ -403,7 +400,6 @@ html.has-scroll-document body, html.has-scroll-document #root {
   font-family: var(--font-label);
 }
 
-/* ── Case stub ── */
 
 .case-stub {
   display: flex;

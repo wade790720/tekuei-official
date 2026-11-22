@@ -1,6 +1,6 @@
 /**
  * Short UI sounds, synthesised live with Web Audio (no audio files).
- * Patches copied from recent.design (2026-11-20, Wade's pick, licence unknown): each sound is 1–3 layers
+ * Patches copied from recent.design (licence unknown): each sound is 1–3 layers
  * of an oscillator or noise, an optional filter and a gain envelope.
  * Silent when the reader asks for reduced motion, as on recent.design.
  */

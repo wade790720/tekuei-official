@@ -6,7 +6,6 @@ const BASE = '/dev/component-library'
 const to = (id) => `${BASE}/${id}`
 
 export const GUIDES = {
-  // ── Overview ──
   introduction: {
     name: '開始使用',
     lead: '用 tokens.css 的變數和 Component Library 裡的元件組頁面',
@@ -206,7 +205,6 @@ npm run dev`,
     },
   },
 
-  // ── Theme ──
   theme: {
     name: '總覽',
     lead: '設計變數的組成和使用方式',
