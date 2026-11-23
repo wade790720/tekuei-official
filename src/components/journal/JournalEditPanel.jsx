@@ -4,11 +4,12 @@ import { SidePanel, FormRow, PanelSection } from '../SidePanel.jsx'
 import { TextArea } from '../TextArea.jsx'
 import { TextField } from '../TextField.jsx'
 import { Button } from '../Button.jsx'
+import { TranslateSection } from '../admin/TranslateSection.jsx'
 import { useJournal } from '../../context/journal.js'
 import { parseTags, postTags } from '../../data/journal.js'
 import { useCmsEditing } from '../../hooks/useCmsEditing.js'
 import { useLang } from '../../i18n'
-import { emptyDoc } from '../../lib/richText.js'
+import { emptyDoc, getDoc } from '../../lib/richText.js'
 
 const LANGS = ['zh', 'en']
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -30,11 +31,13 @@ function useJournalEditing() {
 
 export function JournalPostEditPanel({ slug }) {
   const { lang } = useLang()
-  const { cms, ready, panelProps } = useJournalEditing()
+  const { admin, cms, ready, panelProps } = useJournalEditing()
   if (!ready) return null
 
   const post = cms.draft.posts[lang]?.find((p) => p.slug === slug)
   if (!post) return null
+
+  const zhPost = cms.draft.posts.zh?.find((p) => p.slug === slug)
 
   // Title and text belong to one language. Date, reading time and tags are shared.
   const setPost = (key, value) =>
@@ -74,6 +77,19 @@ export function JournalPostEditPanel({ slug }) {
       <FormRow label="摘要" htmlFor="cms-excerpt" hint="顯示在列表和首頁">
         <TextArea id="cms-excerpt" value={post.excerpt} onChange={(v) => setPost('excerpt', v)} placeholder="一兩句話說明這篇文章" />
       </FormRow>
+      <TranslateSection
+        zhDoc={getDoc(cms.draft.content.zh?.[slug])}
+        enDoc={getDoc(cms.draft.content.en?.[slug])}
+        fields={{ title: zhPost?.title, excerpt: zhPost?.excerpt }}
+        onDone={({ doc, fields }) => {
+          cms.updateDraft((d) => {
+            d.content.en = { ...d.content.en, [slug]: { doc } }
+            const en = d.posts.en?.find((p) => p.slug === slug)
+            if (en) Object.assign(en, fields)
+          })
+          admin.reloadEditor()
+        }}
+      />
     </SidePanel>
   )
 }

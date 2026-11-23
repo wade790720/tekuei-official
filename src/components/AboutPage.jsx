@@ -70,7 +70,7 @@ export default function AboutPage() {
             {cms.loading ? null : editing ? (
               <Suspense fallback={saved}>
                 {/* The editor stays mounted while previewing, so the cursor and undo history survive. */}
-                <Editor key={lang} doc={doc} onChange={setDoc} upload={upload} previewing={admin.previewing} />
+                <Editor key={`${lang}-${admin.editorKey}`} doc={doc} onChange={setDoc} upload={upload} previewing={admin.previewing} />
                 {admin.previewing ? saved : null}
               </Suspense>
             ) : (

@@ -29,6 +29,9 @@ export function AdminProvider({ children }) {
     setPreviewing(false)
     if (on) setPanelOpen(true)
   }, [])
+  // The editor reads its doc once on mount. A new value remounts it after the doc was replaced from outside.
+  const [editorKey, setEditorKey] = useState(0)
+  const reloadEditor = useCallback(() => setEditorKey((k) => k + 1), [])
   const save = useRef(null)
 
   const login = useCallback(async (code) => {
@@ -77,8 +80,10 @@ export function AdminProvider({ children }) {
       openGate: () => setGateOpen(true),
       logout,
       saveRef: save,
+      editorKey,
+      reloadEditor,
     }),
-    [token, editing, setEditing, panelOpen, previewing, logout],
+    [token, editing, setEditing, panelOpen, previewing, logout, editorKey, reloadEditor],
   )
 
   return (
