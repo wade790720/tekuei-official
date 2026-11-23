@@ -28,3 +28,19 @@ export const CMS_LABELS = {
   expand: '打開編輯面板',
   dock: '編輯面板',
 }
+
+export const TRANSLATE_LABELS = {
+  title: '英文翻譯',
+  action: '翻譯成英文',
+  running: '翻譯中',
+  note: '從中文內文翻譯，圖片和程式碼不動，翻完不會自動儲存',
+  done: '翻好了，看過後按儲存',
+  confirm: '英文版已經有內容，翻譯會蓋掉它。還沒儲存前，重新整理頁面可以放棄這次翻譯。要繼續嗎？',
+  switchToEn: '切換到 EN 後可以從中文翻譯',
+  empty: '中文內文沒有需要翻譯的文字',
+  noBinding: 'Cloudflare 還沒綁定 Workers AI',
+  quota: '今天的免費額度用完了，明天再試',
+  busy: '翻譯服務忙碌中，請稍後再試',
+  badInput: '內容太長或格式不對，無法翻譯',
+  failed: '翻譯失敗，請再試一次',
+}

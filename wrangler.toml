@@ -19,3 +19,7 @@ pages_build_output_dir = "dist"
 [[r2_buckets]]
 binding = "BUCKET"
 bucket_name = "tekuei-cms"
+
+# 編輯面板的「翻譯成英文」用 Workers AI，不需要金鑰
+[ai]
+binding = "AI"

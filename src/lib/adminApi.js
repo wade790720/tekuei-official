@@ -1,4 +1,5 @@
-import { ADMIN_SESSION_KEY, CMS_LABELS } from '../data/admin.js'
+import { ADMIN_SESSION_KEY, CMS_LABELS, TRANSLATE_LABELS } from '../data/admin.js'
+import { batchTexts } from './docTranslate.js'
 
 export function apiPath(path) {
   const base = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '')
@@ -102,6 +103,32 @@ export async function saveSitePatch(patch, token, etag) {
   }
   siteDataRequest = null // pages opened after this save read the new version
   return data
+}
+
+/**
+ * Sent in batches: Cloudflare drops a request that gets no response within 100 seconds.
+ * @param {string[]} texts
+ * @param {string} token
+ * @param {{ signal?: AbortSignal, onProgress?: (done: number, total: number) => void }} [opts]
+ * @returns {Promise<string[]>} in the same order
+ */
+export async function translateTexts(texts, token, { signal, onProgress } = {}) {
+  const batches = batchTexts(texts)
+  const out = []
+  onProgress?.(0, batches.length)
+  for (const [i, batch] of batches.entries()) {
+    const res = await adminFetch('/api/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeader(token) },
+      body: JSON.stringify({ texts: batch }),
+      signal,
+    })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(data.error || TRANSLATE_LABELS.failed)
+    out.push(...data.texts)
+    onProgress?.(i + 1, batches.length)
+  }
+  return out
 }
 
 export async function uploadSiteImage(file, token) {

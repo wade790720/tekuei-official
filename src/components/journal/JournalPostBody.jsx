@@ -30,7 +30,7 @@ export function JournalPostBody({ slug, children }) {
   return (
     <Suspense fallback={children}>
       {/* The editor stays mounted while previewing, so the cursor and undo history survive. */}
-      <Editor key={`${slug}-${lang}`} doc={getDoc(body)} onChange={setDoc} upload={upload} previewing={admin.previewing} />
+      <Editor key={`${slug}-${lang}-${admin.editorKey}`} doc={getDoc(body)} onChange={setDoc} upload={upload} previewing={admin.previewing} />
       {admin.previewing ? <RichText doc={getDoc(body)} /> : null}
     </Suspense>
   )
