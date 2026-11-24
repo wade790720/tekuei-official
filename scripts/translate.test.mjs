@@ -55,10 +55,12 @@ test('batches keep order and respect the limit', () => {
   assert.deepEqual(batchTexts(['aaa', 'bb', 'cccc', 'd'], 5), [['aaa', 'bb'], ['cccc', 'd']])
 })
 
-const env = (reply, extra = {}) => {
+const env = (replies, extra = {}) => {
   const calls = []
+  const queue = Array.isArray(replies) ? [...replies] : null
   const run = async (model, input) => {
     calls.push({ model, input })
+    const reply = queue ? queue.shift() : replies
     if (reply instanceof Error) throw reply
     return reply
   }
@@ -74,7 +76,8 @@ const post = (e, body, code = '123456') =>
     env: e,
   })
 const answer = (content, finish_reason = 'stop') => ({ choices: [{ finish_reason, message: { content } }] })
-const pair = JSON.stringify({ translations: [{ id: 1, text: 'World' }, { id: 0, text: 'Hello' }] })
+const pair = '<s1>World</s1>\n<s0>Hello</s0>'
+const texts = ['你好', '世界']
 
 test('the API needs the admin code and never calls the model without it', async () => {
   const e = env(answer(pair))
@@ -88,22 +91,46 @@ test('a missing Workers AI binding is reported', async () => {
 
 test('translations come back in input order, with low reasoning to save the free quota', async () => {
   const e = env(answer(pair))
-  const res = await post(e, { texts: ['你好', '世界'] })
+  const res = await post(e, { texts })
   assert.deepEqual(await res.json(), { texts: ['Hello', 'World'] })
+  assert.equal(e.calls.length, 1)
   assert.equal(e.calls[0].model, '@cf/qwen/qwen3.8-27b')
   assert.equal(e.calls[0].input.reasoning_effort, 'low')
+  assert.equal(e.calls[0].input.messages[1].content, '<s0>你好</s0>\n<s1>世界</s1>')
 })
 
-test('JSON wrapped in a code fence still parses', async () => {
-  const res = await post(env(answer('```json\n' + pair + '\n```')), { texts: ['你好', '世界'] })
+test('quotation marks and marks inside a translation survive', async () => {
+  const res = await post(env(answer('<s0>He said "no" to <t1>this</t1></s0>')), { texts: ['他說不'] })
+  assert.deepEqual(await res.json(), { texts: ['He said "no" to <t1>this</t1>'] })
+})
+
+test('items the model skipped are asked for again, alone', async () => {
+  const e = env([answer('<s0>Hello</s0>'), answer('<s1>World</s1>')])
+  const res = await post(e, { texts })
   assert.deepEqual(await res.json(), { texts: ['Hello', 'World'] })
+  assert.equal(e.calls.length, 2)
+  assert.equal(e.calls[1].input.messages[1].content, '<s1>世界</s1>')
 })
 
-test('a partial, cut-off or malformed reply is an error, not a half translation', async () => {
-  const partial = JSON.stringify({ translations: [{ id: 0, text: 'Hello' }] })
-  for (const reply of [answer(partial), answer(pair, 'length'), answer('sorry')]) {
-    assert.equal((await post(env(reply), { texts: ['你好', '世界'] })).status, 502)
-  }
+test('a reply cut off mid-item keeps the finished items and retries the rest', async () => {
+  const e = env([answer('<s0>Hello</s0>\n<s1>Wor', 'length'), answer('<s1>World</s1>')])
+  assert.deepEqual(await (await post(e, { texts })).json(), { texts: ['Hello', 'World'] })
+})
+
+test('still incomplete after the retry is an error that says how much came back', async () => {
+  const e = env(answer('<s0>Hello</s0>'))
+  const original = console.error
+  console.error = () => {}
+  const res = await post(e, { texts })
+  console.error = original
+  assert.equal(res.status, 502)
+  assert.match((await res.json()).error, /1\/2/)
+  assert.equal(e.calls.length, 2)
+})
+
+test('an id the input does not have is ignored', async () => {
+  const res = await post(env(answer('<s0>Hello</s0><s9>Extra</s9>')), { texts: ['你好'] })
+  assert.deepEqual(await res.json(), { texts: ['Hello'] })
 })
 
 test('a used-up daily quota says so', async () => {
@@ -112,10 +139,10 @@ test('a used-up daily quota says so', async () => {
 })
 
 test('the prompt fixes his name and the company names, and keeps the brand separate', async () => {
-  const e = env(answer(JSON.stringify({ translations: [{ id: 0, text: 'Hello' }] })))
+  const e = env(answer('<s0>Hello</s0>'))
   await post(e, { texts: ['你好'] })
   const system = e.calls[0].input.messages[0].content
-  for (const rule of ['朱德溎 (his full name): Te-Kuei Chu', '澔學: iSchool', '雲訊科技: Cloras', 'more than ten']) {
+  for (const rule of ['朱德溎 (his full name): Te-Kuei Chu', '澔學: iSchool', '雲訊科技: Cloras', 'more than ten', 'Never merge']) {
     assert.ok(system.includes(rule), rule)
   }
   assert.ok(!system.includes('德溎 is written TEKUEI'))
