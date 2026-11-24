@@ -665,7 +665,7 @@
   align-items: center;
   gap: var(--space-1);
   padding: var(--space-1);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   background: var(--surface-2);
   opacity: 0;
   transition: opacity var(--duration-base) var(--ease-touch);
@@ -780,25 +780,103 @@
   gap: var(--space-1);
   width: max-content;
   max-width: calc(100vw - 2 * var(--space-2));
-  padding: var(--space-2);
+  padding: calc(var(--space-1) - 1px);
+  border: 1px solid transparent;
   border-radius: var(--radius-md);
   background: var(--surface-2);
   box-shadow: var(--cms-ring), 0 12px 32px rgba(0, 0, 0, 0.45);
   font-family: var(--font-label);
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
   animation: cms-rise var(--duration-base) var(--ease-touch);
+  transition:
+    scale var(--duration-fast) var(--ease-touch),
+    box-shadow var(--duration-fast) var(--ease-touch);
 }
 
+.cms-bar[data-dragging] {
+  scale: 1.02;
+  box-shadow: var(--cms-ring), 0 20px 48px rgba(0, 0, 0, 0.6);
+  cursor: grabbing;
+}
+
+/* Every control is the same 32px square. ::before reaches the 40px hit area, and half the gap sideways */
 .cms-bar .btn {
-  height: 40px;
+  position: relative;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
 }
 
-.cms-bar .btn--icon {
-  width: 40px;
+.cms-bar .btn::before {
+  content: '';
+  position: absolute;
+  inset: -4px -2px;
+}
+
+.cms-bar .btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.cms-bar .btn:not(:disabled) {
+  cursor: pointer;
+}
+
+.cms-bar .cms-spin {
+  width: 12px;
+  height: 12px;
+}
+
+.cms-bar .btn.cms-bar__save:not(:disabled) {
+  background: var(--gray-12);
+  color: var(--gray-1);
+}
+
+.cms-bar .btn.cms-bar__save:disabled {
+  background: transparent;
+}
+
+.cms-bar .btn.cms-save[data-state='saved'] {
+  color: var(--success);
 }
 
 .cms-bar button:focus-visible {
   outline: 1px solid var(--ember);
   outline-offset: 1px;
+}
+
+.cms-bar__grip {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--space-6);
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-faint);
+  cursor: inherit;
+  transition: color var(--duration-fast) var(--ease-touch);
+}
+
+.cms-bar__grip::before {
+  content: '';
+  position: absolute;
+  inset: -4px -2px;
+}
+
+@media (hover: hover) {
+  .cms-bar__grip:hover {
+    color: var(--text-primary);
+  }
+}
+
+.cms-bar .dropdown-menu {
+  display: flex;
 }
 
 .cms-bar .dropdown-menu__list {
@@ -807,37 +885,75 @@
   bottom: calc(100% + var(--space-2));
   left: auto;
   min-width: 120px;
+  cursor: default;
+}
+
+.cms-bar[data-below] .dropdown-menu__list {
+  top: calc(100% + var(--space-2));
+  bottom: auto;
+}
+
+.cms-bar:not([data-below]) .tooltip {
+  top: auto;
+  bottom: calc(100% + var(--space-2));
+}
+
+.cms-bar:not([data-below]) .tooltip::before {
+  top: auto;
+  bottom: -4px;
 }
 
 .cms-bar__status {
+  --light: var(--success);
+  --ping-ms: 3s;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 0 var(--space-3);
+  padding: 0 var(--space-2) 0 var(--space-1);
   font-size: var(--type-caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
 .cms-bar__status[data-state='dirty'] {
-  color: var(--ember-soft);
+  --light: var(--ember-soft);
+  --ping-ms: 1.8s;
+}
+
+.cms-bar__status[data-state='saving'] {
+  --light: var(--ember-soft);
+  --ping-ms: 0.9s;
 }
 
 .cms-bar__status[data-state='error'] {
+  --light: var(--danger);
+  --ping-ms: 1.2s;
   color: var(--danger);
 }
 
-.cms-bar__dot {
-  width: 7px;
-  height: 7px;
+/* key={state} remounts it, so each change of state pops once and restarts the ping */
+.cms-bar__light {
+  position: relative;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: currentColor;
+  background: var(--light);
+  animation: cms-light-pop var(--duration-base) var(--ease-touch);
+}
+
+.cms-bar__light::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--light);
+  animation: cms-light-ping var(--ping-ms) var(--ease-touch) infinite;
 }
 
 .cms-bar__rule {
   width: 0.5px;
-  height: var(--space-6);
-  margin-right: var(--space-1);
+  height: var(--space-4);
+  margin-inline: var(--space-1);
   background: var(--line-strong);
 }
 
@@ -847,7 +963,7 @@
   width: 0;
   min-width: 100%;
   margin: 0;
-  padding: var(--space-1) 0 var(--space-2);
+  padding: var(--space-1) var(--space-2);
   font-size: var(--type-caption);
   line-height: var(--type-caption-lh);
   color: var(--danger);
@@ -945,26 +1061,16 @@
   .cms-bar {
     right: var(--space-2);
     bottom: var(--space-2);
-    left: var(--space-2);
-    justify-content: space-between;
-    width: auto;
-    padding: var(--space-1);
   }
 
+  /* 36px tall on a phone; ::before reaches 44px */
   .cms-bar .btn {
-    height: 44px;
+    width: 40px;
+    height: 36px;
   }
 
-  .cms-bar .btn--icon {
-    width: 44px;
-  }
-
-  .cms-bar__status {
-    padding: 0 var(--space-2);
-  }
-
-  .cms-bar__rule {
-    display: none;
+  .cms-bar__grip {
+    height: 36px;
   }
 }
 
@@ -988,6 +1094,25 @@
   }
 }
 
+@keyframes cms-light-pop {
+  from {
+    transform: scale(0.4);
+  }
+}
+
+@keyframes cms-light-ping {
+  from {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+
+  60%,
+  to {
+    opacity: 0;
+    transform: scale(3);
+  }
+}
+
 @keyframes cms-spin {
   to {
     transform: rotate(360deg);
@@ -1000,8 +1125,22 @@
   .cms-gate__pill,
   .cms-dock,
   .cms-bar,
+  .cms-bar__light,
+  .cms-bar__light::after,
   .cms-save[data-state='error'] {
     animation: none;
+  }
+
+  .cms-bar__light::after {
+    display: none;
+  }
+
+  .cms-bar {
+    transition: none;
+  }
+
+  .cms-bar[data-dragging] {
+    scale: none;
   }
 
   .cms-save__label,

@@ -11,7 +11,7 @@
     "lint": "eslint . && node scripts/noSlop.mjs",
     "preview": "vite preview",
     "seed": "node scripts/seed-data.mjs",
-    "test": "node --test scripts/phoneE164.test.mjs scripts/highlight.test.mjs scripts/richText.test.mjs scripts/seo.test.mjs scripts/adminAuth.test.mjs scripts/dataApi.test.mjs scripts/noSlop.test.mjs scripts/journalDraft.test.mjs scripts/translate.test.mjs",
+    "test": "node --test scripts/phoneE164.test.mjs scripts/highlight.test.mjs scripts/richText.test.mjs scripts/seo.test.mjs scripts/adminAuth.test.mjs scripts/dataApi.test.mjs scripts/noSlop.test.mjs scripts/journalDraft.test.mjs scripts/translate.test.mjs scripts/editBarPosition.test.mjs",
     "test:phone": "node --test scripts/phoneE164.test.mjs"
   },
   "dependencies": {

@@ -47,6 +47,7 @@ export const COLOR_GROUPS = [
     text: true,
     swatches: [
       ['--danger', '錯誤訊息、刪除'],
+      ['--success', '狀態燈：已儲存'],
       ['--code-keyword', '程式碼：關鍵字'],
       ['--code-fn', '程式碼：函式'],
       ['--code-string', '程式碼：字串'],

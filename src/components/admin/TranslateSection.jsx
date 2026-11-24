@@ -70,10 +70,18 @@ export function TranslateSection({ zhDoc, enDoc, fields = {}, compact = false, o
   }
 
   if (compact) {
+    const label = progress ? `${T.running} ${progress.done}/${progress.total}` : T.action
     return (
       <>
-        <Button variant="ghost" onClick={run} disabled={Boolean(progress)} title={T.action}>
-          {progress ? `${T.running} ${progress.done}/${progress.total}` : T.actionShort}
+        <Button variant="icon" onClick={run} disabled={Boolean(progress)} aria-label={label} data-tip={label}>
+          <span className="icon-swap">
+            <span data-off={progress ? true : undefined}>
+              <TranslateIcon />
+            </span>
+            <span data-off={progress ? undefined : true}>
+              <span className="cms-spin" />
+            </span>
+          </span>
         </Button>
         {status.error ? (
           <p className="cms-bar__note" role="alert">
@@ -100,5 +108,18 @@ export function TranslateSection({ zhDoc, enDoc, fields = {}, compact = false, o
         ) : null}
       </div>
     </PanelSection>
+  )
+}
+
+function TranslateIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="m5 8 6 6" />
+      <path d="m4 14 6-6 2-3" />
+      <path d="M2 5h12" />
+      <path d="M7 2h1" />
+      <path d="m22 22-5-10-5 10" />
+      <path d="M14 18h6" />
+    </svg>
   )
 }

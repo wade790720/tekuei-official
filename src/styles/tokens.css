@@ -136,6 +136,7 @@
   --text-tertiary: var(--gray-a10); /* meta, dates, hints; the dimmest text that still passes 4.5:1 */
   --text-faint: var(--gray-a9); /* decoration only */
   --danger: #e8907c;
+  --success: #7fc08f; /* status light: saved */
   --annotate: #ff6fae; /* dev only: spec annotations in the component library */
 
   /* Type scale, in rem so a reader's browser font size still applies (16px root: the comments give px).
