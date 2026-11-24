@@ -283,7 +283,7 @@ function CardSettings({ label, children }) {
   )
 }
 
-function VideoCardView({ node, updateAttributes, deleteNode, selected }) {
+function VideoPlayerView({ node, updateAttributes, deleteNode, selected }) {
   const a = node.attrs
   return (
     <CardShell title="影片" selected={selected} deleteNode={deleteNode}>
@@ -298,7 +298,7 @@ function VideoCardView({ node, updateAttributes, deleteNode, selected }) {
   )
 }
 
-function SlidesCardView({ node, updateAttributes, deleteNode, selected, extension }) {
+function CarouselView({ node, updateAttributes, deleteNode, selected, extension }) {
   const slides = node.attrs.slides ?? []
   const [busy, setBusy] = useState(-1)
   const [err, setErr] = useState('')
@@ -383,7 +383,7 @@ const Quote = Blockquote.extend({
 })
 
 /** A code card: language and an optional file name in its header. */
-const CodeCardBlock = CodeBlock.extend({
+const CodeBlockNode = CodeBlock.extend({
   addAttributes() {
     return { ...this.parent?.(), ...attr('filename') }
   },
@@ -418,7 +418,7 @@ const ImageCardNode = card('imageCard', { src: '', alt: '', caption: '', frame: 
 })
 
 /** An image carousel. `slides` is a list, so it goes through HTML as JSON. */
-const SlidesCard = card('slidesCard', {}, SlidesCardView).extend({
+const CarouselNode = card('slidesCard', {}, CarouselView).extend({
   addAttributes: () => ({
     slides: {
       default: [],
@@ -433,7 +433,7 @@ const SlidesCard = card('slidesCard', {}, SlidesCardView).extend({
     },
   }),
 })
-const VideoCard = card('videoCard', { src: '', poster: '', caption: '', loop: false }, VideoCardView)
+const VideoPlayerNode = card('videoCard', { src: '', poster: '', caption: '', loop: false }, VideoPlayerView)
 
 /**
  * @param {{ upload: (file: File) => Promise<string>, placeholder: string }} opts
@@ -449,10 +449,10 @@ function editorExtensions({ upload, placeholder }) {
     }),
     Lead,
     Quote,
-    CodeCardBlock,
+    CodeBlockNode,
     ImageCardNode.configure({ upload }),
-    SlidesCard.configure({ upload }),
-    VideoCard,
+    CarouselNode.configure({ upload }),
+    VideoPlayerNode,
     Placeholder.configure({ placeholder }),
   ]
 }

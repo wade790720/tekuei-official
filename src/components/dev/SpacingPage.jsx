@@ -1,6 +1,6 @@
 // Spacing page: the scale as rising boxes and a table, the three rhythms, then the measured spec view.
 import { useState } from 'react'
-import { CodeBlock } from './doc/CodeBlock.jsx'
+import { DocCode } from './doc/DocCode.jsx'
 import { DocSection } from './doc/DocSection.jsx'
 import { DocTable } from './doc/DocTable.jsx'
 import { RuleList } from './doc/RuleList.jsx'
@@ -21,7 +21,7 @@ export function SpacingPage() {
       <DocSection id="scale" title="刻度" lead={g.scale}>
         <TokenScale tokens={TOKENS} kind="space" label={(t) => rootVar(t).replace('px', '')} />
         <DocTable head={['Token', '值', '用在']} rows={rows} code={[0, 1]} />
-        <CodeBlock code={tokenCode} lang="css" />
+        <DocCode code={tokenCode} lang="css" />
       </DocSection>
 
       <DocSection id="rhythm" title="節奏" lead={g.rhythm}>

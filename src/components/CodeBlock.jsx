@@ -12,7 +12,7 @@ const BADGE = { bash: 'SH', shell: 'SH', zsh: 'SH', javascript: 'JS', typescript
 /**
  * @param {{ code: string, lang?: string, filename?: string }} props
  */
-export function CodeCard({ code, lang = 'ts', filename }) {
+export function CodeBlock({ code, lang = 'ts', filename }) {
   const { lang: ui } = useLang()
   const t = CARD_LABELS[ui]
   const tokens = useMemo(() => tokenize(code, lang), [code, lang])
@@ -29,17 +29,17 @@ export function CodeCard({ code, lang = 'ts', filename }) {
   }
 
   return (
-    <Card as="figure" className="code-card">
-      <figcaption className="code-card__bar">
-        <span className="code-card__name">
-          <span className="code-card__lang" aria-hidden>
+    <Card as="figure" className="code-block">
+      <figcaption className="code-block__bar">
+        <span className="code-block__name">
+          <span className="code-block__lang" aria-hidden>
             {BADGE[lang] ?? lang.slice(0, 3).toUpperCase()}
           </span>
           {filename ?? lang}
         </span>
         <button
           type="button"
-          className="code-card__copy"
+          className="code-block__copy"
           onClick={copy}
           aria-label={t.copy}
           data-copied={copied || undefined}
@@ -57,13 +57,13 @@ export function CodeCard({ code, lang = 'ts', filename }) {
           {copied ? t.copied : ''}
         </span>
       </figcaption>
-      <ScrollShadow as="pre" orientation="horizontal" size={32} className="code-card__pre" tabIndex={0}>
+      <ScrollShadow as="pre" orientation="horizontal" size={32} className="code-block__pre" tabIndex={0}>
         <code>
           {tokens.map((tk, i) =>
             tk.type === 'plain' ? (
               tk.text
             ) : (
-              <span key={i} className={`code-card__tok--${tk.type}`}>
+              <span key={i} className={`code-block__tok--${tk.type}`}>
                 {tk.text}
               </span>
             ),

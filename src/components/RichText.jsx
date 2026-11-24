@@ -1,8 +1,8 @@
 import { Fragment } from 'react'
-import { CodeCard } from './CodeCard.jsx'
+import { CodeBlock } from './CodeBlock.jsx'
 import { ImageCard } from './ImageCard.jsx'
-import { SlidesCard } from './SlidesCard.jsx'
-import { VideoCard } from './VideoCard.jsx'
+import { Carousel } from './Carousel.jsx'
+import { VideoPlayer } from './VideoPlayer.jsx'
 import { safeHref } from '../lib/richText.js'
 
 // Renders a post body (Tiptap JSON, see src/lib/richText.js) as the article markup.
@@ -87,14 +87,14 @@ function Node({ node }) {
       )
     }
     case 'codeBlock':
-      return <CodeCard code={textOf(node)} lang={a.language || 'ts'} filename={a.filename || undefined} />
+      return <CodeBlock code={textOf(node)} lang={a.language || 'ts'} filename={a.filename || undefined} />
     case 'imageCard':
       return a.src ? <ImageCard src={a.src} alt={a.alt ?? ''} caption={a.caption} frame={a.frame} /> : null
     case 'videoCard':
-      return a.src ? <VideoCard src={a.src} poster={a.poster || undefined} caption={a.caption} loop={a.loop} /> : null
+      return a.src ? <VideoPlayer src={a.src} poster={a.poster || undefined} caption={a.caption} loop={a.loop} /> : null
     case 'slidesCard': {
       const slides = (a.slides ?? []).filter((s) => s?.src)
-      return slides.length ? <SlidesCard slides={slides} /> : null
+      return slides.length ? <Carousel slides={slides} /> : null
     }
     case 'horizontalRule':
       return <hr className="journal-post__hr" />

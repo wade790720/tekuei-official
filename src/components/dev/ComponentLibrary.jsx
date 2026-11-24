@@ -71,12 +71,10 @@ const SECTIONS = [
   ...GROUPS.map((g) => ({
     id: g.id,
     title: g.title,
-    // Alphabetical. A family (Card) sorts by its own name, so its members stay together.
     pages: [...g.items].sort(byName).map((item) => ({
       id: item.id,
       kind: 'component',
       name: item.name,
-      family: item.family,
       lead: item.summary,
       file: item.file,
       toc: componentToc(item),
@@ -86,30 +84,19 @@ const SECTIONS = [
 ]
 
 function byName(a, b) {
-  return (a.family ?? a.name).localeCompare(b.family ?? b.name, 'en', { sensitivity: 'base' }) || a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })
+  return a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })
 }
 
 const PAGES = SECTIONS.flatMap((section) => section.pages.map((p) => ({ ...p, section })))
 const PAGE_BY_ID = Object.fromEntries(PAGES.map((p) => [p.id, p]))
 const pageHref = (id) => (id === 'introduction' ? BASE : `${BASE}/${id}`)
 
-/** Consecutive pages of one family (Card) become one run, shown under the family name. */
-function familyRuns(pages) {
-  const runs = []
-  for (const p of pages) {
-    const last = runs[runs.length - 1]
-    if (p.family && last?.family === p.family) last.pages.push(p)
-    else runs.push({ family: p.family, pages: [p] })
-  }
-  return runs
-}
-
-function SideLink({ page, onPick, child }) {
+function SideLink({ page, onPick }) {
   return (
     <NavLink
       to={pageHref(page.id)}
       end
-      className={`cl-side__link${child ? ' cl-side__link--child' : ''}`}
+      className="cl-side__link"
       onClick={onPick}
     >
       {page.name}
@@ -127,18 +114,9 @@ function Sidebar({ current, open, onToggle, onPick }) {
       {SECTIONS.map((s) => (
         <div key={s.id} className="cl-side__group">
           <h2 className="cl-side__title">{s.title}</h2>
-          {familyRuns(s.pages).map((run) =>
-            run.family ? (
-              <div key={run.family} className="cl-side__family" role="group" aria-label={run.family}>
-                <span className="cl-side__family-name">{run.family}</span>
-                {run.pages.map((p) => (
-                  <SideLink key={p.id} page={p} onPick={onPick} child />
-                ))}
-              </div>
-            ) : (
-              <SideLink key={run.pages[0].id} page={run.pages[0]} onPick={onPick} />
-            ),
-          )}
+          {s.pages.map((p) => (
+            <SideLink key={p.id} page={p} onPick={onPick} />
+          ))}
         </div>
       ))}
     </nav>
@@ -150,7 +128,7 @@ function PageHeader({ page }) {
   return (
     <header className="cl-head">
       <div className="cl-head__pre">
-        {intro ? 'DEV ONLY' : [page.section.title, page.family].filter(Boolean).join(' / ')}
+        {intro ? 'DEV ONLY' : page.section.title}
       </div>
       <h1 className={`cl-head__title${page.kind === 'component' ? ' cl-head__title--code' : ''}`}>
         {intro ? 'Component Library' : page.name}

@@ -1,4 +1,4 @@
-// Interface text inside CodeCard, VideoCard and SlidesCard (copy, play, next…).
+// Interface text inside CodeBlock, VideoPlayer and Carousel (copy, play, next…).
 export const CARD_LABELS = {
   zh: {
     copy: '複製程式碼',

@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { getNextCase } from '../data/cases/index.js'
 import { useCaseCms } from '../hooks/useCaseCms.js'
 import '../styles/case.css'
-import { VideoCard } from './VideoCard.jsx'
+import { VideoPlayer } from './VideoPlayer.jsx'
 
 function DelGrid({ items }) {
   return (
@@ -141,7 +141,7 @@ export default function CaseStudyPage() {
       {data.videos?.length ? (
         <div className="case-wrap case-videos">
           {data.videos.map((v) => (
-            <VideoCard key={v.src} {...v} loop />
+            <VideoPlayer key={v.src} {...v} loop />
           ))}
         </div>
       ) : null}

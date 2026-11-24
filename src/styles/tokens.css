@@ -181,9 +181,9 @@
   --section-gap: clamp(var(--space-24), 10vw, 128px);
 
   /* Corner radius: small controls 8, menus and inputs 12, cards 16, pills full */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-full: 999px;
 
   --ease-touch: cubic-bezier(0.16, 0.08, 0.12, 1);

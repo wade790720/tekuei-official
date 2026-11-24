@@ -5,7 +5,7 @@ import { Breadcrumbs, BreadcrumbsItem } from '../components/Breadcrumbs.jsx'
 import { Button } from '../components/Button.jsx'
 import { Card } from '../components/Card.jsx'
 import CaseStub from '../components/CaseStub.jsx'
-import { CheckIcon, CopyIcon } from '../components/CodeCard.jsx'
+import { CheckIcon, CopyIcon } from '../components/CodeBlock.jsx'
 import { SiteFooter } from '../components/SiteFooter.jsx'
 import { TagList } from '../components/Tag.jsx'
 import { writeClipboard } from '../lib/clipboard.js'
@@ -109,7 +109,7 @@ export default function LabPage() {
   )
 }
 
-/** Copies the lab's prompt; the copy icon turns into a check for a moment, like the CodeCard copy button. */
+/** Copies the lab's prompt; the copy icon turns into a check for a moment, like the CodeBlock copy button. */
 function CopyPromptButton({ prompt, labels }) {
   const [copied, setCopied] = useState(false)
   const timer = useRef(0)

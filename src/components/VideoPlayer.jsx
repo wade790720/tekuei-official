@@ -16,7 +16,7 @@ const clock = (s) => {
  * A video in a post. A YouTube link plays in YouTube's player; a video file (mp4) in the site's own player.
  * @param {{ src: string, poster?: string, caption?: string, loop?: boolean }} props
  */
-export function VideoCard(props) {
+export function VideoPlayer(props) {
   const id = youtubeId(props.src)
   return id ? <YouTubeVideo id={id} caption={props.caption} loop={props.loop} /> : <FileVideo {...props} />
 }
@@ -28,7 +28,7 @@ function YouTubeVideo({ id, caption, loop = false }) {
   const query = loop ? `?loop=1&playlist=${id}` : ''
   return (
     <figure className="post-figure">
-      <Card className="video-card video-card--embed">
+      <Card className="video-player video-player--embed">
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${id}${query}`}
           title={caption || t.youtube}
@@ -87,7 +87,7 @@ function FileVideo({ src, poster, caption, loop = false }) {
 
   return (
     <figure className="post-figure">
-      <Card className="video-card" ref={root} data-playing={playing || undefined}>
+      <Card className="video-player" ref={root} data-playing={playing || undefined}>
         <video
           ref={video}
           src={src}
@@ -103,16 +103,16 @@ function FileVideo({ src, poster, caption, loop = false }) {
         />
         <button
           type="button"
-          className="video-card__surface"
+          className="video-player__surface"
           onClick={toggle}
           aria-label={playing ? t.pause : t.play}
         >
-          <span className="video-card__big" aria-hidden>
+          <span className="video-player__big" aria-hidden>
             <PlayIcon size={22} />
           </span>
         </button>
-        <div className="video-card__bar">
-          <button type="button" className="video-card__btn" onClick={toggle} aria-label={playing ? t.pause : t.play}>
+        <div className="video-player__bar">
+          <button type="button" className="video-player__btn" onClick={toggle} aria-label={playing ? t.pause : t.play}>
             <span className="icon-swap">
               <span data-off={playing || undefined}>
                 <PlayIcon />
@@ -122,9 +122,9 @@ function FileVideo({ src, poster, caption, loop = false }) {
               </span>
             </span>
           </button>
-          <span className="video-card__time">{clock(time)}</span>
+          <span className="video-player__time">{clock(time)}</span>
           <input
-            className="video-card__seek"
+            className="video-player__seek"
             type="range"
             min="0"
             max={duration || 0}
@@ -134,11 +134,11 @@ function FileVideo({ src, poster, caption, loop = false }) {
             aria-label={t.seek}
             style={{ '--progress': `${progress}%` }}
           />
-          <span className="video-card__time">{clock(duration)}</span>
-          <button type="button" className="video-card__btn video-card__rate" onClick={nextRate} aria-label={t.speed}>
+          <span className="video-player__time">{clock(duration)}</span>
+          <button type="button" className="video-player__btn video-player__rate" onClick={nextRate} aria-label={t.speed}>
             {rate}×
           </button>
-          <button type="button" className="video-card__btn" onClick={fullscreen} aria-label={t.fullscreen}>
+          <button type="button" className="video-player__btn" onClick={fullscreen} aria-label={t.fullscreen}>
             <FullscreenIcon />
           </button>
         </div>

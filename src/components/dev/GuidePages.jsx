@@ -1,7 +1,7 @@
 // Overview and Theme pages of the library that are mostly prose, code and tables.
 // Copy lives in guides.data.js; values are read live from tokens.css where a table shows them.
 import { useState } from 'react'
-import { CodeBlock } from './doc/CodeBlock.jsx'
+import { DocCode } from './doc/DocCode.jsx'
 import { DocSection } from './doc/DocSection.jsx'
 import { DocTable } from './doc/DocTable.jsx'
 import { Example } from './doc/Example.jsx'
@@ -19,7 +19,7 @@ export function GettingStarted() {
       <DocSection id="steps" title="步驟">
         {g.steps.map((s) => (
           <DocSection key={s.id} id={s.id} title={s.title} lead={s.text} level={3}>
-            <CodeBlock code={s.code} lang={s.lang} />
+            <DocCode code={s.code} lang={s.lang} />
           </DocSection>
         ))}
       </DocSection>
@@ -36,10 +36,10 @@ export function Styling() {
     <>
       <DocSection id="intro" title="說明" lead={g.intro} />
       <DocSection id="tokens" title="使用 token" lead={g.tokens.text}>
-        <CodeBlock code={g.tokens.code} lang="css" />
+        <DocCode code={g.tokens.code} lang="css" />
       </DocSection>
       <DocSection id="naming" title="命名" lead={g.naming.text}>
-        <CodeBlock code={g.naming.code} lang="css" />
+        <DocCode code={g.naming.code} lang="css" />
       </DocSection>
       <DocSection id="issues" title="常見問題">
         {g.issues.map((it) => (
@@ -55,17 +55,17 @@ export function LayoutGuide() {
   return (
     <>
       <DocSection id="max-width" title="最大寬度" lead={g.maxWidth.text}>
-        <CodeBlock code={g.maxWidth.code} lang="css" />
+        <DocCode code={g.maxWidth.code} lang="css" />
         <DocTable head={['Token', '值', '用途']} rows={g.maxWidth.rows} code={[0, 1]} />
       </DocSection>
       <DocSection id="full-bleed" title="滿版的元素" lead={g.fullBleed.text}>
-        <CodeBlock code={g.fullBleed.code} lang="css" />
+        <DocCode code={g.fullBleed.code} lang="css" />
       </DocSection>
       <DocSection id="decoration" title="絕對定位的裝飾" lead={g.decoration.text}>
-        <CodeBlock code={g.decoration.code} lang="css" />
+        <DocCode code={g.decoration.code} lang="css" />
       </DocSection>
       <DocSection id="sections" title="區塊間距" lead={g.sections.text}>
-        <CodeBlock code={g.sections.code} lang="css" />
+        <DocCode code={g.sections.code} lang="css" />
       </DocSection>
     </>
   )
@@ -108,7 +108,7 @@ export function ThemeOverview() {
   return (
     <>
       <DocSection id="anatomy" title="組成" lead={g.anatomy.text}>
-        <CodeBlock code={g.anatomy.code} lang="css" />
+        <DocCode code={g.anatomy.code} lang="css" />
       </DocSection>
       <DocSection id="principles" title="原則">
         <RuleList items={g.principles} />
@@ -131,7 +131,7 @@ export function RadiusPage() {
         <DocTable head={['Token', '值', '用在']} rows={g.rows} code={[0, 1]} />
       </DocSection>
       <DocSection id="usage" title="使用">
-        <CodeBlock code={g.code} lang="css" />
+        <DocCode code={g.code} lang="css" />
       </DocSection>
     </>
   )
@@ -163,7 +163,7 @@ export function MotionPage() {
         <DocTable head={['用在', '時長', '例子']} rows={g.durations} code={[1]} />
       </DocSection>
       <DocSection id="reduced" title="減少動態效果" lead={g.reduced}>
-        <CodeBlock code={g.reducedCode} lang="css" />
+        <DocCode code={g.reducedCode} lang="css" />
       </DocSection>
       <DocSection id="signature" title="招牌效果" lead={g.signature}>
         <DocTable head={['函式', '頁面', '效果']} rows={g.signatureRows} code={[0]} />
@@ -180,7 +180,7 @@ export function BreakpointsPage() {
         <DocTable head={['名稱', '寬度', '版面的變化']} rows={g.rows} code={[1]} />
       </DocSection>
       <DocSection id="usage" title="用法" lead={g.usage}>
-        <CodeBlock code={g.code} lang="css" />
+        <DocCode code={g.code} lang="css" />
       </DocSection>
     </>
   )

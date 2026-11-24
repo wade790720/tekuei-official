@@ -35,7 +35,7 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 
 | 路徑 | 放什麼 |
 |---|---|
-| `src/components/` | 頁面（`XxxPage.jsx`）和共用元件（`Editor.jsx`、`RichText.jsx`、`CodeCard.jsx`……），一個元件一個檔案 |
+| `src/components/` | 頁面（`XxxPage.jsx`）和共用元件（`Editor.jsx`、`RichText.jsx`、`CodeBlock.jsx`……），一個元件一個檔案 |
 | `src/components/<頁面>/` | 只有那一頁用的元件，例如 `journal/JournalEditPanel.jsx`、`admin/OtpGate.jsx` |
 | `src/data/` | 所有文案與內容。雙語內容的形狀是 `{ zh: …, en: … }` |
 | `src/data/cases/` | 案例內容，一個案例一檔 |

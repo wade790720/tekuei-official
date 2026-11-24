@@ -1,4 +1,4 @@
-import { CodeBlock } from './CodeBlock.jsx'
+import { DocCode } from './DocCode.jsx'
 
 /**
  * A live preview with the code that makes it, joined in one card.
@@ -8,7 +8,7 @@ export function Example({ children, code, lang = 'jsx', center = false }) {
   return (
     <figure className="doc-example">
       <div className={`doc-example__preview${center ? ' doc-example__preview--center' : ''}`}>{children}</div>
-      {code ? <CodeBlock code={code} lang={lang} joined /> : null}
+      {code ? <DocCode code={code} lang={lang} joined /> : null}
     </figure>
   )
 }
