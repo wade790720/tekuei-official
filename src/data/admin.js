@@ -46,4 +46,5 @@ export const TRANSLATE_LABELS = {
   busy: '翻譯服務忙碌中，請稍後再試',
   badInput: '內容太長或格式不對，無法翻譯',
   failed: '翻譯失敗，請再試一次',
+  incomplete: '模型漏翻了部分段落，請再試一次',
 }
