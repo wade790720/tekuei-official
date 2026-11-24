@@ -110,3 +110,13 @@ test('a used-up daily quota says so', async () => {
   const res = await post(env(new Error('4006: you have used up your daily free allocation')), { texts: ['你好'] })
   assert.equal(res.status, 429)
 })
+
+test('the prompt fixes his name and the company names, and keeps the brand separate', async () => {
+  const e = env(answer(JSON.stringify({ translations: [{ id: 0, text: 'Hello' }] })))
+  await post(e, { texts: ['你好'] })
+  const system = e.calls[0].input.messages[0].content
+  for (const rule of ['朱德溎 (his full name): Te-Kuei Chu', '澔學: iSchool', '雲訊科技: Cloras', 'more than ten']) {
+    assert.ok(system.includes(rule), rule)
+  }
+  assert.ok(!system.includes('德溎 is written TEKUEI'))
+})
