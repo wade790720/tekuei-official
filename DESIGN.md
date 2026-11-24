@@ -47,6 +47,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 | 目前頁的底線、裝飾線 | `--ember-line` | gold 30% |
 | hover 的淡底、選取的標籤底色 | `--ember-whisper` | gold 14% |
 | 錯誤 | `--danger` | `#e8907c` |
+| 成功，只用在狀態燈 | `--success` | `#7fc08f` |
 
 - 比例：約 70% 黑與炭灰、25% 象牙白文字、5% 金色。
 - 金色只用在三個地方：目前頁、聚焦、hover。一般的邊框和分隔線用 `--line`。
