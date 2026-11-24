@@ -768,6 +768,91 @@
   color: var(--text-tertiary);
 }
 
+/* Toolbar: the panel's actions for a page with no fields */
+.cms-bar {
+  position: fixed;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  z-index: 20000;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  width: max-content;
+  max-width: calc(100vw - 2 * var(--space-2));
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  box-shadow: var(--cms-ring), 0 12px 32px rgba(0, 0, 0, 0.45);
+  font-family: var(--font-label);
+  animation: cms-rise var(--duration-base) var(--ease-touch);
+}
+
+.cms-bar .btn {
+  height: 40px;
+}
+
+.cms-bar .btn--icon {
+  width: 40px;
+}
+
+.cms-bar button:focus-visible {
+  outline: 1px solid var(--ember);
+  outline-offset: 1px;
+}
+
+.cms-bar .dropdown-menu__list {
+  top: auto;
+  right: 0;
+  bottom: calc(100% + var(--space-2));
+  left: auto;
+  min-width: 120px;
+}
+
+.cms-bar__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  font-size: var(--type-caption);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.cms-bar__status[data-state='dirty'] {
+  color: var(--ember-soft);
+}
+
+.cms-bar__status[data-state='error'] {
+  color: var(--danger);
+}
+
+.cms-bar__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.cms-bar__rule {
+  width: 0.5px;
+  height: var(--space-6);
+  margin-right: var(--space-1);
+  background: var(--line-strong);
+}
+
+/* Takes no width of its own, so a long message wraps inside the bar instead of stretching it */
+.cms-bar__note {
+  order: -1;
+  width: 0;
+  min-width: 100%;
+  margin: 0;
+  padding: var(--space-1) 0 var(--space-2);
+  font-size: var(--type-caption);
+  line-height: var(--type-caption-lh);
+  color: var(--danger);
+}
+
 /* Collapsed: a dock button at the bottom right brings the panel back */
 .cms-dock {
   position: fixed;
@@ -856,6 +941,31 @@
     right: 16px;
     bottom: 16px;
   }
+
+  .cms-bar {
+    right: var(--space-2);
+    bottom: var(--space-2);
+    left: var(--space-2);
+    justify-content: space-between;
+    width: auto;
+    padding: var(--space-1);
+  }
+
+  .cms-bar .btn {
+    height: 44px;
+  }
+
+  .cms-bar .btn--icon {
+    width: 44px;
+  }
+
+  .cms-bar__status {
+    padding: 0 var(--space-2);
+  }
+
+  .cms-bar__rule {
+    display: none;
+  }
 }
 
 @keyframes cms-fade {
@@ -889,6 +999,7 @@
   .cms-gate__panel,
   .cms-gate__pill,
   .cms-dock,
+  .cms-bar,
   .cms-save[data-state='error'] {
     animation: none;
   }

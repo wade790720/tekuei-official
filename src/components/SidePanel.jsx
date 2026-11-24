@@ -4,22 +4,25 @@ import { useAdmin } from '../context/admin.js'
 import { CMS_LABELS as T } from '../data/admin.js'
 import { Button } from './Button.jsx'
 import { Drawer, DrawerBody, DrawerHeader } from './Drawer.jsx'
+import { DropdownMenu } from './DropdownMenu.jsx'
 import '../styles/cms.css'
 
 const SAVED_MS = 1600 // how long the save button shows "已儲存" after a save
 
 /**
  * The edit-mode panel: a Drawer with save, logout and preview. The live page re-renders from the draft as you type.
+ * A page with no fields uses variant="bar": the same actions in a floating toolbar, with logout under a menu.
  * Open by default; once collapsed it stays collapsed across pages until reopened from the dock button.
  * @param {{
  *   title: string, subtitle?: string,
  *   dirty: boolean, saving: boolean, error?: string,
  *   onSave: () => void, onLogout: () => void,
  *   preview?: boolean,  // adds the switch between editing and the page as readers see it
+ *   variant?: 'drawer' | 'bar',
  *   children: import('react').ReactNode,
  * }} props
  */
-export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, preview = false, children }) {
+export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, preview = false, variant = 'drawer', children }) {
   const { panelOpen, setPanelOpen, previewing, setPreviewing } = useAdmin()
   const [justSaved, setJustSaved] = useState(false)
   const [prevSaving, setPrevSaving] = useState(saving)
@@ -40,6 +43,46 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
 
   const status = saving ? T.saving : error ? `${T.saveFailed}：${error}` : dirty ? T.unsaved : T.saved
 
+  const previewButton = preview ? (
+    <Button variant="ghost" aria-pressed={previewing} onClick={() => setPreviewing(!previewing)}>
+      <EyeIcon />
+      {previewing ? T.backToEdit : T.preview}
+    </Button>
+  ) : null
+  const saveButton = (
+    <Button className="cms-save" data-state={saveState} onClick={onSave} disabled={saving || !dirty}>
+      <SaveLabels state={saveState} idle={T.save} />
+    </Button>
+  )
+
+  if (variant === 'bar') {
+    return createPortal(
+      <div className="cms-bar" role="toolbar" aria-label={title}>
+        {error ? (
+          <p className="cms-bar__note" role="alert">
+            {error}
+          </p>
+        ) : null}
+        <span className="cms-bar__status" role="status" data-state={error ? 'error' : dirty ? 'dirty' : 'clean'}>
+          <span className="cms-bar__dot" aria-hidden />
+          {saving ? T.saving : error ? T.saveFailed : dirty ? T.unsaved : T.saved}
+        </span>
+        <span className="cms-bar__rule" aria-hidden />
+        {previewButton}
+        {children}
+        {saveButton}
+        <DropdownMenu
+          label={T.more}
+          trigger={<MoreIcon />}
+          items={[{ value: 'logout', label: T.logout }]}
+          onSelect={onLogout}
+          triggerClassName="btn btn--icon"
+        />
+      </div>,
+      document.body,
+    )
+  }
+
   return (
     <>
       <Drawer open={panelOpen} label={title} push className="cms-panel">
@@ -47,19 +90,12 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
           <Button variant="ghost" onClick={() => setPanelOpen(false)} aria-label={T.collapse} title={T.collapse}>
             <ChevronIcon />
           </Button>
-          {preview ? (
-            <Button variant="ghost" aria-pressed={previewing} onClick={() => setPreviewing(!previewing)}>
-              <EyeIcon />
-              {previewing ? T.backToEdit : T.preview}
-            </Button>
-          ) : null}
+          {previewButton}
           <Button variant="ghost" onClick={onLogout}>
             {T.logout}
           </Button>
           {/* Lights up only when there is something to save */}
-          <Button className="cms-save" data-state={saveState} onClick={onSave} disabled={saving || !dirty}>
-            <SaveLabels state={saveState} idle={T.save} />
-          </Button>
+          {saveButton}
         </DrawerHeader>
         <div className="cms-panel__status" role="status" data-state={error ? 'error' : dirty ? 'dirty' : 'clean'}>
           {status}
@@ -156,6 +192,16 @@ function PencilIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M10.5 2.5l3 3L6 13H3v-3l7.5-7.5z" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function MoreIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
+      <circle cx="3" cy="8" r="1.25" />
+      <circle cx="8" cy="8" r="1.25" />
+      <circle cx="13" cy="8" r="1.25" />
     </svg>
   )
 }

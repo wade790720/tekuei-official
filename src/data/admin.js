@@ -22,6 +22,7 @@ export const CMS_LABELS = {
   loadFailed: '文章沒有從伺服器載入，現在儲存會蓋掉正式的文章，所以不能儲存。請重新整理頁面',
   logoutConfirm: '還有修改沒有儲存，確定要登出嗎？修改會被丟掉。',
   logout: '登出',
+  more: '更多',
   preview: '預覽',
   backToEdit: '回到編輯',
   collapse: '收合面板',
@@ -32,6 +33,7 @@ export const CMS_LABELS = {
 export const TRANSLATE_LABELS = {
   title: '英文翻譯',
   action: '翻譯成英文',
+  actionShort: '轉譯',
   running: '翻譯中',
   note: '從中文內文翻譯，圖片和程式碼不動，翻完不會自動儲存',
   done: '翻好了，看過後按儲存',

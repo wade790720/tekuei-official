@@ -32,7 +32,8 @@
 .about-clients__title {
   margin: 0 0 var(--space-12);
   font-family: var(--font-serif);
-  font-size: var(--type-h3);
+  font-size: var(--type-h2);
+  line-height: var(--type-h2-lh);
   font-weight: var(--weight-regular);
   text-align: center;
   color: var(--text-primary);
@@ -58,4 +59,9 @@
   height: var(--logo-h, 32px);
   object-fit: contain;
   opacity: 0;
+}
+
+/* Keeps the footer icons clear of the edit toolbar */
+.is-cms-editing .about-page {
+  padding-bottom: var(--space-24);
 }
