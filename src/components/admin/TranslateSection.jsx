@@ -13,10 +13,11 @@ import { docText } from '../../lib/richText.js'
  * @param {{
  *   zhDoc: object, enDoc: object,
  *   fields?: Record<string, string>,  // short Chinese texts outside the body, e.g. the title
+ *   compact?: boolean,                // one button for the SidePanel toolbar
  *   onDone: (result: { doc: object, fields: Record<string, string> }) => void,
  * }} props
  */
-export function TranslateSection({ zhDoc, enDoc, fields = {}, onDone }) {
+export function TranslateSection({ zhDoc, enDoc, fields = {}, compact = false, onDone }) {
   const { lang } = useLang()
   const admin = useAdmin()
   const [progress, setProgress] = useState(null)
@@ -26,9 +27,12 @@ export function TranslateSection({ zhDoc, enDoc, fields = {}, onDone }) {
   useEffect(() => () => abort.current?.abort(), [])
 
   if (lang !== 'en') {
+    if (compact) return null
     return (
       <PanelSection title={T.title}>
-        <p className="cms-translate__note">{T.switchToEn}</p>
+        <div className="cms-translate">
+          <p className="cms-translate__note">{T.switchToEn}</p>
+        </div>
       </PanelSection>
     )
   }
@@ -63,6 +67,21 @@ export function TranslateSection({ zhDoc, enDoc, fields = {}, onDone }) {
     } finally {
       setProgress(null)
     }
+  }
+
+  if (compact) {
+    return (
+      <>
+        <Button variant="ghost" onClick={run} disabled={Boolean(progress)} title={T.action}>
+          {progress ? `${T.running} ${progress.done}/${progress.total}` : T.actionShort}
+        </Button>
+        {status.error ? (
+          <p className="cms-bar__note" role="alert">
+            {status.error}
+          </p>
+        ) : null}
+      </>
+    )
   }
 
   return (
