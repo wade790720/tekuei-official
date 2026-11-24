@@ -115,7 +115,7 @@
 - 面板沒有聚焦框：文字欄位和編輯器只顯示游標。按鈕保留鍵盤聚焦框。
 - 面板的字小於 18px，所以一律用 `--font-label`：英文是等寬字，中文是思源宋體。日期、編號、狀態加標籤字距 0.1em。
 - 面板和密碼框只給 Wade 用，介面文字只寫中文。
-- 面板的「英文翻譯」只在切到 EN 時有按鈕。它把中文內文（文章還有標題、摘要）交給 `/api/translate`，翻好放進英文草稿，不自動儲存，英文已有內容時先問。只翻文字、圖片的替代文字和圖說，程式碼和版面不動（`docTranslate.js`）。模型是 Cloudflare Workers AI 的 `@cf/qwen/qwen3.8-27b`，用 `wrangler.toml` 的 `AI` 綁定，不需要金鑰，每天有 10,000 Neurons 免費額度，只有登入的編輯模式能呼叫。
+- 面板的「英文翻譯」只在切到 EN 時有按鈕。它把中文內文（文章還有標題、摘要）交給 `/api/translate`，翻好放進英文草稿，不自動儲存，英文已有內容時先問。只翻文字、圖片的替代文字和圖說，程式碼和版面不動（`docTranslate.js`）。模型是 Cloudflare Workers AI 的 `@cf/qwen/qwen3.8-27b`，用 `wrangler.toml` 的 `AI` 綁定，不需要金鑰，每天有 10,000 Neurons 免費額度，只有登入的編輯模式能呼叫。姓名、公司名的固定英文寫在 `functions/api/translate.js` 的翻譯規則裡，新增合作單位時要一起補。
 - Journal 和 About 可以編輯。Work、案例頁刻意不提供編輯面板，內容改在程式碼裡。
 
 ## Component Library
