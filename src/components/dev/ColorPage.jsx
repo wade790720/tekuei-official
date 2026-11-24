@@ -1,7 +1,7 @@
 // Color page: the two 12-step scales, alpha colours, the semantic layer with live contrast,
 // backgrounds, hover and focus, then the measured spec view.
 import { useState } from 'react'
-import { CodeBlock } from './doc/CodeBlock.jsx'
+import { DocCode } from './doc/DocCode.jsx'
 import { ColorScale } from './doc/ColorScale.jsx'
 import { DocSection } from './doc/DocSection.jsx'
 import { DocTable } from './doc/DocTable.jsx'
@@ -83,16 +83,16 @@ export function ColorPage() {
 
       <DocSection id="accent" title="強調色" lead={g.accent}>
         <ColorScale name="accent" />
-        <CodeBlock code={scaleCode('accent') + '\n\n/* 放在實色上的文字 */\nvar(--accent-contrast);'} lang="css" />
+        <DocCode code={scaleCode('accent') + '\n\n/* 放在實色上的文字 */\nvar(--accent-contrast);'} lang="css" />
       </DocSection>
 
       <DocSection id="gray" title="灰階" lead={g.gray}>
         <ColorScale name="gray" />
-        <CodeBlock code={scaleCode('gray')} lang="css" />
+        <DocCode code={scaleCode('gray')} lang="css" />
       </DocSection>
 
       <DocSection id="alpha" title="透明色" lead={g.alpha}>
-        <CodeBlock code={g.alphaCode} lang="css" />
+        <DocCode code={g.alphaCode} lang="css" />
       </DocSection>
 
       <DocSection id="semantic" title="語意 token" lead={g.semantic}>

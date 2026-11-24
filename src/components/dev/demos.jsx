@@ -1,11 +1,11 @@
 // Live demos for the component pages. Each entry in componentLibrary.data.js names one by key.
 // Demo data only: nothing here is real content, and nothing is sent anywhere.
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
-import { CodeCard } from '../CodeCard.jsx'
+import { CodeBlock } from '../CodeBlock.jsx'
 import { ImageCard } from '../ImageCard.jsx'
 import { RichText } from '../RichText.jsx'
-import { SlidesCard } from '../SlidesCard.jsx'
-import { VideoCard } from '../VideoCard.jsx'
+import { Carousel } from '../Carousel.jsx'
+import { VideoPlayer } from '../VideoPlayer.jsx'
 import { DropdownMenu } from '../DropdownMenu.jsx'
 import { Button } from '../Button.jsx'
 import { Card } from '../Card.jsx'
@@ -277,15 +277,15 @@ function EditorDemo() {
 }
 
 const DEMOS = {
-  code: () => <CodeCard lang="ts" filename="route.ts" code={SAMPLE_CODE} />,
-  'code-shell': () => <CodeCard lang="bash" code={'# install and run\nnpm install\nnpm run dev'} />,
-  'code-plain': () => <CodeCard lang="css" code={'.journal-card {\n  padding: var(--space-4);\n}'} />,
+  code: () => <CodeBlock lang="ts" filename="route.ts" code={SAMPLE_CODE} />,
+  'code-shell': () => <CodeBlock lang="bash" code={'# install and run\nnpm install\nnpm run dev'} />,
+  'code-plain': () => <CodeBlock lang="css" code={'.journal-card {\n  padding: var(--space-4);\n}'} />,
   image: () => <ImageCard src={heroImage} alt="示範：Hero 背景圖" caption="滿版" />,
   'image-frame': () => <ImageCard src={cutImage} alt="示範：人物去背圖" caption="frame" frame />,
-  video: () => <VideoCard src={demoClip} caption="示範影片" />,
-  'video-loop': () => <VideoCard src={demoClip} caption="播完重新播放" loop />,
+  video: () => <VideoPlayer src={demoClip} caption="示範影片" />,
+  'video-loop': () => <VideoPlayer src={demoClip} caption="播完重新播放" loop />,
   slides: () => (
-    <SlidesCard
+    <Carousel
       slides={[
         { src: heroImage, alt: '示範：Hero 背景圖', caption: '第一張' },
         { src: seaImage, alt: '示範：Shatter Footer 的海浪', caption: '第二張' },

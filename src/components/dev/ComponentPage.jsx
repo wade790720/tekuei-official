@@ -1,7 +1,7 @@
 // One component page, laid out like the Radix Themes component docs:
 // hero example, API Reference (one part per sub-heading), Examples, Keyboard, Notes.
 import { Demo } from './demos.jsx'
-import { CodeBlock } from './doc/CodeBlock.jsx'
+import { DocCode } from './doc/DocCode.jsx'
 import { DocSection } from './doc/DocSection.jsx'
 import { DocTable } from './doc/DocTable.jsx'
 import { Example } from './doc/Example.jsx'
@@ -19,7 +19,7 @@ function Showcase({ demo, code }) {
       </Example>
     )
   }
-  return code ? <CodeBlock code={code} /> : null
+  return code ? <DocCode code={code} /> : null
 }
 
 function Part({ part }) {

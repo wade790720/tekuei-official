@@ -89,8 +89,8 @@ npm run dev`,
     },
     naming: {
       text: 'class 用頁面或元件的前綴加 BEM，狀態用 is-*，資料狀態用 data-*。',
-      code: `.code-card { … }            /* 元件 */
-.code-card__bar { … }       /* 元件的零件 */
+      code: `.code-block { … }            /* 元件 */
+.code-block__bar { … }       /* 元件的零件 */
 .journal-row__title { … }   /* 頁面的區段 */
 .journal-card.is-visible { … }
 .otp-input[data-invalid] { … }`,
@@ -202,8 +202,8 @@ npm run dev`,
           title: '字級與內容頁',
           rows: [
             ['nan.fyi', 'https://www.nan.fyi/', '內容頁的細節、字體', 'Journal 內頁'],
-            ['jakub.kr', 'https://jakub.kr/', '字級、間距、小細節，文章內的程式碼、圖片、影片卡片，圖示切換時的 opacity、scale、blur', 'tokens.css、CodeCard、ImageCard、VideoCard'],
-            ['interfaces.dev', 'https://interfaces.dev/', '字級、間距、圖片輪播', 'tokens.css、SlidesCard'],
+            ['jakub.kr', 'https://jakub.kr/', '字級、間距、小細節，文章內的程式碼、圖片、影片卡片，圖示切換時的 opacity、scale、blur', 'tokens.css、CodeBlock、ImageCard、VideoPlayer'],
+            ['interfaces.dev', 'https://interfaces.dev/', '字級、間距、圖片輪播', 'tokens.css、Carousel'],
             ['manuelmoreale.com', 'https://manuelmoreale.com/about', 'About 只有標題和一篇內文的版面', 'About'],
             ['Framer Marketplace', 'https://www.framer.com/marketplace/', '元件頁的版面：標題和按鈕、可以直接玩的預覽、介紹、其他作品', 'Lab 頁'],
           ],
@@ -276,7 +276,7 @@ var(--accent-a4); /* --ember-whisper：hover 的淡底 */`,
     semantic: '元件和頁面只用這一層。右邊兩欄是文字在頁面背景和卡片上的對比值，4.5 以上才能用在要閱讀的字。',
     backgrounds: '三層背景，越上層越亮：頁面、卡片、浮起的元素（選單、工具列）。',
     backgroundsCode: `.journal-page { background: var(--surface-0); }
-.code-card { background: var(--surface-1); }
+.code-block { background: var(--surface-1); }
 .dropdown-menu__list { background: var(--surface-2); }`,
     focus: 'hover 用 --ember-whisper 的淡底或 --ember-soft 的字。鍵盤聚焦框用 1px 的 --ember，文字欄位只顯示游標，不加聚焦框。',
     focusCode: `.journal-card:hover { color: var(--ember-soft); }
@@ -312,12 +312,12 @@ var(--accent-a4); /* --ember-whisper：hover 的淡底 */`,
     ],
     scale: '4 階，小控制項最小，卡片最大，膠囊和圓點用 full。',
     rows: [
-      ['--radius-sm', '8px', '按鈕、輸入框、選單項目'],
-      ['--radius-md', '12px', '選單、工具列'],
-      ['--radius-lg', '16px', '卡片、示範框'],
+      ['--radius-sm', '4px', '按鈕、輸入框、選單項目'],
+      ['--radius-md', '8px', '選單、工具列'],
+      ['--radius-lg', '12px', '卡片、示範框'],
       ['--radius-full', '999px', '膠囊按鈕、圓點'],
     ],
-    code: `.code-card { border-radius: var(--radius-lg); }
+    code: `.code-block { border-radius: var(--radius-lg); }
 .dropdown-menu__item { border-radius: var(--radius-sm); }`,
   },
   motion: {

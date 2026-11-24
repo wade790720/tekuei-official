@@ -43,7 +43,7 @@ export const COLOR_GROUPS = [
   },
   {
     title: '狀態與程式碼',
-    note: '錯誤只用一個顏色，程式碼顏色只用在 CodeCard。',
+    note: '錯誤只用一個顏色，程式碼顏色只用在 CodeBlock。',
     text: true,
     swatches: [
       ['--danger', '錯誤訊息、刪除'],
@@ -165,7 +165,7 @@ export const SPACE_RULES = [
   '外面的間距永遠大於裡面的間距，越往外間距越大，關係才看得出來',
   '全部用刻度上的值，不在刻度上的數字（28、36、52）改成最近的刻度',
   '文章小標題的上方約是下方的 3 倍，讓標題靠近它帶領的內容',
-  '圓角：小控制項 8px、選單和輸入框 12px、卡片 16px、膠囊 999px',
+  '圓角：按鈕和輸入框 4px、選單和工具列 8px、卡片 12px、膠囊 999px',
 ]
 
 // Sample card for the annotated spec views. Demo copy only, not a real post.

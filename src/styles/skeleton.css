@@ -8,7 +8,7 @@
   display: block;
   overflow: hidden;
   height: 1em;
-  border-radius: calc(var(--radius-sm) / 2); /* 4px, HeroUI's rounded-sm */
+  border-radius: var(--radius-sm);
   background: color-mix(in oklab, var(--surface-3) 70%, transparent);
   pointer-events: none;
 }

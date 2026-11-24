@@ -24,7 +24,7 @@ TEKUEI 全站共用的視覺與動態規則。改畫面、樣式或動畫之前�
 | 區段 | 頁面上的一個 section，彼此間距是 `--section-gap` | |
 | 面板 | 編輯面板（`SidePanel`） | `Drawer`、選單直接寫名稱 |
 | 提示 | Tooltip | 給讀者的說明小字叫「操作說明」，音效的類別叫「狀態音」 |
-| 卡片 | 文章內的 `CodeCard`、`ImageCard`、`VideoCard`、`SlidesCard`，以及它們共用的 `Card` | 不寫「卡」或「card」 |
+| 卡片 | 文章內的 `CodeBlock`、`ImageCard`、`VideoPlayer`、`Carousel`，以及它們共用的 `Card` | 不寫「卡」或「card」 |
 | 外殼 | `Card` 的底色、圓角和光環 | |
 | 外欄 | Journal 文章的 696px 欄寬（680px 加左右各 8px） | 選取的框叫「框線」，鍵盤聚焦的叫「聚焦框」 |
 | 首頁 Hero | 首頁唯一的一屏（錦鯉池） | 不寫「第一屏」 |
@@ -110,7 +110,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
   - 段落之間：24px。Journal 文章是 12px（見「字級」）。
   - 區段之間：`--section-gap`（96–128px，跟著螢幕寬度變）。
 - 外面的間距永遠大於裡面的間距。
-- 圓角：`--radius-sm` 8px（小控制項）、`--radius-md` 12px、`--radius-lg` 16px（卡片）、`--radius-full`（膠囊）。
+- 圓角：`--radius-sm` 4px（按鈕、選單項目、輸入框）、`--radius-md` 8px（工具列、選單、浮層）、`--radius-lg` 12px（卡片、文章圖片）、`--radius-full`（膠囊）。巢狀時外圓角等於內圓角加內距，例如工具列 8 = 按鈕 4 + 內距 4。
 - 完整示範在 Component Library 的「基礎」。間距、字級、色值都標在真的介面上，數值從 DOM 即時量測。
 
 ```css
@@ -127,7 +127,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 |---|---|---|
 | 英文、中文 | `--font-serif` | Instrument Serif 400（含斜體），中文自動改用思源宋體（Noto Serif TC 300/400） |
 | 標籤、數值 | `--font-label` | `ui-monospace`、Cascadia Mono、Consolas，中文用思源宋體 |
-| 程式碼 | `--font-mono` | 同上，只用在 `CodeCard` |
+| 程式碼 | `--font-mono` | 同上，只用在 `CodeBlock` |
 
 - Instrument Serif 排第一。它沒有中文字，所以中文自動改用思源宋體。
 - Instrument Serif 只用在 18px 以上。更小的英文改用 `--font-label`。
@@ -200,7 +200,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 每個效果都要支援 `prefers-reduced-motion`：直接顯示最終畫面。
 - 效果停下後，停止 `requestAnimationFrame`。畫面外不要繼續算。
 - 載入中：資料還沒回來時，用 `Skeleton` 排出內容的形狀。不要先顯示預設資料再整批換掉。
-- 可以捲動的容器用 `ScrollShadow`：還有內容的那一邊淡出 40px（`CodeCard` 32px）。
+- 可以捲動的容器用 `ScrollShadow`：還有內容的那一邊淡出 40px（`CodeBlock` 32px）。
 
 ### 招牌效果
 

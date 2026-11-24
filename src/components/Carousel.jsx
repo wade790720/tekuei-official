@@ -17,7 +17,7 @@ function nearest(el) {
  * Native scroll-snap does the swiping; a mouse can also drag, and ← / → move when it has focus.
  * @param {{ slides: { src: string, alt: string, caption?: string }[] }} props
  */
-export function SlidesCard({ slides }) {
+export function Carousel({ slides }) {
   const { lang } = useLang()
   const t = CARD_LABELS[lang]
   const track = useRef(null)
@@ -78,10 +78,10 @@ export function SlidesCard({ slides }) {
   if (!slides.length) return null
 
   return (
-    <section className="slides-card" aria-roledescription="carousel" aria-label={t.slides}>
+    <section className="carousel" aria-roledescription="carousel" aria-label={t.slides}>
       <div
         ref={track}
-        className="slides-card__track"
+        className="carousel__track"
         data-dragging={dragging || undefined}
         tabIndex={0}
         onKeyDown={key}
@@ -93,13 +93,13 @@ export function SlidesCard({ slides }) {
         {slides.map((s, i) => (
           <figure
             key={`${s.src}-${i}`}
-            className="slides-card__slide"
+            className="carousel__slide"
             role="group"
             aria-roledescription="slide"
             aria-label={t.slide.replace('{n}', i + 1).replace('{total}', slides.length)}
             aria-hidden={i !== index || undefined}
           >
-            <Card className="slides-card__frame">
+            <Card className="carousel__frame">
               <img src={s.src} alt={s.alt} loading="lazy" decoding="async" draggable={false} />
             </Card>
             {s.caption ? <figcaption className="post-figure__caption">{s.caption}</figcaption> : null}
@@ -107,11 +107,11 @@ export function SlidesCard({ slides }) {
         ))}
       </div>
       {slides.length > 1 ? (
-        <div className="slides-card__nav">
-          <button type="button" className="slides-card__btn" onClick={() => go(index - 1)} disabled={index === 0} aria-label={t.prevSlide}>
+        <div className="carousel__nav">
+          <button type="button" className="carousel__btn" onClick={() => go(index - 1)} disabled={index === 0} aria-label={t.prevSlide}>
             <Chevron dir={-1} />
           </button>
-          <button type="button" className="slides-card__btn" onClick={() => go(index + 1)} disabled={index === last} aria-label={t.nextSlide}>
+          <button type="button" className="carousel__btn" onClick={() => go(index + 1)} disabled={index === last} aria-label={t.nextSlide}>
             <Chevron dir={1} />
           </button>
         </div>

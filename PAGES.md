@@ -48,7 +48,7 @@
 
 - 內文段落（`case-prose`）最寬 `--page-reading`，字級 `--type-body`。
 - 標題、交付項目、時間軸維持外欄寬度。
-- 案例資料可以有 `videos`（`src`、`poster`、`caption`）：用 `VideoCard` 排在「背景」段落後面，外欄寬度，循環播放。影片放在 `src/assets/cases/<slug>/`，是從案例網站錄的捲動導覽。目前只有 Matsu Biennial（首頁、策展主題頁、藝術作品頁）。
+- 案例資料可以有 `videos`（`src`、`poster`、`caption`）：用 `VideoPlayer` 排在「背景」段落後面，外欄寬度，循環播放。影片放在 `src/assets/cases/<slug>/`，是從案例網站錄的捲動導覽。目前只有 Matsu Biennial（首頁、策展主題頁、藝術作品頁）。
 
 ## Labs
 
@@ -80,14 +80,14 @@
 
 | 文件節點 | 元件 | 屬性 |
 |---|---|---|
-| `codeBlock` | `CodeCard` | 內容是程式碼。屬性：`language`（預設 `ts`）、`filename` |
+| `codeBlock` | `CodeBlock` | 內容是程式碼。屬性：`language`（預設 `ts`）、`filename` |
 | `imageCard` | `ImageCard` | `src`、`alt`（必填）、`caption`、`frame`（小圖置中留白） |
-| `videoCard` | `VideoCard` | `src`、`poster`、`caption`、`loop`。`src` 是影片檔（mp4）或 YouTube 連結，YouTube 用它自己的播放器 |
-| `slidesCard` | `SlidesCard` | `slides`：`[{ src, alt, caption }]`。圖片輪播，寬螢幕比內文欄左右各寬 80px |
+| `videoCard` | `VideoPlayer` | `src`、`poster`、`caption`、`loop`。`src` 是影片檔（mp4）或 YouTube 連結，YouTube 用它自己的播放器 |
+| `slidesCard` | `Carousel` | `slides`：`[{ src, alt, caption }]`。圖片輪播，寬螢幕比內文欄左右各寬 80px |
 
 - 文字的部分（段落、前言、小標題、引言、清單）沿用 `journal.css` 的 `journal-post__*` 樣式。
 - 編輯器裡的圖片卡片就是正式的 `ImageCard`，圖說在圖片下方直接輸入。替代文字、網址、小圖置中收在右上角的「⋯」裡。沒有替代文字時顯示「缺替代文字」。
-- 外觀：四種卡片都用 `Card` 當外殼，`--surface-1` 底、圓角 16px、1px 象牙白光環，不用邊框（`src/styles/card.css`）。各卡片自己的樣式在 `src/styles/cards.css`。
+- 外觀：四種卡片都用 `Card` 當外殼，`--surface-1` 底、圓角 12px、1px 象牙白光環，不用邊框（`src/styles/card.css`）。各卡片自己的樣式在 `src/styles/cards.css`。
 - 程式碼字型用 `--font-mono`，顏色用 `--code-*` token。上色由 `src/lib/highlight.js` 處理，只支援類 C 語法。
 - 介面文字（複製、播放等）在 `CARD_LABELS`。
 - 各卡片的示範和完整規範在 Component Library。
@@ -126,6 +126,7 @@
 - 每種頁面有自己的編排：指南用步驟和延伸閱讀，token 頁用色階或刻度、token 程式碼和表格，元件頁用示範、API Reference（每個零件一個小標題）、Examples、鍵盤、說明。
 - 左側目錄固定不動。右側的「本頁」列出段落，寬度 1280px 以下隱藏。手機上目錄收成一顆按鈕。
 - 文字在 `src/components/dev/`：`guides.data.js`（概覽和主題）、`componentLibrary.data.js`（元件）、`foundations.data.js`（字級、間距、色票）。這一頁只給開發用，只寫中文，不進正式 build。
+- 元件不分組，依字母排序。
 - 只列可以自由組合的元件，例如 Button、Drawer、OtpInput。現在只用一次也算，只要它不綁定某個用途。
 - 綁定某個用途的組合不列，例如 `SiteNav`、`SidePanel`（編輯面板）、`OtpGate`（密碼框）、`JournalEditPanel`、`AdminProvider`。內部的渲染器（`RichText`）也不列。
 - 新增或修改元件時，同一個變更裡更新這份資料。標「待修」的項目是已知問題。

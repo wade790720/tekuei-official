@@ -6,7 +6,7 @@
 //   examples  one entry per prop or variant worth showing
 //   keyboard  key → action, for interactive components
 //   notes     behavior and accessibility facts that props do not show
-// `family` groups related components in the sidebar (Card, Post). Write as reference docs:
+// Components are listed alphabetically. Write as reference docs:
 // what the component does, no design history, no outside sites.
 
 export const GROUPS = [
@@ -17,14 +17,13 @@ export const GROUPS = [
     items: [
       {
         id: 'card',
-        family: 'Card',
         name: 'Card',
         file: 'src/components/Card.jsx',
-        summary: '卡片的底：炭灰底色、16px 圓角、1px 象牙白光環，不用邊框',
-        hero: { demo: 'card', code: '<Card className="code-card">…</Card>' },
+        summary: '卡片的底：炭灰底色、12px 圓角、1px 象牙白光環，不用邊框',
+        hero: { demo: 'card', code: '<Card className="code-block">…</Card>' },
         api: [
           {
-            description: 'CodeCard、ImageCard、VideoCard、SlidesCard 都用它當外殼。內距和內容由使用的元件決定',
+            description: 'CodeBlock、ImageCard、VideoPlayer、Carousel 都用它當外殼。內距和內容由使用的元件決定',
             props: [
               ['as', 'string | Component', "'div'", '要渲染的元素，例如 figure'],
               ['className', 'string', "''", '附加的 class'],
@@ -172,15 +171,14 @@ export const GROUPS = [
         ],
       },
       {
-        id: 'code-card',
-        family: 'Card',
-        name: 'CodeCard',
-        file: 'src/components/CodeCard.jsx',
+        id: 'code-block',
+        name: 'CodeBlock',
+        file: 'src/components/CodeBlock.jsx',
         summary: '顯示一段程式碼，附語言標籤、檔名和複製按鈕',
-        hero: { demo: 'code', code: `<CodeCard lang="ts" filename="route.ts" code={source} />` },
+        hero: { demo: 'code', code: `<CodeBlock lang="ts" filename="route.ts" code={source} />` },
         api: [
           {
-            description: '以 figure 元素渲染，文章裡的 codeBlock 節點由 RichText 轉成 CodeCard',
+            description: '以 figure 元素渲染，文章裡的 codeBlock 節點由 RichText 轉成 CodeBlock',
             props: [
               ['code', 'string', '—', '必填，程式碼原文，保留換行和縮排'],
               ['lang', 'string', "'ts'", '語言，決定標籤文字和上色規則'],
@@ -194,14 +192,14 @@ export const GROUPS = [
             title: 'Shell',
             description: 'lang 設成 bash，# 開頭的內容會顯示成註解',
             demo: 'code-shell',
-            code: `<CodeCard lang="bash" code={'# install and run\\nnpm install'} />`,
+            code: `<CodeBlock lang="bash" code={'# install and run\\nnpm install'} />`,
           },
           {
             id: 'no-filename',
             title: '沒有檔名',
             description: '不傳 filename 時，標題列顯示語言',
             demo: 'code-plain',
-            code: `<CodeCard lang="css" code={css} />`,
+            code: `<CodeBlock lang="css" code={css} />`,
           },
         ],
         notes: [
@@ -214,7 +212,6 @@ export const GROUPS = [
       },
       {
         id: 'image-card',
-        family: 'Card',
         name: 'ImageCard',
         file: 'src/components/ImageCard.jsx',
         summary: '顯示一張圖片和選填的圖說',
@@ -249,18 +246,17 @@ export const GROUPS = [
         notes: ['圖片延遲載入（loading="lazy"）。', 'alt 不要寫「圖片」或「截圖的圖片」，要描述圖裡的內容。'],
       },
       {
-        id: 'slides-card',
-        family: 'Card',
-        name: 'SlidesCard',
-        file: 'src/components/SlidesCard.jsx',
+        id: 'carousel',
+        name: 'Carousel',
+        file: 'src/components/Carousel.jsx',
         summary: '一組可以左右切換的圖片，相鄰的圖從兩側露出一部分',
         hero: {
           demo: 'slides',
-          code: `<SlidesCard slides={[{ src, alt: '步驟一', caption: '打開設定' }, …]} />`,
+          code: `<Carousel slides={[{ src, alt: '步驟一', caption: '打開設定' }, …]} />`,
         },
         api: [
           {
-            description: '以 figure 元素渲染，文章裡的 slidesCard 節點由 RichText 轉成 SlidesCard',
+            description: '以 figure 元素渲染，文章裡的 slidesCard 節點由 RichText 轉成 Carousel',
             props: [['slides', '{ src, alt, caption? }[]', '—', '必填，沒有 src 的項目不顯示']],
           },
         ],
@@ -277,12 +273,11 @@ export const GROUPS = [
         ],
       },
       {
-        id: 'video-card',
-        family: 'Card',
-        name: 'VideoCard',
-        file: 'src/components/VideoCard.jsx',
+        id: 'video-player',
+        name: 'VideoPlayer',
+        file: 'src/components/VideoPlayer.jsx',
         summary: '播放一段影片：影片檔用自己的播放器，附播放、時間、進度、倍速和全螢幕控制；YouTube 連結用 YouTube 的播放器',
-        hero: { demo: 'video', code: `<VideoCard src={clip} poster={poster} caption="拖曳排序的過程" />` },
+        hero: { demo: 'video', code: `<VideoPlayer src={clip} poster={poster} caption="拖曳排序的過程" />` },
         api: [
           {
             description: '以 figure 元素渲染，不會自動播放',
@@ -300,13 +295,13 @@ export const GROUPS = [
             title: 'Loop',
             description: '短的操作示範用 loop，播完自動重來',
             demo: 'video-loop',
-            code: `<VideoCard src={clip} caption="播完重新播放" loop />`,
+            code: `<VideoPlayer src={clip} caption="播完重新播放" loop />`,
           },
           {
             id: 'youtube',
             title: 'YouTube',
             description: 'src 是 YouTube 連結時，換成 YouTube 的播放器（隱私模式 youtube-nocookie.com），比例 16:9',
-            code: `<VideoCard src="https://youtu.be/VIDEO_ID" caption="說明" />`,
+            code: `<VideoPlayer src="https://youtu.be/VIDEO_ID" caption="說明" />`,
           },
         ],
         notes: [
@@ -793,7 +788,7 @@ export const GROUPS = [
           '捲到最上面時只有下緣淡出，捲到最下面時只有上緣淡出。內容不夠長時都不淡出。',
           '淡出的長度在 0.3 秒內展開或收起。減少動態效果開啟時直接切換。',
           '捲軸那一條不加遮罩，捲軸兩端不會淡掉。',
-          '用在 CodeCard 的程式碼區和 DrawerBody。',
+          '用在 CodeBlock 的程式碼區和 DrawerBody。',
         ],
       },
 
