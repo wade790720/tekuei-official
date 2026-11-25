@@ -4,6 +4,9 @@
 // https://github.com/stackedlol/ascii-sharks). Numbers without a comment are theirs.
 // Ours: glyphs only with no blocks under them, food pellets in place of prey fish, and CSS for the look
 // (`color` for the body, `--koi-mark` for the patches, `--koi-food` for food, `font-family` for the glyphs).
+// Also ours, the swimming: thrust against drag that grows with speed squared, whole tail beats followed
+// by a glide (burst and coast), a tail beat rate that rises with speed (Bainbridge 1958), and the body
+// wave envelope of Videler and Hess (1984). Speeds are far below a real koi's, to keep the page calm.
 
 import { playWaterRipple } from './waterRipple.js'
 
@@ -25,11 +28,17 @@ const BODY_CLEARANCE = 0.16 // half-width a koi keeps clear around its spine, as
 // What a koi does when it is not after food. It picks one by weight, holds it for a while, then picks again.
 // Speed is a multiple of its cruising speed. Ours: ascii-koi cruises at one speed.
 const MOODS = [
-  { weight: 6, speed: [0.8, 1.2], seconds: [3, 8] }, // cruise
-  { weight: 3, speed: [0.2, 0.45], seconds: [3, 7] }, // drift, nearly still
-  { weight: 2, speed: [2.2, 3.2], seconds: [0.8, 2] }, // dart
-  { weight: 1, speed: [5, 8], seconds: [0.5, 1.3], bolt: true }, // bolt: a sudden, twisting rush
+  { weight: 7, speed: [0.8, 1.2], seconds: [4, 10] }, // cruise: a beat or two, then a glide
+  { weight: 3, speed: [0.25, 0.45], seconds: [4, 9] }, // drift: one flick, then a long glide
+  { weight: 1.5, speed: [1.8, 2.5], seconds: [1, 2.5], steady: true }, // dart: beats without a pause
+  { weight: 0.5, speed: [6, 6], seconds: [0.35, 0.6], steady: true, bolt: true }, // startle: a short hard drive, then it coasts
 ]
+const GLIDE_S = 2.5 // a koi that stops beating at cruising speed is at half speed after this long
+const TURN_GAIN = 3 // turn rate asked for, per radian off course
+const TURN_EASE = 6 // per second: how fast the turn rate follows what is asked
+const BEAT_HZ = 0.4 // tail beats per second at a standstill
+const STRIDE = 0.6 // body lengths gained per tail beat on top of that
+const WAVE = 6 // radians of body wave from snout to tail: about one wavelength, as carp-like swimmers carry
 const MOOD_WEIGHT = MOODS.reduce((sum, m) => sum + m.weight, 0)
 
 function pickMood() {
@@ -177,7 +186,9 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
         nodes[n * 2] = x - Math.cos(heading) * seg * n
         nodes[n * 2 + 1] = y - Math.sin(heading) * seg * n
       }
-      return { id: i + 1, length, nodes, heading, speed: 30, phase: rand(0, TAU), turn: 0, wander: 0, depth: size, target: null, pace: rand(0.75, 1.3), mood: 1, bolt: false, moodUntil: 0 }
+      // Cruising speed grows with the square root of the length: a big koi is faster, but slower for its size.
+      const cruise = 3 * Math.sqrt(length) * rand(0.85, 1.2)
+      return { id: i + 1, length, nodes, heading, speed: cruise, cruise, phase: rand(0, TAU), turn: 0, wander: 0, depth: size, target: null, mood: 1, steady: false, bolt: false, moodUntil: 0, stroke: false, strokeEnd: 0, amp: 0 }
     })
     // Smaller (deeper) koi draw first, so the big one swims over them.
     koi.sort((a, b) => a.length - b.length)
@@ -298,9 +309,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
       let dy = Math.sin(k.heading)
 
       // Wander: a slowly drifting offset on a circle ahead of the snout.
-      // A bolting koi throws its head about, so its path jerks from side to side.
-      const jitter = k.bolt ? 5 : 1
-      k.wander = clamp(k.wander + (Math.random() - 0.5) * dt * 3.2 * jitter, -1.1 * Math.sqrt(jitter), 1.1 * Math.sqrt(jitter))
+      k.wander = clamp(k.wander + (Math.random() - 0.5) * dt * 3.2, -1.1, 1.1)
       dx += Math.cos(k.heading + k.wander) * 0.45
       dy += Math.sin(k.heading + k.wander) * 0.45
 
@@ -404,23 +413,44 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
 
       // A koi cannot pivot on the spot: how fast it turns depends on how fast it swims.
       const agility = Math.max(Math.min(hunting ? 1.9 + closing : k.bolt ? 3 : 1, k.speed / (L * 0.18)), crowded * 1.7, walled * 1.6)
-      const turned = clamp(angleDiff(k.heading, Math.atan2(dy, dx)), -agility * dt, agility * dt)
-      k.heading += turned
-      k.turn += (turned / dt - k.turn) * Math.min(1, dt * 3)
+      // The turn rate eases in and out, so a koi enters and leaves a curve smoothly.
+      const wantTurn = clamp(angleDiff(k.heading, Math.atan2(dy, dx)) * TURN_GAIN, -agility, agility)
+      k.turn += (wantTurn - k.turn) * Math.min(1, dt * TURN_EASE)
+      k.heading += k.turn * dt
 
-      // Koi drift lazily and only put on a burst for food close by.
       if (time >= k.moodUntil) {
         const mood = pickMood()
         k.mood = rand(...mood.speed)
+        k.steady = !!mood.steady
         k.bolt = !!mood.bolt
         k.moodUntil = time + rand(...mood.seconds)
+        // A startled koi whips its head to one side first (a C-start), then drives off that way.
+        if (k.bolt) k.turn = rand(4, 7) * (Math.random() < 0.5 ? -1 : 1)
       }
-      // Each koi has its own pace. After food it bursts; otherwise its mood sets the speed.
-      const cruise = (24 + L * 0.035) * k.pace
-      const targetSpeed = cruise * (hunting ? 1.3 + closing * 1.2 : k.mood) * (1 - 0.25 * crowded)
-      // A koi speeds up with a kick and slows down by gliding.
-      k.speed += (targetSpeed - k.speed) * Math.min(1, dt * (targetSpeed > k.speed ? (k.bolt ? 8 : 2.2) : 0.7))
-      k.phase += dt * (1.1 + k.speed / 30) // tail beats follow the speed
+      // want, pace and thrust are multiples of the cruising speed.
+      const want = (hunting ? 1.4 + closing * 0.6 : k.mood) * (1 - 0.25 * crowded)
+      const pace = k.speed / k.cruise
+      let thrust = 0
+      if (hunting || k.steady) {
+        k.stroke = true
+        thrust = want * (1 + 0.6 * clamp(1 - pace / want, 0, 1)) // beats harder until it is up to speed
+      } else {
+        // Burst and coast: a whole beat or two, then a glide until the koi has slowed down.
+        if (k.stroke && k.phase >= k.strokeEnd) k.stroke = false
+        else if (!k.stroke && pace < want * 0.8) {
+          k.stroke = true
+          k.strokeEnd = k.phase + TAU * (Math.random() < 0.4 ? 2 : 1)
+        }
+        if (k.stroke) thrust = Math.max(want * 1.5, 0.9)
+      }
+      // Drag grows with speed squared, so a fast koi slows quickly and a slow one glides for a long time.
+      // Spread fins (braking for a koi or a wall) and a bent body add drag.
+      const drag = 1 + 0.6 * Math.max(crowded, walled) + 0.5 * Math.abs(k.turn)
+      k.speed = Math.max(0, k.speed + ((thrust * thrust - drag * pace * pace) * k.cruise * dt) / GLIDE_S)
+      if (k.stroke) k.phase += dt * TAU * (BEAT_HZ + (thrust * k.cruise) / (STRIDE * L))
+      // Tail swing as a share of the length: wider with effort, and the body straightens in a glide.
+      const amp = k.stroke ? 0.05 + 0.05 * smoothstep(0.5, 4, thrust) : 0
+      k.amp += (amp - k.amp) * Math.min(1, dt * (k.stroke ? 6 : 3))
 
       nodes[0] += Math.cos(k.heading) * k.speed * dt
       nodes[1] += Math.sin(k.heading) * k.speed * dt
@@ -623,9 +653,8 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
     cur = k
     const L = k.length
     const n = k.nodes
-    const swim = clamp(k.speed / 45, 0.55, 2)
-    // The swimming motion: a wave that travels down the body and grows toward the tail.
-    // The head hardly moves, so the path stays smooth.
+    // The swimming motion: a wave that travels down the body. It is smallest behind the head
+    // and largest at the tail, and the snout swings a little the other way.
     for (let i = 0; i < NODES; i++) {
       const s = i / (NODES - 1)
       const a = Math.max(0, i - 1)
@@ -635,8 +664,7 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
       const tl = Math.hypot(tx, ty) || 1
       tx /= tl
       ty /= tl
-      const trail = 1 + 0.25 * smoothstep(TAIL[0], 1, s)
-      const off = L * 0.045 * (0.06 + 0.94 * Math.pow(s, 1.8)) * swim * trail * Math.sin(k.phase - s * 4.2)
+      const off = L * k.amp * (0.2 - 0.8 * s + 1.6 * s * s) * Math.sin(k.phase - s * WAVE)
       spine[i * 2] = n[i * 2] - ty * off + ox
       spine[i * 2 + 1] = n[i * 2 + 1] + tx * off + oy
     }
@@ -645,10 +673,12 @@ export function mountKoiPond(canvas, { surface = canvas, avoid: keepClear = [], 
       arc[i] = arc[i - 1] + Math.hypot(spine[i * 2] - spine[(i - 1) * 2], spine[i * 2 + 1] - spine[(i - 1) * 2 + 1])
     arcTotal = arc[NODES - 1] || 1
 
-    // Bank into turns: the inside fin tucks in, the outside one spreads. The two fins paddle out of step.
+    // Bank into turns: the inside fin tucks in, the outside one spreads. The two fins paddle out of step,
+    // in a glide too. A fast koi holds its fins against the body.
     const bank = clamp(k.turn * 0.45, -0.35, 0.35)
-    const paddle = [Math.sin(k.phase * 0.55 + 1.9), Math.sin(k.phase * 0.55)]
-    finTip = [L * PECTORAL[3] * (1 + 0.12 * paddle[0]) * (1 + bank), L * PECTORAL[3] * (1 + 0.12 * paddle[1]) * (1 - bank)]
+    const paddle = [Math.sin(time * 1.3 + k.id + 1.9), Math.sin(time * 1.3 + k.id)]
+    const reachOut = L * PECTORAL[3] * (1 - 0.35 * smoothstep(1.5, 4, k.speed / k.cruise))
+    finTip = [reachOut * (1 + 0.12 * paddle[0]) * (1 + bank), reachOut * (1 + 0.12 * paddle[1]) * (1 - bank)]
     finSwing = [0.025 * paddle[0], 0.025 * paddle[1]]
 
     let minX = Infinity
