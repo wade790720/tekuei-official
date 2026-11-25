@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { SidePanel, FormRow, PanelSection } from '../SidePanel.jsx'
 import { TextArea } from '../TextArea.jsx'
@@ -6,7 +6,8 @@ import { TextField } from '../TextField.jsx'
 import { Button } from '../Button.jsx'
 import { TranslateSection } from '../admin/TranslateSection.jsx'
 import { useJournal } from '../../context/journal.js'
-import { parseTags, postTags } from '../../data/journal.js'
+import { differsOnlyIn, parseTags, postTags } from '../../data/journal.js'
+import { CMS_LABELS as T } from '../../data/admin.js'
 import { useCmsEditing } from '../../hooks/useCmsEditing.js'
 import { useLang } from '../../i18n'
 import { emptyDoc, getDoc } from '../../lib/richText.js'
@@ -29,9 +30,22 @@ function useJournalEditing() {
   return { cms, ...useCmsEditing(cms) }
 }
 
+const AUTOSAVE_MS = 3000
+
 export function JournalPostEditPanel({ slug }) {
   const { lang } = useLang()
-  const { admin, cms, ready, panelProps } = useJournalEditing()
+  const { admin, cms, ready, panelProps, saveWith } = useJournalEditing()
+
+  // A draft saves itself once typing pauses. A published post never does: half an edit would go live.
+  const isDraft = ready && Boolean(cms.draft.posts.zh?.find((p) => p.slug === slug)?.draft)
+  const autosave = isDraft && differsOnlyIn(cms.draft, cms.savedContent, slug)
+  const saveNow = useEffectEvent(() => panelProps.onSave())
+  useEffect(() => {
+    if (!autosave) return undefined
+    const timer = setTimeout(saveNow, AUTOSAVE_MS)
+    return () => clearTimeout(timer)
+  }, [autosave, cms.draft])
+
   if (!ready) return null
 
   const post = cms.draft.posts[lang]?.find((p) => p.slug === slug)
@@ -51,8 +65,22 @@ export function JournalPostEditPanel({ slug }) {
         if (p) p[key] = value
       }
     })
+  const markDraft = (draft) => (d) => {
+    for (const l of LANGS) {
+      const p = d.posts[l]?.find((x) => x.slug === slug)
+      if (p) p.draft = draft
+    }
+  }
+  const actions = isDraft
+    ? { saveLabel: T.publish, saveAlways: true, onSave: () => saveWith(markDraft(false)), labels: { dirty: T.draftDirty, saved: T.draftSaved } }
+    : {
+        saveLabel: T.update,
+        labels: { dirty: T.publishedDirty, saved: T.published },
+        menu: [{ value: 'unpublish', label: T.unpublish, onSelect: () => saveWith(markDraft(true)) }],
+      }
+
   return (
-    <SidePanel title="編輯文章" subtitle={`/journal/${slug} · ${lang === 'zh' ? '中文' : 'English'}`} preview {...panelProps}>
+    <SidePanel title="編輯文章" subtitle={`/journal/${slug} · ${lang === 'zh' ? '中文' : 'English'}`} preview {...panelProps} {...actions}>
       <FormRow label="標題" htmlFor="cms-title">
         <TextField id="cms-title" value={post.title} onChange={(v) => setPost('title', v)} placeholder="文章標題" />
       </FormRow>
@@ -174,6 +202,7 @@ export function JournalListEditPanel() {
           slug,
           num: '01',
           tags: ['NOTE'],
+          draft: true,
           date: today(),
           readMin: 3,
           title: l === 'zh' ? '未命名文章' : 'Untitled',
@@ -239,6 +268,7 @@ export function JournalListEditPanel() {
                     {post.title || '（未命名）'}
                   </Link>
                   <div className="cms-post__meta">
+                    {post.draft ? '草稿 · ' : ''}
                     {post.date} · {postTags(post).join(', ')} · /{post.slug}
                   </div>
                 </div>

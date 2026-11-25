@@ -24,7 +24,7 @@ export default function JournalPostPage() {
   const { content: stored, loading } = useJournal()
   const { editing } = useAdmin()
   // While editing, the page shows the real English draft, even when it is still empty
-  const journal = editing ? stored : readableJournal(stored, lang)
+  const journal = editing ? stored : readableJournal(stored)
   const post = getJournalPost(journal, slug, lang)
   const content = slug ? journal.content[lang]?.[slug] : null
   const { prev, next } = getAdjacentPosts(journal, slug ?? '', lang)

@@ -3,7 +3,7 @@
 // Chinese only: the URL does not carry a language yet, and zh is the default.
 
 import { getDoc, docText, safeHref, youtubeId } from './richText.js'
-import { getDefaultJournal, postTags } from '../data/journal.js'
+import { getDefaultJournal, postTags, publishedJournal } from '../data/journal.js'
 import { labLinks } from '../labs/index.js'
 
 export const SITE_URL = 'https://tekuei.com'
@@ -37,10 +37,10 @@ export async function readSiteData(bucket) {
   }
 }
 
-/** The journal as the site shows it: R2's copy when it exists, else the bundled default. */
+/** The journal as the site shows it: R2's copy when it exists, else the bundled default. Drafts never leave here. */
 export function siteJournal(r2Data) {
   const j = r2Data?.journal
-  return j?.posts?.zh ? j : getDefaultJournal()
+  return publishedJournal(j?.posts?.zh ? j : getDefaultJournal())
 }
 
 export const isoDate = (d) => String(d ?? '').replace(/\./g, '-')

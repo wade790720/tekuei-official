@@ -24,7 +24,7 @@ export default function JournalListPage() {
   const { content, loading } = useJournal()
   const { editing } = useAdmin()
   // Until R2 answers, content holds the bundled default posts; show placeholders instead of swapping them out.
-  const allPosts = loading ? [] : (editing ? content : readableJournal(content, lang)).posts[lang]
+  const allPosts = loading ? [] : (editing ? content : readableJournal(content)).posts[lang]
   // The chosen tag lives in the URL (?tag=AI), so a filtered list can be shared.
   const [params, setParams] = useSearchParams()
   const tag = params.get('tag')?.toUpperCase() ?? null
