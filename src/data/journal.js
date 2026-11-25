@@ -168,15 +168,38 @@ const hasBody = (c) =>
   Boolean(c) && (c.blocks ? c.blocks.length > 0 : /"text":"[^"]|"type":"(imageCard|videoCard|slidesCard)"/.test(JSON.stringify(c.doc ?? c)))
 
 /**
- * The journal as readers see it: an English post with no body yet shows the Chinese post, marked `untranslated`.
- * For display only. The edit panel reads the draft, so saving never writes Chinese into English.
- * @param {JournalData} journal @param {'zh' | 'en'} lang
+ * The posts readers may see. A post marked `draft` (in either language) is left out, with its body, and the
+ * rest are renumbered so the site never skips a number. The site, the SEO pages, the sitemap and llms.txt read this.
+ * @param {JournalData} journal
  */
-export function readableJournal(journal, lang) {
-  if (lang !== 'en') return journal
+export function publishedJournal(journal) {
+  const hidden = new Set(Object.values(journal.posts).flatMap((list) => list.filter((p) => p.draft).map((p) => p.slug)))
+  if (!hidden.size) return journal
+  const keep = (slug) => !hidden.has(slug)
+  return {
+    ...journal,
+    posts: Object.fromEntries(
+      Object.entries(journal.posts).map(([l, list]) => [
+        l,
+        list.filter((p) => keep(p.slug)).map((p, i) => ({ ...p, num: String(i + 1).padStart(2, '0') })),
+      ]),
+    ),
+    content: Object.fromEntries(
+      Object.entries(journal.content ?? {}).map(([l, c]) => [l, Object.fromEntries(Object.entries(c ?? {}).filter(([s]) => keep(s)))]),
+    ),
+  }
+}
+
+/**
+ * The journal as readers see it: no drafts, and an English post with no body yet shows the Chinese post,
+ * marked `untranslated`. For display only. The edit panel reads the stored journal, drafts included.
+ * Both languages come from one result, so callers may pass a language and it is ignored.
+ * @param {JournalData} journal
+ */
+export function readableJournal(journal) {
   // Journal data is replaced, never mutated, so one result per object is safe. Pages call this on every render.
   let readable = readableCache.get(journal)
-  if (!readable) readableCache.set(journal, (readable = toReadable(journal)))
+  if (!readable) readableCache.set(journal, (readable = toReadable(publishedJournal(journal))))
   return readable
 }
 
@@ -327,4 +350,23 @@ export const JOURNAL_CONTENT = {
       ],
     },
   },
+}
+
+/**
+ * True when the two journals differ only in one post (its fields, its bodies, the list numbering).
+ * A draft autosaves only then, so it never carries other unsaved edits, such as a deleted post, along.
+ * @param {JournalData} a @param {JournalData} b @param {string} slug
+ */
+export function differsOnlyIn(a, b, slug) {
+  const rest = (j) =>
+    JSON.stringify({
+      ...j,
+      posts: Object.fromEntries(
+        Object.entries(j.posts).map(([l, list]) => [l, list.filter((p) => p.slug !== slug).map((p) => ({ ...p, num: undefined }))]),
+      ),
+      content: Object.fromEntries(
+        Object.entries(j.content ?? {}).map(([l, c]) => [l, Object.fromEntries(Object.entries(c ?? {}).filter(([s]) => s !== slug))]),
+      ),
+    })
+  return rest(a) === rest(b)
 }

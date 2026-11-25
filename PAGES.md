@@ -7,6 +7,7 @@
 - 頁首 logo：「TEKUEI CHU」後面接一個 8 × 2px、約 1 秒亮 1 秒暗的底線游標。只有頁首用到，所以直接寫在 SiteNav 和 NavOverlay 裡，不抽成元件（class `site-logo`）。
 - Work、Journal 列表、Journal 文章頁、About、Lab 頁的最下面都是同一個 `SiteFooter`（規格見 About）。首頁和 `/labs/<id>/live` 沒有頁尾。
 - 頁尾的品牌字維持字距拉開的「T E K U E I」。
+- 網站圖示是一條錦鯉，呼應首頁 Hero 的錦鯉池：深色圓角方塊（`--surface-0`）、象牙白的身體、金色（`--ember`）的斑紋。`public/favicon.svg` 給瀏覽器分頁，`public/apple-touch-icon.png`（180px）給手機主畫面。`index.html` 的 `theme-color` 是同一個深色，手機瀏覽器的網址列跟著變深。
 
 ## 首頁
 
@@ -117,6 +118,7 @@
 - 面板的字小於 18px，所以一律用 `--font-label`：英文是等寬字，中文是思源宋體。日期、編號、狀態加標籤字距 0.1em。
 - 面板和密碼框只給 Wade 用，介面文字只寫中文。
 - 面板的「英文翻譯」只在切到 EN 時有按鈕。它把中文內文（文章還有標題、摘要）交給 `/api/translate`，翻好放進英文草稿，不自動儲存，英文已有內容時先問。只翻文字、圖片的替代文字和圖說，程式碼和版面不動（`docTranslate.js`）。模型是 Cloudflare Workers AI 的 `@cf/qwen/qwen3.8-27b`，用 `wrangler.toml` 的 `AI` 綁定，不需要金鑰，每天有 10,000 Neurons 免費額度，只有登入的編輯模式能呼叫。姓名、公司名的固定英文寫在 `functions/api/translate.js` 的翻譯規則裡，新增合作單位時要一起補。
+- 文章有草稿和已發布兩種狀態（`draft`，中英文共用）。新文章預設是草稿。草稿停止打字 3 秒後自動儲存，面板的主按鈕是「發布」；已發布的文章不自動儲存，以免改到一半就上線，主按鈕是「更新」，「⋯」裡有「取消公開」。登出也收在「⋯」。只有這篇文章有修改時才自動儲存，列表面板的刪除或排序不會被順便存進去。草稿只在編輯模式出現，網站、上一篇和下一篇、SEO 頁、sitemap、llms.txt 都看不到，直接開網址也是找不到文章；其他文章的編號跳過草稿重新排（`publishedJournal`）。草稿的內容仍存在 R2 的 `data.json`，`/api/data` 讀得到，所以只是不公開，不是保密。
 - Journal 和 About 可以編輯。Work、案例頁刻意不提供編輯面板，內容改在程式碼裡。
 
 ## Component Library

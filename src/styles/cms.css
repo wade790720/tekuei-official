@@ -768,6 +768,13 @@
   color: var(--text-tertiary);
 }
 
+/* The ⋯ menu sits near the drawer's right edge, so it opens leftward */
+.cms-panel .dropdown-menu__list {
+  right: 0;
+  left: auto;
+  min-width: 140px;
+}
+
 /* Toolbar: the panel's actions for a page with no fields */
 .cms-bar {
   position: fixed;

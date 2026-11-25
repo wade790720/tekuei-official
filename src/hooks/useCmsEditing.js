@@ -30,6 +30,15 @@ export function useCmsEditing(cms) {
       /* cms.error holds the message */
     }
   }
+  // Saves even with nothing else changed, after `change` edits the draft (publish, unpublish).
+  const saveWith = async (change) => {
+    if (cms.saving) return
+    try {
+      await cms.saveDraft(admin.getToken(), change)
+    } catch {
+      /* cms.error holds the message */
+    }
+  }
   useAdminSave(admin.editing ? save : null)
 
   const leave = (then) => {
@@ -41,6 +50,7 @@ export function useCmsEditing(cms) {
   return {
     admin,
     ready: admin.editing && cms.isEditing,
+    saveWith,
     panelProps: {
       dirty,
       saving: cms.saving,

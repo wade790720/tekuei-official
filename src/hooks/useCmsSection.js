@@ -77,8 +77,14 @@ export function useCmsSection(sectionKey, getDefault, cloneContent, copyDraft = 
     })
   }, [copyDraft])
 
-  const saveDraft = useCallback(async (token) => {
+  // `change` edits a copy of the draft just before it is saved, so an action such as publishing is one save.
+  const saveDraft = useCallback(async (token, change) => {
     if (!draft) return
+    let next = draft
+    if (change) {
+      next = copyDraft(draft)
+      change(next)
+    }
     if (loadFailed) {
       setError(CMS_LABELS.loadFailed)
       throw new Error(CMS_LABELS.loadFailed)
@@ -86,17 +92,17 @@ export function useCmsSection(sectionKey, getDefault, cloneContent, copyDraft = 
     setSaving(true)
     setError('')
     try {
-      const saved = await saveSitePatch({ [sectionKey]: draft }, token, etag)
+      const saved = await saveSitePatch({ [sectionKey]: next }, token, etag)
       setEtag(saved.etag ?? null)
-      setContent(cloneContent(draft))
-      setDraft(cloneContent(draft))
+      setContent(cloneContent(next))
+      setDraft(cloneContent(next))
     } catch (err) {
       setError(err.message || '儲存失敗')
       throw err
     } finally {
       setSaving(false)
     }
-  }, [draft, sectionKey, cloneContent, loadFailed, etag])
+  }, [draft, sectionKey, cloneContent, copyDraft, loadFailed, etag])
 
   return {
     content: draft ?? content,

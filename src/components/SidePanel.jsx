@@ -20,11 +20,15 @@ const SAVED_MS = 1600 // how long the save button shows "已儲存" after a save
  *   dirty: boolean, saving: boolean, error?: string,
  *   onSave: () => void, onLogout: () => void,
  *   preview?: boolean,  // adds the switch between editing and the page as readers see it
+ *   saveLabel?: string,   // the main button, e.g. 發布 or 更新 instead of 儲存
+ *   saveAlways?: boolean, // the main button works with nothing changed (publishing does)
+ *   labels?: { dirty?: string, saved?: string },  // the status line for unsaved and saved
+ *   menu?: { value: string, label: string, onSelect: () => void }[],  // more actions under ⋯, above logout
  *   variant?: 'drawer' | 'bar',
  *   children: import('react').ReactNode,
  * }} props
  */
-export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, preview = false, variant = 'drawer', children }) {
+export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, preview = false, variant = 'drawer', saveLabel = T.save, saveAlways = false, labels = {}, menu = [], children }) {
   const { panelOpen, setPanelOpen, previewing, setPreviewing } = useAdmin()
   const [justSaved, setJustSaved] = useState(false)
   const [prevSaving, setPrevSaving] = useState(saving)
@@ -43,7 +47,7 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
 
   const saveState = saving ? 'saving' : justSaved && !dirty ? 'saved' : error ? 'error' : 'idle'
 
-  const status = saving ? T.saving : error ? `${T.saveFailed}：${error}` : dirty ? T.unsaved : T.saved
+  const status = saving ? T.saving : error ? `${T.saveFailed}：${error}` : dirty ? (labels.dirty ?? T.unsaved) : (labels.saved ?? T.saved)
 
   const previewButton = preview ? (
     <Button variant="ghost" aria-pressed={previewing} onClick={() => setPreviewing(!previewing)}>
@@ -52,8 +56,8 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
     </Button>
   ) : null
   const saveButton = (
-    <Button className="cms-save" data-state={saveState} onClick={onSave} disabled={saving || !dirty}>
-      <SaveLabels state={saveState} idle={T.save} />
+    <Button className="cms-save" data-state={saveState} onClick={onSave} disabled={saving || (!dirty && !saveAlways)}>
+      <SaveLabels state={saveState} idle={saveLabel} />
     </Button>
   )
 
@@ -73,9 +77,13 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
             <ChevronIcon />
           </Button>
           {previewButton}
-          <Button variant="ghost" onClick={onLogout}>
-            {T.logout}
-          </Button>
+          <DropdownMenu
+            label={T.more}
+            trigger={<MoreIcon />}
+            items={[...menu, { value: 'logout', label: T.logout }]}
+            onSelect={(value) => (value === 'logout' ? onLogout() : menu.find((m) => m.value === value)?.onSelect())}
+            triggerClassName="btn btn--ghost cms-panel__more"
+          />
           {/* Lights up only when there is something to save */}
           {saveButton}
         </DrawerHeader>
