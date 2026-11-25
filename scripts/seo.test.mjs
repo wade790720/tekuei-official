@@ -76,13 +76,14 @@ describe('site files', () => {
   it('lists posts in the journal index, sitemap and llms.txt', () => {
     assert.match(journalIndexPage(journal, JOURNAL_META.zh).html, new RegExp(`/journal/${slug}`))
     assert.match(sitemapXml(journal, work), new RegExp(`<loc>https://tekuei.com/journal/${slug}</loc>`))
-    assert.match(sitemapXml(journal, work), /<loc>https:\/\/tekuei.com\/cases\//)
+    assert.match(sitemapXml(journal, siteCases(work)), /<loc>https:\/\/tekuei.com\/projects\//)
+    assert.doesNotMatch(sitemapXml(journal, siteCases(work)), /\/cases\//)
     assert.match(llmsTxt(journal, work), /^# TEKUEI/)
   })
 
   it('lists the labs, which live in code, after the client cases', () => {
     const cases = siteCases(work)
-    assert.deepEqual(cases.slice(0, work.length), work)
+    assert.deepEqual(cases.slice(0, work.length).map((w) => w.id), work.map((w) => w.id))
     assert.match(sitemapXml(journal, cases), /<loc>https:\/\/tekuei.com\/labs\/living-portrait<\/loc>/)
     assert.match(llmsTxt(journal, cases), /\[Living Portrait\]\(https:\/\/tekuei.com\/labs\/living-portrait\)/)
   })
@@ -96,14 +97,17 @@ describe('servePage', () => {
 
   it('answers case and lab pages with 200, unknown ones with 404, and moved ones with 301', async () => {
     const status = async (path) => (await serveCase(ctx(path), work)).status
-    assert.equal(await status(work[0].caseHref), 200)
+    assert.equal(await status(siteCases(work)[0].caseHref), 200)
     assert.equal(await status('/labs/living-portrait'), 200)
     assert.equal(await status('/labs/living-portrait/'), 200)
-    assert.equal(await status('/cases/nope'), 404)
+    assert.equal(await status('/projects/nope'), 404)
     assert.equal(await status('/labs/nope'), 404)
     const moved = await serveCase(ctx('/cases/falling-figure'), work)
     assert.equal(moved.status, 301)
     assert.equal(moved.headers.get('Location'), 'https://tekuei.com/labs/falling-figure')
+    const old = await serveCase(ctx('/cases/matsu-biennial'), work)
+    assert.equal(old.status, 301)
+    assert.equal(old.headers.get('Location'), 'https://tekuei.com/projects/matsu-biennial')
   })
 
   it('renders a known post with 200', async () => {

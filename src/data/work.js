@@ -1,7 +1,16 @@
 import siteDefaults from './data.json'
+import { projectHref } from '../lib/projectHref.js'
+
+export { projectHref }
 
 export const DEFAULT_WORK = siteDefaults.work
-export const WORK_ITEMS = siteDefaults.work.items
+export const WORK_ITEMS = siteDefaults.work.items.map((item) => ({ ...item, caseHref: projectHref(item.caseHref) }))
+
+// The list's title and labels live here, not in R2, so the page can be renamed without touching saved data.
+export const PROJECTS_PAGE = {
+  zh: { title: 'TEKUEI · Projects', pre: 'SELECTED PROJECTS', heading: 'Projects', countSuffix: 'Projects', list: '專案列表' },
+  en: { title: 'TEKUEI · Projects', pre: 'SELECTED PROJECTS', heading: 'Projects', countSuffix: 'Projects', list: 'Projects' },
+}
 
 export function cloneWorkContent(content = siteDefaults.work) {
   return structuredClone(content)
@@ -18,7 +27,7 @@ export const WORK_EN = {
     {
       id: 'matsu-biennial',
       num: '01',
-      caseHref: '/cases/matsu-biennial',
+      caseHref: '/projects/matsu-biennial',
       client: 'Matsu Biennial · National Matsu Arts Festival',
       title: 'Biennial',
       titleEmWord: 'Matsu',
@@ -36,7 +45,7 @@ export const WORK_EN = {
     {
       id: 'monolab',
       num: '02',
-      caseHref: '/cases/monolab',
+      caseHref: '/projects/monolab',
       client: 'MONOLAB · MORAN Interactive Design',
       title: 'MONOLAB',
       titleEm: false,
@@ -53,7 +62,7 @@ export const WORK_EN = {
     {
       id: 'lustre-yellow',
       num: '03',
-      caseHref: '/cases/lustre-yellow',
+      caseHref: '/projects/lustre-yellow',
       client: 'Lustre Yellow · Crystal Art Flowers',
       title: 'Lustre Yellow',
       titleEm: false,

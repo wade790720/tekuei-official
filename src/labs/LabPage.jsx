@@ -40,7 +40,7 @@ export default function LabPage() {
         <header className="lab__head">
           <Breadcrumbs label={labels.crumbs} className="lab__crumbs">
             <BreadcrumbsItem href="/">{labels.home}</BreadcrumbsItem>
-            <BreadcrumbsItem href="/work">Work</BreadcrumbsItem>
+            <BreadcrumbsItem href="/projects">Projects</BreadcrumbsItem>
             <BreadcrumbsItem>{text.title}</BreadcrumbsItem>
           </Breadcrumbs>
           <div className="lab__heading">

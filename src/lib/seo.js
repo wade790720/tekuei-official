@@ -5,6 +5,7 @@
 import { getDoc, docText, safeHref, youtubeId } from './richText.js'
 import { getDefaultJournal, postTags, publishedJournal } from '../data/journal.js'
 import { labLinks } from '../labs/index.js'
+import { projectHref } from './projectHref.js'
 
 export const SITE_URL = 'https://tekuei.com'
 export const SITE_NAME = 'TEKUEI 德溎'
@@ -198,10 +199,10 @@ export function injectPage(indexHtml, page) {
     .replace('<div id="root"></div>', () => `<div id="root">${page.html}</div>`)
 }
 
-/** Case pages for sitemap and llms.txt: the client cases (R2 work items), then the labs, which live in code. */
-export const siteCases = (workItems) => [...workItems, ...labLinks('zh')]
+/** Case pages for sitemap and llms.txt: the client cases (R2 work items, at their /projects links), then the labs. */
+export const siteCases = (workItems) => [...workItems.map((w) => ({ ...w, caseHref: projectHref(w.caseHref) })), ...labLinks('zh')]
 
-const STATIC_PATHS =['/', '/journal', '/work', '/about']
+const STATIC_PATHS = ['/', '/journal', '/projects', '/about']
 
 export function sitemapXml(journal, workItems) {
   const rows = [
@@ -233,7 +234,7 @@ export function llmsTxt(journal, workItems) {
     '## Journal',
     ...posts,
     '',
-    '## Work',
+    '## Projects',
     ...cases,
     '',
     '## Pages',
@@ -242,15 +243,15 @@ export function llmsTxt(journal, workItems) {
   ].join('\n')
 }
 
-// The two labs used to live under /cases/ and are already in search indexes. A Pages Function answers
-// a path before public/_redirects is read, so the redirects for /cases/* are here.
+// Old links that are already in search indexes. A Pages Function answers a path before public/_redirects
+// is read, so the redirects for /cases/* are here: the two labs went to /labs/, every case to /projects/.
 const MOVED = {
   '/cases/living-portrait': '/labs/living-portrait',
   '/cases/falling-figure': '/labs/falling-figure',
 }
 
 /**
- * Pages Function body for /cases/:slug and /labs/:slug: the SPA's index.html, with status 404 when no
+ * Pages Function body for /projects/:slug, /labs/:slug and the old /cases/:slug: the SPA's index.html, with status 404 when no
  * such page exists. The app draws its own "not found" either way; the status is for crawlers.
  * @param {{ caseHref?: string }[]} workItems  the client cases; the labs are added here
  */
@@ -258,6 +259,7 @@ export async function serveCase({ request, env }, workItems) {
   const url = new URL(request.url)
   const path = url.pathname.replace(/\/$/, '')
   if (MOVED[path]) return Response.redirect(new URL(MOVED[path], url).href, 301)
+  if (path.startsWith('/cases/')) return Response.redirect(new URL(projectHref(path), url).href, 301)
   const shell = await env.ASSETS.fetch(new URL('/', url))
   if (!shell.ok || siteCases(workItems).some((w) => w.caseHref === path)) return shell
   return new Response(shell.body, {

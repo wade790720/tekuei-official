@@ -165,7 +165,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 ### 欄寬和其他
 
 - 左右留白用 `--page-pad`（`clamp(20px, 4vw, 68px)`）。
-- 列表的欄寬（Work、Journal）是 `--page-column`（1104px）。容器寫 `max-width: var(--page-column-box)`，左右 padding 用 `var(--page-pad)`。
+- 列表的欄寬（Projects、Journal）是 `--page-column`（1104px）。容器寫 `max-width: var(--page-column-box)`，左右 padding 用 `var(--page-pad)`。
 - 閱讀的欄寬（Journal 文章、案例內文）是 `--page-reading`（680px）。
 - 各頁怎麼用這些欄寬，見 PAGES.md。
 - 斷點：主要用 900px（平板以下）和 768px（手機）。新程式碼只用這兩個。
@@ -196,7 +196,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 依狀態切換的圖示（複製 → 打勾、播放 → 暫停）用 `icon-swap`：兩個圖示放在同一格，隱藏的那個加 `data-off`，用 opacity、`scale(0.25)`、`blur(4px)` 交叉淡入淡出，時長 `--duration-fast`。transition 在第一次渲染時不會播放，所以頁面剛載入時不會動。
 - `Button` 按下時縮成 `scale(0.96)`，不要小於 0.95。
 - 進場淡入：在元素加上 `fade-in` class。`src/lib/reveal.js` 的 `mountReveal` 在 App.jsx 掛一次，元素露出 15% 時加上 `is-visible`，只觸發一次。不要為淡入包元件。
-- 位移只用 `opacity` 和 `transform`。Journal、About、Work 共用同一個進場（`src/index.css`）：位移 8px，加上 `blur(8px)` 到清楚，`--duration-reveal`，一組元素用 `--i` 依序間隔 80ms。首頁另外是 20px（`home.css`）。
+- 位移只用 `opacity` 和 `transform`。Journal、About、Projects 共用同一個進場（`src/index.css`）：位移 8px，加上 `blur(8px)` 到清楚，`--duration-reveal`，一組元素用 `--i` 依序間隔 80ms。首頁另外是 20px（`home.css`）。
 - 每個效果都要支援 `prefers-reduced-motion`：直接顯示最終畫面。
 - 效果停下後，停止 `requestAnimationFrame`。畫面外不要繼續算。
 - 載入中：資料還沒回來時，用 `Skeleton` 排出內容的形狀。不要先顯示預設資料再整批換掉。
