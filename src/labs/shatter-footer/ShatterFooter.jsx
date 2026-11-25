@@ -1,21 +1,16 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { HOME_FOOTER } from '../../data/homepage.js'
-import { useJournal } from '../../context/journal.js'
-import { readableJournal } from '../../data/journal.js'
 import { useLang } from '../../i18n'
 import { mountShatterImage } from './shatterImage.js'
 import seaImage from './sea.webp'
 import './shatterFooter.css'
 
-/** The live piece: one screen with the footer at its bottom. Latest lists the three newest Journal posts. */
+/** The live piece: one screen with the footer at its bottom. */
 export function ShatterFooterStage() {
-  const { lang } = useLang()
-  const { content, loading } = useJournal()
-  const posts = loading ? [] : readableJournal(content, lang).posts[lang]
   return (
     <div className="shatter-footer-stage">
-      <ShatterFooter posts={posts} />
+      <ShatterFooter />
     </div>
   )
 }
@@ -24,7 +19,8 @@ function FooterLink({ href, i, children }) {
   const props = { className: 'shatter-footer__link', style: { '--i': i } }
   // An entry without an address is listed as plain text.
   if (!href) return <span {...props}>{children}</span>
-  return href.startsWith('/') ? (
+  // Site routes go through the router; files such as /sitemap.xml need a real page load.
+  return href.startsWith('/') && !/\.\w+$/.test(href) ? (
     <Link to={href} {...props}>
       {children}
     </Link>
@@ -35,8 +31,7 @@ function FooterLink({ href, i, children }) {
   )
 }
 
-/** @param {{ posts: { slug: string, title: string }[] }} props  newest first; the Latest column lists three */
-function ShatterFooter({ posts }) {
+function ShatterFooter() {
   const { lang } = useLang()
   const footer = HOME_FOOTER[lang]
   const root = useRef(null)
@@ -54,7 +49,7 @@ function ShatterFooter({ posts }) {
 
   const columns = [
     { title: footer.titles.explore, links: footer.explore },
-    { title: footer.titles.latest, links: posts.slice(0, 3).map((p) => ({ label: p.title, href: `/journal/${p.slug}` })) },
+    { title: footer.titles.resources, links: footer.resources },
     { title: footer.titles.contact, links: footer.contact },
   ]
 

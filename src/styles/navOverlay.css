@@ -1,4 +1,6 @@
-﻿/* 手機版全螢幕 overlay 選單 */
+/* Phone menu: a full-screen overlay. It opens and closes with transitions, so a tap mid-way turns it
+   back from where it is. Its bar sits exactly where the site nav's logo and toggle are, and the toggle's
+   three lines fold into the close X, so the header never jumps. */
 
 .nav-toggle {
   display: none;
@@ -21,10 +23,11 @@
   right: 11px;
   height: 1px;
   background: var(--gray-12);
+  /* Closing: the X uncrosses first, then the lines spread back out */
   transition:
-    transform var(--duration-slow) var(--nav-overlay-ease, cubic-bezier(0.23, 0.1, 0.25, 1)),
-    opacity var(--duration-base) ease,
-    top var(--duration-slow) var(--nav-overlay-ease, cubic-bezier(0.23, 0.1, 0.25, 1));
+    rotate var(--duration-fast) var(--ease-touch),
+    translate var(--duration-fast) var(--ease-touch) var(--duration-fast),
+    opacity 0s linear var(--duration-fast);
 }
 
 .nav-toggle__line:nth-child(1) {
@@ -39,6 +42,28 @@
   top: 28px;
 }
 
+/* Opening: the three lines meet in the middle, then the outer two turn into an X */
+.nav-overlay.is-active .nav-toggle__line {
+  transition:
+    translate var(--duration-fast) var(--ease-touch),
+    opacity 0s linear var(--duration-fast),
+    rotate var(--duration-base) var(--ease-touch) var(--duration-fast);
+}
+
+.nav-overlay.is-active .nav-toggle__line:nth-child(1) {
+  translate: 0 6px;
+  rotate: 45deg;
+}
+
+.nav-overlay.is-active .nav-toggle__line:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-overlay.is-active .nav-toggle__line:nth-child(3) {
+  translate: 0 -6px;
+  rotate: -45deg;
+}
+
 html.nav-overlay-open {
   overflow: hidden;
 }
@@ -47,15 +72,12 @@ html.nav-overlay-open body {
   overflow: hidden;
 }
 
-html.nav-overlay-open .site-nav {
+/* The overlay draws the logo and the button in the same spots; the nav keeps only its background */
+html.nav-overlay-open .site-nav > * {
   visibility: hidden;
-  pointer-events: none;
 }
 
-
 .nav-overlay {
-  --nav-overlay-ease: var(--ease-touch);
-
   position: fixed;
   inset: 0;
   z-index: 10000;
@@ -63,89 +85,56 @@ html.nav-overlay-open .site-nav {
   grid-template-rows: auto 1fr;
   margin: 0;
   padding: 0;
-  background: var(--surface-0);
   overflow: hidden;
   isolation: isolate;
-  opacity: 0;
-  visibility: hidden;
   pointer-events: none;
-}
-
-.nav-overlay.is-active,
-.nav-overlay.is-closing {
-  visibility: visible;
-  pointer-events: auto;
 }
 
 .nav-overlay.is-active {
-  animation: nav-overlay-in var(--nav-overlay-ms) var(--nav-overlay-ease) forwards;
+  pointer-events: auto;
 }
 
-.nav-overlay.is-closing {
-  animation: nav-overlay-out calc(var(--nav-overlay-ms) * 0.82) var(--nav-overlay-ease) forwards;
-  pointer-events: none;
+/* The background fades on its own layer, so the bar on top is solid from the first frame */
+.nav-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--surface-0);
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-touch);
 }
 
+.nav-overlay.is-active::before {
+  opacity: 1;
+  transition-duration: var(--duration-slow);
+}
+
+/* Same padding as .site-nav on a phone, so the logo and the button line up with it */
 .nav-overlay__bar {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: var(--space-4);
-  min-height: 72px;
-  padding: var(--space-4) max(var(--space-6), env(safe-area-inset-right)) var(--space-4)
-    max(var(--space-6), env(safe-area-inset-left));
-  padding-top: max(var(--space-4), env(safe-area-inset-top));
-  border-bottom: 0.5px solid var(--line);
+  padding: max(var(--space-6), env(safe-area-inset-top)) max(calc(var(--page-gutter) + var(--page-pad)), env(safe-area-inset-right))
+    var(--space-6) max(calc(var(--page-gutter) + var(--page-pad)), env(safe-area-inset-left));
+  border-bottom: 0.5px solid transparent;
   box-sizing: border-box;
+  transition: border-bottom-color var(--duration-base) var(--ease-touch);
+}
+
+.nav-overlay.is-active .nav-overlay__bar {
+  border-bottom-color: var(--line);
+  transition-duration: var(--duration-slow);
 }
 
 .nav-overlay__mark {
   color: var(--text-primary);
   white-space: nowrap;
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-.nav-overlay.is-active .nav-overlay__mark {
-  animation: nav-fade-down var(--duration-base) var(--nav-overlay-ease) 0.06s forwards;
-}
-
-.nav-overlay.is-active .nav-overlay__close {
-  animation: nav-fade-down var(--duration-base) var(--nav-overlay-ease) 0.1s forwards;
-  opacity: 0;
-  transform: translateY(-10px);
 }
 
 .nav-overlay__close {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
   justify-self: end;
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-.nav-overlay__close-line {
-  position: absolute;
-  left: 11px;
-  right: 11px;
-  top: 50%;
-  height: 1px;
-  background: var(--gray-12);
-  transform-origin: center;
-}
-
-.nav-overlay__close-line:first-child {
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.nav-overlay__close-line:last-child {
-  transform: translateY(-50%) rotate(-45deg);
 }
 
 .nav-overlay__body {
@@ -188,33 +177,47 @@ html.nav-overlay-open .site-nav {
   box-sizing: border-box;
   opacity: 0;
   transform: translateY(14px);
-  transition: color var(--duration-base) var(--ease-touch);
+  transition:
+    color var(--duration-base) var(--ease-touch),
+    opacity var(--duration-fast) var(--ease-touch),
+    transform var(--duration-fast) var(--ease-touch);
 }
 
+/* Links rise in one after another (70ms apart) and leave together, faster */
 .nav-overlay.is-active .nav-overlay__link {
-  animation: nav-fade-up var(--duration-fade) var(--nav-overlay-ease) forwards;
+  opacity: 1;
+  transform: none;
+  transition:
+    color var(--duration-base) var(--ease-touch),
+    opacity var(--duration-fade) var(--ease-touch) var(--nav-delay, 0s),
+    transform var(--duration-fade) var(--ease-touch) var(--nav-delay, 0s);
 }
 
-.nav-overlay.is-active .nav-overlay__link:nth-child(1) {
-  animation-delay: 0.12s;
+.nav-overlay__link:nth-child(1) {
+  --nav-delay: 0.1s;
 }
 
-.nav-overlay.is-active .nav-overlay__link:nth-child(2) {
-  animation-delay: 0.18s;
+.nav-overlay__link:nth-child(2) {
+  --nav-delay: 0.17s;
 }
 
-.nav-overlay.is-active .nav-overlay__link:nth-child(3) {
-  animation-delay: 0.24s;
+.nav-overlay__link:nth-child(3) {
+  --nav-delay: 0.24s;
 }
 
-.nav-overlay.is-active .nav-overlay__link:nth-child(4) {
-  animation-delay: 0.3s;
+.nav-overlay__link:nth-child(4) {
+  --nav-delay: 0.31s;
 }
 
-.nav-overlay.is-closing .nav-overlay__mark,
-.nav-overlay.is-closing .nav-overlay__close,
-.nav-overlay.is-closing .nav-overlay__link {
-  animation: nav-fade-out var(--duration-fast) var(--nav-overlay-ease) forwards;
+/* The language button leaves with the links */
+.nav-overlay .site-nav__lang--overlay {
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-touch);
+}
+
+.nav-overlay.is-active .site-nav__lang--overlay {
+  opacity: 1;
+  transition: opacity var(--duration-fade) var(--ease-touch) 0.38s;
 }
 
 .nav-overlay__link:first-child {
@@ -231,57 +234,6 @@ html.nav-overlay-open .site-nav {
   }
 }
 
-@keyframes nav-overlay-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes nav-overlay-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes nav-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes nav-fade-down {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes nav-fade-out {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-}
-
 @media (max-width: 900px) {
   .nav-toggle {
     display: block;
@@ -293,21 +245,16 @@ html.nav-overlay-open .site-nav {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-overlay,
-  .nav-overlay.is-active,
-  .nav-overlay.is-closing,
-  .nav-overlay.is-active .nav-overlay__mark,
-  .nav-overlay.is-active .nav-overlay__close,
+  .nav-overlay::before,
+  .nav-overlay__bar,
+  .nav-toggle__line,
+  .nav-overlay__link,
   .nav-overlay.is-active .nav-overlay__link,
-  .nav-overlay.is-closing .nav-overlay__mark,
-  .nav-overlay.is-closing .nav-overlay__close,
-  .nav-overlay.is-closing .nav-overlay__link {
-    animation: none;
-    opacity: 1;
-    transform: none;
+  .nav-overlay .site-nav__lang--overlay {
+    transition: none;
   }
 
-  .nav-toggle__line {
-    transition: none;
+  .nav-overlay__link {
+    transform: none;
   }
 }

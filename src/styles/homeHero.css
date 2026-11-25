@@ -119,8 +119,9 @@
   white-space: nowrap;
 }
 
-/* Wider than the cap: the pond's side edges fade into the background. */
+/* Wider than the cap: the pond's and the haze's side edges fade into the background (as on About). */
 @media (min-width: 1921px) {
+  .home-koi__haze,
   .home-koi__pond {
     mask-image: linear-gradient(90deg, transparent, black 9%, black 91%, transparent);
   }

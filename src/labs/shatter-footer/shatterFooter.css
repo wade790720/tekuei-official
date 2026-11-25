@@ -22,16 +22,18 @@
   display: flex;
   flex: 1 1 0;
   align-items: flex-end;
-  justify-content: center;
   min-height: 40svh;
   margin-top: var(--space-12);
+  padding-inline: var(--page-gutter); /* past --page-max the rules sit inside the gutters too */
   container-type: size;
 }
 
-/* The largest 1280:470 strip that fits the box */
+/* The largest 1280:470 strip that fits the box. The lighthouse sits at 75% of the image, on the third rule,
+   so a narrower sea keeps that point at 75% of the width instead of centring. */
 .shatter-footer-stage .shatter-footer__sea {
-  width: min(100cqw, 100cqh * 1280 / 470);
-  margin: 0;
+  --sea-w: min(100cqw, 100cqh * 1280 / 470);
+  width: var(--sea-w);
+  margin: 0 0 0 calc((100cqw - var(--sea-w)) * 0.75);
 }
 
 .shatter-footer {

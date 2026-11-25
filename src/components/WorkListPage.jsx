@@ -1,10 +1,10 @@
-﻿import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { labWorkItems } from '../labs/media.js'
 import { SiteFooter } from './SiteFooter.jsx'
 import { WORK_THUMBS } from '../data/workMedia.js'
-import { CODE_WORK_ITEMS } from '../data/work.js'
+import { CODE_WORK_ITEMS, WORK_LABELS } from '../data/work.js'
 import { useLang } from '../i18n'
 import { TagList } from './Tag.jsx'
 import '../styles/work.css'
@@ -57,31 +57,8 @@ function WorkThumbGraphic({ thumbSvg }) {
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 function WorkCard({ item }) {
-  const articleRef = useRef(null)
-  const [shown, setShown] = useState(false)
-
-  useEffect(() => {
-    const el = articleRef.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (!e.isIntersecting) return
-          setShown(true)
-          obs.unobserve(e.target)
-        })
-      },
-      { threshold: 0.15 },
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [])
-
   return (
-    <article
-      ref={articleRef}
-      className={['work-grid__item', shown ? 'is-visible' : ''].filter(Boolean).join(' ')}
-    >
+    <article className="work-grid__item fade-in">
       <Link className="work-grid__card" to={item.caseHref}>
         <div className="work-thumb">
           <div className="num">{item.num}</div>
@@ -162,23 +139,24 @@ export default function WorkListPage() {
 
   return (
     <div className="work-page">
+      {/* Nothing until the data is in: a loading bar and the footer would flash at the top for a moment */}
       {loading ? (
-        <div className="site-loading-bar" />
+        <div className="work-page-loading" role="status" aria-label={WORK_LABELS[lang].loading} />
       ) : (
         <>
           <header className="work-page-header">
             <div className="work-page-header-inner">
               <div>
-                <div className="pre">{header.pre}</div>
-                <h1>{header.title}</h1>
+                <div className="pre fade-in">{header.pre}</div>
+                <h1 className="fade-in" style={{ '--i': 1 }}>{header.title}</h1>
               </div>
-              <div className="count">
+              <div className="count fade-in" style={{ '--i': 2 }}>
                 0{items.length} {header.countSuffix}
               </div>
             </div>
           </header>
 
-          <div className="work-header-rule">
+          <div className="work-header-rule fade-in" style={{ '--i': 3 }}>
             <div className="work-header-rule-line" />
           </div>
 
@@ -188,9 +166,9 @@ export default function WorkListPage() {
             ))}
           </section>
 
+          <SiteFooter />
         </>
       )}
-      <SiteFooter />
     </div>
   )
 }

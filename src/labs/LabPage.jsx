@@ -56,7 +56,7 @@ export default function LabPage() {
           </div>
         </header>
 
-        <Card className="lab__preview">
+        <Card className="lab__preview" style={item.previewAspect ? { '--lab-aspect': item.previewAspect } : undefined}>
           <iframe src={liveHref(id)} title={`${text.title} · ${labels.preview}`} />
         </Card>
 

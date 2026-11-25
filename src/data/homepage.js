@@ -65,23 +65,34 @@ const CONTACT = [
   { label: 'tekuei.xx@gmail.com', href: 'mailto:tekuei.xx@gmail.com' },
 ]
 
+// Resources in the Shatter Footer lab. FAQ and Privacy policy have no page yet, so they are plain text.
+const RESOURCES = [
+  { label: 'Support', href: 'mailto:tekuei.xx@gmail.com' },
+  { label: 'FAQ' },
+  { label: 'Privacy policy' },
+  { label: 'Sitemap', href: '/sitemap.xml' },
+  { label: 'llms.txt', href: '/llms.txt' },
+]
+
 export const HOME_FOOTER = {
   zh: {
-    titles: { explore: 'Explore', latest: 'Latest', contact: 'Contact' },
+    titles: { explore: 'Explore', resources: 'Resources', contact: 'Contact' },
     explore: [
       { label: 'About', href: '/about' },
       { label: 'Work', href: '/work' },
       { label: 'Journal', href: '/journal' },
     ],
+    resources: RESOURCES,
     contact: CONTACT,
   },
   en: {
-    titles: { explore: 'Explore', latest: 'Latest', contact: 'Contact' },
+    titles: { explore: 'Explore', resources: 'Resources', contact: 'Contact' },
     explore: [
       { label: 'About', href: '/about' },
       { label: 'Work', href: '/work' },
       { label: 'Journal', href: '/journal' },
     ],
+    resources: RESOURCES,
     contact: CONTACT,
   },
 }
