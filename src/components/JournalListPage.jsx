@@ -85,7 +85,6 @@ export default function JournalListPage() {
                     <time className="journal-row__date" dateTime={post.date.replace(/\./g, '-')}>
                       {post.date.slice(5)}
                     </time>
-                    <span className="journal-row__min">{post.readMin} min</span>
                   </Link>
                 </li>
               ))}
@@ -194,8 +193,6 @@ function FeaturedPost({ post }) {
           <TagList tags={postTags(post)} />
           <span className="journal-card__dot" aria-hidden>·</span>
           <time dateTime={post.date.replace(/\./g, '-')}>{post.date}</time>
-          <span className="journal-card__dot" aria-hidden>·</span>
-          <span>{post.readMin} min</span>
         </div>
         <h2 className="journal-card__title">{post.title}</h2>
         <div className="journal-card__title-en">{post.titleEn}</div>

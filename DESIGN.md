@@ -107,9 +107,19 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 只用刻度上的值。刻度上沒有的數字，改成最近的一階。剛好在兩階中間時，取大的一階。
 - 三種節奏：
   - 元件內：4–12px。
-  - 段落之間：24px。Journal 文章是 12px（見「字級」）。
+  - 一頁文字裡的上下間距：用下面的四個角色 token，不直接挑數字。
   - 區段之間：`--section-gap`（96–128px，跟著螢幕寬度變）。
 - 外面的間距永遠大於裡面的間距。
+- 文字頁面（Journal 文章、About、專案內頁）的上下間距，先判斷兩個東西的關係，再用對應的 token。要調整時改 `tokens.css` 的值，全站一起變，不要在某一條規則換另一個數字。
+
+  | Token | 值 | 兩個東西的關係 | 例子 |
+  |---|---|---|---|
+  | `--gap-tight` | 12px | 同一件事 | 內文段落和下一段、標題和副標、清單和段落 |
+  | `--gap-group` | 24px | 同一組的不同部分 | 小標題和它下面的內文、前言和後面、標題區和分享按鈕 |
+  | `--gap-block` | 32px | 一個區塊和另一種區塊 | 內文和引言、圖片、程式碼、輪播、分隔線；頁首和內文之間的分隔線 |
+  | `--gap-part` | 48px | 新的一段開始 | 小標題上方、Breadcrumbs 和 meta 到標題、文末的簽名區 |
+
+- 只有四階，中間沒有 16 和 40。覺得「32 太多、24 太少」時，問題通常是角色選錯，不是需要新的數字。
 - 圓角：`--radius-sm` 4px（按鈕、選單項目、輸入框）、`--radius-md` 8px（工具列、選單、浮層）、`--radius-lg` 12px（卡片、文章圖片）、`--radius-full`（膠囊）。巢狀時外圓角等於內圓角加內距，例如工具列 8 = 按鈕 4 + 內距 4。
 - 完整示範在 Component Library 的「基礎」。間距、字級、色值都標在真的介面上，數值從 DOM 即時量測。
 
@@ -212,6 +222,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 | `src/lib/grainHaze.js` | 首頁 Hero，錦鯉的背景；About 的背景 | 一塊柔邊的光碎成沙粒，明暗很慢地流動。在首頁它和錦鯉算同一個招牌效果，在 About 它是那一頁唯一的效果 |
 | `src/labs/living-portrait/heroFx.js` | Labs 的 Living Portrait | hover 出現追蹤框和 ASCII，雙擊出現 glitch |
 | `src/lib/glyphField.js` | Journal 頁首 | 字元雨，游標附近的字會亮 |
+| `src/lib/measureLines.js` | Projects 頁首 | 量測標註線：標出頁首寬度和高度的尺寸線，尺上的小三角形跟著游標的水平位置移動 |
 | `src/labs/falling-figure/fallScene.js` | About | 粒子人形往下掉，穿過刻字石板 |
 | `src/labs/shatter-footer/shatterImage.js` | Labs 的 Shatter Footer | 版畫圖由碎片從左到右組合，然後靜止 |
 

@@ -180,6 +180,12 @@
   /* Between page sections: 96px on phones, up to 128px on desktop. Page rhythm, not a step of the scale. */
   --section-gap: clamp(var(--space-24), 10vw, 128px);
 
+  /* Vertical gaps inside a page of text, by what the two things are to each other. Pick the role, not the number. */
+  --gap-tight: var(--space-3); /* 12px: one thought, e.g. a paragraph and the next, a title and its subtitle */
+  --gap-group: var(--space-6); /* 24px: parts of one group, e.g. a heading and its text, a title block and its buttons */
+  --gap-block: var(--space-8); /* 32px: one block and another kind of block, e.g. text and a quote, card or divider */
+  --gap-part: var(--space-12); /* 48px: a new part begins, e.g. above a heading, between the breadcrumbs and the title */
+
   /* Corner radius: small controls 8, menus and inputs 12, cards 16, pills full */
   --radius-sm: 4px;
   --radius-md: 8px;

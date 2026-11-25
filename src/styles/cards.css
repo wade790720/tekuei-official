@@ -2,7 +2,7 @@
 
 .post-figure,
 .code-block {
-  margin: var(--space-12) 0;
+  margin: var(--gap-block) 0;
 }
 
 .post-figure__caption {
@@ -340,11 +340,6 @@
 }
 
 @media (max-width: 768px) {
-  .post-figure,
-  .code-block {
-    margin: var(--space-8) 0;
-  }
-
   .image-card--frame {
     padding: var(--space-8) var(--space-4);
   }
@@ -369,7 +364,7 @@
    peek in 80px on each side, and the edges fade into the page. */
 
 .carousel {
-  margin: var(--space-12) 0;
+  margin: var(--gap-block) 0;
 }
 
 /* Wider than the text column, as in the reference */

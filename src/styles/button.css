@@ -13,6 +13,7 @@
   font-size: var(--type-caption);
   color: var(--gray-1);
   white-space: nowrap;
+  text-decoration: none; /* as="a" is still a button to look at */
   flex-shrink: 0;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent; /* the press scale is the feedback */

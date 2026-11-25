@@ -1,6 +1,6 @@
-import { useEffect, useEffectEvent, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { SidePanel, FormRow, PanelSection } from '../SidePanel.jsx'
+import { SidePanel, FormRow, PanelSection, SortRows, TagsInput } from '../SidePanel.jsx'
 import { TextArea } from '../TextArea.jsx'
 import { TextField } from '../TextField.jsx'
 import { Button } from '../Button.jsx'
@@ -53,7 +53,7 @@ export function JournalPostEditPanel({ slug }) {
 
   const zhPost = cms.draft.posts.zh?.find((p) => p.slug === slug)
 
-  // Title and text belong to one language. Date, reading time and tags are shared.
+  // Title and text belong to one language. Date and tags are shared.
   const setPost = (key, value) =>
     cms.updateDraft((d) => {
       d.posts[lang].find((p) => p.slug === slug)[key] = value
@@ -88,19 +88,10 @@ export function JournalPostEditPanel({ slug }) {
         <TextField id="cms-title-en" value={post.titleEn} onChange={(v) => setPost('titleEn', v)} placeholder="English subtitle" />
       </FormRow>
       <FormRow label="標籤" htmlFor="cms-tags" hint="用逗號分開，例如 AI, MARKETING。中英文共用">
-        <TagsInput key={slug} id="cms-tags" tags={postTags(post)} onChange={(tags) => setShared('tags', tags)} />
+        <TagsInput key={slug} id="cms-tags" tags={postTags(post)} parse={parseTags} onChange={(tags) => setShared('tags', tags)} />
       </FormRow>
       <FormRow label="日期" htmlFor="cms-date" hint="格式 2026.11.19，中英文共用">
         <TextField id="cms-date" value={post.date} onChange={(v) => setShared('date', v)} />
-      </FormRow>
-      <FormRow label="閱讀時間" htmlFor="cms-read" hint="分鐘，中英文共用">
-        <TextField
-          id="cms-read"
-          type="number"
-          min="1"
-          value={post.readMin}
-          onChange={(v) => setShared('readMin', Math.max(1, Number(v) || 1))}
-        />
       </FormRow>
       <FormRow label="摘要" htmlFor="cms-excerpt" hint="顯示在列表和首頁">
         <TextArea id="cms-excerpt" value={post.excerpt} onChange={(v) => setPost('excerpt', v)} placeholder="一兩句話說明這篇文章" />
@@ -127,8 +118,6 @@ export function JournalListEditPanel() {
   const navigate = useNavigate()
   const { cms, ready, panelProps } = useJournalEditing()
   const [slug, setSlug] = useState('')
-  const [drag, setDrag] = useState(null) // { from, gap } while a row is dragged; gap = insert before row `gap`
-  const rows = useRef([])
   if (!ready) return null
 
   const posts = cms.draft.posts[lang]
@@ -163,37 +152,6 @@ export function JournalListEditPanel() {
     })
   }
 
-  // Drag a row by its handle. Pointer events cover mouse, pen and touch.
-  // gap k (0..n) means "insert before row k"; n is after the last row.
-  const gapAt = (y) => {
-    const k = rows.current.slice(0, posts.length).findIndex((el) => el && y < el.getBoundingClientRect().top + el.offsetHeight / 2)
-    return k < 0 ? posts.length : k
-  }
-  // Removing the dragged row first shifts the rows below it up by one.
-  const target = (d) => (d.gap > d.from ? d.gap - 1 : d.gap)
-  const dragStart = (e, i) => {
-    e.preventDefault()
-    e.currentTarget.setPointerCapture(e.pointerId)
-    setDrag({ from: i, gap: i })
-  }
-  const dragMove = (e) => {
-    if (!drag) return
-    const gap = gapAt(e.clientY)
-    if (gap !== drag.gap) setDrag({ ...drag, gap }) // pointermove fires far more often than the gap changes
-  }
-  const dragEnd = () => {
-    if (drag && target(drag) !== drag.from) reorder(drag.from, target(drag))
-    setDrag(null)
-  }
-  // Keyboard: focus the handle, then ↑ / ↓ moves the post.
-  const dragKey = (e, i) => {
-    const to = e.key === 'ArrowUp' ? i - 1 : e.key === 'ArrowDown' ? i + 1 : -1
-    if (to < 0 || to >= posts.length) return
-    e.preventDefault()
-    reorder(i, to)
-    requestAnimationFrame(() => rows.current[to]?.querySelector('.cms-drag')?.focus())
-  }
-
   const create = () => {
     if (!slug || slugError) return
     cms.updateDraft((d) => {
@@ -204,7 +162,6 @@ export function JournalListEditPanel() {
           tags: ['NOTE'],
           draft: true,
           date: today(),
-          readMin: 3,
           title: l === 'zh' ? '未命名文章' : 'Untitled',
           titleEn: '',
           excerpt: '',
@@ -238,71 +195,27 @@ export function JournalListEditPanel() {
       </PanelSection>
 
       <PanelSection title="文章">
-        <div className="cms-sort" data-dragging={drag ? '' : undefined}>
-          {posts.map((post, i) => {
-            const moved = drag && target(drag) !== drag.from
-            const drop = !moved ? undefined : drag.gap === i ? 'before' : drag.gap === posts.length && i === posts.length - 1 ? 'after' : undefined
-            return (
-              <div
-                className="cms-row cms-post"
-                key={post.slug}
-                ref={(el) => (rows.current[i] = el)}
-                data-dragged={drag?.from === i || undefined}
-                data-drop={drop}
-              >
-                <button
-                  type="button"
-                  className="cms-drag"
-                  aria-label={`拖曳調整「${post.title}」的順序，或用上下鍵`}
-                  onPointerDown={(e) => dragStart(e, i)}
-                  onPointerMove={dragMove}
-                  onPointerUp={dragEnd}
-                  onPointerCancel={() => setDrag(null)}
-                  onKeyDown={(e) => dragKey(e, i)}
-                >
-                  <GripIcon />
-                </button>
-                <div className="cms-post__num">{post.num}</div>
-                <div className="cms-post__body">
-                  <Link to={`/journal/${post.slug}`} className="cms-post__title">
-                    {post.title || '（未命名）'}
-                  </Link>
-                  <div className="cms-post__meta">
-                    {post.draft ? '草稿 · ' : ''}
-                    {post.date} · {postTags(post).join(', ')} · /{post.slug}
-                  </div>
+        <SortRows items={posts} keyOf={(post) => post.slug} nameOf={(post) => post.title} onMove={reorder}>
+          {(post) => (
+            <>
+              <div className="cms-post__num">{post.num}</div>
+              <div className="cms-post__body">
+                <Link to={`/journal/${post.slug}`} className="cms-post__title">
+                  {post.title || '（未命名）'}
+                </Link>
+                <div className="cms-post__meta">
+                  {post.draft ? '草稿 · ' : ''}
+                  {post.date} · {postTags(post).join(', ')} · /{post.slug}
                 </div>
-                <button type="button" className="cms-icon cms-icon--danger" onClick={() => remove(post)} aria-label={`刪除「${post.title}」`}>
-                  ✕
-                </button>
               </div>
-            )
-          })}
-        </div>
+              <button type="button" className="cms-icon cms-icon--danger" onClick={() => remove(post)} aria-label={`刪除「${post.title}」`}>
+                ✕
+              </button>
+            </>
+          )}
+        </SortRows>
       </PanelSection>
     </SidePanel>
   )
 }
 
-/** Tags as one line of text. It keeps what Wade types (a trailing comma, a half-typed tag) and saves the parsed list. */
-function TagsInput({ id, tags, onChange }) {
-  const [text, setText] = useState(() => tags.join(', '))
-  return (
-    <TextField
-      id={id}
-      value={text}
-      onChange={(v) => {
-        setText(v)
-        onChange(parseTags(v))
-      }}
-    />
-  )
-}
-
-function GripIcon() {
-  return (
-    <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden>
-      {[2, 7, 12].flatMap((y) => [<circle key={`a${y}`} cx="2.5" cy={y} r="1.2" />, <circle key={`b${y}`} cx="7.5" cy={y} r="1.2" />])}
-    </svg>
-  )
-}

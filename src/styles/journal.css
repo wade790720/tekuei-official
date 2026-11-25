@@ -424,7 +424,7 @@
 
 .journal-row {
   display: grid;
-  grid-template-columns: 40px 1fr auto 56px 48px;
+  grid-template-columns: 40px 1fr auto 56px;
   align-items: baseline;
   gap: var(--space-6);
   padding: var(--space-6) var(--space-4);
@@ -441,8 +441,7 @@
 }
 
 .journal-row__num,
-.journal-row__date,
-.journal-row__min {
+.journal-row__date {
   font-family: var(--font-label);
   font-size: var(--type-label);
   letter-spacing: var(--type-label-ls);
@@ -451,8 +450,7 @@
 }
 
 .journal-row__num,
-.journal-row__date,
-.journal-row__min {
+.journal-row__date {
   text-align: right;
 }
 
@@ -489,7 +487,7 @@
 }
 
 .journal-post__crumbs {
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--gap-part);
 }
 
 .journal-post__back {
@@ -497,7 +495,7 @@
   align-items: center;
   gap: var(--space-4);
   /* 44px hit area: padding grows the box, the negative margin keeps the layout */
-  margin: calc(var(--space-3) * -1) 0 calc(var(--space-12) - var(--space-3));
+  margin: calc(var(--space-3) * -1) 0 calc(var(--gap-part) - var(--space-3));
   padding: var(--space-3) 0;
   font-family: var(--font-label);
   font-size: var(--type-label);
@@ -524,7 +522,7 @@
   flex-wrap: wrap;
   align-items: baseline; /* the tag has a shorter line box than the date; line up the text, not the boxes */
   gap: var(--space-3);
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--gap-part);
   font-family: var(--font-label);
   font-size: var(--type-label);
   letter-spacing: var(--type-label-ls);
@@ -548,7 +546,7 @@
 }
 
 .journal-post__title {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--gap-tight);
   font-family: var(--j-fc);
   font-weight: var(--weight-light);
   font-size: clamp(32px, 5vw, 52px);
@@ -565,6 +563,34 @@
   margin-bottom: var(--space-2);
 }
 
+/* Share buttons at the end of the post header, on the right. No side margin: a 32px button holds a 16px icon,
+   so the last icon's edge, not its button's, lines up with the text column. */
+.journal-post__share {
+  position: relative; /* TooltipGroup places the tooltip under it */
+  display: flex;
+  justify-content: flex-end;
+  margin: var(--gap-group) 0 0;
+
+  gap: var(--space-3);
+}
+
+/* 32px buttons, 12px apart: each tap area grows by half the gap, to 44px, and none overlap */
+.journal-post__share .btn {
+  position: relative;
+}
+
+.journal-post__share .btn::before {
+  position: absolute;
+  content: '';
+
+  inset: calc(var(--space-3) / -2);
+}
+
+/* The project's own site, under the tags on a project page */
+.journal-post__visit {
+  margin: var(--gap-group) var(--space-2) 0;
+}
+
 .journal-post__notice {
   margin: var(--space-4) 0 0;
   font-family: var(--font-label);
@@ -574,25 +600,23 @@
 
 .journal-post__rule {
   height: 0.5px;
-  margin-block: var(--space-12);
+  margin-block: var(--gap-block);
   background: var(--line); /* full width, solid: both ends show the list's edges */
 }
 
 .journal-post__lead,
 .journal-post__body .ProseMirror > p.lead {
-  margin: 0 0 var(--space-12);
-  padding-left: var(--space-6);
-  border-left: 1px solid var(--line-strong);
-  font-size: clamp(18px, 2.2vw, 22px);
-  font-weight: var(--weight-light);
-  line-height: 1.9;
+  margin: 0 0 var(--gap-group);
+  font-size: var(--type-h2); /* 22px, as Medium's subtitle */
+  font-weight: var(--weight-regular);
+  line-height: 1.5; /* Medium's 1.27 is for Latin; Chinese that wraps needs more */
   letter-spacing: 0;
-  color: var(--j-page);
+  color: var(--text-secondary);
 }
 
 .journal-post__h2,
 .journal-post__body .ProseMirror h2 {
-  margin: var(--space-12) 0 var(--space-6);
+  margin: var(--gap-part) 0 var(--gap-group);
   font-family: var(--j-fc);
   font-weight: 400;
   font-size: var(--type-h2);
@@ -602,7 +626,7 @@
 
 .journal-post__p,
 .journal-post__body .ProseMirror > p {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--gap-tight);
   font-size: var(--type-body);
   line-height: 1.6; /* Editor.js spacing */
   color: var(--j-text-dim);
@@ -611,7 +635,7 @@
 /* Rich text from the editor: small heading, lists, inline code, links, divider */
 .journal-post__h3,
 .journal-post__body .ProseMirror h3 {
-  margin: var(--space-12) 0 var(--space-4);
+  margin: var(--gap-part) 0 var(--space-4);
   font-family: var(--j-fc);
   font-weight: 400;
   font-size: var(--type-body);
@@ -621,7 +645,7 @@
 
 .journal-post__list,
 .journal-post__body .ProseMirror :is(ul, ol) {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--gap-tight);
   padding-left: 1.4em;
   font-size: var(--type-body);
   line-height: 1.6; /* Editor.js spacing */
@@ -668,30 +692,37 @@
 
 .journal-post__hr,
 .journal-post__body .ProseMirror hr {
-  margin: var(--space-12) auto;
+  margin: var(--gap-block) auto;
   width: 48px;
   border: 0;
   border-top: 0.5px solid var(--line-strong);
 }
 
 .journal-post__quote,
+/* A bar and nothing else, as Medium's quote: 3px, the text 20px in from it (24px on this scale), no box */
 .journal-post__body .cms-ed-quote {
-  margin: var(--space-12) 0;
-  padding: var(--space-12) var(--space-6) var(--space-12) var(--space-8);
-  border-left: 0.5px solid var(--line-strong);
-  background: var(--j-panel);
+  margin: var(--gap-block) 0;
+  padding: 0 0 0 var(--space-6);
+  border-left: 3px solid var(--text-tertiary);
+  background: none;
 }
 
 .journal-post__quote p,
+/* The body's size and leading. Not italic: the Chinese face has no italic, and the browser's slant is a fake one */
 .journal-post__body .cms-ed-quote p {
-  margin: 0 0 var(--space-4);
+  margin: 0 0 var(--gap-tight);
   font-size: var(--type-body);
-  line-height: var(--type-body-lh);
-  font-style: italic;
-  color: var(--j-parchment);
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+:is(.journal-post__quote, .journal-post__body .cms-ed-quote) > :last-child,
+:is(.journal-post__quote, .journal-post__body .cms-ed-quote) p:last-child {
+  margin-bottom: 0;
 }
 
 .journal-post__quote cite {
+  display: block;
   font-family: var(--font-label);
   font-size: var(--type-label);
   font-style: normal;
@@ -833,8 +864,7 @@
     padding: var(--space-4) 0;
   }
 
-  .journal-row__num,
-  .journal-row__min {
+  .journal-row__num {
     display: none;
   }
 
