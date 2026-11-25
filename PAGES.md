@@ -5,7 +5,7 @@
 
 - 點連結換頁時從最上面開始。瀏覽器的上一頁、下一頁回到離開時的捲動位置（`App.jsx` 的 `ScrollClasses`）。
 - 頁首 logo：「TEKUEI CHU」後面接一個 8 × 2px、約 1 秒亮 1 秒暗的底線游標。只有頁首用到，所以直接寫在 SiteNav 和 NavOverlay 裡，不抽成元件（class `site-logo`）。
-- Work、Journal 列表、Journal 文章頁、About、Lab 頁的最下面都是同一個 `SiteFooter`（規格見 About）。首頁和 `/labs/<id>/live` 沒有頁尾。
+- Projects、Journal 列表、Journal 文章頁、About、Lab 頁的最下面都是同一個 `SiteFooter`（規格見 About）。首頁和 `/labs/<id>/live` 沒有頁尾。
 - 頁尾的品牌字維持字距拉開的「T E K U E I」。
 - 網站圖示是一條錦鯉，呼應首頁 Hero 的錦鯉池。`public/favicon.svg` 給瀏覽器分頁，背景透明，身體跟著系統的深淺色切換（淺色用深色身體、深色用象牙白），斑紋都是金色（`--ember`）。`public/apple-touch-icon.png`（180px）給手機主畫面，主畫面不能透明，所以用深色方塊（`--surface-0`）當底。`index.html` 的 `theme-color` 是同一個深色，手機瀏覽器的網址列跟著變深。
 
@@ -42,10 +42,12 @@
 - 內容寬 `--page-reading`（680px，17px 字一行 40 字），比列表窄。文字、圖片、程式碼、引言、輪播全部同寬。
 - 外欄是 680px 加左右各 8px（`--space-2`）。分隔線和文末的頁尾從外欄左邊緣到右邊緣。
 - 段落和清單的行高、間距是例外，見 DESIGN.md「字級」。
-- 淡入用全站共用的進場（見 DESIGN.md「動態」）。頁首的 Breadcrumbs、meta、編號、標題、副標依序出現，間隔 80ms（`--i`）。Work 的頁首（小標、標題、數量、分隔線）和每張卡片也用同一個。
+- 淡入用全站共用的進場（見 DESIGN.md「動態」）。頁首的 Breadcrumbs、meta、編號、標題、副標依序出現，間隔 80ms（`--i`）。Projects 的頁首（小標、標題、數量、分隔線）和每張卡片也用同一個。
 - 內文不淡入，直接顯示。讀長文時畫面不要一直在動。
 
-## 案例頁
+## Projects 和案例頁
+
+- 作品列表叫 Projects，網址 `/projects`，案例頁是 `/projects/<slug>`，和 Journal 一樣列表和內頁同一個開頭。舊的 `/work` 301 轉到 `/projects`（`public/_redirects`）。列表的標題寫在 `src/data/work.js` 的 `PROJECTS_PAGE`，不讀 R2；R2 存的 `/cases/` 連結由 `projectHref` 轉成新網址，正式資料不用改。程式裡的檔名和 R2 的 `work` 區段維持原名。
 
 - 內文段落（`case-prose`）最寬 `--page-reading`，字級 `--type-body`。
 - 標題、交付項目、時間軸維持外欄寬度。
@@ -53,14 +55,14 @@
 
 ## Labs
 
-- 自己做的互動實驗叫 Labs。列在 Work，排在客戶案例後面，類別寫 `LABS`。全部放在 `src/labs/`，不在 R2。`index.js` 是清單，只放文字，sitemap 和 llms.txt 也會讀它（`siteCases`）。`media.js` 放 Work 列表的縮圖和影片。每個 lab 一個資料夾，裡面是它的元件、樣式、效果和素材。Lab 頁和 `/live` 頁都是用到時才載入。
-- 網址是 `/labs/<id>`。版面照 Framer Marketplace 的元件頁，由上到下：`Breadcrumbs`（首頁、Work、標題）、標題、一句說明、標籤，右邊兩顆按鈕「全螢幕預覽」和「複製提示詞」；可以直接玩的預覽框（16:10，手機 3:4，lab 可以用 `previewAspect` 改比例）；「關於」幾段介紹，右欄是年份和參考來源；「更多 Labs」列出其他 lab 的縮圖；最後是 `SiteFooter`。
+- 自己做的互動實驗叫 Labs。列在 Projects，排在客戶案例後面，類別寫 `LABS`。全部放在 `src/labs/`，不在 R2。`index.js` 是清單，只放文字，sitemap 和 llms.txt 也會讀它（`siteCases`）。`media.js` 放 Work 列表的縮圖和影片。每個 lab 一個資料夾，裡面是它的元件、樣式、效果和素材。Lab 頁和 `/live` 頁都是用到時才載入。
+- 網址是 `/labs/<id>`。版面照 Framer Marketplace 的元件頁，由上到下：`Breadcrumbs`（首頁、Projects、標題）、標題、一句說明、標籤，右邊兩顆按鈕「全螢幕預覽」和「複製提示詞」；可以直接玩的預覽框（16:10，手機 3:4，lab 可以用 `previewAspect` 改比例）；「關於」幾段介紹，右欄是年份和參考來源；「更多 Labs」列出其他 lab 的縮圖；最後是 `SiteFooter`。
 - 這一頁是推廣用的：介紹文字讓人知道效果怎麼做，「複製提示詞」把一段英文 brief 放進剪貼簿，貼給 AI 就能重做一份。介紹寫在 `index.js` 的 `intro`（雙語），prompt 寫在 `prompts.js`（只有英文）。
 - 效果本身在 `/labs/<id>/live`，沒有頁首和頁尾。預覽框用 iframe 放它，所以效果自己的捲動和固定的 Canvas 不會影響外面的頁面。「全螢幕預覽」在新分頁打開它。
-- 舊網址 `/cases/living-portrait`、`/cases/falling-figure` 301 轉到 `/labs/`。轉址寫在 `src/lib/seo.js` 的 `serveCase`，不在 `public/_redirects`，因為 Pages Function 會先接走這些網址。
-- 不存在的 `/cases/<slug>` 和 `/labs/<id>` 回 404 狀態碼（`functions/cases/`、`functions/labs/`），畫面仍由前端顯示。
+- 舊網址 `/cases/living-portrait`、`/cases/falling-figure` 301 轉到 `/labs/`，其他 `/cases/<slug>` 301 轉到 `/projects/<slug>`。轉址寫在 `src/lib/seo.js` 的 `serveCase`，不在 `public/_redirects`，因為 Pages Function 會先接走這些網址。
+- 不存在的 `/projects/<slug>` 和 `/labs/<id>` 回 404 狀態碼（`functions/projects/`、`functions/labs/`），畫面仍由前端顯示。
 - 每個 lab 都要寫參考來源、介紹和 prompt。
-- Work 列表的縮圖可以是影片：從實際效果錄的短循環 mp4，靜音自動播放，擷取的 webp 當 poster。減少動態效果開啟時只顯示 webp。客戶案例的縮圖放在 `src/assets/work/`，對照表在 `src/data/workMedia.js`，會取代 R2 的縮圖。目前只有 Lustre Yellow 有影片。Matsu Biennial 用 R2 的縮圖，錄影放在案例頁。
+- Projects 列表的縮圖可以是影片：從實際效果錄的短循環 mp4，靜音自動播放，擷取的 webp 當 poster。減少動態效果開啟時只顯示 webp。客戶案例的縮圖放在 `src/assets/work/`，對照表在 `src/data/workMedia.js`，會取代 R2 的縮圖。目前只有 Lustre Yellow 有影片。Matsu Biennial 用 R2 的縮圖，錄影放在案例頁。
 - 現有三個：`living-portrait`（`LivingPortrait`，首頁改版前的 Hero）、`falling-figure`（`FallingFigure`，About 改版前的 About 頁）、`shatter-footer`（`ShatterFooter`，Journal 改版前的頁尾）。
 - Shatter Footer：四欄（品牌、Explore、Resources、Contact）。Resources 讀 `HOME_FOOTER` 的 `resources`，FAQ 和 Privacy policy 還沒有頁面，先顯示成文字。下面是版畫海浪（`shatterImage.js`），露出 35% 時由碎片拼起來，文字依序淡入。預覽框是 4:3，比預設高，海浪才能接近全寬。live 頁的頁尾佔滿一個螢幕，海浪縮到剛好放得下，所以在預覽框裡也看得到整個效果。燈塔在圖的 75% 處，海浪變窄時仍讓這一點落在寬度的 75%，對齊第三條虛線；畫面太矮時（手機的預覽框）海浪至少佔 40% 高，其餘往下捲。
 
@@ -119,7 +121,7 @@
 - 面板和密碼框只給 Wade 用，介面文字只寫中文。
 - 面板的「英文翻譯」只在切到 EN 時有按鈕。它把中文內文（文章還有標題、摘要）交給 `/api/translate`，翻好放進英文草稿，不自動儲存，英文已有內容時先問。只翻文字、圖片的替代文字和圖說，程式碼和版面不動（`docTranslate.js`）。模型是 Cloudflare Workers AI 的 `@cf/qwen/qwen3.8-27b`，用 `wrangler.toml` 的 `AI` 綁定，不需要金鑰，每天有 10,000 Neurons 免費額度，只有登入的編輯模式能呼叫。姓名、公司名的固定英文寫在 `functions/api/translate.js` 的翻譯規則裡，新增合作單位時要一起補。
 - 文章有草稿和已發布兩種狀態（`draft`，中英文共用）。新文章預設是草稿。草稿停止打字 3 秒後自動儲存，面板的主按鈕是「發布」；已發布的文章不自動儲存，以免改到一半就上線，主按鈕是「更新」，「⋯」裡有「取消公開」。登出也收在「⋯」。只有這篇文章有修改時才自動儲存，列表面板的刪除或排序不會被順便存進去。草稿只在編輯模式出現，網站、上一篇和下一篇、SEO 頁、sitemap、llms.txt 都看不到，直接開網址也是找不到文章；其他文章的編號跳過草稿重新排（`publishedJournal`）。草稿的內容仍存在 R2 的 `data.json`，`/api/data` 讀得到，所以只是不公開，不是保密。
-- Journal 和 About 可以編輯。Work、案例頁刻意不提供編輯面板，內容改在程式碼裡。
+- Journal 和 About 可以編輯。Projects、案例頁刻意不提供編輯面板，內容改在程式碼裡。
 
 ## Component Library
 

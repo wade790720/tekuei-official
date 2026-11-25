@@ -22,7 +22,7 @@ function subscribeScroll(onChange) {
 
 /**
  * @param {{
- *   current?: 'work' | 'journal'  section to mark as the current page when the URL is a child of it
+ *   current?: 'projects' | 'journal'  section to mark as the current page when the URL is a child of it
  *   variant?: 'default' | 'case'
  * }} props
  */
@@ -94,7 +94,7 @@ export function SiteNav({ current, variant = 'default' }) {
  * @param {{
  *   onNavigate?: () => void
  *   variant?: 'desktop' | 'overlay'
- *   current?: 'work' | 'journal'
+ *   current?: 'projects' | 'journal'
  * }} props
  */
 function SiteNavLinks({ onNavigate, variant = 'desktop', current }) {
@@ -115,13 +115,13 @@ function SiteNavLinks({ onNavigate, variant = 'desktop', current }) {
         About
       </NavLink>
       <NavLink
-        to="/work"
+        to="/projects"
         className={({ isActive }) =>
-          linkClass(isActive || current === 'work')
+          linkClass(isActive || current === 'projects')
         }
         onClick={onNavigate}
       >
-        Work
+        Projects
       </NavLink>
       <NavLink
         to="/journal"

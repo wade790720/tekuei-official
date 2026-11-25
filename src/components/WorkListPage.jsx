@@ -4,7 +4,7 @@ import { useWorkContent } from '../hooks/useWorkContent.js'
 import { labWorkItems } from '../labs/media.js'
 import { SiteFooter } from './SiteFooter.jsx'
 import { WORK_THUMBS } from '../data/workMedia.js'
-import { CODE_WORK_ITEMS, WORK_LABELS } from '../data/work.js'
+import { CODE_WORK_ITEMS, projectHref, PROJECTS_PAGE, WORK_LABELS } from '../data/work.js'
 import { useLang } from '../i18n'
 import { TagList } from './Tag.jsx'
 import '../styles/work.css'
@@ -125,17 +125,18 @@ export default function WorkListPage() {
   const { content, loading } = useWorkContent()
   const { lang } = useLang()
 
-  const { meta, header } = content
+  const page = PROJECTS_PAGE[lang]
   const clientItems = [...content.items, ...CODE_WORK_ITEMS[lang]].map((item, i) => ({
     ...item,
     num: item.num ?? String(i + 1).padStart(2, '0'),
     thumbImage: WORK_THUMBS[item.id] ?? item.thumbImage,
+    caseHref: projectHref(item.caseHref),
   }))
   const items = [...clientItems, ...labWorkItems(lang, clientItems.length + 1)]
 
   useEffect(() => {
-    document.title = meta.title
-  }, [meta.title])
+    document.title = page.title
+  }, [page.title])
 
   return (
     <div className="work-page">
@@ -147,11 +148,11 @@ export default function WorkListPage() {
           <header className="work-page-header">
             <div className="work-page-header-inner">
               <div>
-                <div className="pre fade-in">{header.pre}</div>
-                <h1 className="fade-in" style={{ '--i': 1 }}>{header.title}</h1>
+                <div className="pre fade-in">{page.pre}</div>
+                <h1 className="fade-in" style={{ '--i': 1 }}>{page.heading}</h1>
               </div>
               <div className="count fade-in" style={{ '--i': 2 }}>
-                0{items.length} {header.countSuffix}
+                0{items.length} {page.countSuffix}
               </div>
             </div>
           </header>
@@ -160,7 +161,7 @@ export default function WorkListPage() {
             <div className="work-header-rule-line" />
           </div>
 
-          <section className="work-grid" aria-label="作品列表">
+          <section className="work-grid" aria-label={page.list}>
             {items.map((item) => (
               <WorkCard key={item.id} item={item} />
             ))}

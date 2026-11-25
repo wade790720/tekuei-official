@@ -122,7 +122,7 @@ export function FallingFigure() {
 
       <nav className="about-fall__end" aria-label={lang === 'zh' ? '接下來' : 'Next'}>
         <Link to="/journal">Journal</Link>
-        <Link to="/work">Work</Link>
+        <Link to="/projects">Projects</Link>
       </nav>
     </div>
   )

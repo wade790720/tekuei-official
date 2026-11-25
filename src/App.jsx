@@ -1,5 +1,5 @@
 ﻿import { Component, lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react'
-import { BrowserRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom'
+import { BrowserRouter, Navigate, Routes, Route, useLocation, useNavigationType, useParams } from 'react-router-dom'
 import SiteHero from './components/SiteHero.jsx'
 import WorkListPage from './components/WorkListPage.jsx'
 import JournalListPage from './components/JournalListPage.jsx'
@@ -111,12 +111,12 @@ function AppNav() {
   // Live lab pages are bare: they also run inside the lab page's iframe.
   if (isCheckin || pathname.endsWith('/live')) return null
 
-  const isCase = pathname.startsWith('/cases/') || pathname.startsWith('/labs/')
+  const isCase = pathname.startsWith('/projects/') || pathname.startsWith('/labs/')
 
   return (
     <SiteNav
       variant={isCase ? 'case' : 'default'}
-      current={pathname.startsWith('/journal') ? 'journal' : pathname.startsWith('/work') || isCase ? 'work' : undefined}
+      current={pathname.startsWith('/journal') ? 'journal' : pathname.startsWith('/projects') || isCase ? 'projects' : undefined}
     />
   )
 }
@@ -135,10 +135,12 @@ export default function App() {
       <Routes>
         <Route path="/" element={<SiteHero />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/work" element={<WorkListPage />} />
+        <Route path="/projects" element={<WorkListPage />} />
+        <Route path="/work" element={<Navigate to="/projects" replace />} />
         <Route path="/journal" element={<JournalListPage />} />
         <Route path="/journal/:slug" element={<JournalPostPage />} />
-        <Route path="/cases/:slug" element={<CaseRouter />} />
+        <Route path="/projects/:slug" element={<CaseRouter />} />
+        <Route path="/cases/:slug" element={<MovedCase />} />
         <Route path="/labs/:slug" element={<LabPage />} />
         <Route path="/labs/:slug/live" element={<LabLive />} />
         <Route path="/checkin" element={<CheckinPage />} />
@@ -160,4 +162,10 @@ export default function App() {
       </AdminProvider>
     </BrowserRouter>
   )
+}
+
+/** Old case links (/cases/<slug>) in the app; on the live site a Pages Function answers them with a 301 first. */
+function MovedCase() {
+  const { slug } = useParams()
+  return <Navigate to={`/projects/${slug}`} replace />
 }

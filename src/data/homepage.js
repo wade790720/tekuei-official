@@ -79,7 +79,7 @@ export const HOME_FOOTER = {
     titles: { explore: 'Explore', resources: 'Resources', contact: 'Contact' },
     explore: [
       { label: 'About', href: '/about' },
-      { label: 'Work', href: '/work' },
+      { label: 'Projects', href: '/projects' },
       { label: 'Journal', href: '/journal' },
     ],
     resources: RESOURCES,
@@ -89,7 +89,7 @@ export const HOME_FOOTER = {
     titles: { explore: 'Explore', resources: 'Resources', contact: 'Contact' },
     explore: [
       { label: 'About', href: '/about' },
-      { label: 'Work', href: '/work' },
+      { label: 'Projects', href: '/projects' },
       { label: 'Journal', href: '/journal' },
     ],
     resources: RESOURCES,
