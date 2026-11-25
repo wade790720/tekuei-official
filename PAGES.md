@@ -7,7 +7,7 @@
 - 頁首 logo：「TEKUEI CHU」後面接一個 8 × 2px、約 1 秒亮 1 秒暗的底線游標。只有頁首用到，所以直接寫在 SiteNav 和 NavOverlay 裡，不抽成元件（class `site-logo`）。
 - Work、Journal 列表、Journal 文章頁、About、Lab 頁的最下面都是同一個 `SiteFooter`（規格見 About）。首頁和 `/labs/<id>/live` 沒有頁尾。
 - 頁尾的品牌字維持字距拉開的「T E K U E I」。
-- 網站圖示是一條錦鯉，呼應首頁 Hero 的錦鯉池：深色圓角方塊（`--surface-0`）、象牙白的身體、金色（`--ember`）的斑紋。`public/favicon.svg` 給瀏覽器分頁，`public/apple-touch-icon.png`（180px）給手機主畫面。`index.html` 的 `theme-color` 是同一個深色，手機瀏覽器的網址列跟著變深。
+- 網站圖示是一條錦鯉，呼應首頁 Hero 的錦鯉池。`public/favicon.svg` 給瀏覽器分頁，背景透明，身體跟著系統的深淺色切換（淺色用深色身體、深色用象牙白），斑紋都是金色（`--ember`）。`public/apple-touch-icon.png`（180px）給手機主畫面，主畫面不能透明，所以用深色方塊（`--surface-0`）當底。`index.html` 的 `theme-color` 是同一個深色，手機瀏覽器的網址列跟著變深。
 
 ## 首頁
 
