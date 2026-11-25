@@ -9,6 +9,7 @@ import { mountClickSounds } from './lib/uiSound.js'
 import { mountReveal } from './lib/reveal.js'
 import { AdminProvider } from './context/AdminProvider.jsx'
 import { JournalProvider } from './context/JournalProvider.jsx'
+import { WorkProvider } from './context/WorkProvider.jsx'
 import { PAGE_ERROR } from './data/nav.js'
 import { useLang } from './i18n'
 
@@ -128,6 +129,7 @@ export default function App() {
     <BrowserRouter>
       <AdminProvider>
       <JournalProvider>
+      <WorkProvider>
       <ScrollClasses />
       <AppNav />
       <Pages>
@@ -158,6 +160,7 @@ export default function App() {
       </Routes>
       </Suspense>
       </Pages>
+      </WorkProvider>
       </JournalProvider>
       </AdminProvider>
     </BrowserRouter>

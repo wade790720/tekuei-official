@@ -1,16 +1,12 @@
-import { cloneWorkContent, DEFAULT_WORK, mergeWorkImages, WORK_EN } from '../data/work.js'
+import { useAdmin } from '../context/admin.js'
+import { useWork } from '../context/work.js'
+import { localizeWork, publishedWork } from '../data/work.js'
 import { useLang } from '../i18n'
-import { useCmsSection } from './useCmsSection.js'
 
+/** The work section as the page shows it: in the reader's language, and without drafts unless Wade is editing. */
 export function useWorkContent() {
   const { lang } = useLang()
-  const result = useCmsSection('work', () => DEFAULT_WORK, cloneWorkContent)
-
-  if (lang === 'en') {
-    return {
-      ...result,
-      content: mergeWorkImages(WORK_EN, result.content),
-    }
-  }
-  return result
+  const { editing } = useAdmin()
+  const cms = useWork()
+  return { ...cms, content: localizeWork(editing ? cms.content : publishedWork(cms.content), lang) }
 }

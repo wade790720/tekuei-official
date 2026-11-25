@@ -59,12 +59,25 @@ html.has-scroll-document body {
   max-width: var(--page-column-box);
 }
 
+/* The same label line as the Journal header: a short rule, then the name in both languages */
 .work-page-header .pre {
+  display: flex;
+  align-items: center;
   margin-bottom: var(--space-6);
+
+  gap: var(--space-4);
   color: var(--accent);
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
   font-family: var(--font-label);
+}
+
+.work-page-header .pre::before {
+  flex-shrink: 0;
+  width: 24px;
+  height: 0.5px;
+  background: var(--ember-soft);
+  content: '';
 }
 
 .work-page-header h1 {
@@ -82,25 +95,19 @@ html.has-scroll-document body {
   font-family: var(--font-label);
 }
 
-.work-header-rule {
-  position: relative;
-  z-index: 2;
-  margin: 0 auto;
-  padding: 0 var(--page-pad);
-  max-width: var(--page-column-box);
-}
+/* measureLines.js draws here: dimension lines for the header, in the label type */
+.work-page-header__measure {
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  color: var(--text-tertiary);
+  font-family: var(--font-label);
+  pointer-events: none;
 
-.work-header-rule-line {
-  height: 0.3px;
-  background: linear-gradient(
-  to right,
-  transparent,
-  var(--accent-line) 22%,
-  var(--accent-line) 78%,
-  transparent
-  );
+  inset: 0;
+  --measure-accent: var(--ember);
 }
-
 
 .work-page-loading {
   min-height: 100svh;
@@ -142,10 +149,12 @@ html.has-scroll-document body {
   font-family: var(--font-label);
 }
 
+/* Two columns while each is at least 420px, else one. By the list's own width, not the window's:
+   the edit panel narrows the page. */
 .work-grid {
   display: grid;
 
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
   gap: var(--space-6);
 }
 
@@ -253,13 +262,6 @@ html.has-scroll-document body {
   transition: color var(--duration-slow) var(--ease-touch);
 }
 
-.work-card .tag-list {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: var(--space-2);
-}
-
 @media (hover: hover) {
   .work-card:hover::after {
     box-shadow: inset 0 0 0 1px var(--accent);
@@ -337,10 +339,6 @@ html.has-scroll-document body {
 
   .work-page-header {
     padding: var(--space-24) 0 var(--space-12);
-  }
-
-  .work-grid {
-    grid-template-columns: 1fr;
   }
 
   .case-stub {

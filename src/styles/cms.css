@@ -1222,3 +1222,11 @@
   }
 }
 
+
+/* The current thumbnail beside its upload button */
+.cms-thumb {
+  width: 64px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+}

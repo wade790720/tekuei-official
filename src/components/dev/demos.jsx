@@ -25,6 +25,8 @@ import { ScrollStack } from '../ScrollStack.jsx'
 import { blocksToDoc } from '../../lib/richText.js'
 import { mountGlyphField } from '../../lib/glyphField.js'
 import { mountGrainHaze } from '../../lib/grainHaze.js'
+import { mountMeasureLines } from '../../lib/measureLines.js'
+import '../../styles/work.css'
 import { mountKoiPond } from '../../lib/koiPond.js'
 import { mountShatterImage } from '../../labs/shatter-footer/shatterImage.js'
 import { playWaterRipple } from '../../lib/waterRipple.js'
@@ -122,6 +124,20 @@ function GlyphDemo() {
   return (
     <div className="cl-glyph">
       <canvas ref={canvas} className="journal-header__glyphs" aria-hidden />
+    </div>
+  )
+}
+
+function MeasureDemo() {
+  const canvas = useRef(null)
+  const block = useRef(null)
+  useEffect(() => mountMeasureLines(canvas.current, { block: block.current }), [])
+  return (
+    <div style={{ position: 'relative', zIndex: 0, width: '100%', padding: 'var(--space-12) 0' }}>
+      <canvas ref={canvas} className="work-page-header__measure" aria-hidden />
+      <div ref={block} style={{ margin: '0 var(--space-12)', fontFamily: 'var(--font-serif)', fontSize: 'var(--type-h1)' }}>
+        Projects
+      </div>
     </div>
   )
 }
@@ -347,6 +363,7 @@ const DEMOS = {
     </Replayable>
   ),
   glyph: () => <GlyphDemo />,
+  measure: () => <MeasureDemo />,
   koi: () => <KoiDemo />,
   haze: () => <HazeDemo />,
   ripple: () => <RippleDemo />,
