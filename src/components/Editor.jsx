@@ -585,7 +585,10 @@ const TEXT_BLOCKS = [
 const TEXT_LABEL = Object.fromEntries(TEXT_BLOCKS.map((x) => [x.value, x.label]))
 const BLOCKS = [...TEXT_BLOCKS, 'divider', ...INSERTS]
 // The "⠿" menu: what can be done to the block itself.
-const BLOCK_ACTIONS = [{ value: 'delete', label: '刪除', icon: <TrashIcon /> }]
+const BLOCK_ACTIONS = [
+  { value: 'duplicate', label: '複製一份', icon: <DuplicateIcon /> },
+  { value: 'delete', label: '刪除', icon: <TrashIcon /> },
+]
 
 /** Turns the block at the cursor into `kind`, or inserts a card there. Used by the bubble and the "+". */
 function applyBlock(editor, kind) {
@@ -659,6 +662,7 @@ function BlockGutter({ editor, block, gutterRef }) {
   const act = (kind) => {
     const { node, pos } = block
     if (kind === 'delete') editor.chain().focus().deleteRange({ from: pos, to: pos + node.nodeSize }).run()
+    else if (kind === 'duplicate') editor.chain().focus().insertContentAt(pos + node.nodeSize, node.toJSON()).run()
   }
 
   return (
@@ -822,6 +826,15 @@ function GripIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
       {[4.5, 8, 11.5].map((y) => [5.5, 10.5].map((x) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.2" />))}
+    </svg>
+  )
+}
+
+function DuplicateIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+      <rect x="5.5" y="5.5" width="8" height="8" rx="1.8" />
+      <path d="M10.5 3.5v-.3A1.7 1.7 0 0 0 8.8 1.5H3.2A1.7 1.7 0 0 0 1.5 3.2v5.6c0 .94.76 1.7 1.7 1.7h.3" />
     </svg>
   )
 }

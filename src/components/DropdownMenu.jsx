@@ -27,6 +27,11 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
   const id = useId()
   const shown = usePresence(open, '--duration-exit')
   const choices = items.filter((it) => it !== 'divider')
+  if (import.meta.env.DEV && choices.length < 2) {
+    console.error(`DropdownMenu「${label}」只有 ${choices.length} 個選項。一個動作用 Button，選單是給兩個以上的選項用的。`)
+  }
+  // A menu with no icons at all (a plain picker) has no icon column; one with some keeps the labels in line.
+  const hasIcons = choices.some((it) => it.icon)
 
   const focusItem = (i) => list.current?.querySelectorAll('[role^=menuitem]')[(i + choices.length) % choices.length]?.focus()
 
@@ -115,9 +120,11 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => pick(it.value)}
               >
-                <span className="dropdown-menu__icon" aria-hidden>
-                  {it.icon}
-                </span>
+                {hasIcons ? (
+                  <span className="dropdown-menu__icon" aria-hidden>
+                    {it.icon}
+                  </span>
+                ) : null}
                 <span className="dropdown-menu__label">{it.label}</span>
                 {it.kbd ? <kbd className="dropdown-menu__kbd">{it.kbd}</kbd> : null}
                 {value !== undefined && it.value === value ? <CheckIcon /> : null}

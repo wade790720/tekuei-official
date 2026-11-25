@@ -13,28 +13,29 @@ import '../styles/cms.css'
 const SAVED_MS = 1600 // how long the save button shows "已儲存" after a save
 
 /**
- * The edit-mode panel: a Drawer with save, logout and preview. The live page re-renders from the draft as you type.
- * A page with no fields uses variant="bar": the same actions in a floating toolbar, with logout under a menu.
+ * The edit-mode panel: a Drawer of fields, with its actions as icon buttons in the header. The live page re-renders
+ * from the draft as you type. A page with no fields uses variant="bar": the same buttons in a floating toolbar.
  * Open by default; once collapsed it stays collapsed across pages until reopened from the dock button.
  * @param {{
  *   title: string, subtitle?: string,
  *   dirty: boolean, saving: boolean, error?: string,
  *   onSave: () => void, onLogout: () => void,
  *   preview?: boolean,  // adds the switch between editing and the page as readers see it
- *   saveLabel?: string,   // the main button, e.g. 發布 or 更新 instead of 儲存
- *   saveAlways?: boolean, // the main button works with nothing changed (publishing does)
+ *   saveLabel?: string,   // the save button's name in its tooltip, e.g. 發布 or 更新 instead of 儲存
+ *   saveAlways?: boolean, // the save button works with nothing changed (publishing does)
  *   labels?: { dirty?: string, saved?: string },  // the status line for unsaved and saved
- *   menu?: { value: string, label: string, onSelect: () => void }[],  // more actions under ⋯, above logout
+ *   menu?: { value: string, label: string, icon: import('react').ReactNode, onSelect: () => void }[],  // more actions under ⋯, above logout; each has an icon
  *   variant?: 'drawer' | 'bar',
- *   children: import('react').ReactNode,
+ *   actions?: import('react').ReactNode,  // the page's own icon buttons, between preview and save (TranslateSection)
+ *   children?: import('react').ReactNode, // the fields; the toolbar has none
  * }} props
  */
-export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, preview = false, variant = 'drawer', saveLabel = T.save, saveAlways = false, labels = {}, menu = [], children }) {
-  const { panelOpen, setPanelOpen, previewing, setPreviewing } = useAdmin()
+export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, preview = false, variant = 'drawer', saveLabel = T.save, saveAlways = false, labels = {}, menu = [], actions, children }) {
+  const { panelOpen, setPanelOpen } = useAdmin()
   const [justSaved, setJustSaved] = useState(false)
   const [prevSaving, setPrevSaving] = useState(saving)
 
-  // A save that ends without an error flashes "已儲存" on the button.
+  // A save that ends without an error shows a tick on the button.
   if (saving !== prevSaving) {
     setPrevSaving(saving)
     setJustSaved(!saving && !error)
@@ -47,25 +48,26 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
   }, [justSaved])
 
   const saveState = saving ? 'saving' : justSaved && !dirty ? 'saved' : error ? 'error' : 'idle'
-
+  const light = saving ? 'saving' : error ? 'error' : dirty ? 'dirty' : 'clean'
   const status = saving ? T.saving : error ? `${T.saveFailed}：${error}` : dirty ? (labels.dirty ?? T.unsaved) : (labels.saved ?? T.saved)
-
-  const previewButton = preview ? (
-    <Button variant="ghost" aria-pressed={previewing} onClick={() => setPreviewing(!previewing)}>
-      <EyeIcon />
-      {previewing ? T.backToEdit : T.preview}
-    </Button>
-  ) : null
-  const saveButton = (
-    <Button className="cms-save" data-state={saveState} onClick={onSave} disabled={saving || (!dirty && !saveAlways)}>
-      <SaveLabels state={saveState} idle={saveLabel} />
-    </Button>
+  // One set of buttons for both layouts, so the drawer and the toolbar cannot drift apart.
+  const buttons = (
+    <PanelActions
+      preview={preview}
+      actions={actions}
+      saveState={saveState}
+      saveLabel={saving ? T.saving : saveLabel}
+      canSave={!saving && (dirty || saveAlways)}
+      onSave={onSave}
+      menu={menu}
+      onLogout={onLogout}
+    />
   )
 
   if (variant === 'bar') {
     return (
-      <EditBar title={title} dirty={dirty} saving={saving} error={error} saveState={saveState} onSave={onSave} onLogout={onLogout} preview={preview}>
-        {children}
+      <EditBar title={title} error={error} status={<PanelStatus light={light}>{saving ? T.saving : error ? T.saveFailed : dirty ? T.unsaved : T.saved}</PanelStatus>}>
+        {buttons}
       </EditBar>
     )
   }
@@ -74,22 +76,15 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
     <>
       <Drawer open={panelOpen} label={title} push className="cms-panel">
         <DrawerHeader title={title} subtitle={subtitle}>
-          <Button variant="ghost" onClick={() => setPanelOpen(false)} aria-label={T.collapse} title={T.collapse}>
-            <ChevronIcon />
-          </Button>
-          {previewButton}
-          <DropdownMenu
-            label={T.more}
-            trigger={<MoreIcon />}
-            items={[...menu, { value: 'logout', label: T.logout }]}
-            onSelect={(value) => (value === 'logout' ? onLogout() : menu.find((m) => m.value === value)?.onSelect())}
-            triggerClassName="btn btn--ghost cms-panel__more"
-          />
-          {/* Lights up only when there is something to save */}
-          {saveButton}
+          <TooltipGroup className="cms-actions">
+            <Button variant="icon" onClick={() => setPanelOpen(false)} aria-label={T.collapse} data-tip={T.collapse}>
+              <ChevronIcon />
+            </Button>
+            {buttons}
+          </TooltipGroup>
         </DrawerHeader>
-        <div className="cms-panel__status" role="status" data-state={error ? 'error' : dirty ? 'dirty' : 'clean'}>
-          {status}
+        <div className="cms-panel__status">
+          <PanelStatus light={light}>{status}</PanelStatus>
         </div>
         <DrawerBody>{children}</DrawerBody>
       </Drawer>
@@ -122,6 +117,74 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
   )
 }
 
+/** The save state as a light and a line of text: green saved, gold unsaved or saving, red failed. */
+function PanelStatus({ light, children }) {
+  return (
+    <span className="cms-bar__status" role="status" data-state={light}>
+      <span key={light} className="cms-bar__light" aria-hidden />
+      {children}
+    </span>
+  )
+}
+
+/**
+ * The actions of an edit panel, as 32px icon buttons with their names in tooltips: preview, the page's own
+ * actions (translate), save, then logout: a button of its own, or the last row of the menu when the page has
+ * more actions. It sits inside a TooltipGroup.
+ */
+function PanelActions({ preview, actions, saveState, saveLabel, canSave, onSave, menu, onLogout }) {
+  const { previewing, setPreviewing } = useAdmin()
+  const previewLabel = previewing ? T.backToEdit : T.preview
+  return (
+    <>
+      {preview ? (
+        <Button variant="icon" aria-pressed={previewing} aria-label={previewLabel} data-tip={previewLabel} onClick={() => setPreviewing(!previewing)}>
+          <EyeIcon />
+        </Button>
+      ) : null}
+      {actions}
+      <Button
+        variant="icon"
+        className="cms-save cms-bar__save"
+        data-state={saveState}
+        aria-label={saveLabel}
+        data-tip={saveLabel}
+        data-kbd="Ctrl S"
+        onClick={onSave}
+        disabled={!canSave}
+      >
+        <span className="icon-swap">
+          <span data-off={saveState === 'saving' || saveState === 'saved' || undefined}>
+            <SaveIcon />
+          </span>
+          <span data-off={saveState !== 'saving' || undefined}>
+            <span className="cms-spin" />
+          </span>
+          <span data-off={saveState !== 'saved' || undefined}>
+            <CheckIcon />
+          </span>
+        </span>
+      </Button>
+      <span className="cms-bar__rule" aria-hidden />
+      {/* One action is a button. A menu is for a choice between two or more. */}
+      {menu.length ? (
+        <DropdownMenu
+          label={T.more}
+          tip={T.more}
+          trigger={<MoreIcon />}
+          items={[...menu, 'divider', { value: 'logout', label: T.logout, icon: <LogoutIcon /> }]}
+          onSelect={(value) => (value === 'logout' ? onLogout() : menu.find((m) => m.value === value)?.onSelect())}
+          triggerClassName="btn btn--icon"
+        />
+      ) : (
+        <Button variant="icon" aria-label={T.logout} data-tip={T.logout} onClick={onLogout}>
+          <LogoutIcon />
+        </Button>
+      )}
+    </>
+  )
+}
+
 // Written to the element, not to state: a drag moves it on every pointer event.
 function placeBar(el, offset, next) {
   const room = { width: document.documentElement.clientWidth, height: document.documentElement.clientHeight }
@@ -133,14 +196,10 @@ function placeBar(el, offset, next) {
 }
 
 /** The panel's actions as a small toolbar that can be dragged anywhere and remembers where it was left. */
-function EditBar({ title, dirty, saving, error, saveState, onSave, onLogout, preview, children }) {
-  const { previewing, setPreviewing } = useAdmin()
+function EditBar({ title, error, status, children }) {
   const bar = useRef(null)
   const drag = useRef(null)
   const offset = useRef({ x: 0, y: 0 })
-  const light = saving ? 'saving' : error ? 'error' : dirty ? 'dirty' : 'clean'
-  const previewLabel = previewing ? T.backToEdit : T.preview
-  const saveLabel = saving ? T.saving : T.save
 
   const place = (next) => placeBar(bar.current, offset, next)
   const remember = () => {
@@ -211,48 +270,9 @@ function EditBar({ title, dirty, saving, error, saveState, onSave, onLogout, pre
       <button type="button" className="cms-bar__grip" aria-label={T.moveBar} data-sound="off" onKeyDown={gripKey}>
         <GripIcon />
       </button>
-      <span className="cms-bar__status" role="status" data-state={light}>
-        <span key={light} className="cms-bar__light" aria-hidden />
-        {saving ? T.saving : error ? T.saveFailed : dirty ? T.unsaved : T.saved}
-      </span>
+      {status}
       <span className="cms-bar__rule" aria-hidden />
-      {preview ? (
-        <Button variant="icon" aria-pressed={previewing} aria-label={previewLabel} data-tip={previewLabel} onClick={() => setPreviewing(!previewing)}>
-          <EyeIcon />
-        </Button>
-      ) : null}
       {children}
-      <Button
-        variant="icon"
-        className="cms-save cms-bar__save"
-        data-state={saveState}
-        aria-label={saveLabel}
-        data-tip={saveLabel}
-        data-kbd="Ctrl S"
-        onClick={onSave}
-        disabled={saving || !dirty}
-      >
-        <span className="icon-swap">
-          <span data-off={saveState === 'saving' || saveState === 'saved' || undefined}>
-            <SaveIcon />
-          </span>
-          <span data-off={saveState !== 'saving' || undefined}>
-            <span className="cms-spin" />
-          </span>
-          <span data-off={saveState !== 'saved' || undefined}>
-            <CheckIcon />
-          </span>
-        </span>
-      </Button>
-      <span className="cms-bar__rule" aria-hidden />
-      <DropdownMenu
-        label={T.more}
-        tip={T.more}
-        trigger={<MoreIcon />}
-        items={[{ value: 'logout', label: T.logout }]}
-        onSelect={onLogout}
-        triggerClassName="btn btn--icon"
-      />
     </TooltipGroup>,
     document.body,
   )
@@ -445,6 +465,24 @@ function ChevronIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M6 3l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+/** Taking a post or project out of public view: the menu's 取消公開. */
+export function EyeOffIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M6.3 3.7A6.4 6.4 0 0 1 8 3.5c3.6 0 5.8 3.2 6.5 4.5a8.6 8.6 0 0 1-1.7 2.3M10.8 11.6A5.9 5.9 0 0 1 8 12.5c-3.6 0-5.8-3.2-6.5-4.5a9 9 0 0 1 2.7-3.1" />
+      <path d="M6.6 6.6a2 2 0 0 0 2.8 2.8M2 2l12 12" />
+    </svg>
+  )
+}
+
+function LogoutIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M6 13.5H3.5a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1H6M10.5 11l3-3-3-3M13.5 8h-7" />
     </svg>
   )
 }

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '../Button.jsx'
-import { PanelSection } from '../SidePanel.jsx'
 import { useAdmin } from '../../context/admin.js'
 import { TRANSLATE_LABELS as T } from '../../data/admin.js'
 import { useLang } from '../../i18n'
@@ -8,16 +7,19 @@ import { translateTexts } from '../../lib/adminApi.js'
 import { docSlots } from '../../lib/docTranslate.js'
 import { docText } from '../../lib/richText.js'
 
+const DONE_MS = 5000 // how long the "translated" note stays
+
 /**
- * Fills the English draft from the Chinese one. Nothing is saved: Wade reads it, edits it, then saves.
+ * The translate button of an edit panel: fills the English draft from the Chinese one. Nothing is saved:
+ * Wade reads it, edits it, then saves. It works from either language, since it always writes the English side.
+ * Goes in SidePanel's `actions`.
  * @param {{
  *   zhDoc: object, enDoc: object,
  *   fields?: Record<string, string>,  // short Chinese texts outside the body, e.g. the title
- *   compact?: boolean,                // one button for the SidePanel toolbar
  *   onDone: (result: { doc: object, fields: Record<string, string> }) => void,
  * }} props
  */
-export function TranslateSection({ zhDoc, enDoc, fields = {}, compact = false, onDone }) {
+export function TranslateSection({ zhDoc, enDoc, fields = {}, onDone }) {
   const { lang } = useLang()
   const admin = useAdmin()
   const [progress, setProgress] = useState(null)
@@ -26,16 +28,12 @@ export function TranslateSection({ zhDoc, enDoc, fields = {}, compact = false, o
 
   useEffect(() => () => abort.current?.abort(), [])
 
-  if (lang !== 'en') {
-    if (compact) return null
-    return (
-      <PanelSection title={T.title}>
-        <div className="cms-translate">
-          <p className="cms-translate__note">{T.switchToEn}</p>
-        </div>
-      </PanelSection>
-    )
-  }
+  // The "done" note leaves by itself; an error stays until the next try.
+  useEffect(() => {
+    if (!status.done) return undefined
+    const id = setTimeout(() => setStatus({ error: '', done: false }), DONE_MS)
+    return () => clearTimeout(id)
+  }, [status.done])
 
   async function run() {
     if (docText(enDoc).trim() && !window.confirm(T.confirm)) return
@@ -69,45 +67,29 @@ export function TranslateSection({ zhDoc, enDoc, fields = {}, compact = false, o
     }
   }
 
-  if (compact) {
-    const label = progress ? `${T.running} ${progress.done}/${progress.total}` : T.action
-    return (
-      <>
-        <Button variant="icon" onClick={run} disabled={Boolean(progress)} aria-label={label} data-tip={label}>
-          <span className="icon-swap">
-            <span data-off={progress ? true : undefined}>
-              <TranslateIcon />
-            </span>
-            <span data-off={progress ? undefined : true}>
-              <span className="cms-spin" />
-            </span>
-          </span>
-        </Button>
-        {status.error ? (
-          <p className="cms-bar__note" role="alert">
-            {status.error}
-          </p>
-        ) : null}
-      </>
-    )
-  }
-
+  const label = progress ? `${T.running} ${progress.done}/${progress.total}` : T.action
   return (
-    <PanelSection title={T.title}>
-      <div className="cms-translate">
-        <Button variant="ghost" onClick={run} disabled={Boolean(progress)}>
-          {progress ? `${T.running} ${progress.done}/${progress.total}` : T.action}
-        </Button>
-        <p className="cms-translate__note" role="status">
-          {status.done ? T.done : status.error ? '' : T.note}
+    <>
+      <Button variant="icon" onClick={run} disabled={Boolean(progress)} aria-label={label} data-tip={label}>
+        <span className="icon-swap">
+          <span data-off={progress ? true : undefined}>
+            <TranslateIcon />
+          </span>
+          <span data-off={progress ? undefined : true}>
+            <span className="cms-spin" />
+          </span>
+        </span>
+      </Button>
+      {status.error ? (
+        <p className="cms-bar__note" role="alert">
+          {status.error}
         </p>
-        {status.error ? (
-          <p className="cms-row__error" role="alert">
-            {status.error}
-          </p>
-        ) : null}
-      </div>
-    </PanelSection>
+      ) : status.done ? (
+        <p className="cms-bar__note" data-tone="ok" role="status">
+          {lang === 'en' ? T.done : T.doneElsewhere}
+        </p>
+      ) : null}
+    </>
   )
 }
 

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { SidePanel, FormRow, PanelSection, SortRows, TagsInput } from '../SidePanel.jsx'
+import { SidePanel, EyeOffIcon, FormRow, PanelSection, SortRows, TagsInput } from '../SidePanel.jsx'
 import { TextField } from '../TextField.jsx'
 import { Button } from '../Button.jsx'
 import { DropdownMenu } from '../DropdownMenu.jsx'
@@ -186,11 +186,34 @@ export function ProjectEditPanel({ id, coded = false }) {
     : {
         saveLabel: T.update,
         labels: { dirty: T.publishedDirty, saved: T.published },
-        menu: [{ value: 'unpublish', label: T.unpublish, onSelect: () => saveWith(markDraft(true)) }],
+        menu: [{ value: 'unpublish', label: T.unpublish, icon: <EyeOffIcon />, onSelect: () => saveWith(markDraft(true)) }],
       }
 
   return (
-    <SidePanel title="編輯專案" subtitle={`/projects/${id} · ${lang === 'zh' ? '中文' : 'English'}`} preview={hasPage} {...panelProps} {...actions}>
+    <SidePanel
+      title="編輯專案"
+      subtitle={`/projects/${id} · ${lang === 'zh' ? '中文' : 'English'}`}
+      preview={hasPage}
+      {...panelProps}
+      {...actions}
+      actions={
+        hasPage ? (
+            <TranslateSection
+              zhDoc={getDoc(projectBody(cms.draft, id, 'zh'))}
+              enDoc={getDoc(projectBody(cms.draft, id, 'en'))}
+              fields={{ title: projectTitle(item), client: item.client }}
+              onDone={({ doc, fields }) => {
+                cms.updateDraft((d) => {
+                  d.content.en = { ...d.content.en, [id]: { doc } }
+                  const x = d.items.find((y) => y.id === id)
+                  x.en = { ...x.en, ...fields }
+                })
+                admin.reloadEditor()
+              }}
+            />
+        ) : null
+      }
+    >
       <FormRow label="標題" htmlFor="cms-project-title" hint={lang === 'en' ? '留空時顯示中文標題' : undefined}>
         <TextField id="cms-project-title" value={text.title} onChange={(v) => setText('title', v)} placeholder="專案名稱" />
       </FormRow>
@@ -226,21 +249,6 @@ export function ProjectEditPanel({ id, coded = false }) {
           </Button>
         </FormRow>
       )}
-      {hasPage ? (
-        <TranslateSection
-          zhDoc={getDoc(projectBody(cms.draft, id, 'zh'))}
-          enDoc={getDoc(projectBody(cms.draft, id, 'en'))}
-          fields={{ title: projectTitle(item), client: item.client }}
-          onDone={({ doc, fields }) => {
-            cms.updateDraft((d) => {
-              d.content.en = { ...d.content.en, [id]: { doc } }
-              const x = d.items.find((y) => y.id === id)
-              x.en = { ...x.en, ...fields }
-            })
-            admin.reloadEditor()
-          }}
-        />
-      ) : null}
     </SidePanel>
   )
 }

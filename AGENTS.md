@@ -71,11 +71,11 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 - 新增或修改元件時，同一個變更裡更新 Component Library：`componentLibrary.data.js` 的說明，有需要時加 `demos.jsx` 的示範。
 - 回報時列出：用了哪些既有元件、擴充了哪一個、新增了哪一個以及原因。
 - 不要新增相依套件。真的需要時，先問使用者。
-- 註解只寫程式碼看不出來、而且我們改不了的原因（外部規則、授權、API 說明）。自己的程式碼很怪時改程式碼，不寫註解辯解。`npm run lint` 的 `no-slop` 會擋下區塊橫幅、日期、lint 抑制、em dash、AI 用詞、指向不存在的檔案（`scripts/noSlop.mjs`），Claude Code 每次改檔也會跑。
+- 註解只寫程式碼看不出來、而且我們改不了的原因（外部規則、授權、API 說明）。自己的程式碼很怪時改程式碼，不寫註解辯解。`npm run lint` 的 `no-slop` 會擋下區塊橫幅、日期、lint 抑制、em dash、AI 用詞、指向不存在的檔案（`scripts/noSlop.mjs`），Claude Code 每次改檔也會跑。它也檢查 CSS 的三條設計規則：色碼、400 以上的字重、刻度外的間距。原本就有的違規記在 `scripts/designBaseline.json`，數量只能減少。
 
 ## 不明顯的坑
 
-1. **本機會寫到正式資料。** `.env.local` 把 `/api` 代理到正式站。測試登入或儲存之前，先在瀏覽器裡把 `/api` 換成假的。
+1. **本機會寫到正式資料。** `.env.local` 把 `/api` 代理到正式站。測試登入或儲存之前，先在瀏覽器裡把 `/api` 換成假的：在頁面執行 `await import('/scripts/fakeAdminApi.js')`，重新整理後要再執行一次。
 2. **文章不在程式碼裡。** Journal 文章在 R2 `data.json` 的 `journal`。`src/data/journal.js` 只有文案和工具函式，沒有文章；R2 讀不到時 Journal 是空的。
 3. **CSS 和 Canvas 的坑**（`transform` 被淡入蓋掉、Canvas 讀不到變數、假粗體……）列在 DESIGN.md 的「Don't」。
 
@@ -105,9 +105,10 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 ## 完成的定義
 
 1. `npm run lint` 和 `npm run build` 都通過。改到 `scripts/` 或 `lib/phoneE164.js` 時，也要跑 `npm test`。
-2. 畫面有變時，用瀏覽器打開實際頁面確認。要看三種寬度：手機 375px、桌面 1440px、寬螢幕 2560px（內容不可超出中間 1920px，見 DESIGN.md）。
-3. 有動畫時，確認「減少動態效果」開啟時畫面正常。
-4. 回報時說清楚：改了什麼、驗證了什麼、沒有驗證什麼。
+2. 畫面有變時，用瀏覽器打開實際頁面確認。要看三種寬度：手機 375px、桌面 1440px、寬螢幕 2560px（內容不可超出中間 1920px，見 DESIGN.md）。貼著邊緣的文字和線要放大截圖，確認沒有被切掉。
+3. 改到共用元件、token 或全站樣式時，先用搜尋列出每個用到它的地方，逐一打開確認，並在回報裡寫出看過哪些。例：改了 `DropdownMenu` 的最小寬度，編輯器的選單就被擠成兩行，只看原本那個選單不會發現。
+4. 有動畫時，確認「減少動態效果」開啟時畫面正常。
+5. 回報時說清楚：改了什麼、驗證了什麼、沒有驗證什麼。
 
 ## 維護這份規範
 

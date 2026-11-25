@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { SidePanel, FormRow, PanelSection, SortRows, TagsInput } from '../SidePanel.jsx'
+import { SidePanel, EyeOffIcon, FormRow, PanelSection, SortRows, TagsInput } from '../SidePanel.jsx'
 import { TextArea } from '../TextArea.jsx'
 import { TextField } from '../TextField.jsx'
 import { Button } from '../Button.jsx'
@@ -76,11 +76,32 @@ export function JournalPostEditPanel({ slug }) {
     : {
         saveLabel: T.update,
         labels: { dirty: T.publishedDirty, saved: T.published },
-        menu: [{ value: 'unpublish', label: T.unpublish, onSelect: () => saveWith(markDraft(true)) }],
+        menu: [{ value: 'unpublish', label: T.unpublish, icon: <EyeOffIcon />, onSelect: () => saveWith(markDraft(true)) }],
       }
 
   return (
-    <SidePanel title="編輯文章" subtitle={`/journal/${slug} · ${lang === 'zh' ? '中文' : 'English'}`} preview {...panelProps} {...actions}>
+    <SidePanel
+      title="編輯文章"
+      subtitle={`/journal/${slug} · ${lang === 'zh' ? '中文' : 'English'}`}
+      preview
+      {...panelProps}
+      {...actions}
+      actions={
+          <TranslateSection
+            zhDoc={getDoc(cms.draft.content.zh?.[slug])}
+            enDoc={getDoc(cms.draft.content.en?.[slug])}
+            fields={{ title: zhPost?.title, excerpt: zhPost?.excerpt }}
+            onDone={({ doc, fields }) => {
+              cms.updateDraft((d) => {
+                d.content.en = { ...d.content.en, [slug]: { doc } }
+                const en = d.posts.en?.find((p) => p.slug === slug)
+                if (en) Object.assign(en, fields)
+              })
+              admin.reloadEditor()
+            }}
+          />
+      }
+    >
       <FormRow label="標題" htmlFor="cms-title">
         <TextField id="cms-title" value={post.title} onChange={(v) => setPost('title', v)} placeholder="文章標題" />
       </FormRow>
@@ -96,19 +117,6 @@ export function JournalPostEditPanel({ slug }) {
       <FormRow label="摘要" htmlFor="cms-excerpt" hint="顯示在列表和首頁">
         <TextArea id="cms-excerpt" value={post.excerpt} onChange={(v) => setPost('excerpt', v)} placeholder="一兩句話說明這篇文章" />
       </FormRow>
-      <TranslateSection
-        zhDoc={getDoc(cms.draft.content.zh?.[slug])}
-        enDoc={getDoc(cms.draft.content.en?.[slug])}
-        fields={{ title: zhPost?.title, excerpt: zhPost?.excerpt }}
-        onDone={({ doc, fields }) => {
-          cms.updateDraft((d) => {
-            d.content.en = { ...d.content.en, [slug]: { doc } }
-            const en = d.posts.en?.find((p) => p.slug === slug)
-            if (en) Object.assign(en, fields)
-          })
-          admin.reloadEditor()
-        }}
-      />
     </SidePanel>
   )
 }

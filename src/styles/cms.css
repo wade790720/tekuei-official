@@ -111,21 +111,39 @@
    Modelled on the Framer CMS sheet: one label | value row per field, hairline dividers,
    values that look like plain text until you type, and no focus frames. */
 
+/* The same light and line as the toolbar's (cms-bar__status), in a row of its own */
 .cms-panel__status {
   padding: var(--space-2) var(--space-6);
   border-bottom: 0.5px solid var(--gray-a3);
-  font-family: var(--font-label);
-  font-size: var(--type-label);
-  letter-spacing: var(--type-label-ls);
-  color: var(--text-tertiary);
 }
 
-.cms-panel__status[data-state='dirty'] {
-  color: var(--ember-soft);
+.cms-panel__status .cms-bar__status {
+  padding: 0;
+  white-space: normal;
 }
 
-.cms-panel__status[data-state='error'] {
-  color: var(--danger);
+/* The drawer's buttons: the same set as the toolbar's. TooltipGroup places the tooltip under it */
+.cms-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  gap: var(--space-1);
+}
+
+/* A note from an action (translate): a small card under the buttons, where the toolbar has a row for it */
+.cms-actions .cms-bar__note {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 1;
+  width: max-content;
+  min-width: 0;
+  max-width: 280px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  box-shadow: var(--cms-ring);
 }
 
 .cms-section + .cms-section {
@@ -191,20 +209,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-}
-
-.cms-translate {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-2);
-  margin: 0 var(--space-6);
-}
-
-.cms-translate__note {
-  margin: 0;
-  font-size: var(--type-caption);
-  color: var(--text-tertiary);
 }
 
 .cms-block__tools {
@@ -772,7 +776,6 @@
 .cms-panel .dropdown-menu__list {
   right: 0;
   left: auto;
-  min-width: 140px;
 }
 
 /* Toolbar: the panel's actions for a page with no fields */
@@ -809,7 +812,7 @@
 }
 
 /* Every control is the same 32px square. ::before reaches the 40px hit area, and half the gap sideways */
-.cms-bar .btn {
+:is(.cms-bar, .cms-actions) .btn {
   position: relative;
   justify-content: center;
   width: 32px;
@@ -817,40 +820,41 @@
   padding: 0;
 }
 
-.cms-bar .btn::before {
+:is(.cms-bar, .cms-actions) .btn::before {
   content: '';
   position: absolute;
   inset: -4px -2px;
 }
 
-.cms-bar .btn svg {
+:is(.cms-bar, .cms-actions) .btn svg {
   width: 16px;
   height: 16px;
 }
 
-.cms-bar .btn:not(:disabled) {
+:is(.cms-bar, .cms-actions) .btn:not(:disabled) {
   cursor: pointer;
 }
 
-.cms-bar .cms-spin {
+:is(.cms-bar, .cms-actions) .cms-spin {
   width: 12px;
   height: 12px;
 }
 
-.cms-bar .btn.cms-bar__save:not(:disabled) {
+:is(.cms-bar, .cms-actions) .btn.cms-bar__save:not(:disabled) {
   background: var(--gray-12);
   color: var(--gray-1);
 }
 
-.cms-bar .btn.cms-bar__save:disabled {
+:is(.cms-bar, .cms-actions) .btn.cms-bar__save:disabled {
   background: transparent;
 }
 
-.cms-bar .btn.cms-save[data-state='saved'] {
+:is(.cms-bar, .cms-actions) .btn.cms-save[data-state='saved'] {
   color: var(--success);
 }
 
-.cms-bar button:focus-visible {
+/* Not the menu's rows: a focused row is the highlighted one, as in any menu, and an outline would read as a selection */
+.cms-bar button:not(.dropdown-menu__item):focus-visible {
   outline: 1px solid var(--ember);
   outline-offset: 1px;
 }
@@ -882,7 +886,7 @@
   }
 }
 
-.cms-bar .dropdown-menu {
+:is(.cms-bar, .cms-actions) .dropdown-menu {
   display: flex;
 }
 
@@ -891,7 +895,6 @@
   right: 0;
   bottom: calc(100% + var(--space-2));
   left: auto;
-  min-width: 120px;
   cursor: default;
 }
 
@@ -976,6 +979,10 @@
   color: var(--danger);
 }
 
+.cms-bar__note[data-tone='ok'] {
+  color: var(--text-secondary);
+}
+
 /* Collapsed: a dock button at the bottom right brings the panel back */
 .cms-dock {
   position: fixed;
@@ -1023,7 +1030,7 @@
 }
 
 /* Buttons keep a keyboard focus ring; text fields and the editor show only the caret */
-.cms-panel button:focus-visible,
+.cms-panel button:not(.dropdown-menu__item):focus-visible,
 .cms-panel select:focus-visible,
 .cms-panel a:focus-visible,
 .cms-dock:focus-visible {
