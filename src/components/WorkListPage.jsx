@@ -1,13 +1,17 @@
-﻿import { useEffect } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { labWorkItems } from '../labs/media.js'
 import { SiteFooter } from './SiteFooter.jsx'
 import { WORK_THUMBS } from '../data/workMedia.js'
-import { CODE_WORK_ITEMS, projectHref, PROJECT_SECTIONS, PROJECT_TYPES, PROJECTS_PAGE, WORK_LABELS } from '../data/work.js'
+import { projectLink, PROJECT_SECTIONS, PROJECT_TYPES, PROJECTS_PAGE, projectTitle, WORK_LABELS } from '../data/work.js'
+import { useAdmin } from '../context/admin.js'
 import { useLang } from '../i18n'
-import { TagList } from './Tag.jsx'
+import { mountMeasureLines } from '../lib/measureLines.js'
 import '../styles/work.css'
+
+// Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.
+const WorkListEditPanel = lazy(() => import('./work/WorkEditPanel.jsx').then((m) => ({ default: m.WorkListEditPanel })))
 
 function WorkThumbGraphic({ thumbSvg }) {
   const svgProps = {
@@ -82,9 +86,8 @@ function WorkCard({ item, total }) {
           {item.num}/{total}
         </div>
         <div className="work-card__info">
-          <div className="work-card__client">{item.client}</div>
-          <h3 className="work-card__title">{item.titleEmWord ? `${item.titleEmWord} ${item.title}` : item.title}</h3>
-          <TagList tags={item.tags} variant="outline" />
+          <div className="work-card__client">{[item.draft && WORK_LABELS.zh.draft, item.client].filter(Boolean).join(' · ')}</div>
+          <h3 className="work-card__title">{projectTitle(item)}</h3>
         </div>
       </Link>
     </article>
@@ -96,15 +99,18 @@ const pad = (n) => String(n).padStart(2, '0')
 export default function WorkListPage() {
   const { content, loading } = useWorkContent()
   const { lang } = useLang()
+  const { editing } = useAdmin()
+  const measure = useRef(null)
+  const block = useRef(null)
 
   const page = PROJECTS_PAGE[lang]
   const all = [
-    ...[...content.items, ...CODE_WORK_ITEMS[lang]].map((item) => ({
+    ...content.items.map((item) => ({
       ...item,
       // A project nobody has filed yet still has to show up somewhere
-      type: PROJECT_TYPES[item.id] ?? 'web',
+      type: item.type ?? PROJECT_TYPES[item.id] ?? 'web',
       thumbImage: WORK_THUMBS[item.id] ?? item.thumbImage,
-      caseHref: projectHref(item.caseHref),
+      caseHref: projectLink(item, content),
     })),
     ...labWorkItems(lang, 1).map((item) => ({ ...item, type: 'side' })),
   ]
@@ -120,6 +126,9 @@ export default function WorkListPage() {
     document.title = page.title
   }, [page.title])
 
+  // The header is not there until the data is in
+  useEffect(() => (loading ? undefined : mountMeasureLines(measure.current, { block: block.current })), [loading])
+
   return (
     <div className="work-page">
       {/* Nothing until the data is in: a loading bar and the footer would flash at the top for a moment */}
@@ -128,7 +137,8 @@ export default function WorkListPage() {
       ) : (
         <>
           <header className="work-page-header">
-            <div className="work-page-header-inner">
+            <canvas className="work-page-header__measure" ref={measure} aria-hidden />
+            <div className="work-page-header-inner" ref={block}>
               <div>
                 <div className="pre fade-in">{page.pre}</div>
                 <h1 className="fade-in" style={{ '--i': 1 }}>{page.heading}</h1>
@@ -138,10 +148,6 @@ export default function WorkListPage() {
               </div>
             </div>
           </header>
-
-          <div className="work-header-rule fade-in" style={{ '--i': 3 }}>
-            <div className="work-header-rule-line" />
-          </div>
 
           <div className="work-list">
             {sections.map((section) => (
@@ -164,6 +170,11 @@ export default function WorkListPage() {
           <SiteFooter />
         </>
       )}
+      {editing ? (
+        <Suspense fallback={null}>
+          <WorkListEditPanel />
+        </Suspense>
+      ) : null}
     </div>
   )
 }

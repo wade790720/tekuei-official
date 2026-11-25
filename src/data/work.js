@@ -1,15 +1,15 @@
 import siteDefaults from './data.json'
-import { projectHref } from '../lib/projectHref.js'
+import { projectBody, projectHref, projectLink, projectTitle } from '../lib/projectHref.js'
 
-export { projectHref }
+export { projectBody, projectHref, projectLink, projectTitle }
 
 export const DEFAULT_WORK = siteDefaults.work
 export const WORK_ITEMS = siteDefaults.work.items.map((item) => ({ ...item, caseHref: projectHref(item.caseHref) }))
 
 // The list's title and labels live here, not in R2, so the page can be renamed without touching saved data.
 export const PROJECTS_PAGE = {
-  zh: { title: 'TEKUEI · Projects', pre: 'SELECTED PROJECTS', heading: 'Projects', countSuffix: 'Projects' },
-  en: { title: 'TEKUEI · Projects', pre: 'SELECTED PROJECTS', heading: 'Projects', countSuffix: 'Projects' },
+  zh: { title: 'TEKUEI · Projects', pre: 'PROJECTS · 專案', heading: 'Projects', countSuffix: 'Projects' },
+  en: { title: 'TEKUEI · Projects', pre: 'PROJECTS', heading: 'Projects', countSuffix: 'Projects' },
 }
 
 // The list is shown in these sections, in this order. A section with no project is left out.
@@ -27,9 +27,7 @@ export const PROJECT_TYPES = {
   sre: 'web',
 }
 
-export function cloneWorkContent(content = siteDefaults.work) {
-  return structuredClone(content)
-}
+export const getDefaultWork = () => DEFAULT_WORK
 
 export const WORK_EN = {
   meta: { title: 'TEKUEI · Work' },
@@ -94,51 +92,73 @@ export const WORK_EN = {
   ],
 }
 
-/** Overlay CMS image URLs onto the EN work items */
-export function mergeWorkImages(enWork, cmsWork) {
-  if (!cmsWork?.items) return enWork
+const BUNDLED_EN = Object.fromEntries(
+  WORK_EN.items.map((i) => [i.id, { client: i.client, title: i.title, titleEmWord: i.titleEmWord ?? '' }]),
+)
+const filled = (o = {}) => Object.fromEntries(Object.entries(o).filter(([, v]) => v))
+
+/**
+ * The work section in one language. A project's English text is its own `en`, written in the edit panel,
+ * else the translation bundled here, else the Chinese.
+ */
+export function localizeWork(work, lang) {
+  if (lang !== 'en') return work
   return {
-    ...enWork,
-    items: enWork.items.map((item, i) => ({
-      ...item,
-      thumbImage: cmsWork.items[i]?.thumbImage ?? item.thumbImage,
-    })),
+    ...work,
+    items: work.items.map((item) => {
+      const own = filled(item.en)
+      // An English title of its own replaces both halves of the bundled one
+      return { ...item, ...BUNDLED_EN[item.id], ...own, ...(own.title ? { titleEmWord: '' } : {}) }
+    }),
   }
 }
 
-// Client work kept in code, listed after the R2 items. SRE has no case page, so its card links to the live site.
-// Copy comes from Wade's CV (src/labs/falling-figure/content.js).
-const sre = {
-  id: 'sre',
-  caseHref: 'https://www.sreglobal.com/',
-  titleEm: false,
-  title: 'SRE',
-  thumbBg: 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, transparent) 0%, color-mix(in srgb, var(--surface-1) 88%, transparent) 45%, rgba(16, 15, 17, 0.8) 100%)',
-  thumbImage: { url: '' },
+/** What readers see: drafts stay in the editor. */
+export const publishedWork = (work) => ({ ...work, items: work.items.filter((item) => !item.draft) })
+
+export const PROJECT_PAGE_LABELS = {
+  zh: { home: '首頁', crumbs: '導覽路徑', back: '返回 Projects', notFound: '找不到這個專案', visit: '造訪網站', noPage: '這個專案沒有內頁，卡片直接連到外部連結。在右邊的面板可以建立內頁。', untranslated: 'This project is only in Chinese for now.' },
+  en: { home: 'Home', crumbs: 'Breadcrumb', back: 'Back to Projects', notFound: 'Project not found', visit: 'Visit site', noPage: '這個專案沒有內頁，卡片直接連到外部連結。在右邊的面板可以建立內頁。', untranslated: 'This project is only in Chinese for now.' },
 }
 
-export const CODE_WORK_ITEMS = {
-  zh: [
-    {
-      ...sre,
-      client: 'SRE · 風睿能源',
-      subtitle: '官 方 網 站',
-      descriptionLines: ['開發風睿能源的官方網站，', '負責技術、架構決策與整合。'],
-      tags: ['Web Development', 'Architecture'],
+// Client work that began as code. It joins the saved list, with a short page, until the list has it, so it is
+// edited in the panel like any other project; the first save writes it to R2. `removed` remembers one Wade deleted.
+// Copy comes from Wade's CV (src/labs/falling-figure/content.js).
+const CODE_PROJECTS = [
+  {
+    id: 'sre',
+    type: 'web',
+    client: 'SRE · 風睿能源',
+    title: 'SRE',
+    tags: ['Web Development', 'Architecture'],
+    link: 'https://www.sreglobal.com/',
+    thumbBg: 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, transparent) 0%, color-mix(in srgb, var(--surface-1) 88%, transparent) 45%, rgba(16, 15, 17, 0.8) 100%)',
+    thumbImage: { url: '' },
+    en: { client: 'SRE · Synera Renewable Energy', title: 'SRE' },
+    // The page it starts with. Not a field of the project: it goes to work.content.
+    page: {
+      zh: '開發風睿能源的官方網站，負責技術、架構決策與整合。',
+      en: 'The official site for Synera Renewable Energy: technology, architecture and delivery.',
     },
-  ],
-  en: [
-    {
-      ...sre,
-      client: 'SRE · Synera Renewable Energy',
-      subtitle: 'OFFICIAL WEBSITE',
-      descriptionLines: ['The official site for Synera Renewable Energy:', 'technology, architecture and delivery.'],
-      tags: ['Web Development', 'Architecture'],
-    },
-  ],
+  },
+]
+const paragraph = (text) => ({ doc: { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text }] }] } })
+export const CODE_PROJECT_IDS = CODE_PROJECTS.map((item) => item.id)
+
+export const cloneWork = (work) => {
+  const next = structuredClone(work)
+  for (const { page, ...item } of CODE_PROJECTS) {
+    if (next.items.some((x) => x.id === item.id) || next.removed?.includes(item.id)) continue
+    next.items.push(structuredClone(item))
+    next.content = {
+      zh: { ...next.content?.zh, [item.id]: paragraph(page.zh) },
+      en: { ...next.content?.en, [item.id]: paragraph(page.en) },
+    }
+  }
+  return next
 }
 
 export const WORK_LABELS = {
-  zh: { loading: '作品載入中' },
+  zh: { loading: '作品載入中', draft: '草稿' },
   en: { loading: 'Loading work' },
 }

@@ -931,6 +931,31 @@ export const GROUPS = [
         notes: ['離開畫面時停止繪製。', '減少動態效果開啟時不啟動。'],
       },
       {
+        id: 'measure-lines',
+        name: 'mountMeasureLines',
+        file: 'src/lib/measureLines.js',
+        summary: '頁首的量測標註線：標出寬度和高度的尺寸線，尺上的小三角形跟著游標的水平位置移動',
+        hero: { demo: 'measure', code: `useEffect(() => mountMeasureLines(canvas.current, { block: block.current }), [])` },
+        api: [
+          {
+            description: 'Canvas 鋪滿頁首，放在文字後面。顏色讀取 canvas 的 CSS color（線和數字）和 --measure-accent（尺上的三角形），字型讀取 font-family',
+            props: [
+              ['canvas', 'HTMLCanvasElement', '—', '必填'],
+              ['opts.block', 'HTMLElement', '—', '必填，被量測的元素。量的是它扣掉左右 padding 之後的寬度，以及它的高度'],
+            ],
+          },
+        ],
+        examples: [],
+        notes: [
+          '數字都是從頁面即時量的像素值，視窗改變大小時跟著變。',
+          '進場時線從左往右、從上往下畫出來，數字跟著數上去，0.9 秒。畫完就停，之後只有游標移動或尺寸改變時才重畫一次。',
+          '下緣的尺每 24px 一個小刻度，離 canvas 底部 8px，數字才不會被切掉。',
+          '游標在頁面任何地方移動時，尺上的三角形跟著它的水平位置，超出欄寬時停在兩端。頁首捲出畫面後不重畫。',
+          '左邊的高度線需要 16px 的頁面留白，手機上放不下，所以不畫。',
+          '觸控和減少動態效果開啟時沒有三角形，後者直接顯示畫完的樣子。',
+        ],
+      },
+      {
         id: 'koi-pond',
         name: 'mountKoiPond',
         file: 'src/lib/koiPond.js',

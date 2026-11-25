@@ -6,6 +6,7 @@ import { clampOffset, parseOffset } from '../lib/editBarPosition.js'
 import { Button } from './Button.jsx'
 import { Drawer, DrawerBody, DrawerHeader } from './Drawer.jsx'
 import { DropdownMenu } from './DropdownMenu.jsx'
+import { TextField } from './TextField.jsx'
 import { TooltipGroup } from './Tooltip.jsx'
 import '../styles/cms.css'
 
@@ -269,6 +270,96 @@ export function FormRow({ label, hint, children, htmlFor }) {
         {hint ? <div className="cms-row__hint">{hint}</div> : null}
       </div>
     </div>
+  )
+}
+
+/**
+ * Rows that reorder: drag one by its handle (mouse, pen or touch), or focus the handle and press ↑ / ↓.
+ * @param {{
+ *   items: unknown[],
+ *   keyOf: (item: any) => string,
+ *   nameOf: (item: any) => string,           // names the row in the handle's label
+ *   onMove: (from: number, to: number) => void,
+ *   children: (item: any, i: number) => import('react').ReactNode,  // the cells after the handle
+ * }} props
+ */
+export function SortRows({ items, keyOf, nameOf, onMove, children }) {
+  const [drag, setDrag] = useState(null) // { from, gap } while a row is dragged; gap k = insert before row k
+  const rows = useRef([])
+  const gapAt = (y) => {
+    const k = rows.current.slice(0, items.length).findIndex((el) => el && y < el.getBoundingClientRect().top + el.offsetHeight / 2)
+    return k < 0 ? items.length : k
+  }
+  // Removing the dragged row first shifts the rows below it up by one.
+  const target = (d) => (d.gap > d.from ? d.gap - 1 : d.gap)
+  const dragMove = (e) => {
+    if (!drag) return
+    const gap = gapAt(e.clientY)
+    if (gap !== drag.gap) setDrag({ ...drag, gap }) // pointermove fires far more often than the gap changes
+  }
+  const dragEnd = () => {
+    if (drag && target(drag) !== drag.from) onMove(drag.from, target(drag))
+    setDrag(null)
+  }
+  const dragKey = (e, i) => {
+    const to = e.key === 'ArrowUp' ? i - 1 : e.key === 'ArrowDown' ? i + 1 : -1
+    if (to < 0 || to >= items.length) return
+    e.preventDefault()
+    onMove(i, to)
+    requestAnimationFrame(() => rows.current[to]?.querySelector('.cms-drag')?.focus())
+  }
+  const moved = drag && target(drag) !== drag.from
+
+  return (
+    <div className="cms-sort" data-dragging={drag ? '' : undefined}>
+      {items.map((item, i) => (
+        <div
+          className="cms-row cms-post"
+          key={keyOf(item)}
+          ref={(el) => (rows.current[i] = el)}
+          data-dragged={drag?.from === i || undefined}
+          data-drop={!moved ? undefined : drag.gap === i ? 'before' : drag.gap === items.length && i === items.length - 1 ? 'after' : undefined}
+        >
+          <button
+            type="button"
+            className="cms-drag"
+            aria-label={`拖曳調整「${nameOf(item)}」的順序，或用上下鍵`}
+            onPointerDown={(e) => {
+              e.preventDefault()
+              e.currentTarget.setPointerCapture(e.pointerId)
+              setDrag({ from: i, gap: i })
+            }}
+            onPointerMove={dragMove}
+            onPointerUp={dragEnd}
+            onPointerCancel={() => setDrag(null)}
+            onKeyDown={(e) => dragKey(e, i)}
+          >
+            <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden>
+              {[2, 7, 12].flatMap((y) => [<circle key={`a${y}`} cx="2.5" cy={y} r="1.2" />, <circle key={`b${y}`} cx="7.5" cy={y} r="1.2" />])}
+            </svg>
+          </button>
+          {children(item, i)}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/**
+ * Tags as one line of text. It keeps what Wade types (a trailing comma, a half-typed tag) and saves the parsed list.
+ * Give it a `key` that changes with the item it edits.
+ */
+export function TagsInput({ id, tags, parse, onChange }) {
+  const [text, setText] = useState(() => tags.join(', '))
+  return (
+    <TextField
+      id={id}
+      value={text}
+      onChange={(v) => {
+        setText(v)
+        onChange(parse(v))
+      }}
+    />
   )
 }
 

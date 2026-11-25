@@ -5,7 +5,7 @@
 import { getDoc, docText, safeHref, youtubeId } from './richText.js'
 import { getDefaultJournal, postTags, publishedJournal } from '../data/journal.js'
 import { labLinks } from '../labs/index.js'
-import { projectHref } from './projectHref.js'
+import { projectBody, projectHref, projectLink, projectTitle } from './projectHref.js'
 
 export const SITE_URL = 'https://tekuei.com'
 export const SITE_NAME = 'TEKUEI 德溎'
@@ -199,8 +199,50 @@ export function injectPage(indexHtml, page) {
     .replace('<div id="root"></div>', () => `<div id="root">${page.html}</div>`)
 }
 
-/** Case pages for sitemap and llms.txt: the client cases (R2 work items, at their /projects links), then the labs. */
-export const siteCases = (workItems) => [...workItems.map((w) => ({ ...w, caseHref: projectHref(w.caseHref) })), ...labLinks('zh')]
+/**
+ * Case pages for sitemap and llms.txt: the client cases (R2 work items, at their /projects links), then the labs.
+ * @param {object} [work]  the work section the items came from, so a project with a page written in the editor is found
+ */
+export const siteCases = (workItems, work) => [
+  ...workItems
+    .filter((w) => !w.draft)
+    .map((w) => ({ ...w, caseHref: projectLink(w, work) }))
+    // A card that only links to another site has no page here
+    .filter((w) => w.caseHref.startsWith('/')),
+  ...labLinks('zh'),
+]
+
+/** Everything a project page written in the editor needs for its HTML head and body. Null for any other slug. */
+export function projectPage(work, slug) {
+  const item = work?.items?.find((w) => w.id === slug && !w.draft)
+  const body = projectBody(work, slug, 'zh')
+  if (!item || !body) return null
+  const url = `${SITE_URL}/projects/${slug}`
+  const title = projectTitle(item)
+  const doc = getDoc(body)
+  const description = docText(doc).slice(0, 120) || item.client
+  return {
+    title: `${title} · Projects · TEKUEI`,
+    description,
+    url,
+    type: 'article',
+    ld: {
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWork',
+      name: title,
+      description,
+      inLanguage: 'zh-Hant',
+      url,
+      mainEntityOfPage: url,
+      creator: PERSON,
+      ...(item.tags?.length ? { keywords: item.tags.join(', ') } : {}),
+    },
+    html:
+      `<article><h1>${esc(title)}</h1>` +
+      (item.client ? `<p>${esc(item.client)}</p>` : '') +
+      `${docHtml(doc)}<p><a href="/projects">Projects</a></p></article>`,
+  }
+}
 
 const STATIC_PATHS = ['/', '/journal', '/projects', '/about']
 
@@ -282,7 +324,23 @@ export async function servePage({ request, env }, build) {
       headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
     })
   }
-  return new Response(injectPage(await shell.text(), page), {
+  return rendered(shell, page)
+}
+
+const rendered = async (shell, page) =>
+  new Response(injectPage(await shell.text(), page), {
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=300' },
   })
+
+/**
+ * Pages Function body for /projects/:slug. A project written in the editor is rendered into the HTML,
+ * like a journal post. Any other slug goes to serveCase: the cases whose pages are code, or a 404.
+ * @param {{ caseHref?: string }[]} bundled  the work items to use when R2 has none
+ */
+export async function serveProject(ctx, bundled) {
+  const work = (await readSiteData(ctx.env.BUCKET))?.work
+  const page = projectPage(work, ctx.params.slug)
+  if (!page) return serveCase(ctx, work?.items ?? bundled)
+  const shell = await ctx.env.ASSETS.fetch(new URL('/', ctx.request.url))
+  return shell.ok ? rendered(shell, page) : shell
 }
