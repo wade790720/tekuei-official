@@ -107,26 +107,6 @@
   );
 }
 
-.journal-page .fade-in {
-  opacity: 0;
-  transform: translateY(8px);
-  filter: blur(8px);
-  transition:
-    opacity var(--duration-reveal) var(--j-ease),
-    transform var(--duration-reveal) var(--j-ease),
-    filter var(--duration-reveal) var(--j-ease);
-}
-
-.journal-page .fade-in.is-visible {
-  opacity: 1;
-  transform: none;
-  filter: none;
-}
-
-/* Post header: back link, meta, number, title and subtitle come in one after another */
-.journal-post__header .fade-in {
-  transition-delay: calc(var(--i, 0) * 80ms);
-}
 
 
 .journal-header {
@@ -876,11 +856,3 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .journal-page .fade-in {
-    opacity: 1;
-    transform: none;
-    filter: none;
-    transition: none;
-  }
-}

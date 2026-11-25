@@ -61,6 +61,8 @@ export const LABS = [
   {
     id: 'shatter-footer',
     year: '2026',
+    // Taller than the default 16:10: in a shorter frame the sea has to shrink to fit under the links.
+    previewAspect: '4 / 3',
     zh: {
       title: 'Shatter Footer',
       subtitle: 'FOOTER EFFECT',
@@ -68,7 +70,7 @@ export const LABS = [
       tags: ['Canvas', 'Image'],
       credit: { label: 'motionsites.ai', href: 'https://motionsites.ai/' },
       intro: [
-        '這是 Journal 原本的頁尾，四欄連結下面是一張版畫風格的海浪。',
+        '這是 Journal 原本的頁尾，四欄連結下面是一張版畫風格的海浪，燈塔對齊第三條虛線。',
         '頁尾露出畫面三分之一時，海浪碎成兩像素的小方塊，從右邊飛進來，從左到右拼成整張圖，連結跟著依序淡入，拼完就靜止，不再耗電。',
         '圖的亮度轉成透明度，所以黑色的部分會消失，海浪可以放在任何深色背景上。',
       ],
@@ -80,7 +82,7 @@ export const LABS = [
       tags: ['Canvas', 'Image'],
       credit: { label: 'motionsites.ai', href: 'https://motionsites.ai/' },
       intro: [
-        'The Journal footer before the redesign: four columns of links above an engraved sea.',
+        'The Journal footer before the redesign: four columns of links above an engraved sea, with the lighthouse on the third rule.',
         'When a third of the footer is on screen, the sea breaks into 2px fragments that fly in from the right and assemble left to right while the links fade in one by one. Then it holds still and stops drawing.',
         'Brightness becomes alpha, so the black drops out and the sea sits on any dark background.',
       ],
@@ -94,7 +96,7 @@ export const labHref = (id) => `/labs/${id}`
 export const liveHref = (id) => `/labs/${id}/live`
 
 export const LAB_LABELS = {
-  zh: { category: 'LABS', year: '年份', credit: '參考', home: '首頁', crumbs: '導覽路徑', preview: '實際效果', showPreview: '全螢幕預覽', copyPrompt: '複製 Prompt', copied: '已複製', about: '關於', more: '更多 Labs' },
+  zh: { category: 'LABS', year: '年份', credit: '參考', home: '首頁', crumbs: '導覽路徑', preview: '實際效果', showPreview: '全螢幕預覽', copyPrompt: '複製提示詞', copied: '已複製', about: '關於', more: '更多 Labs' },
   en: { category: 'LABS', year: 'Year', credit: 'Based on', home: 'Home', crumbs: 'Breadcrumb', preview: 'Live preview', showPreview: 'Show Preview', copyPrompt: 'Copy Prompt', copied: 'Copied', about: 'About', more: 'More Labs' },
 }
 

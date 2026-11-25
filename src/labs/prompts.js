@@ -52,9 +52,10 @@ Write it as mountFallScene({ canvas, figure, sections, acts, progressDot, onAct 
   'shatter-footer': `Build a site footer where an engraved image assembles from fragments when the footer scrolls into view.
 
 Layout:
-- Four columns: brand (spaced-out wordmark, a small subtitle, the copyright), Explore links, the three latest posts, Contact links.
+- Four columns: brand (spaced-out wordmark, a small subtitle, the copyright), Explore links, Resources links (support, FAQ, privacy policy, sitemap), Contact links.
 - Thin dashed rules between the columns on desktop. Two columns by two rows below 900px.
 - Under the columns, a full-width canvas showing a strip of a black-and-white engraving (a sea), at a 1280:470 ratio, capped at 1920px wide. Past 1920px, fade its cut edges with a mask-image gradient.
+- The lighthouse in the engraving sits at 75% of its width, on the third column rule. When the footer fills one screen and the strip must shrink to fit under the links, keep that point at 75% of the width (offset the strip by 75% of the leftover space) instead of centring it.
 
 Effect (canvas 2D):
 - Draw the image crop once into an offscreen canvas. Turn brightness into alpha: pixels whose r+g+b is under 75 become transparent, the rest keep their colour divided by their brightest channel, with alpha = that channel. The image then sits on any dark background.

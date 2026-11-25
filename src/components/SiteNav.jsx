@@ -7,6 +7,7 @@ import { HOME_FOOTER } from '../data/homepage.js'
 import { NAV_LABELS, SITE_LOGO } from '../data/nav.js'
 import { useLang } from '../i18n'
 import { playWaterRipple } from '../lib/waterRipple.js'
+import { tokenMs } from '../lib/tokenMs.js'
 import '../styles/siteNav.css'
 import '../styles/navOverlay.css'
 
@@ -143,8 +144,6 @@ function SiteNavLinks({ onNavigate, variant = 'desktop', current }) {
 }
 
 
-const OVERLAY_MS = 250 // sets --nav-overlay-ms on the overlay; it closes at 0.82 of this (navOverlay.css)
-
 // Shown only while the menu is closed (SiteNav unmounts it when the menu opens),
 // so it announces "opens a dialog" instead of a live expanded state.
 function NavToggle({ ref, onToggle, className = '' }) {
@@ -170,19 +169,20 @@ function OverlayClose({ ref, onClose, label }) {
     <button
       ref={ref}
       type="button"
-      className="nav-overlay__close"
+      className="nav-toggle nav-overlay__close"
       onClick={onClose}
       aria-label={label}
     >
-      <span className="nav-overlay__close-line" aria-hidden />
-      <span className="nav-overlay__close-line" aria-hidden />
+      <span className="nav-toggle__line" aria-hidden />
+      <span className="nav-toggle__line" aria-hidden />
+      <span className="nav-toggle__line" aria-hidden />
     </button>
   )
 }
 
+// How long the overlay stays mounted after it starts to close (the closing transitions in navOverlay.css).
 function overlayDuration() {
-  if (typeof window === 'undefined') return OVERLAY_MS
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : OVERLAY_MS
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : tokenMs('--duration-base')
 }
 
 function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
@@ -218,12 +218,11 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
   }, [mounted])
 
   // The toggle that opened the menu is gone now; move focus into the dialog.
-  // Wait for is-active: before it the overlay is visibility: hidden and cannot take focus.
   useEffect(() => {
     if (active) closeBtn.current?.focus()
   }, [active])
 
-  // Two frames after mounting, add is-active so the opening transition runs from the hidden state.
+  // Two frames after mounting, add is-active so the opening transitions run from the closed state.
   useEffect(() => {
     if (!open) return undefined
     let inner = 0
@@ -236,7 +235,7 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
     }
   }, [open])
 
-  // Unmount when the closing animation ends.
+  // Unmount when the closing transitions end.
   useEffect(() => {
     if (!closing) return undefined
     const timer = window.setTimeout(() => setClosing(false), overlayDuration())
@@ -284,7 +283,6 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
       role="dialog"
       aria-modal="true"
       aria-label={t.dialog}
-      style={{ '--nav-overlay-ms': `${OVERLAY_MS}ms` }}
     >
       <header className="nav-overlay__bar">
         <span className="nav-overlay__mark">

@@ -88,3 +88,31 @@ figcaption {
   margin: 0;
   font-size: var(--type-small);
 }
+
+/* Page entrance (Journal, About, Work): the element rises 8px and comes into focus. mountReveal adds
+   is-visible; --i staggers a group by 80ms. */
+:is(.journal-page, .work-page) .fade-in {
+  opacity: 0;
+  transform: translateY(8px);
+  filter: blur(8px);
+  transition:
+    opacity var(--duration-reveal) var(--ease-touch),
+    transform var(--duration-reveal) var(--ease-touch),
+    filter var(--duration-reveal) var(--ease-touch);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+:is(.journal-page, .work-page) .fade-in.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.journal-page, .work-page) .fade-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}

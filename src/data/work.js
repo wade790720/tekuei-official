@@ -113,3 +113,8 @@ export const CODE_WORK_ITEMS = {
     },
   ],
 }
+
+export const WORK_LABELS = {
+  zh: { loading: '作品載入中' },
+  en: { loading: 'Loading work' },
+}
