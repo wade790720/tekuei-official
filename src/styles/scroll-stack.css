@@ -1,0 +1,105 @@
+/* ScrollStack. Sizes and the per-step lift, shrink, blur and dim are measured from React Bits Pro's Scroll Stack.
+   A parent can set --scroll-stack-width, -height, -top and -gap. The defaults centre a 68svh card
+   and give each card one screen of scrolling. */
+
+.scroll-stack {
+  display: flow-root;
+  margin-inline: auto;
+  max-width: var(--scroll-stack-width, 880px);
+}
+
+.scroll-stack__item {
+  position: sticky;
+  top: var(--scroll-stack-top, 16svh);
+  height: var(--scroll-stack-height, 68svh);
+}
+
+/* The gap is a top margin: a bottom margin would let the end of the stack push the covered cards up early */
+.scroll-stack__item + .scroll-stack__item {
+  margin-top: var(--scroll-stack-gap, 32svh);
+}
+
+.scroll-stack__card {
+  height: 100%;
+  opacity: clamp(0, calc(4 - var(--depth, 0)), 1);
+  transform: translateY(calc(var(--depth, 0) * -26px)) scale(calc(1 - var(--depth, 0) * 0.07));
+  filter: blur(calc(var(--depth, 0) * 4px)) brightness(calc(1 - var(--depth, 0) * 0.28));
+  will-change: transform, filter;
+}
+
+/* Zero height, so it takes no room above the first card: it sticks under the stack, over the arriving card */
+.scroll-stack__progress {
+  position: sticky;
+  top: calc(var(--scroll-stack-top, 16svh) + var(--scroll-stack-height, 68svh) + var(--space-12));
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* The margins cancel out in the layout. The negative one makes the end of the stack push the rail
+     and the cards at the same moment, so the rail never rides up onto the last card. */
+  margin: var(--space-12) 0 calc(-1 * var(--space-12));
+  height: 0;
+  color: var(--text-primary);
+  opacity: var(--shown, 0);
+  pointer-events: none;
+
+  gap: var(--space-4);
+}
+
+.scroll-stack__rail {
+  position: relative;
+  width: 176px;
+  height: 1px;
+  background: color-mix(in srgb, currentColor 20%, transparent);
+}
+
+.scroll-stack__rail::after {
+  position: absolute;
+  background: currentColor;
+  content: '';
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+
+  inset: 0;
+}
+
+.scroll-stack__count {
+  color: var(--text-secondary);
+  letter-spacing: var(--type-label-ls);
+  font-size: var(--type-label);
+  font-family: var(--font-label);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Room for the rail under the last card, so the end of the stack does not push it onto the card */
+.scroll-stack::after {
+  display: block;
+  height: var(--space-24);
+  content: '';
+}
+
+@media (max-width: 768px) {
+  .scroll-stack__rail {
+    width: 112px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-stack__progress, .scroll-stack::after {
+    display: none;
+  }
+
+  .scroll-stack__item {
+    position: static;
+  }
+
+  .scroll-stack__item + .scroll-stack__item {
+    margin-top: var(--space-6);
+  }
+
+  .scroll-stack__card {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

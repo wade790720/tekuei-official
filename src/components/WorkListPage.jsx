@@ -4,7 +4,7 @@ import { useWorkContent } from '../hooks/useWorkContent.js'
 import { labWorkItems } from '../labs/media.js'
 import { SiteFooter } from './SiteFooter.jsx'
 import { WORK_THUMBS } from '../data/workMedia.js'
-import { CODE_WORK_ITEMS, projectHref, PROJECTS_PAGE, WORK_LABELS } from '../data/work.js'
+import { CODE_WORK_ITEMS, projectHref, PROJECT_SECTIONS, PROJECT_TYPES, PROJECTS_PAGE, WORK_LABELS } from '../data/work.js'
 import { useLang } from '../i18n'
 import { TagList } from './Tag.jsx'
 import '../styles/work.css'
@@ -56,83 +56,65 @@ function WorkThumbGraphic({ thumbSvg }) {
 // A video thumbnail shows only its poster when the system asks for less motion.
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-function WorkCard({ item }) {
+function WorkCard({ item, total }) {
   return (
-    <article className="work-grid__item fade-in">
-      <Link className="work-grid__card" to={item.caseHref}>
-        <div className="work-thumb">
-          <div className="num">{item.num}</div>
-          <div
-            className={[
-              'work-thumb-img',
-              item.thumbImage?.url ? 'work-thumb-img--has-photo' : '',
-            ]
-              .filter(Boolean)
-              .join(' ')}
-            style={!item.thumbImage?.url ? { background: item.thumbBg } : undefined}
-          >
-            {item.thumbImage?.video && !reduceMotion ? (
-              <video
-                className="work-thumb-photo"
-                src={item.thumbImage.video}
-                poster={item.thumbImage.url}
-                autoPlay
-                loop
-                muted
-                playsInline
-                aria-hidden
-              />
-            ) : item.thumbImage?.url ? (
-              <img className="work-thumb-photo" src={item.thumbImage.url} alt="" />
-            ) : (
-              <WorkThumbGraphic thumbSvg={item.thumbSvg} />
-            )}
-          </div>
+    <article className="work-card fade-in">
+      <Link className="work-card__link" to={item.caseHref}>
+        <div className="work-card__media" style={!item.thumbImage?.url ? { background: item.thumbBg } : undefined}>
+          {item.thumbImage?.video && !reduceMotion ? (
+            <video
+              className="work-card__photo"
+              src={item.thumbImage.video}
+              poster={item.thumbImage.url}
+              autoPlay
+              loop
+              muted
+              playsInline
+              aria-hidden
+            />
+          ) : item.thumbImage?.url ? (
+            <img className="work-card__photo" src={item.thumbImage.url} alt="" />
+          ) : (
+            <WorkThumbGraphic thumbSvg={item.thumbSvg} />
+          )}
         </div>
-        <div className="work-info">
-          <div className="client">{item.client}</div>
-          <div className="title">
-            {item.titleEmWord ? (
-              <>
-                <em>{item.titleEmWord}</em> {item.title}
-              </>
-            ) : (
-              item.title
-            )}
-          </div>
-          <div className="subtitle">{item.subtitle}</div>
-          <div className="divider" aria-hidden />
-          <div className="desc">
-            {item.descriptionLines.map((line, i) => (
-              <span key={`${item.id}-desc-${i}`}>
-                {i > 0 ? <br /> : null}
-                {line}
-              </span>
-            ))}
-          </div>
+        <div className="work-card__num">
+          {item.num}/{total}
+        </div>
+        <div className="work-card__info">
+          <div className="work-card__client">{item.client}</div>
+          <h3 className="work-card__title">{item.titleEmWord ? `${item.titleEmWord} ${item.title}` : item.title}</h3>
           <TagList tags={item.tags} variant="outline" />
-          <div className="arrow">
-            <div className="arrow-line" />
-            <span>V I E W</span>
-          </div>
         </div>
       </Link>
     </article>
   )
 }
 
+const pad = (n) => String(n).padStart(2, '0')
+
 export default function WorkListPage() {
   const { content, loading } = useWorkContent()
   const { lang } = useLang()
 
   const page = PROJECTS_PAGE[lang]
-  const clientItems = [...content.items, ...CODE_WORK_ITEMS[lang]].map((item, i) => ({
-    ...item,
-    num: item.num ?? String(i + 1).padStart(2, '0'),
-    thumbImage: WORK_THUMBS[item.id] ?? item.thumbImage,
-    caseHref: projectHref(item.caseHref),
-  }))
-  const items = [...clientItems, ...labWorkItems(lang, clientItems.length + 1)]
+  const all = [
+    ...[...content.items, ...CODE_WORK_ITEMS[lang]].map((item) => ({
+      ...item,
+      // A project nobody has filed yet still has to show up somewhere
+      type: PROJECT_TYPES[item.id] ?? 'web',
+      thumbImage: WORK_THUMBS[item.id] ?? item.thumbImage,
+      caseHref: projectHref(item.caseHref),
+    })),
+    ...labWorkItems(lang, 1).map((item) => ({ ...item, type: 'side' })),
+  ]
+  // Cards are numbered in the order they are shown: section by section.
+  let shown = 0
+  const sections = PROJECT_SECTIONS.map((section) => ({
+    ...section,
+    items: all.filter((item) => item.type === section.id).map((item) => ({ ...item, num: pad(++shown) })),
+  })).filter((section) => section.items.length)
+  const total = pad(shown)
 
   useEffect(() => {
     document.title = page.title
@@ -152,7 +134,7 @@ export default function WorkListPage() {
                 <h1 className="fade-in" style={{ '--i': 1 }}>{page.heading}</h1>
               </div>
               <div className="count fade-in" style={{ '--i': 2 }}>
-                0{items.length} {page.countSuffix}
+                {total} {page.countSuffix}
               </div>
             </div>
           </header>
@@ -161,11 +143,23 @@ export default function WorkListPage() {
             <div className="work-header-rule-line" />
           </div>
 
-          <section className="work-grid" aria-label={page.list}>
-            {items.map((item) => (
-              <WorkCard key={item.id} item={item} />
+          <div className="work-list">
+            {sections.map((section) => (
+              <section key={section.id} aria-labelledby={`work-section-${section.id}`}>
+                <div className="work-section__head fade-in">
+                  <h2 className="work-section__title" id={`work-section-${section.id}`}>
+                    {section[lang]}
+                  </h2>
+                  <span className="work-section__count">{pad(section.items.length)}</span>
+                </div>
+                <div className="work-grid">
+                  {section.items.map((item) => (
+                    <WorkCard key={item.id} item={item} total={total} />
+                  ))}
+                </div>
+              </section>
             ))}
-          </section>
+          </div>
 
           <SiteFooter />
         </>

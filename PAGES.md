@@ -49,6 +49,9 @@
 
 - 作品列表叫 Projects，網址 `/projects`，案例頁是 `/projects/<slug>`，和 Journal 一樣列表和內頁同一個開頭。舊的 `/work` 301 轉到 `/projects`（`public/_redirects`）。列表的標題寫在 `src/data/work.js` 的 `PROJECTS_PAGE`，不讀 R2；R2 存的 `/cases/` 連結由 `projectHref` 轉成新網址，正式資料不用改。程式裡的檔名和 R2 的 `work` 區段維持原名。
 
+- 列表只有一種檢視：一覽全部專案的格線，分成三區，依序是「網頁」、「展覽」、「Side Projects」（`PROJECT_SECTIONS`）。每區一個小標題和數量，下面是兩欄的卡片（照 shadcnblocks 的 Case Studies 12），900px 以下一欄。沒有專案的區段不顯示。精選和一次看一張的版型屬於首頁，不放在這裡。
+- 專案屬於哪一區寫在程式碼裡：`src/data/work.js` 的 `PROJECT_TYPES`，用 id 對照，R2 的資料不用改。Labs 一律在 Side Projects，Chrome 擴充功能也歸這一區。一個專案只歸一區，依 Wade 實際做的東西分，例如替展覽做的網站歸「網頁」。沒有登記的專案先排在「網頁」。
+- 卡片（`WorkCard`）是 16:10，手機 4:5：圖片或影片鋪滿，右上角是編號（依顯示順序，跨區連續），文字在下方的漸層上（單位、標題、標籤）。圓角 22px、內距 36px（手機 24px）照 React Bits Pro 的 Scroll Stack，不用 `--radius-lg`。
 - 內文段落（`case-prose`）最寬 `--page-reading`，字級 `--type-body`。
 - 標題、交付項目、時間軸維持外欄寬度。
 - 案例資料可以有 `videos`（`src`、`poster`、`caption`）：用 `VideoPlayer` 排在「背景」段落後面，外欄寬度，循環播放。影片放在 `src/assets/cases/<slug>/`，是從案例網站錄的捲動導覽。目前只有 Matsu Biennial（首頁、策展主題頁、藝術作品頁）。

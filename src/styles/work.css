@@ -37,6 +37,11 @@ html.has-scroll-document body, html.has-scroll-document #root {
   height: auto;
 }
 
+/* hidden would make body a scroll container that never scrolls, and position: sticky would stick to it */
+html.has-scroll-document body {
+  overflow: clip;
+}
+
 
 
 .work-page-header {
@@ -101,125 +106,136 @@ html.has-scroll-document body, html.has-scroll-document #root {
   min-height: 100svh;
 }
 
-.work-grid {
+.work-list {
   position: relative;
   z-index: 2;
+  display: grid;
   margin: 0 auto;
   padding: var(--space-12) var(--page-pad) var(--space-24);
   max-width: var(--page-column-box);
+
+  gap: var(--section-gap);
 }
 
-.work-grid__item {
-  position: relative;
+.work-section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.work-section__title {
+  margin: 0;
+  color: var(--text);
+  font-weight: 400;
+  font-size: var(--type-h2);
+  font-family: var(--fd);
+  line-height: var(--type-h2-lh);
+}
+
+.work-section__count {
+  color: var(--text-tertiary);
+  letter-spacing: var(--type-label-ls);
+  font-size: var(--type-label);
+  font-family: var(--font-label);
+}
+
+.work-grid {
   display: grid;
-  margin-bottom: 1px;
 
   grid-template-columns: 1fr 1fr;
-  gap: 0;
+  gap: var(--space-6);
 }
 
-.work-grid__card {
-  display: contents;
-  margin: 0;
-  padding: 0;
+/* A 16:10 picture with the text over it: the card has the picture's shape, so nothing is cropped */
+.work-card {
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 22px;
+  background: var(--panel);
+
+  aspect-ratio: 16 / 10;
+  --work-card-pad: calc(var(--space-8) + var(--space-1));
+}
+
+/* The ring sits over the picture, so the picture cannot cover it */
+.work-card::after {
+  position: absolute;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  content: '';
+  transition: box-shadow var(--duration-fade) var(--ease-touch);
+  pointer-events: none;
+
+  inset: 0;
+}
+
+.work-card__link {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
   color: inherit;
   text-decoration: none;
 }
 
-.work-thumb {
-  position: relative;
-  overflow: hidden;
-  border: 0.5px solid var(--line-strong);
-  background: var(--bg-deep);
-  transition: border-color var(--duration-fade) var(--ease-touch);
-
-  aspect-ratio: 16 / 10;
-}
-
-@media (hover: hover) {
-  .work-grid__item:hover .work-thumb {
-    border-color: var(--accent);
-  }
-}
-
-.work-thumb-img {
-  position: relative;
+.work-card__media {
+  position: absolute;
+  z-index: -1;
   display: flex;
-  overflow: hidden;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  transition: transform var(--duration-reveal) var(--ease-touch);
+
+  inset: 0;
 }
 
-.work-thumb-img--has-photo {
-  background: var(--bg-deep);
-}
-
-.work-thumb-photo {
+.work-card__photo {
   position: absolute;
   width: 100%;
   height: 100%;
   transition: transform var(--duration-reveal) var(--ease-touch);
 
   inset: 0;
-  object-fit: fill;
-}
-
-@media (hover: hover) {
-  .work-grid__item:hover .work-thumb-photo {
-    transform: scale(1.03);
-  }
+  object-fit: cover;
 }
 
 .work-thumb-mark {
-  color: var(--accent);
-  opacity: 0.55;
-  transition: opacity var(--duration-fade) var(--ease-touch),
-  transform var(--duration-reveal) var(--ease-touch);
+  color: var(--text-secondary);
+  opacity: 0.35;
 }
 
-@media (hover: hover) {
-  .work-grid__item:hover .work-thumb-mark {
-    opacity: 0.85;
-    transform: scale(1.04);
-  }
-}
-
-.work-thumb .num {
+.work-card__num {
   position: absolute;
-  top: 24px;
-  left: 28px;
-  z-index: 2;
-  color: var(--accent);
+  top: var(--work-card-pad);
+  right: var(--work-card-pad);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--surface-0) 60%, transparent);
+  color: var(--text-primary);
   letter-spacing: var(--type-label-ls);
   font-size: var(--type-label);
   font-family: var(--font-label);
 }
 
-.work-info {
-  position: relative;
+.work-card__info {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: var(--space-12) var(--space-12);
-  border-left: 0.5px solid var(--line-strong);
-  background: var(--panel);
+  padding: var(--space-12) var(--work-card-pad) var(--work-card-pad);
+  /* The gradient belongs to the text, not the picture: it is as tall as the text, and dark enough for a white screenshot */
+  background: linear-gradient(
+  to top,
+  color-mix(in srgb, var(--surface-0) 94%, transparent),
+  color-mix(in srgb, var(--surface-0) 82%, transparent) 60%,
+  transparent
+  );
+
+  gap: var(--space-4);
 }
 
-.work-grid__item:nth-child(even) .work-info {
-  order: -1;
-  border-right: 0.5px solid var(--line-strong);
-  border-left: none;
-}
-
-.work-grid__item:nth-child(even) .work-thumb {
-  order: 1;
-}
-
-.work-info .client {
-  margin-bottom: var(--space-6);
+.work-card__client {
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: var(--type-label-ls);
@@ -227,8 +243,8 @@ html.has-scroll-document body, html.has-scroll-document #root {
   font-family: var(--font-label);
 }
 
-.work-info .title {
-  margin-bottom: var(--space-2);
+.work-card__title {
+  margin: 0;
   color: var(--text);
   font-weight: 400;
   font-size: clamp(22px, 2.8vw, 34px);
@@ -237,112 +253,32 @@ html.has-scroll-document body, html.has-scroll-document #root {
   transition: color var(--duration-slow) var(--ease-touch);
 }
 
-.work-info .title em {
-  font-style: normal;
-  font-family: inherit;
-}
-
-@media (hover: hover) {
-  .work-grid__item:hover .work-info .title {
-    color: var(--accent);
-  }
-}
-
-.work-info .subtitle {
-  margin-bottom: var(--space-8);
-  color: var(--text-secondary);
-  letter-spacing: var(--type-label-ls);
-  font-weight: var(--weight-light);
-  font-size: clamp(12px, 1.2vw, 14px);
-  font-family: var(--fc);
-}
-
-.work-info .divider {
-  margin-bottom: var(--space-6);
-  width: 28px;
-  height: 0.5px;
-  background: var(--accent);
-  opacity: 0.45;
-}
-
-.work-info .desc {
-  margin-bottom: var(--space-8);
-  color: var(--text-secondary);
-  letter-spacing: 0;
-  font-weight: var(--weight-light);
-  font-size: clamp(11px, 1.1vw, 13px);
-  font-family: var(--fc);
-  line-height: 2.1;
-}
-
-.work-info .tag-list {
+.work-card .tag-list {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: var(--space-8);
 
   gap: var(--space-2);
 }
 
-.work-info .arrow {
-  display: flex;
-  align-items: center;
-  color: var(--text-secondary);
-  letter-spacing: var(--type-label-ls);
-  font-size: var(--type-label);
-  font-family: var(--font-label);
-  transition: color var(--duration-slow) var(--ease-touch);
-
-  gap: var(--space-3);
-}
-
-/* The line grows and VIEW slides with transform, so nothing around them reflows */
-.work-info .arrow span {
-  transition: transform var(--duration-slow) var(--ease-touch);
-}
-
-.work-info .arrow-line {
-  width: 20px;
-  height: 0.5px;
-  background: var(--accent-line);
-  transform-origin: left;
-  transition: transform var(--duration-slow) var(--ease-touch),
-  background var(--duration-slow) var(--ease-touch);
-}
-
 @media (hover: hover) {
-  .work-grid__item:hover .arrow {
+  .work-card:hover::after {
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+
+  .work-card:hover .work-card__photo {
+    transform: scale(1.03);
+  }
+
+  .work-card:hover .work-card__title {
     color: var(--accent);
   }
 }
 
-@media (hover: hover) {
-  .work-grid__item:hover .arrow span {
-    transform: translateX(var(--space-4)); /* line +12px, gap +4px */
+@media (forced-colors: active) {
+  .work-card::after {
+    border: 1px solid CanvasText;
   }
 }
-
-@media (hover: hover) {
-  .work-grid__item:hover .arrow-line {
-    transform: scaleX(1.6); /* 20px → 32px */
-    background: var(--accent);
-  }
-}
-
-.work-grid__item + .work-grid__item::before {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 0.3px;
-  background: var(--accent-line);
-  content: '';
-}
-
-.work-thumb-mark {
-  color: var(--text-secondary);
-  opacity: 0.35;
-}
-
 
 
 .case-stub {
@@ -404,37 +340,22 @@ html.has-scroll-document body, html.has-scroll-document #root {
   }
 
   .work-grid {
-    padding: var(--space-12) 0 var(--space-24);
-  }
-
-  .work-grid__item {
     grid-template-columns: 1fr;
-  }
-
-  .work-grid__card {
-    grid-template-columns: 1fr;
-  }
-
-  .work-grid__item:nth-child(even) .work-info {
-    order: unset;
-    border-right: none;
-  }
-
-  .work-grid__item:nth-child(even) .work-thumb {
-    order: unset;
-  }
-
-  .work-info {
-    padding: var(--space-8) var(--space-6);
-    border-left: none !important;
-  }
-
-  .work-thumb .num {
-    top: 16px;
-    left: 20px;
   }
 
   .case-stub {
     padding-inline: var(--space-6);
+  }
+}
+
+
+@media (max-width: 768px) {
+  .work-card {
+    aspect-ratio: 4 / 5;
+    --work-card-pad: var(--space-6);
+  }
+
+  .work-card__info {
+    gap: var(--space-3);
   }
 }
