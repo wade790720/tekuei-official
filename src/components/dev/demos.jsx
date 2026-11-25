@@ -21,6 +21,7 @@ import { Breadcrumbs, BreadcrumbsItem } from '../Breadcrumbs.jsx'
 import { Accordion, AccordionItem } from '../Accordion.jsx'
 import { Skeleton } from '../Skeleton.jsx'
 import { Marquee } from '../Marquee.jsx'
+import { ScrollStack } from '../ScrollStack.jsx'
 import { blocksToDoc } from '../../lib/richText.js'
 import { mountGlyphField } from '../../lib/glyphField.js'
 import { mountGrainHaze } from '../../lib/grainHaze.js'
@@ -389,6 +390,39 @@ const DEMOS = {
     <div style={{ display: 'grid', gap: 'var(--space-8)', width: '100%' }}>
       <Marquee items={['LG', 'GQ', 'Starbucks', 'Hahow', 'W Hotel']} />
       <Marquee items={['AUO', 'PTS', 'TAICCA', 'Uni-President']} reverse />
+    </div>
+  ),
+  'scroll-stack': () => (
+    <div
+      style={{
+        width: '100%',
+        height: 420,
+        overflowY: 'auto',
+        '--scroll-stack-width': '360px',
+        '--scroll-stack-height': '240px',
+        '--scroll-stack-top': 'var(--space-12)',
+        '--scroll-stack-gap': 'var(--space-24)',
+      }}
+    >
+      <ScrollStack>
+        {['01', '02', '03', '04', '05'].map((n) => (
+          <div
+            key={n}
+            style={{
+              display: 'grid',
+              placeItems: 'center',
+              height: '100%',
+              borderRadius: 'var(--radius-lg)',
+              background: 'var(--surface-2)',
+              boxShadow: 'inset 0 0 0 1px var(--line-strong)',
+              color: 'var(--text-secondary)',
+              fontFamily: 'var(--font-label)',
+            }}
+          >
+            {n}
+          </div>
+        ))}
+      </ScrollStack>
     </div>
   ),
   accordion: () => <AccordionDemo />,

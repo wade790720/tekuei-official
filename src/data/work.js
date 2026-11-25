@@ -8,8 +8,23 @@ export const WORK_ITEMS = siteDefaults.work.items.map((item) => ({ ...item, case
 
 // The list's title and labels live here, not in R2, so the page can be renamed without touching saved data.
 export const PROJECTS_PAGE = {
-  zh: { title: 'TEKUEI · Projects', pre: 'SELECTED PROJECTS', heading: 'Projects', countSuffix: 'Projects', list: '專案列表' },
-  en: { title: 'TEKUEI · Projects', pre: 'SELECTED PROJECTS', heading: 'Projects', countSuffix: 'Projects', list: 'Projects' },
+  zh: { title: 'TEKUEI · Projects', pre: 'SELECTED PROJECTS', heading: 'Projects', countSuffix: 'Projects' },
+  en: { title: 'TEKUEI · Projects', pre: 'SELECTED PROJECTS', heading: 'Projects', countSuffix: 'Projects' },
+}
+
+// The list is shown in these sections, in this order. A section with no project is left out.
+export const PROJECT_SECTIONS = [
+  { id: 'web', zh: '網頁', en: 'Web' },
+  { id: 'exhibition', zh: '展覽', en: 'Exhibitions' },
+  { id: 'side', zh: 'Side Projects', en: 'Side Projects' },
+]
+
+// Which section a client project is in, by id: the R2 items carry no type. Labs are always in `side`.
+export const PROJECT_TYPES = {
+  'matsu-biennial': 'web',
+  monolab: 'web',
+  'lustre-yellow': 'web',
+  sre: 'web',
 }
 
 export function cloneWorkContent(content = siteDefaults.work) {

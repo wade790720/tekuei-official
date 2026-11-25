@@ -678,6 +678,39 @@ export const GROUPS = [
       },
 
       {
+        id: 'scroll-stack',
+        name: 'ScrollStack',
+        file: 'src/components/ScrollStack.jsx',
+        summary: '捲動時一張接一張疊起來的卡片。目前這張固定在畫面上，下一張從下方蓋上來',
+        hero: {
+          demo: 'scroll-stack',
+          code: `<ScrollStack>
+  <ProjectCard />
+  <ProjectCard />
+  <ProjectCard />
+</ScrollStack>`,
+        },
+        api: [
+          {
+            description: '每個子元素是一張卡片，高度由 ScrollStack 決定，卡片自己填滿 100%',
+            props: [
+              ['children', 'node', '—', '必填，一個子元素一張卡片'],
+              ['className', 'string', '—', '加在最外層，用來排版'],
+            ],
+          },
+        ],
+        examples: [],
+        notes: [
+          '被蓋住的卡片每多一層：往上 26px、縮小 7%、模糊 4px、變暗 28%。超過三層後淡出。',
+          '卡片下方 48px 有一條進度線（176px，手機 112px）和計數「03 / 07」，讓人知道還有幾張。第一張卡片固定後才出現，最後跟著卡片一起離開。它是裝飾，加了 aria-hidden。',
+          '尺寸用 CSS 變數調整，寫在上層元素：--scroll-stack-width（880px）、--scroll-stack-height（68svh）、--scroll-stack-top（16svh）、--scroll-stack-gap（32svh）。預設值讓每張卡片捲一個螢幕。',
+          '跟著最近的捲動容器走，整頁捲動或放在可以捲動的容器裡都可以。上層元素不能有 overflow: hidden，否則卡片不會固定。',
+          '卡片本身不要用 transform 或 fade-in 以外的 filter，位移和模糊由 ScrollStack 的外層處理。',
+          '減少動態效果開啟時不固定也不變形，卡片依序排成一列，間距 24px，沒有進度線。',
+        ],
+      },
+
+      {
         id: 'accordion',
         name: 'Accordion',
         file: 'src/components/Accordion.jsx',
