@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
-import { getDefaultJournal, JOURNAL_META } from '../src/data/journal.js'
+import { JOURNAL_META } from '../src/data/journal.js'
+import { sampleJournal } from './fixtures/journal.mjs'
 import { injectPage, journalIndexPage, llmsTxt, postPage, serveCase, servePage, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.js'
 import { fakeR2 } from './fakeR2.mjs'
 
-const journal = getDefaultJournal()
+const journal = sampleJournal()
 const slug = journal.posts.zh[0].slug
 const work = JSON.parse(readFileSync(new URL('../src/data/data.json', import.meta.url), 'utf8')).work.items
 const indexHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf8')
@@ -67,8 +68,8 @@ describe('postPage', () => {
 })
 
 describe('site files', () => {
-  it('falls back to the bundled journal when R2 has none', () => {
-    assert.ok(siteJournal(null).posts.zh.length > 0)
+  it('is an empty journal when R2 has none: no post is bundled with the site', () => {
+    assert.deepEqual(siteJournal(null).posts.zh, [])
     const remote = { posts: { zh: [] }, content: { zh: {} } }
     assert.equal(siteJournal({ journal: remote }), remote)
   })
@@ -92,7 +93,7 @@ describe('site files', () => {
 describe('servePage', () => {
   const ctx = (path) => ({
     request: new Request(`https://tekuei.com${path}`),
-    env: { ASSETS: { fetch: async () => new Response(indexHtml) }, BUCKET: fakeR2() },
+    env: { ASSETS: { fetch: async () => new Response(indexHtml) }, BUCKET: fakeR2({ 'data.json': { journal } }) },
   })
 
   it('answers case and lab pages with 200, unknown ones with 404, and moved ones with 301', async () => {
@@ -137,4 +138,28 @@ describe('post tags', () => {
   it('puts tags into the BlogPosting JSON-LD', () => {
     assert.match(injectPage(indexHtml, postPage(journal, slug)), /"keywords":"PHILOSOPHY"/)
   })
+})
+
+it('a project written in the editor gets its own page, and a draft or outside link does not', async () => {
+  const { projectPage, siteCases } = await import('../src/lib/seo.js')
+  const doc = { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: '展覽的說明' }] }] }
+  const work = {
+    items: [
+      { id: 'show', title: '某個展覽', client: '美術館', tags: ['Exhibition'] },
+      { id: 'hidden', title: '還沒公開', draft: true },
+      { id: 'outside', title: '外部網站', link: 'https://example.com/' },
+      { id: 'coded', title: 'Coded', caseHref: '/cases/coded' },
+      { id: 'both', title: '有內頁也有網站', link: 'https://example.org/' },
+    ],
+    content: { zh: { show: { doc }, hidden: { doc }, both: { doc } } },
+  }
+  const page = projectPage(work, 'show')
+  assert.equal(page.url, 'https://tekuei.com/projects/show')
+  assert.match(page.html, /<h1>某個展覽<\/h1>.*展覽的說明/)
+  assert.equal(projectPage(work, 'hidden'), null, 'a draft has no page')
+  assert.equal(projectPage(work, 'coded'), null, 'a page written in code is not rendered here')
+  const hrefs = siteCases(work.items, work).map((w) => w.caseHref)
+  assert.ok(hrefs.includes('/projects/show') && hrefs.includes('/projects/coded'))
+  assert.ok(hrefs.includes('/projects/both'), 'a project with a page is listed at its page, not its outside link')
+  assert.ok(!hrefs.includes('/projects/hidden') && !hrefs.some((h) => h.startsWith('http')))
 })

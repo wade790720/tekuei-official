@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { SiteFooter } from './SiteFooter.jsx'
 import { TagList } from './Tag.jsx'
 import { JournalPostBody } from './journal/JournalPostBody.jsx'
+import { ShareLinks } from './journal/ShareLinks.jsx'
 import { RichText } from './RichText.jsx'
 import { Breadcrumbs, BreadcrumbsItem } from './Breadcrumbs.jsx'
 import { getDoc } from '../lib/richText.js'
@@ -68,14 +69,16 @@ export default function JournalPostPage() {
             <TagList tags={postTags(post)} />
             <span aria-hidden>·</span>
             <time dateTime={post.date.replace(/\./g, '-')}>{post.date}</time>
-            <span aria-hidden>·</span>
-            <span>{post.readMin} min read</span>
           </div>
           <div className="journal-post__num fade-in" style={{ '--i': 2 }}>{post.num}</div>
           <h1 className="journal-post__title fade-in" style={{ '--i': 3 }}>{post.title}</h1>
           <div className="journal-post__title-en fade-in" style={{ '--i': 4 }}>{post.titleEn}</div>
+          {/* Wrapped so the fade-in transition does not replace the buttons' own */}
+          <div className="fade-in" style={{ '--i': 5 }}>
+            <ShareLinks />
+          </div>
           {post.untranslated ? (
-            <p className="journal-post__notice fade-in" lang="en" style={{ '--i': 5 }}>
+            <p className="journal-post__notice fade-in" lang="en" style={{ '--i': 6 }}>
               {t.untranslated}
             </p>
           ) : null}

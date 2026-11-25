@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict'
 import { it } from 'node:test'
-import { cloneJournal, copyJournalDraft, differsOnlyIn, getDefaultJournal, publishedJournal, readableJournal } from '../src/data/journal.js'
+import { cloneJournal, copyJournalDraft, differsOnlyIn, publishedJournal, readableJournal } from '../src/data/journal.js'
+import { sampleJournal } from './fixtures/journal.mjs'
 import { postPage, siteJournal, sitemapXml, llmsTxt } from '../src/lib/seo.js'
 
 it('copyJournalDraft: edits on the copy leave the saved journal alone, bodies are shared', () => {
-  const saved = cloneJournal(getDefaultJournal())
+  const saved = cloneJournal(sampleJournal())
   const before = JSON.stringify(saved)
   const draft = copyJournalDraft(saved)
   const slug = draft.posts.zh[0].slug
@@ -20,7 +21,7 @@ it('copyJournalDraft: edits on the copy leave the saved journal alone, bodies ar
 })
 
 const withDraft = () => {
-  const j = cloneJournal(getDefaultJournal())
+  const j = cloneJournal(sampleJournal())
   for (const l of Object.keys(j.posts)) j.posts[l][0] = { ...j.posts[l][0], draft: true }
   return j
 }
@@ -47,12 +48,12 @@ it('a draft has no SEO page and is not in the sitemap or llms.txt', () => {
 })
 
 it('a journal with no drafts is returned as it is', () => {
-  const j = cloneJournal(getDefaultJournal())
+  const j = cloneJournal(sampleJournal())
   assert.equal(publishedJournal(j), j)
 })
 
 it('a draft autosaves only when nothing outside it changed', () => {
-  const saved = cloneJournal(getDefaultJournal())
+  const saved = cloneJournal(sampleJournal())
   const slug = saved.posts.zh[0].slug
   const edited = cloneJournal(saved)
   edited.posts.zh[0].title = 'new title'

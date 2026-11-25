@@ -76,7 +76,7 @@ npm run dev:pages  # build 後用 wrangler 跑 Functions + R2
 ## 不明顯的坑
 
 1. **本機會寫到正式資料。** `.env.local` 把 `/api` 代理到正式站。測試登入或儲存之前，先在瀏覽器裡把 `/api` 換成假的。
-2. **文章不在程式碼裡。** Journal 文章在 R2 `data.json` 的 `journal`。`src/data/journal.js` 只是預設值，改它不會改到網站。
+2. **文章不在程式碼裡。** Journal 文章在 R2 `data.json` 的 `journal`。`src/data/journal.js` 只有文案和工具函式，沒有文章；R2 讀不到時 Journal 是空的。
 3. **CSS 和 Canvas 的坑**（`transform` 被淡入蓋掉、Canvas 讀不到變數、假粗體……）列在 DESIGN.md 的「Don't」。
 
 ## 內容的規則
