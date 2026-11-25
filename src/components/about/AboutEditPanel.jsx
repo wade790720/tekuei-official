@@ -8,18 +8,23 @@ export function AboutEditPanel({ cms }) {
   const { admin, ready, panelProps } = useCmsEditing(cms)
   if (!ready) return null
   return (
-    <SidePanel variant="bar" title="編輯 About" preview {...panelProps}>
-      <TranslateSection
-        compact
-        zhDoc={getDoc(cms.draft.zh)}
-        enDoc={getDoc(cms.draft.en)}
-        onDone={({ doc }) => {
-          cms.updateDraft((d) => {
-            d.en = { doc }
-          })
-          admin.reloadEditor()
-        }}
-      />
-    </SidePanel>
+    <SidePanel
+      variant="bar"
+      title="編輯 About"
+      preview
+      {...panelProps}
+      actions={
+        <TranslateSection
+          zhDoc={getDoc(cms.draft.zh)}
+          enDoc={getDoc(cms.draft.en)}
+          onDone={({ doc }) => {
+            cms.updateDraft((d) => {
+              d.en = { doc }
+            })
+            admin.reloadEditor()
+          }}
+        />
+      }
+    />
   )
 }

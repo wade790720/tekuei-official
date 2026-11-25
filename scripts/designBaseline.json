@@ -1,0 +1,35 @@
+{
+  "src/index.css": {
+    "色碼": 4
+  },
+  "src/labs/falling-figure/aboutFall.css": {
+    "色碼": 1,
+    "間距": 1
+  },
+  "src/labs/shatter-footer/shatterFooter.css": {
+    "色碼": 1
+  },
+  "src/styles/cards.css": {
+    "字重": 1,
+    "間距": 2,
+    "色碼": 2
+  },
+  "src/styles/checkin.css": {
+    "間距": 2
+  },
+  "src/styles/componentLibrary.css": {
+    "間距": 1
+  },
+  "src/styles/journal.css": {
+    "色碼": 2
+  },
+  "src/styles/marquee.css": {
+    "間距": 3
+  },
+  "src/styles/scrollShadow.css": {
+    "色碼": 2
+  },
+  "src/styles/work.css": {
+    "間距": 1
+  }
+}
