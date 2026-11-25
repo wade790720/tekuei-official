@@ -23,6 +23,7 @@ export const ABOUT_CLIENTS = [
     { zh: 'AMBI', en: 'AMBI', logo: 'ambi.svg' },
     { zh: '知識衛星', en: 'SAT. Knowledge', logo: 'sat.svg', height: 40 },
     { zh: '交大', en: 'NYCU', logo: 'nycu.svg' },
+    { zh: 'BenQ', en: 'BenQ', logo: 'benq.svg' },
   ],
   [
     { zh: '藝高', en: 'Yigao', logo: 'yigao.svg' },
