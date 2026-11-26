@@ -2,6 +2,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { getNextCase } from '../data/cases/index.js'
 import { useCaseCms } from '../hooks/useCaseCms.js'
+import { useLang } from '../i18n'
 import '../styles/case.css'
 import { VideoPlayer } from './VideoPlayer.jsx'
 
@@ -39,24 +40,15 @@ function CaseTitle({ titleEm, titleRest }) {
   )
 }
 
-function NextCaseTitle({ titleEm, titleRest }) {
-  return (
-    <div className="case-next-title">
-      {titleEm ? <em>{titleEm}</em> : null}
-      {titleEm ? ' ' : null}
-      {titleRest}
-    </div>
-  )
-}
-
 export default function CaseStudyPage() {
   const { slug } = useParams()
-  const { content: data, workItems, loading } = useCaseCms(slug)
+  const { lang } = useLang()
+  const { content: data, work, loading } = useCaseCms(slug)
 
   const hero = data?.hero
   const sections = data?.sections
   const media = data?.media
-  const nextCase = data ? getNextCase(data.slug, workItems) : null
+  const nextCase = data ? getNextCase(data.slug, work, lang) : null
 
   useEffect(() => {
     if (!data) return
@@ -232,7 +224,7 @@ export default function CaseStudyPage() {
         <div className="fade-in case-next">
           <div className="case-next-label">N E X T &nbsp;&nbsp; C A S E</div>
           <Link to={nextCase.href}>
-            <NextCaseTitle titleEm={nextCase.titleEm} titleRest={nextCase.titleRest} />
+            <div className="case-next-title">{nextCase.title}</div>
             <div className="case-next-sub">{nextCase.subtitle}</div>
           </Link>
         </div>

@@ -58,3 +58,23 @@ test('the file route serves uploaded images and nothing else in the bucket', asy
   assert.equal((await file('images/%2E%2E/data.json')).status, 404)
   assert.equal((await file('images/%E0%A4%A')).status, 400)
 })
+
+test('a data.json that cannot be read is not overwritten', async () => {
+  const e = env()
+  await e.BUCKET.put('data.json', '{ "journal": broken')
+  const res = await put(e, { about: { zh: 'new' } })
+  assert.equal(res.status, 500)
+  assert.equal((await (await e.BUCKET.get('data.json')).text()), '{ "journal": broken', 'the other sections are still there to recover')
+})
+
+test('an unchanged data.json is answered with 304 and no body', async () => {
+  const e = env()
+  const first = await get(e)
+  assert.equal(first.headers.get('Cache-Control'), 'private, no-cache')
+  const again = await onRequestGet({ request: new Request('https://x/api/data', { headers: { 'If-None-Match': first.headers.get('ETag') } }), env: e })
+  assert.equal(again.status, 304)
+  assert.equal(await again.text(), '')
+  await put(e, { journal: { posts: ['new'] } })
+  const after = await onRequestGet({ request: new Request('https://x/api/data', { headers: { 'If-None-Match': first.headers.get('ETag') } }), env: e })
+  assert.equal(after.status, 200, 'a saved change is sent in full')
+})

@@ -83,6 +83,17 @@ async function requestSiteData() {
   return { data: await res.json(), etag: res.headers.get('ETag') }
 }
 
+// Journal, Projects and About each remember the version of data.json they loaded. A save by one replaces
+// that version, so the others are told: a section still on the replaced version moves to the new one.
+// A section on any other version stays there, and its next save is refused, as it should be.
+const versionListeners = new Set()
+
+/** @param {(from: string | null, to: string | null) => void} fn  @returns {() => void} stop listening */
+export function onSiteVersion(fn) {
+  versionListeners.add(fn)
+  return () => versionListeners.delete(fn)
+}
+
 /**
  * @param {string | null} etag  the version this editor loaded; the server refuses the save (409) if it changed since
  * @returns {Promise<{ ok: true, etag: string }>}  etag of the saved version
@@ -102,6 +113,7 @@ export async function saveSitePatch(patch, token, etag) {
     throw new Error(res.status === 409 ? CMS_LABELS.stale : data.error || CMS_LABELS.saveFailed)
   }
   siteDataRequest = null // pages opened after this save read the new version
+  for (const fn of versionListeners) fn(etag ?? null, data.etag ?? null)
   return data
 }
 

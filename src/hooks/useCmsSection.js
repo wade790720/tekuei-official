@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useEffectEvent, useState } from 'react'
 import { siteDefaults } from '../lib/siteData.js'
-import { fetchSiteData, isRemoteSync, saveSitePatch } from '../lib/adminApi.js'
+import { fetchSiteData, isRemoteSync, onSiteVersion, saveSitePatch } from '../lib/adminApi.js'
 import { CMS_LABELS } from '../data/admin.js'
 
 /**
@@ -61,6 +61,9 @@ export function useCmsSection(sectionKey, getDefault, cloneContent, copyDraft = 
     }
   }, [sectionKey])
 
+  // Any section's save, this one's included, replaces the version this section loaded.
+  useEffect(() => onSiteVersion((from, to) => setEtag((mine) => (mine === from ? to : mine))), [])
+
   const startEditing = useCallback(() => {
     setDraft(cloneContent(content))
   }, [content, cloneContent])
@@ -92,8 +95,7 @@ export function useCmsSection(sectionKey, getDefault, cloneContent, copyDraft = 
     setSaving(true)
     setError('')
     try {
-      const saved = await saveSitePatch({ [sectionKey]: next }, token, etag)
-      setEtag(saved.etag ?? null)
+      await saveSitePatch({ [sectionKey]: next }, token, etag)
       setContent(cloneContent(next))
       // Edits made while the request was in flight stay in the draft; replacing it would drop them
       // while the editor still shows them, and the next save would not send them.

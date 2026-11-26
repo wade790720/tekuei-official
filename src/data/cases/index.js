@@ -1,7 +1,7 @@
 import { MATSU_BIENNIAL_CASE } from './matsuBiennial.js'
 import { MONOLAB_CASE } from './monolab.js'
 import { LUSTRE_YELLOW_CASE } from './lustreYellow.js'
-import { WORK_ITEMS } from '../work.js'
+import { DEFAULT_WORK, localizeWork, projectLink, projectTitle, publishedWork } from '../work.js'
 
 export const LOCAL_CASES = {
   'matsu-biennial': MATSU_BIENNIAL_CASE,
@@ -11,14 +11,15 @@ export const LOCAL_CASES = {
 
 export { LOCAL_CASES as CASE_BY_SLUG }
 
-export function getNextCase(slug, items = WORK_ITEMS) {
-  const idx = items.findIndex((w) => w.id === slug)
-  if (idx === -1) return null
-  const next = items[(idx + 1) % items.length]
-  return {
-    href: next.caseHref,
-    titleEm: next.titleEmWord,
-    titleRest: next.title,
-    subtitle: next.subtitle,
-  }
+/**
+ * The project after this one on the Projects list, as readers see the list: in their language, without
+ * drafts, linked where its card links. Null when this case is not on the list or is the only one.
+ * @param {object} [work]  the work section; the bundled one until R2 answers
+ */
+export function getNextCase(slug, work = DEFAULT_WORK, lang = 'zh') {
+  const shown = localizeWork(publishedWork(work), lang)
+  const idx = shown.items.findIndex((w) => w.id === slug)
+  if (idx === -1 || shown.items.length < 2) return null
+  const next = shown.items[(idx + 1) % shown.items.length]
+  return { href: projectLink(next, work), title: projectTitle(next), subtitle: next.client }
 }
