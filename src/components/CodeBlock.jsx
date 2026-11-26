@@ -7,7 +7,7 @@ import { Card } from './Card.jsx'
 import { ScrollShadow } from './ScrollShadow.jsx'
 import '../styles/cards.css'
 
-const BADGE = { bash: 'SH', shell: 'SH', zsh: 'SH', javascript: 'JS', typescript: 'TS', python: 'PY', yaml: 'YML' }
+const BADGE = { bash: 'SH', shell: 'SH', zsh: 'SH', javascript: 'JS', typescript: 'TS', python: 'PY', yaml: 'YML', text: 'TXT' }
 
 /**
  * @param {{ code: string, lang?: string, filename?: string }} props

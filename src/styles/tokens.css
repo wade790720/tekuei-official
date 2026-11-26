@@ -106,6 +106,8 @@
   /* Typeface: Latin in Instrument Serif, CJK in Source Han Serif (思源宋體, Google Fonts name Noto Serif TC).
      Instrument Serif has no CJK glyphs, so the browser uses the next font for Chinese. index.html loads both. */
   --font-serif: 'Instrument Serif', 'Noto Serif TC', 'Source Han Serif TC', serif;
+  /* Article text. Instrument Serif is a narrow display face; long English reads better in a text face. */
+  --font-reading: 'Source Serif 4', 'Noto Serif TC', 'Source Han Serif TC', serif;
   /* Living Portrait lab only, which loads it itself. Anton has one weight (400). */
   --font-display: 'Anton', 'Arial Narrow', sans-serif;
   --font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, monospace;

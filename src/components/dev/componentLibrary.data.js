@@ -334,6 +334,16 @@ export const GROUPS = [
               ['triggerProps', 'object', '—', '加在按鈕上的其他屬性，例如 draggable、onDragStart。按鈕按下時不會搶走編輯器的選取，可以拖曳的按鈕例外'],
             ],
           },
+          {
+            title: 'MenuItems',
+            description: '清單裡的項目列。DropdownMenu 用它畫清單，編輯器的「/」選單也用它，兩邊的項目長得一樣',
+            props: [
+              ['items', "({ value, label, icon?, kbd? } | 'divider')[]", '—', '必填，和 DropdownMenu 相同'],
+              ['value', 'string', '—', '有值時目前的項目打勾'],
+              ['active', 'string', '—', '焦點留在別處時（編輯器的「/」選單），用方向鍵移到的項目，用底色標出'],
+              ['onPick', '(value) => void', '—', '必填'],
+            ],
+          },
         ],
         examples: [
           {
@@ -382,7 +392,7 @@ export const GROUPS = [
 {admin.previewing ? <RichText doc={getDoc(body)} /> : null}` },
         api: [
           {
-            description: '沒有固定工具列。每一行左邊的「+」新增區塊、「⠿」拖曳或打開區塊選單。選取文字時浮出格式工具列：轉換成、粗體、斜體、底線、連結、行內程式碼',
+            description: '沒有固定工具列。每一行左邊的「+」新增區塊、「⠿」拖曳或打開區塊選單。在段落打「/」也會打開「+」的清單，接著打字篩選，例如「/code」。選取文字時浮出格式工具列：轉換成、粗體、斜體、底線、連結、行內程式碼。程式碼卡片的語言用選單選',
             props: [
               ['doc', 'object', '—', '必填，只在掛載時讀取，換文章時用新的 key 重新掛載'],
               ['onChange', '(doc) => void', '—', '必填，每次修改都傳出新的文件。只在掛載時讀取，之後換一個函式不會生效'],

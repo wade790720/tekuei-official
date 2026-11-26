@@ -95,7 +95,15 @@ export function useCmsSection(sectionKey, getDefault, cloneContent, copyDraft = 
       const saved = await saveSitePatch({ [sectionKey]: next }, token, etag)
       setEtag(saved.etag ?? null)
       setContent(cloneContent(next))
-      setDraft(cloneContent(next))
+      // Edits made while the request was in flight stay in the draft; replacing it would drop them
+      // while the editor still shows them, and the next save would not send them.
+      setDraft((cur) => {
+        if (cur === draft) return cloneContent(next)
+        if (!change) return cur
+        const kept = copyDraft(cur)
+        change(kept)
+        return kept
+      })
     } catch (err) {
       setError(err.message || '儲存失敗')
       throw err

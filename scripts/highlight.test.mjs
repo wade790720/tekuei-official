@@ -37,6 +37,10 @@ describe('tokenize', () => {
     assert.deepEqual(types('(a) => a - b'), ['punct:(', 'plain:a', 'punct:)', 'keyword:=>', 'plain:a', 'punct:-', 'plain:b'])
   })
 
+  it('leaves plain text unhighlighted', () => {
+    assert.deepEqual(tokenize('const x // y', 'text'), [{ type: 'plain', text: 'const x // y' }])
+  })
+
   it('uses # comments only for shell-like languages', () => {
     assert.deepEqual(types('# hi', 'bash'), ['comment:# hi'])
     assert.equal(types('#x', 'ts')[0], 'punct:#')
