@@ -1,0 +1,123 @@
+/* FeaturedPhotos. The 65 to 31 split, the 32px between the photo and the words and the 16px between thumbnails
+   are measured from React Bits Pro's Gallery 3. Its photo is nearly square; here it is 16:9, so a wide photo
+   is not cropped. */
+
+/* Each one is a new work, so it takes the gap of a new part: more than the 32px inside it */
+.featured {
+  container-type: inline-size;
+  margin: var(--gap-part) 0;
+}
+
+.featured__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 65fr) minmax(0, 31fr);
+  gap: var(--space-8);
+}
+
+.featured__stage {
+  margin: 0;
+}
+
+.featured__stage img {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.featured__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.featured__title {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: var(--weight-regular);
+  font-size: var(--type-h2);
+  line-height: var(--type-h2-lh);
+}
+
+.featured__text {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--type-small);
+  line-height: var(--type-small-lh);
+  white-space: pre-line;
+  text-wrap: pretty;
+}
+
+/* At the bottom of the column, level with the photo's lower edge */
+.featured__thumbs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: auto 0 0;
+  padding: var(--space-4) 0 0;
+  list-style: none;
+}
+
+.featured__thumb {
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity var(--duration-fast) var(--ease-touch);
+}
+
+.featured__thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.featured__thumb[aria-pressed='true'] {
+  opacity: 1;
+  box-shadow: 0 0 0 1px var(--text-primary);
+}
+
+.featured__thumb:focus-visible {
+  outline: 1px solid var(--ember);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .featured__thumb:hover {
+    opacity: 1;
+  }
+}
+
+@media (forced-colors: active) {
+  .featured__thumb[aria-pressed='true'] {
+    outline: 1px solid CanvasText;
+  }
+}
+
+/* Too narrow for two columns: the photo, then the words, then the thumbnails four across */
+@container (max-width: 720px) {
+  .featured__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  .featured__thumbs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featured__thumb {
+    transition: none;
+  }
+}

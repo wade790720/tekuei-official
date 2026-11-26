@@ -2,6 +2,9 @@ import { Fragment } from 'react'
 import { CodeBlock } from './CodeBlock.jsx'
 import { ImageCard } from './ImageCard.jsx'
 import { Carousel } from './Carousel.jsx'
+import { FeaturedPhotos } from './FeaturedPhotos.jsx'
+import { Gallery } from './Gallery.jsx'
+import { ScrollStack } from './ScrollStack.jsx'
 import { VideoPlayer } from './VideoPlayer.jsx'
 import { safeHref } from '../lib/richText.js'
 
@@ -94,7 +97,25 @@ function Node({ node }) {
       return a.src ? <VideoPlayer src={a.src} poster={a.poster || undefined} caption={a.caption} loop={a.loop} /> : null
     case 'slidesCard': {
       const slides = (a.slides ?? []).filter((s) => s?.src)
-      return slides.length ? <Carousel slides={slides} /> : null
+      if (!slides.length) return null
+      if (a.layout === 'work') return <FeaturedPhotos title={a.title} text={a.text} photos={slides} />
+      if (a.layout === 'gallery') return <Gallery photos={slides} limit={a.collapsed ? 5 : undefined} />
+      if (a.layout === 'stack') {
+        return (
+          <ScrollStack className="post-stack" rail={false}>
+            {slides.map((s, i) => (
+              <figure className="post-stack__card" key={`${s.src}-${i}`}>
+                <img src={s.src} alt={s.alt ?? ''} loading="lazy" decoding="async" />
+                <figcaption>
+                  <span>{s.caption}</span>
+                  <span className="post-stack__num">{`${String(i + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`}</span>
+                </figcaption>
+              </figure>
+            ))}
+          </ScrollStack>
+        )
+      }
+      return <Carousel slides={slides} />
     }
     case 'horizontalRule':
       return <hr className="journal-post__hr" />

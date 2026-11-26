@@ -470,3 +470,45 @@
     transition: none;
   }
 }
+
+/* A set of pictures as a scroll stack (slidesCard, layout "stack"). The 16:9 frame, the 16px corners, the
+   96px sticking point and cards that follow with no gap are measured from shadcnblocks' Gallery 66. */
+.post-stack {
+  --scroll-stack-height: auto;
+  --scroll-stack-top: var(--space-24);
+  --scroll-stack-gap: 0px;
+  margin-block: var(--gap-block);
+}
+
+/* Solid, so the card arriving on top hides the caption of the one under it */
+.post-stack__card {
+  margin: 0;
+  background: var(--surface-0);
+}
+
+.post-stack__card img {
+  display: block;
+  width: 100%;
+  border-radius: var(--post-stack-radius, 16px);
+  background: var(--surface-1);
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.post-stack__card figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  color: var(--text-secondary);
+  font-size: var(--type-small);
+}
+
+.post-stack__num {
+  flex: none;
+  color: var(--text-tertiary);
+  letter-spacing: var(--type-label-ls);
+  font-size: var(--type-label);
+  font-family: var(--font-label);
+  font-variant-numeric: tabular-nums;
+}

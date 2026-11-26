@@ -1,4 +1,4 @@
-// Interface text inside CodeBlock, VideoPlayer and Carousel (copy, play, next…).
+// Interface text inside CodeBlock, VideoPlayer, Carousel and Gallery (copy, play, next…).
 export const CARD_LABELS = {
   zh: {
     copy: '複製程式碼',
@@ -13,6 +13,9 @@ export const CARD_LABELS = {
     slide: '第 {n} 張，共 {total} 張',
     prevSlide: '上一張',
     nextSlide: '下一張',
+    gallery: '圖庫',
+    showAll: '顯示全部 {total} 張',
+    close: '關閉',
   },
   en: {
     copy: 'Copy code',
@@ -27,5 +30,8 @@ export const CARD_LABELS = {
     slide: 'Slide {n} of {total}',
     prevSlide: 'Previous slide',
     nextSlide: 'Next slide',
+    gallery: 'Photo gallery',
+    showAll: 'Show all {total} photos',
+    close: 'Close',
   },
 }

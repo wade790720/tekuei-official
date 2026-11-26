@@ -8,10 +8,11 @@ const label = (index, total) => `${pad(index)} / ${pad(total)}`
  * Cards that pin one over another while the page scrolls. Each card sticks in place, the next one
  * slides over it, and the covered ones shrink, lift, blur and darken, then fade out behind the third.
  * A rail and a counter under the stack show how far along it is. With reduced motion the cards are a plain list.
- * @param {{ children: import('react').ReactNode, className?: string }} props
+ * @param {{ children: import('react').ReactNode, className?: string, rail?: boolean }} props
  *   children  one card per child
+ *   rail      the rail and counter under the stack. Turn it off when the cards number themselves.
  */
-export function ScrollStack({ children, className }) {
+export function ScrollStack({ children, className, rail = true }) {
   const root = useRef(null)
   const count = Children.count(children)
 
@@ -19,8 +20,7 @@ export function ScrollStack({ children, className }) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const items = [...root.current.querySelectorAll(':scope > .scroll-stack__item')]
     if (items.length < 2) return
-    const progress = root.current.firstElementChild
-    const counter = progress.lastElementChild
+    const progress = rail ? root.current.firstElementChild : null
 
     let box = root.current.parentElement
     while (box && box !== document.documentElement && !/auto|scroll/.test(getComputedStyle(box).overflowY)) {
@@ -43,9 +43,10 @@ export function ScrollStack({ children, className }) {
       }
       items[0].style.setProperty('--depth', depth.toFixed(3))
       // The first card's depth is how far the whole stack has come. The rail appears as that card settles.
+      if (!progress) return
       progress.style.setProperty('--progress', (depth / (items.length - 1)).toFixed(3))
       progress.style.setProperty('--shown', Math.min(1, Math.max(0, 1 - (tops[0] - stick) / 96)).toFixed(3))
-      counter.textContent = label(Math.round(depth) + 1, items.length)
+      progress.lastElementChild.textContent = label(Math.round(depth) + 1, items.length)
     }
     const queue = () => {
       raf ||= requestAnimationFrame(update)
@@ -59,14 +60,16 @@ export function ScrollStack({ children, className }) {
       window.removeEventListener('resize', queue)
       cancelAnimationFrame(raf)
     }
-  }, [count])
+  }, [count, rail])
 
   return (
-    <div ref={root} className={className ? `scroll-stack ${className}` : 'scroll-stack'}>
-      <div className="scroll-stack__progress" aria-hidden>
-        <span className="scroll-stack__rail" />
-        <span className="scroll-stack__count">{label(1, count)}</span>
-      </div>
+    <div ref={root} className={['scroll-stack', !rail && 'scroll-stack--plain', className].filter(Boolean).join(' ')}>
+      {rail ? (
+        <div className="scroll-stack__progress" aria-hidden>
+          <span className="scroll-stack__rail" />
+          <span className="scroll-stack__count">{label(1, count)}</span>
+        </div>
+      ) : null}
       {Children.map(children, (child) => (
         <div className="scroll-stack__item">
           <div className="scroll-stack__card">{child}</div>

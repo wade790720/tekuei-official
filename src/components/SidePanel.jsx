@@ -300,10 +300,11 @@ export function FormRow({ label, hint, children, htmlFor }) {
  *   keyOf: (item: any) => string,
  *   nameOf: (item: any) => string,           // names the row in the handle's label
  *   onMove: (from: number, to: number) => void,
+ *   rowClassName?: string,                   // the row's own layout; the default is the panel's list row
  *   children: (item: any, i: number) => import('react').ReactNode,  // the cells after the handle
  * }} props
  */
-export function SortRows({ items, keyOf, nameOf, onMove, children }) {
+export function SortRows({ items, keyOf, nameOf, onMove, rowClassName = 'cms-row cms-post', children }) {
   const [drag, setDrag] = useState(null) // { from, gap } while a row is dragged; gap k = insert before row k
   const rows = useRef([])
   const gapAt = (y) => {
@@ -334,7 +335,7 @@ export function SortRows({ items, keyOf, nameOf, onMove, children }) {
     <div className="cms-sort" data-dragging={drag ? '' : undefined}>
       {items.map((item, i) => (
         <div
-          className="cms-row cms-post"
+          className={`cms-sort__row ${rowClassName}`}
           key={keyOf(item)}
           ref={(el) => (rows.current[i] = el)}
           data-dragged={drag?.from === i || undefined}
@@ -465,6 +466,15 @@ function ChevronIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d="M6 3l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+/** Making a draft public: the menu's 發布. */
+export function PublishIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M8 10.5v-8M4.8 5.5 8 2.5l3.2 3M2.5 10.5v2a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-2" />
     </svg>
   )
 }

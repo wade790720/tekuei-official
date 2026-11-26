@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { SidePanel, EyeOffIcon, FormRow, PanelSection, SortRows, TagsInput } from '../SidePanel.jsx'
+import { SidePanel, EyeOffIcon, PublishIcon, FormRow, PanelSection, SortRows, TagsInput } from '../SidePanel.jsx'
 import { TextField } from '../TextField.jsx'
 import { Button } from '../Button.jsx'
 import { DropdownMenu } from '../DropdownMenu.jsx'
@@ -181,8 +181,13 @@ export function ProjectEditPanel({ id, coded = false }) {
   const markDraft = (draft) => (d) => {
     d.items.find((x) => x.id === id).draft = draft
   }
+  // Saving never changes whether the project is public. Publishing and unpublishing are their own actions in the menu.
   const actions = item.draft
-    ? { saveLabel: T.publish, saveAlways: true, onSave: () => saveWith(markDraft(false)), labels: { dirty: T.unsaved, saved: '草稿，還沒公開' } }
+    ? {
+        saveLabel: T.saveDraft,
+        labels: { dirty: T.unsaved, saved: T.projectDraft },
+        menu: [{ value: 'publish', label: T.publish, icon: <PublishIcon />, onSelect: () => saveWith(markDraft(false)) }],
+      }
     : {
         saveLabel: T.update,
         labels: { dirty: T.publishedDirty, saved: T.published },

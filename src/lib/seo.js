@@ -96,7 +96,7 @@ export function docHtml(node) {
     case 'imageCard':
       return figure(a.src, a.alt, a.caption)
     case 'slidesCard':
-      return (a.slides ?? []).map((s) => figure(s.src, s.alt, s.caption)).join('')
+      return `${a.title ? `<h3>${esc(a.title)}</h3>` : ''}${a.text ? `<p>${esc(a.text)}</p>` : ''}${(a.slides ?? []).map((s) => figure(s.src, s.alt, s.caption)).join('')}`
     case 'videoCard': {
       // A YouTube video becomes a link, so crawlers see it; a file video has nothing to show without the player.
       const id = youtubeId(a.src)

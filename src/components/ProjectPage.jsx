@@ -13,6 +13,7 @@ import { useLang } from '../i18n'
 import { uploadSiteImage } from '../lib/adminApi.js'
 import { docText, getDoc } from '../lib/richText.js'
 import '../styles/journal.css'
+import '../styles/project.css'
 
 // Only Wade edits, so Tiptap and the panel load in edit mode, not for every visitor.
 const Editor = lazy(() => import('./Editor.jsx').then((m) => ({ default: m.Editor })))
@@ -66,7 +67,12 @@ export default function ProjectPage() {
   return (
     <div className="journal-page journal-page--post">
       <main>
-        <article className="journal-post" lang={untranslated ? 'zh-Hant' : undefined}>
+        {item.thumbImage?.url ? (
+          <div className="project-cover fade-in">
+            <img src={item.thumbImage.url} alt="" />
+          </div>
+        ) : null}
+        <article className="journal-post project-post" lang={untranslated ? 'zh-Hant' : undefined}>
           <header className="journal-post__header">
             {/* Wrapped so the fade-in transition does not replace the links' hover transition */}
             <div className="fade-in">
