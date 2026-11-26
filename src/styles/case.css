@@ -539,11 +539,6 @@
   transition: color var(--duration-slow) var(--ease-touch);
 }
 
-.case-next-title em {
-  font-style: normal;
-  font-family: inherit;
-}
-
 @media (hover: hover) {
   .case-next a:hover .case-next-title {
     color: var(--accent);

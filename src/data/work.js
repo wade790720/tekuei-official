@@ -1,7 +1,7 @@
 import siteDefaults from './data.json'
-import { projectBody, projectHref, projectLink, projectTitle } from '../lib/projectHref.js'
+import { localizeWork as localizeIn, projectBody, projectHref, projectLink, projectTitle, publishedWork, withCodeProjects } from '../lib/projectHref.js'
 
-export { projectBody, projectHref, projectLink, projectTitle }
+export { projectBody, projectHref, projectLink, projectTitle, publishedWork }
 
 export const DEFAULT_WORK = siteDefaults.work
 export const WORK_ITEMS = siteDefaults.work.items.map((item) => ({ ...item, caseHref: projectHref(item.caseHref) }))
@@ -95,26 +95,8 @@ export const WORK_EN = {
 const BUNDLED_EN = Object.fromEntries(
   WORK_EN.items.map((i) => [i.id, { client: i.client, title: i.title, titleEmWord: i.titleEmWord ?? '' }]),
 )
-const filled = (o = {}) => Object.fromEntries(Object.entries(o).filter(([, v]) => v))
-
-/**
- * The work section in one language. A project's English text is its own `en`, written in the edit panel,
- * else the translation bundled here, else the Chinese.
- */
-export function localizeWork(work, lang) {
-  if (lang !== 'en') return work
-  return {
-    ...work,
-    items: work.items.map((item) => {
-      const own = filled(item.en)
-      // An English title of its own replaces both halves of the bundled one
-      return { ...item, ...BUNDLED_EN[item.id], ...own, ...(own.title ? { titleEmWord: '' } : {}) }
-    }),
-  }
-}
-
-/** What readers see: drafts stay in the editor. */
-export const publishedWork = (work) => ({ ...work, items: work.items.filter((item) => !item.draft) })
+/** The work section in one language, with the translations bundled above for the first cases. */
+export const localizeWork = (work, lang) => localizeIn(work, lang, BUNDLED_EN)
 
 export const PROJECT_PAGE_LABELS = {
   zh: { home: '首頁', crumbs: '導覽路徑', back: '返回 Projects', notFound: '找不到這個專案', visit: '造訪網站', noPage: '這個專案沒有內頁，卡片直接連到外部連結。在右邊的面板可以建立內頁。', untranslated: 'This project is only in Chinese for now.' },
@@ -142,21 +124,9 @@ const CODE_PROJECTS = [
     },
   },
 ]
-const paragraph = (text) => ({ doc: { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text }] }] } })
 export const CODE_PROJECT_IDS = CODE_PROJECTS.map((item) => item.id)
 
-export const cloneWork = (work) => {
-  const next = structuredClone(work)
-  for (const { page, ...item } of CODE_PROJECTS) {
-    if (next.items.some((x) => x.id === item.id) || next.removed?.includes(item.id)) continue
-    next.items.push(structuredClone(item))
-    next.content = {
-      zh: { ...next.content?.zh, [item.id]: paragraph(page.zh) },
-      en: { ...next.content?.en, [item.id]: paragraph(page.en) },
-    }
-  }
-  return next
-}
+export const cloneWork = (work) => withCodeProjects(work, CODE_PROJECTS)
 
 export const WORK_LABELS = {
   zh: { loading: '作品載入中', draft: '草稿' },

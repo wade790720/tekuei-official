@@ -2,18 +2,19 @@ import { adminGate, json } from '../../src/lib/adminAuth.js'
 
 const DATA = 'data.json'
 
-export async function onRequestGet({ env }) {
+export async function onRequestGet({ request, env }) {
   const obj = await env.BUCKET.get(DATA)
   if (!obj) {
     return json({ error: 'No data yet' }, 404)
   }
-  return new Response(obj.body, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'private, no-store',
-      ETag: obj.httpEtag, // the editor sends it back as If-Match when it saves
-    },
-  })
+  // no-cache, not no-store: the browser keeps its copy but asks every time, and an unchanged file is
+  // answered with 304 and no body. Every page of the site reads this file, and it holds every post.
+  const headers = {
+    'Cache-Control': 'private, no-cache',
+    ETag: obj.httpEtag, // the editor sends it back as If-Match when it saves
+  }
+  if (request.headers.get('If-None-Match') === obj.httpEtag) return new Response(null, { status: 304, headers })
+  return new Response(obj.body, { headers: { 'Content-Type': 'application/json', ...headers } })
 }
 
 export async function onRequestPut({ request, env }) {
@@ -42,7 +43,8 @@ export async function onRequestPut({ request, env }) {
     try {
       existing = JSON.parse(await prev.text())
     } catch {
-      existing = {}
+      // Carrying on with {} would write back this one section and drop every other one.
+      return json({ error: 'data.json is not valid JSON. Nothing was saved.' }, 500)
     }
   }
 
