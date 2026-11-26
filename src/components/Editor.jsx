@@ -12,6 +12,7 @@ import Suggestion from '@tiptap/suggestion'
 import { DropdownMenu, MenuItems } from './DropdownMenu.jsx'
 import { ImageCard } from './ImageCard.jsx'
 import { Switch } from './Switch.jsx'
+import { SortRows } from './SidePanel.jsx'
 import { Button } from './Button.jsx'
 import { TooltipGroup } from './Tooltip.jsx'
 import { compressImage } from '../lib/compressImage.js'
@@ -177,15 +178,26 @@ function CodeBlockView({ node, updateAttributes }) {
   )
 }
 
-function CardShell({ title, selected, deleteNode, children }) {
+/**
+ * The frame of a card's form. Its head names the card: an icon, the name, and `meta` as a quiet count beside it.
+ * `tools` are the card's own controls, in the head beside the delete button.
+ */
+function CardShell({ title, icon, meta, tools, selected, deleteNode, children }) {
   return (
     <NodeViewWrapper className="cms-ed-card" data-selected={selected || undefined}>
       <div contentEditable={false}>
         <div className="cms-ed-card__head" data-drag-handle>
-          <span className="cms-ed-card__title">{title}</span>
-          <button type="button" className="cms-icon cms-icon--danger" onClick={deleteNode} aria-label={`刪除${title}`}>
-            ✕
-          </button>
+          <span className="cms-ed-card__title">
+            {icon}
+            {title}
+            {meta ? <span className="cms-ed-card__meta">{meta}</span> : null}
+          </span>
+          <div className="cms-ed-card__tools">
+            {tools}
+            <button type="button" className="cms-icon cms-icon--danger" onClick={deleteNode} aria-label={`刪除${title}`}>
+              ✕
+            </button>
+          </div>
         </div>
         {children}
       </div>
@@ -318,7 +330,7 @@ function CardSettings({ label, children }) {
 function VideoPlayerView({ node, updateAttributes, deleteNode, selected }) {
   const a = node.attrs
   return (
-    <CardShell title="影片" selected={selected} deleteNode={deleteNode}>
+    <CardShell title="影片" icon={ICON.video} selected={selected} deleteNode={deleteNode}>
       <CardField label="影片網址" value={a.src} onChange={(src) => updateAttributes({ src })} placeholder="影片網址（mp4 或 YouTube 連結）" />
       <CardField label="封面圖網址" value={a.poster} onChange={(poster) => updateAttributes({ poster })} placeholder="封面圖網址（選填）" />
       <CardField label="影片說明" value={a.caption} onChange={(caption) => updateAttributes({ caption })} placeholder="說明（選填）" />
@@ -330,12 +342,48 @@ function VideoPlayerView({ node, updateAttributes, deleteNode, selected }) {
   )
 }
 
+const SLIDE_LAYOUTS = [
+  { value: 'carousel', label: '輪播' },
+  { value: 'stack', label: '堆疊' },
+  { value: 'gallery', label: '圖庫' },
+  { value: 'work', label: '作品' },
+]
+const SLIDE_LAYOUT_LABEL = Object.fromEntries(SLIDE_LAYOUTS.map((x) => [x.value, x.label]))
+
 function CarouselView({ node, updateAttributes, deleteNode, selected, extension }) {
   const slides = node.attrs.slides ?? []
+  const layout = node.attrs.layout || 'carousel'
   const [busy, setBusy] = useState(-1)
+  const [batch, setBatch] = useState('')
   const [err, setErr] = useState('')
   const setSlides = (next) => updateAttributes({ slides: next })
+  const latest = useRef(slides)
+  useEffect(() => {
+    latest.current = slides
+  })
+
+  // Several photos at once: one after another, each added as it arrives, so a failure keeps the ones before it.
+  async function uploadMany(files) {
+    setErr('')
+    for (const [n, file] of files.entries()) {
+      setBatch(`上傳中 ${n + 1} / ${files.length}`)
+      try {
+        const src = await compressImage(file).then(extension.options.upload)
+        latest.current = [...latest.current, { src, alt: '', caption: '' }]
+        setSlides(latest.current)
+      } catch (e) {
+        setErr(`${file.name}：${e.message || '上傳失敗'}`)
+        break
+      }
+    }
+    setBatch('')
+  }
   const setSlide = (i, patch) => setSlides(slides.map((s, j) => (j === i ? { ...s, ...patch } : s)))
+  const move = (from, to) => {
+    const next = [...slides]
+    next.splice(to, 0, next.splice(from, 1)[0])
+    setSlides(next)
+  }
 
   async function upload(i, file) {
     if (!file) return
@@ -351,31 +399,89 @@ function CarouselView({ node, updateAttributes, deleteNode, selected, extension 
   }
 
   return (
-    <CardShell title={`圖片輪播 · ${slides.length} 張`} selected={selected} deleteNode={deleteNode}>
-      {slides.map((s, i) => (
-        <div className="cms-ed-slide" key={i}>
-          {s.src ? <img className="cms-ed-slide__thumb" src={s.src} alt="" /> : <span className="cms-ed-slide__thumb" />}
-          <div className="cms-ed-slide__fields">
-            <div className="cms-ed-card__row">
-              <CardField label={`第 ${i + 1} 張的圖片網址`} value={s.src} onChange={(src) => setSlide(i, { src })} placeholder="圖片網址，或按右邊上傳" />
-              <Button as="label" variant="ghost" className="cms-upload">
-                {busy === i ? '上傳中' : '上傳'}
-                <input type="file" accept="image/*" hidden onChange={(e) => upload(i, e.target.files?.[0])} />
-              </Button>
-              <button
-                type="button"
-                className="cms-icon cms-icon--danger"
-                onClick={() => setSlides(slides.filter((_, j) => j !== i))}
-                aria-label={`刪除第 ${i + 1} 張`}
-              >
-                ✕
-              </button>
+    <CardShell
+      title="圖組"
+      icon={ICON.slides}
+      meta={`${slides.length} 張`}
+      selected={selected}
+      deleteNode={deleteNode}
+      tools={
+        <>
+          <DropdownMenu
+            label="排法"
+            tip="排法"
+            triggerClassName="cms-ed-style"
+            trigger={
+              <>
+                {SLIDE_LAYOUT_LABEL[layout]}
+                <ChevronDown />
+              </>
+            }
+            items={SLIDE_LAYOUTS}
+            value={layout}
+            onSelect={(next) => updateAttributes({ layout: next })}
+          />
+          <Button as="label" variant="ghost" className="cms-upload" aria-disabled={Boolean(batch) || undefined}>
+            {batch || '上傳多張'}
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+              disabled={Boolean(batch)}
+              onChange={(e) => {
+                uploadMany([...e.target.files])
+                e.target.value = ''
+              }}
+            />
+          </Button>
+        </>
+      }
+    >
+      {layout === 'work' ? (
+        <>
+          <CardField label="作品名" value={node.attrs.title} onChange={(title) => updateAttributes({ title })} placeholder="作品名" />
+          <CardField label="創作者和說明" value={node.attrs.text} onChange={(text) => updateAttributes({ text })} placeholder="創作者和說明（選填）" />
+        </>
+      ) : null}
+      {layout === 'gallery' ? (
+        <label className="cms-check">
+          <Switch checked={Boolean(node.attrs.collapsed)} onChange={(collapsed) => updateAttributes({ collapsed })} label="只露出前 5 張" />
+          只露出前 5 張，其餘按「顯示全部」才打開
+        </label>
+      ) : null}
+      <SortRows
+        items={slides}
+        keyOf={(s) => String(slides.indexOf(s))}
+        nameOf={(s) => s.alt || `第 ${slides.indexOf(s) + 1} 張`}
+        onMove={move}
+        rowClassName="cms-ed-slide"
+      >
+        {(s, i) => (
+          <>
+            {s.src ? <img className="cms-ed-slide__thumb" src={s.src} alt="" /> : <span className="cms-ed-slide__thumb" />}
+            <div className="cms-ed-slide__fields">
+              <div className="cms-ed-card__row">
+                <CardField label={`第 ${i + 1} 張的圖片網址`} value={s.src} onChange={(src) => setSlide(i, { src })} placeholder="圖片網址，或按右邊上傳" />
+                <Button as="label" variant="ghost" className="cms-upload">
+                  {busy === i ? '上傳中' : '上傳'}
+                  <input type="file" accept="image/*" hidden onChange={(e) => upload(i, e.target.files?.[0])} />
+                </Button>
+                <button
+                  type="button"
+                  className="cms-icon cms-icon--danger"
+                  onClick={() => setSlides(slides.filter((_, j) => j !== i))}
+                  aria-label={`刪除第 ${i + 1} 張`}
+                >
+                  ✕
+                </button>
+              </div>
+              <CardField label={`第 ${i + 1} 張的替代文字`} value={s.alt} onChange={(alt) => setSlide(i, { alt })} placeholder="替代文字（必填）" />
+              <CardField label={`第 ${i + 1} 張的圖說`} value={s.caption} onChange={(caption) => setSlide(i, { caption })} placeholder="圖說（選填）" />
             </div>
-            <CardField label={`第 ${i + 1} 張的替代文字`} value={s.alt} onChange={(alt) => setSlide(i, { alt })} placeholder="替代文字（必填）" />
-            <CardField label={`第 ${i + 1} 張的圖說`} value={s.caption} onChange={(caption) => setSlide(i, { caption })} placeholder="圖說（選填）" />
-          </div>
-        </div>
-      ))}
+          </>
+        )}
+      </SortRows>
       {err ? <div className="cms-row__error">{err}</div> : null}
       <Button variant="ghost" className="cms-ed-slide__add" onClick={() => setSlides([...slides, { src: '', alt: '', caption: '' }])}>
         ＋ 新增一張
@@ -449,9 +555,17 @@ const ImageCardNode = card('imageCard', { src: '', alt: '', caption: '', frame: 
   },
 })
 
-/** An image carousel. `slides` is a list, so it goes through HTML as JSON. */
+/** A set of pictures, shown as a carousel, a scroll stack or a gallery. `slides` is a list, so it goes through HTML as JSON. */
 const CarouselNode = card('slidesCard', {}, CarouselView).extend({
   addAttributes: () => ({
+    ...attr('layout', 'carousel'),
+    ...attr('title'),
+    ...attr('text'),
+    collapsed: {
+      default: false,
+      parseHTML: (el) => el.getAttribute('data-collapsed') === 'true',
+      renderHTML: (attrs) => ({ 'data-collapsed': String(Boolean(attrs.collapsed)) }),
+    },
     slides: {
       default: [],
       parseHTML: (el) => {
@@ -707,7 +821,7 @@ const STYLES = [
 const INSERTS = [
   { value: 'code', label: '程式碼', icon: ICON.code },
   { value: 'image', label: '圖片', icon: ICON.image },
-  { value: 'slides', label: '圖片輪播', icon: ICON.slides },
+  { value: 'slides', label: '圖組', icon: ICON.slides },
   { value: 'video', label: '影片', icon: ICON.video },
   'divider',
   { value: 'hr', label: '分隔線', icon: ICON.hr },

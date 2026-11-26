@@ -1,0 +1,57 @@
+/* ProjectPage. A project is shown, not read, so the frame is as wide as the page allows and everything
+   starts at its left edge: text keeps the reading width, pictures take the whole frame. */
+
+.journal-post.project-post {
+  max-width: var(--page-max);
+}
+
+.project-post .journal-post__body > * > * {
+  max-width: var(--page-reading);
+}
+
+.journal-post.project-post .journal-post__body > * > :is(.post-figure, .carousel, .gallery, .featured) {
+  max-width: none;
+}
+
+/* A stack card sticks under the header, so it is no wider than a 16:9 frame that fits on the screen */
+.journal-post.project-post .journal-post__body > * > .post-stack {
+  max-width: calc((100svh - 2 * var(--space-24)) * 16 / 9);
+}
+
+/* On a phone the pictures run to the screen's edges, square-cornered, and the text keeps its margin. */
+@media (max-width: 768px) {
+  .journal-post.project-post {
+    --gallery-radius: 0px;
+    --post-stack-radius: 0px;
+  }
+
+  .journal-post.project-post .journal-post__body > * > :is(.post-figure, .carousel, .post-stack, .gallery) {
+    max-width: none;
+    margin-inline: calc(-1 * var(--page-pad));
+  }
+
+  .project-post .post-stack__card figcaption {
+    padding-inline: var(--page-pad);
+  }
+}
+
+/* The project's thumbnail as an opening picture, edge to edge under the header */
+.project-cover {
+  overflow: hidden;
+  margin-inline: auto;
+  width: min(100%, var(--page-max));
+  max-height: 72svh;
+  aspect-ratio: 16 / 9;
+}
+
+.project-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project-cover + .journal-post.project-post {
+  padding-top: var(--space-12);
+}
+

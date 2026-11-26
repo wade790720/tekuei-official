@@ -5,6 +5,8 @@ import { CodeBlock } from '../CodeBlock.jsx'
 import { ImageCard } from '../ImageCard.jsx'
 import { RichText } from '../RichText.jsx'
 import { Carousel } from '../Carousel.jsx'
+import { Gallery } from '../Gallery.jsx'
+import { FeaturedPhotos } from '../FeaturedPhotos.jsx'
 import { VideoPlayer } from '../VideoPlayer.jsx'
 import { DropdownMenu } from '../DropdownMenu.jsx'
 import { Button } from '../Button.jsx'
@@ -307,6 +309,29 @@ const DEMOS = {
         { src: heroImage, alt: '示範：Hero 背景圖', caption: '第一張' },
         { src: seaImage, alt: '示範：Shatter Footer 的海浪', caption: '第二張' },
         { src: cutImage, alt: '示範：人物去背圖', caption: '第三張' },
+      ]}
+    />
+  ),
+  gallery: () => (
+    <Gallery
+      photos={[
+        { src: heroImage, alt: '示範：Hero 背景圖', caption: '第一張' },
+        { src: cutImage, alt: '示範：人物去背圖' },
+        { src: seaImage, alt: '示範：Shatter Footer 的海浪', caption: '第三張' },
+        { src: seaImage, alt: '示範：Shatter Footer 的海浪' },
+        { src: heroImage, alt: '示範：Hero 背景圖', caption: '第五張' },
+        { src: cutImage, alt: '示範：人物去背圖', caption: '第六張' },
+      ]}
+    />
+  ),
+  'featured-photos': () => (
+    <FeaturedPhotos
+      title="示範作品"
+      text={'創作者姓名\n一兩句說明，寫這件作品在做什麼。'}
+      photos={[
+        { src: heroImage, alt: '示範：Hero 背景圖' },
+        { src: seaImage, alt: '示範：Shatter Footer 的海浪' },
+        { src: cutImage, alt: '示範：人物去背圖' },
       ]}
     />
   ),

@@ -339,16 +339,20 @@
   grid-template-columns: 20px 24px minmax(0, 1fr) auto;
   gap: var(--space-3);
   align-items: center;
+}
+
+/* A row of SortRows, whatever it holds */
+.cms-sort__row {
   position: relative;
   transition: opacity var(--duration-fast) var(--ease-touch);
 }
 
-.cms-post[data-dragged] {
+.cms-sort__row[data-dragged] {
   opacity: 0.35;
 }
 
 /* Drop line above or below the row the dragged post will land on */
-.cms-post[data-drop]::after {
+.cms-sort__row[data-drop]::after {
   content: '';
   position: absolute;
   right: 0;
@@ -357,11 +361,11 @@
   background: var(--ember);
 }
 
-.cms-post[data-drop='before']::after {
+.cms-sort__row[data-drop='before']::after {
   top: -1px;
 }
 
-.cms-post[data-drop='after']::after {
+.cms-sort__row[data-drop='after']::after {
   bottom: -1px;
 }
 
@@ -558,11 +562,42 @@
   cursor: grab;
 }
 
+/* The card's controls, at the right of its head. Filled at rest, so they read as controls and not as text. */
+.cms-ed-card__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.cms-ed-card__tools :is(.cms-ed-style, .cms-upload) {
+  height: 32px;
+  background: var(--gray-a3);
+}
+
+/* The card's name: an icon, the name in the primary text colour, and a count in a quiet pill.
+   Not gold: gold is for the current page, focus and hover. */
 .cms-ed-card__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   font-family: var(--font-label);
+  font-size: var(--type-caption);
+  color: var(--text-primary);
+}
+
+.cms-ed-card__title svg {
+  flex: none;
+  color: var(--text-tertiary);
+}
+
+.cms-ed-card__meta {
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--gray-a3);
+  color: var(--text-secondary);
   font-size: var(--type-label);
-  letter-spacing: var(--type-label-ls);
-  color: var(--ember);
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
 }
 
 .cms-ed-card__row {
@@ -1182,7 +1217,7 @@
 /* Carousel card in the editor: one row per slide */
 .cms-ed-slide {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
+  grid-template-columns: 20px 72px minmax(0, 1fr);
   gap: var(--space-3);
   padding: var(--space-2) 0;
   border-top: 0.5px solid var(--gray-a3);
@@ -1204,9 +1239,16 @@
   min-width: 0;
 }
 
+/* The handle is as tall as the thumbnail beside it, so its dots sit at the thumbnail's middle */
+.cms-ed-slide > .cms-drag {
+  height: 48px;
+}
+
+/* As wide as the rows above it, so its edges line up with them */
 .cms-ed-slide__add {
-  align-self: flex-start;
+  justify-content: center;
   margin-top: var(--space-1);
+  background: var(--gray-a3);
 }
 
 

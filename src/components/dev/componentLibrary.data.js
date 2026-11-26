@@ -270,6 +270,73 @@ export const GROUPS = [
           '寬度 900px 以上時，比內文欄左右各寬 80px，兩側淡出。',
           '圖片比例固定 16:10，裁切置中。',
           '減少動態效果開啟時，切換不使用平滑捲動。',
+          '文章裡的圖組（slidesCard）有三種排法：輪播用 Carousel，堆疊用 ScrollStack，圖庫用 Gallery。',
+        ],
+      },
+      {
+        id: 'featured-photos',
+        name: 'FeaturedPhotos',
+        file: 'src/components/FeaturedPhotos.jsx',
+        summary: '一件作品配一段文字：一邊是一張大圖，另一邊是標題、說明和每張照片的縮圖',
+        hero: {
+          demo: 'featured-photos',
+          code: `<FeaturedPhotos title="作品名" text={'創作者\n一句說明'} photos={[{ src, alt }, …]} />`,
+        },
+        api: [
+          {
+            description: '以 section 元素渲染，標題是 h3。每張縮圖是一顆按鈕，按下後那張照片換到大圖的位置。文章裡排法是「作品」的 slidesCard 節點由 RichText 轉成 FeaturedPhotos',
+            props: [
+              ['photos', '{ src, alt, caption? }[]', '—', '必填。第一張先顯示成大圖。只有一張時沒有縮圖'],
+              ['title', 'string', '—', '作品名'],
+              ['text', 'string', '—', '創作者和說明。換行會保留，創作者可以自己一行'],
+            ],
+          },
+        ],
+        examples: [],
+        keyboard: [
+          ['Tab', '在縮圖之間移動'],
+          ['Enter / Space', '把聚焦的縮圖換成大圖'],
+        ],
+        notes: [
+          '大圖佔 65%，文字和縮圖佔 31%，中間 32px。縮圖兩張一排，貼齊大圖的下緣。',
+          '大圖和縮圖都是 16:9，比例不同的照片會裁切置中。',
+          '目前的縮圖是不透明加一圈白線，其他的是半透明，所以不只靠顏色分辨。',
+          '容器比 720px 窄時改成上下排：大圖、文字、縮圖四張一排。看的是容器的寬度，不是螢幕的寬度。',
+          '減少動態效果開啟時，縮圖的透明度不做過渡。',
+        ],
+      },
+      {
+        id: 'gallery',
+        name: 'Gallery',
+        file: 'src/components/Gallery.jsx',
+        summary: '一面照片牆，兩張一排，每五張有一張佔滿整排，點一張放大檢視',
+        hero: {
+          demo: 'gallery',
+          code: `<Gallery photos={[{ src, alt: '展場入口', caption: '開幕當天' }, …]} />`,
+        },
+        api: [
+          {
+            description: '照片牆是一個清單，每張照片是一顆按鈕。放大檢視用 dialog 元素。文章裡排法是「圖庫」的 slidesCard 節點由 RichText 轉成 Gallery',
+            props: [
+              ['photos', '{ src, alt, caption? }[]', '—', '必填。alt 是按鈕的名稱，沒有 alt 時用「第 n 張，共 total 張」'],
+              ['limit', 'number', '—', '頁面上只排出前幾張，下面一顆「顯示全部 N 張」，按下後從下一張開始放大檢視。照片不超過這個數字時沒有按鈕'],
+            ],
+          },
+        ],
+        examples: [],
+        keyboard: [
+          ['Enter / Space', '放大聚焦的照片'],
+          ['← / →', '放大檢視時，切到上一張或下一張，到頭會繞回另一端'],
+          ['Esc', '關閉放大檢視，焦點回到原本的照片'],
+        ],
+        notes: [
+          '兩張一排，由左到右、由上到下，順序就是 photos 的順序。每五張的第一張佔滿整排。768px 以下一張一排。',
+          '每格固定 16:9，比例不同的照片會裁切置中。放大檢視顯示完整的照片。',
+          '圓角用 --gallery-radius 調整（預設 20px，768px 以下 12px），寫在上層元素。專案內頁在手機上設成 0，照片貼齊螢幕邊緣。',
+          '圖說疊在照片下緣，滑鼠移上去或鍵盤聚焦時出現。觸控裝置一直顯示。',
+          '寬度 900px 以上時，比容器左右各寬 80px，和 Carousel 相同。在文章頁裡和內文同寬。',
+          '放大檢視時頁面不能捲動，點照片以外的地方也會關閉。',
+          '減少動態效果開啟時，照片不放大，放大檢視不淡入。',
         ],
       },
       {
@@ -706,6 +773,7 @@ export const GROUPS = [
             props: [
               ['children', 'node', '—', '必填，一個子元素一張卡片'],
               ['className', 'string', '—', '加在最外層，用來排版'],
+              ['rail', 'boolean', 'true', '卡片下方的進度線和計數。卡片自己有編號時關掉'],
             ],
           },
         ],
@@ -713,7 +781,7 @@ export const GROUPS = [
         notes: [
           '被蓋住的卡片每多一層：往上 26px、縮小 7%、模糊 4px、變暗 28%。超過三層後淡出。',
           '卡片下方 48px 有一條進度線（176px，手機 112px）和計數「03 / 07」，讓人知道還有幾張。第一張卡片固定後才出現，最後跟著卡片一起離開。它是裝飾，加了 aria-hidden。',
-          '尺寸用 CSS 變數調整，寫在上層元素：--scroll-stack-width（880px）、--scroll-stack-height（68svh）、--scroll-stack-top（16svh）、--scroll-stack-gap（32svh）。預設值讓每張卡片捲一個螢幕。',
+          '尺寸用 CSS 變數調整，寫在上層元素：--scroll-stack-width（880px）、--scroll-stack-height（68svh）、--scroll-stack-top（16svh）、--scroll-stack-gap（32svh）。預設值讓每張卡片捲一個螢幕。--scroll-stack-height 可以設成 auto，高度就跟著內容，這時要關掉 rail（文章裡圖組的堆疊就是這樣：16:9 的照片、間距 0、離頂端 96px 固定）。',
           '跟著最近的捲動容器走，整頁捲動或放在可以捲動的容器裡都可以。上層元素不能有 overflow: hidden，否則卡片不會固定。',
           '卡片本身不要用 transform 或 fade-in 以外的 filter，位移和模糊由 ScrollStack 的外層處理。',
           '減少動態效果開啟時不固定也不變形，卡片依序排成一列，間距 24px，沒有進度線。',

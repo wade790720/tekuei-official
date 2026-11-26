@@ -72,7 +72,7 @@
 }
 
 /* Room for the rail under the last card, so the end of the stack does not push it onto the card */
-.scroll-stack::after {
+.scroll-stack:not(.scroll-stack--plain)::after {
   display: block;
   height: var(--space-24);
   content: '';

@@ -24,6 +24,8 @@ export const CMS_LABELS = {
   logoutConfirm: '還有修改沒有儲存，確定要登出嗎？修改會被丟掉。',
   logout: '登出',
   publish: '發布',
+  saveDraft: '儲存草稿',
+  projectDraft: '草稿，還沒公開',
   update: '更新',
   unpublish: '取消公開',
   draftDirty: '草稿，停手 3 秒後自動儲存',

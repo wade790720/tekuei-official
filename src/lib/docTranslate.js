@@ -3,7 +3,7 @@
 
 const HAN = /\p{Script=Han}/u
 const INLINE = new Set(['text', 'hardBreak'])
-const ATTR_TEXT = { imageCard: ['alt', 'caption'], videoCard: ['caption'], blockquote: ['cite'] }
+const ATTR_TEXT = { imageCard: ['alt', 'caption'], videoCard: ['caption'], slidesCard: ['title', 'text'], blockquote: ['cite'] }
 export const BATCH_CHARS = 6000
 
 const escapeText = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
