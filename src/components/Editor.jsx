@@ -1,13 +1,15 @@
 // Rich-text editor (Tiptap): toolbar, card node views and the document schema, in one file.
 // Outputs the document format that RichText renders (see src/lib/richText.js).
 import { memo, useEffect, useEffectEvent, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import Blockquote from '@tiptap/extension-blockquote'
 import CodeBlock from '@tiptap/extension-code-block'
 import { Placeholder } from '@tiptap/extensions'
-import { EditorContent, mergeAttributes, Node, NodeViewContent, NodeViewWrapper, ReactNodeViewRenderer, useEditor, useEditorState } from '@tiptap/react'
+import { EditorContent, Extension, mergeAttributes, Node, NodeViewContent, NodeViewWrapper, ReactNodeViewRenderer, useEditor, useEditorState } from '@tiptap/react'
 import { NodeSelection, TextSelection } from '@tiptap/pm/state'
 import StarterKit from '@tiptap/starter-kit'
-import { DropdownMenu } from './DropdownMenu.jsx'
+import Suggestion from '@tiptap/suggestion'
+import { DropdownMenu, MenuItems } from './DropdownMenu.jsx'
 import { ImageCard } from './ImageCard.jsx'
 import { Switch } from './Switch.jsx'
 import { Button } from './Button.jsx'
@@ -131,11 +133,41 @@ function QuoteView({ node, updateAttributes }) {
   )
 }
 
+// The highlighter (src/lib/highlight.js) uses one grammar for all of these; the choice sets the label and # comments.
+const CODE_LANGS = [
+  { value: 'ts', label: 'TypeScript' },
+  { value: 'tsx', label: 'TSX' },
+  { value: 'js', label: 'JavaScript' },
+  { value: 'jsx', label: 'JSX' },
+  { value: 'css', label: 'CSS' },
+  { value: 'html', label: 'HTML' },
+  { value: 'json', label: 'JSON' },
+  { value: 'bash', label: 'Bash' },
+  { value: 'python', label: 'Python' },
+  { value: 'yaml', label: 'YAML' },
+  { value: 'sql', label: 'SQL' },
+  { value: 'text', label: '純文字' },
+]
+const CODE_LANG_LABEL = Object.fromEntries(CODE_LANGS.map((x) => [x.value, x.label]))
+
 function CodeBlockView({ node, updateAttributes }) {
   return (
     <NodeViewWrapper className="cms-ed-code">
       <div contentEditable={false} className="cms-ed-code__bar">
-        <CardField label="程式語言" value={node.attrs.language} onChange={(language) => updateAttributes({ language })} placeholder="ts" />
+        <DropdownMenu
+          label="程式語言"
+          tip="程式語言"
+          triggerClassName="cms-ed-style"
+          trigger={
+            <>
+              {CODE_LANG_LABEL[node.attrs.language] ?? node.attrs.language}
+              <ChevronDown />
+            </>
+          }
+          items={CODE_LANGS}
+          value={node.attrs.language}
+          onSelect={(language) => updateAttributes({ language })}
+        />
         <CardField label="檔名" value={node.attrs.filename} onChange={(filename) => updateAttributes({ filename })} placeholder="檔名（選填）" />
       </div>
       <pre spellCheck={false}>
@@ -435,11 +467,72 @@ const CarouselNode = card('slidesCard', {}, CarouselView).extend({
 })
 const VideoPlayerNode = card('videoCard', { src: '', poster: '', caption: '', loop: false }, VideoPlayerView)
 
+/** "/" on a top-level paragraph opens the "+" menu's list at the cursor; typing after it filters the list. */
+const SlashCommand = Extension.create({
+  name: 'slashCommand',
+  addOptions: () => ({ render: null }),
+  addProseMirrorPlugins() {
+    return [
+      Suggestion({
+        editor: this.editor,
+        char: '/',
+        allow: ({ state, range }) => {
+          const $from = state.doc.resolve(range.from)
+          return $from.depth === 1 && $from.parent.type.name === 'paragraph'
+        },
+        items: ({ query }) => slashItems(query),
+        command: ({ editor, range, props }) => {
+          editor.chain().focus().deleteRange(range).run()
+          applyBlock(editor, props.value)
+        },
+        render: this.options.render,
+      }),
+    ]
+  },
+})
+
 /**
- * @param {{ upload: (file: File) => Promise<string>, placeholder: string }} opts
- *   upload stores an image and returns its URL.
+ * Suggestion's render hooks for one "/" session. It keeps the list and the arrow-key row here,
+ * and hands what to draw to `show` (the editor's state setter).
  */
-function editorExtensions({ upload, placeholder }) {
+function slashRender(show) {
+  let s = null
+  const open = (p) => {
+    const rect = p.clientRect?.()
+    const values = p.items.filter((it) => it !== 'divider').map((it) => it.value)
+    s = rect && values.length ? { items: p.items, values, command: p.command, top: rect.bottom, above: rect.top, left: rect.left, active: values[0] } : null
+    show(s)
+  }
+  return {
+    onStart: open,
+    onUpdate: open,
+    onKeyDown: ({ event }) => {
+      if (!s) return false
+      const i = s.values.indexOf(s.active)
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        s = { ...s, active: s.values[(i + (event.key === 'ArrowDown' ? 1 : -1) + s.values.length) % s.values.length] }
+        show(s)
+      } else if (event.key === 'Enter' || event.key === 'Tab') s.command({ value: s.active })
+      else if (event.key === 'Escape') show((s = null))
+      else return false
+      return true
+    },
+    onExit: () => show((s = null)),
+  }
+}
+
+/** Matches the "/" keyword ("code", "h2") or the Chinese label. */
+function slashItems(query) {
+  const q = query.trim().toLowerCase()
+  if (!q) return BLOCKS
+  return BLOCKS.filter((it) => it !== 'divider' && (it.slash.includes(q) || it.label.includes(q)))
+}
+
+/**
+ * @param {{ upload: (file: File) => Promise<string>, placeholder: string, slash: object }} opts
+ *   upload stores an image and returns its URL. slash makes the "/" menu's render hooks (Tiptap Suggestion).
+ */
+function editorExtensions({ upload, placeholder, slash }) {
   return [
     StarterKit.configure({
       heading: { levels: [2, 3] },
@@ -454,6 +547,7 @@ function editorExtensions({ upload, placeholder }) {
     CarouselNode.configure({ upload }),
     VideoPlayerNode,
     Placeholder.configure({ placeholder }),
+    SlashCommand.configure({ render: slash }),
   ]
 }
 
@@ -486,10 +580,16 @@ export const Editor = memo(function Editor({ doc, onChange, upload, previewing =
     setBlock((b) => (b && b.pos === hit.pos && b.node === hit.node && b.top === top && b.left === left ? b : { ...hit, top, left }))
   }
 
+  const [slash, setSlash] = useState(null) // the "/" menu on screen: { items, command, top, left, active }
+
   // Built once. New objects on each render would make Tiptap call setOptions on every keystroke.
   // The editor keeps the upload it was created with. That is fine: it unmounts when the login changes.
   const [options] = useState(() => ({
-    extensions: editorExtensions({ upload, placeholder: '開始寫……' }),
+    extensions: editorExtensions({
+      upload,
+      placeholder: '開始寫……　輸入 / 插入區塊',
+      slash: () => slashRender(setSlash),
+    }),
     content: doc,
     editorProps: { attributes: { class: 'cms-ed-content', 'aria-label': '內文', spellcheck: 'false' }, ...imagePasteProps(upload) },
   }))
@@ -526,11 +626,49 @@ export const Editor = memo(function Editor({ doc, onChange, upload, previewing =
         <>
           <BlockGutter editor={editor} block={block} gutterRef={gutter} />
           <Toolbar editor={editor} />
+          {slash ? <SlashMenu slash={slash} /> : null}
         </>
       )}
     </div>
   )
 }, (a, b) => a.previewing === b.previewing)
+
+/** The "/" menu's list, under the cursor. Focus stays in the text, so `active` marks the row instead. */
+function SlashMenu({ slash }) {
+  const list = useRef(null)
+  // Keeps the active row in view by scrolling the list only; scrollIntoView would also scroll the page.
+  useEffect(() => {
+    const box = list.current
+    const row = box?.querySelector('[data-active]')
+    if (!row) return
+    if (row.offsetTop < box.scrollTop) box.scrollTop = row.offsetTop
+    else if (row.offsetTop + row.offsetHeight > box.scrollTop + box.clientHeight) box.scrollTop = row.offsetTop + row.offsetHeight - box.clientHeight
+  }, [slash.active])
+  // While it is open the page stays put, as in Notion: the wheel scrolls the list only.
+  useEffect(() => {
+    const stop = (e) => {
+      if (!list.current?.contains(e.target)) e.preventDefault()
+    }
+    document.addEventListener('wheel', stop, { passive: false })
+    document.addEventListener('touchmove', stop, { passive: false })
+    return () => {
+      document.removeEventListener('wheel', stop)
+      document.removeEventListener('touchmove', stop)
+    }
+  }, [])
+  // Opens upward when there is no room below the cursor.
+  const above = slash.top + SLASH_MAX_H > window.innerHeight && slash.above > SLASH_MAX_H
+  // In <body>: a transformed ancestor would move a fixed element away from the cursor.
+  return createPortal(
+    <div className="dropdown-menu cms-ed-slash" data-above={above || undefined} style={{ top: above ? slash.above : slash.top, left: slash.left }}>
+      <div className="dropdown-menu__list" role="menu" aria-label="插入區塊" ref={list}>
+        <MenuItems items={slash.items} active={slash.active} onPick={(value) => slash.command({ value })} />
+      </div>
+    </div>,
+    document.body,
+  )
+}
+const SLASH_MAX_H = 340 // px, the list's max-height (cms.css) plus its gap
 
 const MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent)
 const MOD = MAC ? '⌘' : 'Ctrl '
@@ -583,7 +721,13 @@ const TEXT_BLOCKS = [
   { value: 'ordered', label: '編號清單', icon: <OrderedIcon />, kbd: `${MOD}${SHIFT}7` },
 ]
 const TEXT_LABEL = Object.fromEntries(TEXT_BLOCKS.map((x) => [x.value, x.label]))
-const BLOCKS = [...TEXT_BLOCKS, 'divider', ...INSERTS]
+// The "+" and "/" menus show each block's "/" keyword where the text menus show a shortcut.
+const SLASH_KEY = { paragraph: 'text', bullet: 'ul', ordered: 'ol' }
+const BLOCKS = [...TEXT_BLOCKS, 'divider', ...INSERTS].map((it) => {
+  if (it === 'divider') return it
+  const slash = SLASH_KEY[it.value] ?? it.value
+  return { ...it, slash, kbd: `/${slash}` }
+})
 // The "⠿" menu: what can be done to the block itself.
 const BLOCK_ACTIONS = [
   { value: 'duplicate', label: '複製一份', icon: <DuplicateIcon /> },

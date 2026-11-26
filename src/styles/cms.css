@@ -502,7 +502,6 @@
 
 .cms-ed-code {
   margin: var(--space-4) 0;
-  overflow: hidden;
   border-radius: var(--radius-md);
   background: var(--surface-0);
   box-shadow: var(--cms-ring);
@@ -510,13 +509,10 @@
 
 .cms-ed-code__bar {
   display: flex;
+  align-items: center;
   gap: var(--space-3);
   padding: var(--space-2) var(--space-3);
   border-bottom: 0.5px solid var(--gray-a3);
-}
-
-.cms-ed-code__bar .cms-ed-field:first-child {
-  flex: 0 0 56px;
 }
 
 .cms-ed-code pre {
@@ -605,6 +601,22 @@
 /* Block gutter: "+" and "⠿" to the left of the line under the pointer (Editor) */
 .cms-ed {
   position: relative;
+}
+
+.dropdown-menu.cms-ed-slash {
+  position: fixed; /* at the cursor, in viewport px from Suggestion's clientRect */
+  z-index: 6;
+}
+
+.cms-ed-slash .dropdown-menu__list {
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.cms-ed-slash[data-above] .dropdown-menu__list {
+  top: auto;
+  bottom: calc(100% + 6px);
 }
 
 .cms-ed-gutter {

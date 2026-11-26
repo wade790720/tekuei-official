@@ -136,16 +136,17 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 | 用途 | Token | 字型 |
 |---|---|---|
 | 英文、中文 | `--font-serif` | Instrument Serif 400（含斜體），中文自動改用思源宋體（Noto Serif TC 300/400） |
+| 文章內文 | `--font-reading` | Source Serif 4 300/400（含斜體），中文自動改用思源宋體 |
 | 標籤、數值 | `--font-label` | `ui-monospace`、Cascadia Mono、Consolas，中文用思源宋體 |
 | 程式碼 | `--font-mono` | 同上，只用在 `CodeBlock` |
 
 - Instrument Serif 排第一。它沒有中文字，所以中文自動改用思源宋體。
 - Instrument Serif 只用在 18px 以上。更小的英文改用 `--font-label`。
-- 例外：英文的文章內文用 `--type-body`（17px）的 Instrument Serif，和中文內文同一個字級，讓兩種語言的文章看起來一致。
+- 文章內文（`.journal-post__body`，包括 Journal、About、專案內頁）用 `--font-reading`。Instrument Serif 是窄的標題字，長段英文讀起來擠。字級和中文內文一樣是 `--type-body`（17px）。
 - 例外：導覽連結（頁首導覽列、語言按鈕、頁尾的連結）用 Instrument Serif，字級 `--type-nav`（13–15px）。頁首和頁尾的連結要一樣。這是刻意的，不要改成 `--font-label`。
 - CSS 一律寫 `font-family: var(--font-serif)` 或 `var(--font-label)`。頁面自己的字型變數（例如 `--j-fd`）都指向它們。不要另外寫字型名稱。
 - Canvas 不能用 CSS 變數。字型和顏色從 canvas 元素的 `getComputedStyle` 讀（參考 `glyphField.js`）。讀不到時，直接寫 `"Instrument Serif", "Noto Serif TC", "Source Han Serif TC", serif`。
-- 兩種字型都由 `index.html` 從 Google Fonts 載入。
+- 三種字型都由 `index.html` 從 Google Fonts 載入。
 - 斜體只對英文有效。中文的 `font-style: italic` 會變成瀏覽器合成的斜體。
 
 ## 版面

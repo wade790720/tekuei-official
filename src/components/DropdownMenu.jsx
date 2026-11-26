@@ -30,8 +30,6 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
   if (import.meta.env.DEV && choices.length < 2) {
     console.error(`DropdownMenu「${label}」只有 ${choices.length} 個選項。一個動作用 Button，選單是給兩個以上的選項用的。`)
   }
-  // A menu with no icons at all (a plain picker) has no icon column; one with some keeps the labels in line.
-  const hasIcons = choices.some((it) => it.icon)
 
   const focusItem = (i) => list.current?.querySelectorAll('[role^=menuitem]')[(i + choices.length) % choices.length]?.focus()
 
@@ -105,35 +103,47 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
           data-closing={open ? undefined : true}
           inert={!open}
         >
-          {items.map((it, i) =>
-            it === 'divider' ? (
-              <div key={`d${i}`} className="dropdown-menu__divider" role="separator" />
-            ) : (
-              <button
-                key={it.value}
-                type="button"
-                role={value === undefined ? 'menuitem' : 'menuitemradio'}
-                aria-checked={value === undefined ? undefined : it.value === value}
-                className="dropdown-menu__item"
-                data-value={it.value}
-                tabIndex={-1}
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => pick(it.value)}
-              >
-                {hasIcons ? (
-                  <span className="dropdown-menu__icon" aria-hidden>
-                    {it.icon}
-                  </span>
-                ) : null}
-                <span className="dropdown-menu__label">{it.label}</span>
-                {it.kbd ? <kbd className="dropdown-menu__kbd">{it.kbd}</kbd> : null}
-                {value !== undefined && it.value === value ? <CheckIcon /> : null}
-              </button>
-            ),
-          )}
+          <MenuItems items={items} value={value} onPick={pick} />
         </div>
       ) : null}
     </div>
+  )
+}
+
+/**
+ * The rows of a menu list. DropdownMenu draws its list with it, and so does the editor's "/" menu,
+ * where focus stays in the text and `active` marks the row the arrow keys are on.
+ * @param {{ items: any[], value?: string, active?: string, onPick: (value: string) => void }} props
+ */
+export function MenuItems({ items, value, active, onPick }) {
+  // A menu with no icons at all (a plain picker) has no icon column; one with some keeps the labels in line.
+  const hasIcons = items.some((it) => it !== 'divider' && it.icon)
+  return items.map((it, i) =>
+    it === 'divider' ? (
+      <div key={`d${i}`} className="dropdown-menu__divider" role="separator" />
+    ) : (
+      <button
+        key={it.value}
+        type="button"
+        role={value === undefined ? 'menuitem' : 'menuitemradio'}
+        aria-checked={value === undefined ? undefined : it.value === value}
+        className="dropdown-menu__item"
+        data-value={it.value}
+        data-active={it.value === active || undefined}
+        tabIndex={-1}
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => onPick(it.value)}
+      >
+        {hasIcons ? (
+          <span className="dropdown-menu__icon" aria-hidden>
+            {it.icon}
+          </span>
+        ) : null}
+        <span className="dropdown-menu__label">{it.label}</span>
+        {it.kbd ? <kbd className="dropdown-menu__kbd">{it.kbd}</kbd> : null}
+        {value !== undefined && it.value === value ? <CheckIcon /> : null}
+      </button>
+    ),
   )
 }
 

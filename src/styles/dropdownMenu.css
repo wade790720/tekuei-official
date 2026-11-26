@@ -89,7 +89,8 @@
     color var(--duration-fast) var(--ease-touch);
 }
 
-.dropdown-menu__item:focus-visible {
+.dropdown-menu__item:focus-visible,
+.dropdown-menu__item[data-active] {
   outline: none;
   background: var(--line);
 }

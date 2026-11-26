@@ -39,6 +39,7 @@ function nextChar(src, at) {
  *   Joining every `text` gives back `src` exactly.
  */
 export function tokenize(src, lang = 'ts') {
+  if (lang === 'text') return src ? [{ type: 'plain', text: src }] : []
   const out = []
   const push = (type, text) => {
     const last = out[out.length - 1]

@@ -21,6 +21,7 @@
     "@tiptap/pm": "^3.34.0",
     "@tiptap/react": "^3.34.0",
     "@tiptap/starter-kit": "^3.34.0",
+    "@tiptap/suggestion": "^3.34.0",
     "lenis": "^1.1.13",
     "libphonenumber-js": "^1.13.9",
     "react": "^19.2.5",
