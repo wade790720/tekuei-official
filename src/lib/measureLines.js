@@ -148,15 +148,21 @@ export function mountMeasureLines(canvas, { block }) {
   const resize = new ResizeObserver(redraw)
   resize.observe(canvas)
   resize.observe(block)
+  // The marker only shows while the header is on screen, so the pointer is only followed then.
+  const seen = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) window.addEventListener('pointermove', move)
+    else window.removeEventListener('pointermove', move)
+  })
   if (still) draw()
   else {
     raf = requestAnimationFrame(tick)
-    window.addEventListener('pointermove', move)
+    seen.observe(canvas)
   }
 
   return () => {
     cancelAnimationFrame(raf)
     resize.disconnect()
+    seen.disconnect()
     window.removeEventListener('pointermove', move)
   }
 }

@@ -29,72 +29,11 @@ export const PROJECT_TYPES = {
 
 export const getDefaultWork = () => DEFAULT_WORK
 
-export const WORK_EN = {
-  meta: { title: 'TEKUEI · Work' },
-  header: {
-    pre: 'SELECTED WORK',
-    title: 'Work',
-    countSuffix: 'Projects',
-  },
-  items: [
-    {
-      id: 'matsu-biennial',
-      num: '01',
-      caseHref: '/projects/matsu-biennial',
-      client: 'Matsu Biennial · National Matsu Arts Festival',
-      title: 'Biennial',
-      titleEmWord: 'Matsu',
-      titleEm: true,
-      subtitle: 'ISLAND ART CURATION',
-      descriptionLines: [
-        'The 3rd Matsu International Arts Festival —',
-        'a digital gateway between island memory and contemporary creation.',
-      ],
-      tags: ['Web Design', 'Exhibition', 'Art Direction'],
-      thumbBg: 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, transparent) 0%, color-mix(in srgb, var(--surface-1) 88%, transparent) 45%, rgba(16, 15, 17, 0.8) 100%)',
-      thumbSvg: 'matsu',
-      thumbImage: { url: '' },
-    },
-    {
-      id: 'monolab',
-      num: '02',
-      caseHref: '/projects/monolab',
-      client: 'MONOLAB · MORAN Interactive Design',
-      title: 'MONOLAB',
-      titleEm: false,
-      subtitle: 'EMOTIONAL ECOSYSTEM · ART FIELD',
-      descriptionLines: [
-        'An art field co-creating emotional ecosystems —',
-        'generative art, immersive experience, and digital art practice.',
-      ],
-      tags: ['Generative Art', 'Exhibition Curation', 'Immersive Experience'],
-      thumbBg: 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, transparent) 0%, color-mix(in srgb, var(--surface-1) 88%, transparent) 45%, rgba(16, 15, 17, 0.8) 100%)',
-      thumbSvg: 'monolab',
-      thumbImage: { url: '' },
-    },
-    {
-      id: 'lustre-yellow',
-      num: '03',
-      caseHref: '/projects/lustre-yellow',
-      client: 'Lustre Yellow · Crystal Art Flowers',
-      title: 'Lustre Yellow',
-      titleEm: false,
-      subtitle: 'BRAND SYSTEM ARCHITECTURE',
-      descriptionLines: [
-        'A complete brand system for a MADOKA Floral Design Academy instructor —',
-        'from story mining and sales page to ad strategy.',
-      ],
-      tags: ['Brand Identity', 'Sales Page', 'Web Development', 'Ad Strategy'],
-      thumbBg: 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, transparent) 0%, color-mix(in srgb, var(--surface-1) 88%, transparent) 45%, rgba(16, 15, 17, 0.8) 100%)',
-      thumbSvg: 'lustre',
-      thumbImage: { url: '' },
-    },
-  ],
+const BUNDLED_EN = {
+  'matsu-biennial': { client: 'Matsu Biennial · National Matsu Arts Festival', title: 'Biennial', titleEmWord: 'Matsu' },
+  monolab: { client: 'MONOLAB · MORAN Interactive Design', title: 'MONOLAB', titleEmWord: '' },
+  'lustre-yellow': { client: 'Lustre Yellow · Crystal Art Flowers', title: 'Lustre Yellow', titleEmWord: '' },
 }
-
-const BUNDLED_EN = Object.fromEntries(
-  WORK_EN.items.map((i) => [i.id, { client: i.client, title: i.title, titleEmWord: i.titleEmWord ?? '' }]),
-)
 /** The work section in one language, with the translations bundled above for the first cases. */
 export const localizeWork = (work, lang) => localizeIn(work, lang, BUNDLED_EN)
 
