@@ -2,6 +2,19 @@
 // Source: Wade's CV. Each act has text for the slab (sub, title) and for the corner caption (role, lines).
 // `side` shifts the slab left or right by that share of the screen width.
 
+import type { Lang } from '../../lib/siteData.ts'
+
+export interface AboutFallAct {
+  sub: string
+  title: string
+  /** Shown in the caption instead of the title when it differs. */
+  org?: string
+  role: string
+  points: string[]
+  details: { heading: string; items: string[] }[]
+  side: number
+}
+
 export const ABOUT_FALL_META = {
   zh: {
     title: 'About · TEKUEI 德溎',
@@ -43,7 +56,7 @@ export const ABOUT_FALL_INTRO = {
 // Written oldest first, as on the CV. The page shows them newest first (see the export below).
 // Source: Wade's CV (Notion). On the slab: sub and title. In the corner caption: org (or title), role,
 // 3–5 short points, and the full details behind the arrow.
-const CHRONOLOGICAL = {
+const CHRONOLOGICAL: Record<Lang, AboutFallAct[]> = {
   zh: [
     {
       sub: 'ACT I // 2013 — 2015 · 新竹',

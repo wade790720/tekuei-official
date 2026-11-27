@@ -1,7 +1,29 @@
 // Labs: interactive pieces listed under Work, after the client cases. They live in code, not in R2: each one has a page at labHref and runs full screen at liveHref.
-// Text only, so Pages Functions (sitemap, llms.txt) can import it; thumbnails are in media.js.
+// Text only, so Pages Functions (sitemap, llms.txt) can import it; thumbnails are in media.ts.
 
-export const LABS = [
+import type { Lang } from '../lib/siteData.ts'
+
+export type LabId = 'living-portrait' | 'falling-figure' | 'shatter-footer'
+
+export interface LabText {
+  title: string
+  subtitle: string
+  summary: string
+  tags: string[]
+  credit: { label: string; href: string }
+  intro: string[]
+}
+
+export interface Lab {
+  id: LabId
+  year: string
+  /** CSS aspect-ratio of the preview frame; the default is 16 / 10. */
+  previewAspect?: string
+  zh: LabText
+  en: LabText
+}
+
+export const LABS: Lab[] = [
   {
     id: 'living-portrait',
     year: '2026',
@@ -90,18 +112,18 @@ export const LABS = [
   },
 ]
 
-export const LAB_BY_ID = Object.fromEntries(LABS.map((x) => [x.id, x]))
+export const LAB_BY_ID: Partial<Record<string, Lab>> = Object.fromEntries(LABS.map((x) => [x.id, x]))
 
-export const labHref = (id) => `/labs/${id}`
-export const liveHref = (id) => `/labs/${id}/live`
+export const labHref = (id: LabId) => `/labs/${id}`
+export const liveHref = (id: LabId) => `/labs/${id}/live`
 
-export const LAB_LABELS = {
+export const LAB_LABELS: Record<Lang, Record<'category' | 'year' | 'credit' | 'home' | 'crumbs' | 'preview' | 'showPreview' | 'copyPrompt' | 'copied' | 'about' | 'more', string>> = {
   zh: { category: 'LABS', year: '年份', credit: '參考', home: '首頁', crumbs: '導覽路徑', preview: '實際效果', showPreview: '全螢幕預覽', copyPrompt: '複製提示詞', copied: '已複製', about: '關於', more: '更多 Labs' },
   en: { category: 'LABS', year: 'Year', credit: 'Based on', home: 'Home', crumbs: 'Breadcrumb', preview: 'Live preview', showPreview: 'Show Preview', copyPrompt: 'Copy Prompt', copied: 'Copied', about: 'About', more: 'More Labs' },
 }
 
 /** Work list fields of each lab, without media. */
-export function labLinks(lang) {
+export function labLinks(lang: Lang) {
   return LABS.map((x) => ({
     id: x.id,
     caseHref: labHref(x.id),

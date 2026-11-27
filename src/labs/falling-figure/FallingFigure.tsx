@@ -4,7 +4,9 @@ import 'lenis/dist/lenis.css'
 import './aboutFall.css'
 import figureSrc from './carving.png'
 import { ABOUT_FALL_ACTS, ABOUT_FALL_INTRO, ABOUT_FALL_META } from './content.ts'
+import type { AboutFallAct } from './content.ts'
 import { mountFallScene } from './fallScene.ts'
+import type { FallScene } from './fallScene.ts'
 import { useLang } from '../../i18n'
 
 /** The About page today, and the Falling Figure lab. */
@@ -13,11 +15,11 @@ export function FallingFigure() {
   const meta = ABOUT_FALL_META[lang]
   const intro = ABOUT_FALL_INTRO[lang]
   const acts = ABOUT_FALL_ACTS[lang]
-  const canvas = useRef(null)
-  const figure = useRef(null)
-  const main = useRef(null)
-  const dot = useRef(null)
-  const scene = useRef(null)
+  const canvas = useRef<HTMLCanvasElement>(null)
+  const figure = useRef<HTMLImageElement>(null)
+  const main = useRef<HTMLElement>(null)
+  const dot = useRef<HTMLElement>(null)
+  const scene = useRef<FallScene | null>(null)
   const [current, setCurrent] = useState(-1)
   const [sound, setSound] = useState(true)
 
@@ -34,15 +36,17 @@ export function FallingFigure() {
 
   // The scene reads the act sections from the DOM, so it is rebuilt when the language changes.
   useEffect(() => {
-    scene.current = mountFallScene({
+    if (!canvas.current || !figure.current || !main.current) return
+    const mounted = mountFallScene({
       canvas: canvas.current,
       figure: figure.current,
-      sections: [...main.current.querySelectorAll('[data-act]')],
+      sections: [...main.current.querySelectorAll<HTMLElement>('[data-act]')],
       acts,
       progressDot: dot.current,
       onAct: setCurrent,
     })
-    return () => scene.current.destroy()
+    scene.current = mounted
+    return () => mounted.destroy()
   }, [acts])
 
   const toggleSound = () => {
@@ -132,7 +136,12 @@ export function FallingFigure() {
  * Corner caption for the act the figure is in: org / role, a few points, and an arrow that opens the full details.
  * The summary is aria-hidden: screen readers read the act sections in <main>. The arrow and details stay reachable.
  */
-function ActCaption({ act, intro }) {
+interface ActCaptionProps {
+  act: AboutFallAct
+  intro: { more: string; less: string }
+}
+
+function ActCaption({ act, intro }: ActCaptionProps) {
   const [open, setOpen] = useState(false)
   const id = `about-act-${act.sub.replace(/\W+/g, '-')}`
   return (

@@ -1,7 +1,9 @@
+import type { LabId } from './index.ts'
+
 // What Copy Prompt puts on the clipboard: a brief that lets an AI coding tool rebuild each lab from scratch.
 // English for every reader, since the tools follow English briefs most closely.
 
-export const LAB_PROMPTS = {
+export const LAB_PROMPTS: Record<LabId, string> = {
   'living-portrait': `Build an interactive hero section with three stacked layers on one full-screen canvas.
 
 Layers, back to front:

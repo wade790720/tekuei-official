@@ -9,25 +9,51 @@ const FADE = 0.35 // s, crossfade from fragments to the full image
 const DARK = 75 // r+g+b below this counts as background: no fragment, and cut to black
 const SLOT = 0.05 // s; fragments are grouped by start time, so a frame skips the groups that have not started
 
-function rng(seed) {
+interface Fragment {
+  x: number
+  y: number
+  rgb: number
+  alpha: number
+  sx: number
+  sy: number
+  /** Start time in s. */
+  d: number
+  /** Flight time in s. */
+  dur: number
+}
+
+export interface ShatterImageOptions {
+  src: string
+  /** [x, y, w, h] in source pixels. */
+  crop: readonly [number, number, number, number]
+  onPlay?: () => void
+}
+
+function rng(seed: number) {
   return () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296
 }
 
-const ease = (t) => 1 - Math.pow(1 - t, 3)
-const pack = (r, g, b, a) => ((a << 24) | (b << 16) | (g << 8) | r) >>> 0 // little-endian RGBA
+const ease = (t: number) => 1 - Math.pow(1 - t, 3)
+const pack = (r: number, g: number, b: number, a: number) => ((a << 24) | (b << 16) | (g << 8) | r) >>> 0 // little-endian RGBA
 
-/**
- * @param {HTMLCanvasElement} canvas  sized by CSS
- * @param {{ src: string, crop: [number, number, number, number], onPlay?: () => void }} opts
- *   crop = [x, y, w, h] in source pixels
- * @returns {() => void} cleanup
- */
-export function mountShatterImage(canvas, { src, crop, onPlay }) {
-  const ctx = canvas.getContext('2d')
+/** `canvas` is sized by CSS. Returns the cleanup. */
+export function mountShatterImage(canvas: HTMLCanvasElement, { src, crop, onPlay }: ShatterImageOptions): () => void {
+  const maybeCtx = canvas.getContext('2d')
+  if (!maybeCtx) {
+    onPlay?.() // no 2D context: still show the footer text
+    return () => {}
+  }
+  const ctx: CanvasRenderingContext2D = maybeCtx
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
   const source = new Image()
   source.src = src
-  let W, H, final, slots, buf, data32, last
+  let W = 0
+  let H = 0
+  let final = document.createElement('canvas')
+  let slots: Fragment[][] = []
+  let buf = new ImageData(1, 1)
+  let data32 = new Uint32Array(0)
+  let last = 0
   let raf = 0
   let start = 0
   let played = false
@@ -45,6 +71,7 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
     final.width = W
     final.height = H
     const g = final.getContext('2d', { willReadFrequently: true })
+    if (!g) return
     g.drawImage(source, ...crop, 0, 0, W, H)
     const img = g.getImageData(0, 0, W, H)
     const px = img.data
@@ -69,7 +96,7 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
         const i = (y * W + x) * 4
         if (px[i + 3] === 0) continue
         const ragged = Math.sin(y * 0.045) * 0.05 + Math.sin(y * 0.13 + 2) * 0.03 // jagged reveal edge
-        const p = {
+        const p: Fragment = {
           x,
           y,
           rgb: pack(px[i], px[i + 1], px[i + 2], 0), // alpha is added per frame
@@ -88,7 +115,7 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
 
   const showFinal = () => ctx.drawImage(final, 0, 0)
 
-  function frame(now) {
+  function frame(now: number) {
     const t = (now - start) / 1000
     data32.fill(0)
     for (let s = 0; s < slots.length && s * SLOT < t; s++)
@@ -129,7 +156,9 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
 
   // Starts the first time the canvas is 35% on screen. Off screen mid-animation it pauses, then resumes where it was.
   const io = new IntersectionObserver(
-    ([e]) => {
+    (entries) => {
+      const e = entries[0]
+      if (!e) return
       if (!played) {
         if (e.isIntersecting) play()
       } else if (!e.isIntersecting && raf) {
@@ -145,7 +174,7 @@ export function mountShatterImage(canvas, { src, crop, onPlay }) {
     { threshold: 0.35 },
   )
 
-  let rt
+  let rt: ReturnType<typeof setTimeout> | undefined
   const onResize = () => {
     clearTimeout(rt)
     rt = setTimeout(() => {
