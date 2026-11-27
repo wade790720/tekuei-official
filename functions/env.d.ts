@@ -15,7 +15,8 @@ interface PutOptions {
 }
 export interface Bucket {
   get(key: string): Promise<BucketObject | null>
-  put(key: string, value: string | ArrayBuffer, options?: PutOptions): Promise<{ httpEtag: string } | null>
+  head(key: string): Promise<{ etag: string } | null>
+  put(key: string, value: string | ArrayBuffer, options?: PutOptions): Promise<{ etag: string; httpEtag: string } | null>
 }
 
 export interface Env {

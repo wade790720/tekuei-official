@@ -19,6 +19,10 @@ export function fakeR2(initial: Record<string, unknown> = {}) {
       const { body, etag } = hit
       return { etag, httpEtag: `"${etag}"`, body, text: async () => body, json: async () => JSON.parse(body) }
     },
+    async head(key) {
+      const hit = store.get(key)
+      return hit ? { etag: hit.etag } : null
+    },
     async put(key, body, opts) {
       await Promise.resolve() // let a parallel caller read first, like a real network round trip
       const cur = store.get(key)

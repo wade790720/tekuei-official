@@ -30,6 +30,40 @@ test('saving one section keeps the others', async () => {
   assert.deepEqual(e.BUCKET.read('data.json'), { journal: { posts: ['new'] }, work: { items: ['matsu'] } })
 })
 
+const backupKeys = () => {
+  const day = (d: Date) => `backup/data-${d.toISOString().slice(0, 10)}.json`
+  return [day(new Date()), day(new Date(Date.now() - 60_000))]
+}
+const readBackup = (e: TestEnv, keys: string[]) => {
+  for (const k of keys) {
+    try {
+      return e.BUCKET.read(k)
+    } catch {
+      continue
+    }
+  }
+  return null
+}
+
+test('a save keeps the data.json it replaces as the backup of the day', async () => {
+  const e = env()
+  await put(e, { journal: { posts: ['new'] } }, { etag: await etagOf(e) })
+  assert.deepEqual(readBackup(e, backupKeys()), site())
+})
+
+test('later saves on the same day keep the first backup of that day', async () => {
+  const e = env()
+  await put(e, { journal: { posts: ['second'] } }, { etag: await etagOf(e) })
+  await put(e, { journal: { posts: ['third'] } }, { etag: await etagOf(e) })
+  assert.deepEqual(readBackup(e, backupKeys()), site())
+})
+
+test('a refused save writes no backup', async () => {
+  const e = env()
+  await put(e, { journal: { posts: ['new'] } }, { code: '000000', etag: await etagOf(e) })
+  assert.equal(readBackup(e, backupKeys()), null)
+})
+
 test('a wrong code cannot save', async () => {
   const e = env()
   assert.equal((await put(e, { journal: {} }, { code: '000000', etag: await etagOf(e) })).status, 401)

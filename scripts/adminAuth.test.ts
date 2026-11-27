@@ -26,11 +26,19 @@ test('after MAX_FAILS wrong codes even the right one is locked until the window 
   assert.equal(await checkAdmin(req('123456'), e, t0 + WINDOW_MS + 1), 'ok')
 })
 
-test('a successful login resets the count', async () => {
+test('a successful login does not clear earlier wrong guesses', async () => {
   const e = env()
   for (let i = 0; i < MAX_FAILS - 1; i++) await checkAdmin(req('000000'), e, i)
   assert.equal(await checkAdmin(req('123456'), e, 10), 'ok')
-  for (let i = 0; i < MAX_FAILS - 1; i++) assert.equal(await checkAdmin(req('000000'), e, 20 + i), 'denied')
+  assert.equal(await checkAdmin(req('000000'), e, 20), 'denied')
+  assert.equal(await checkAdmin(req('123456'), e, 30), 'locked')
+})
+
+test('saving many times does not use up the wrong-guess budget', async () => {
+  const e = env()
+  for (let i = 0; i < MAX_FAILS * 4; i++) assert.equal(await checkAdmin(req('123456'), e, i), 'ok')
+  for (let i = 0; i < MAX_FAILS - 1; i++) assert.equal(await checkAdmin(req('000000'), e, 100 + i), 'denied')
+  assert.equal(await checkAdmin(req('123456'), e, 200), 'ok')
 })
 
 test('guesses sent at the same time: only one is compared', async () => {
