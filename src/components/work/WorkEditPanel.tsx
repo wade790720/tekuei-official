@@ -14,21 +14,22 @@ import { useCmsEditing } from '../../hooks/useCmsEditing.ts'
 import { useLang } from '../../i18n'
 import { uploadSiteImage } from '../../lib/adminApi.ts'
 import { emptyDoc, getDoc } from '../../lib/richText.ts'
+import type { Doc, ProjectType, WorkData, WorkItem } from '../../lib/siteData.ts'
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 // Ids a new project cannot take: a project that began in code keeps its id even after it is deleted, and each lab has a card.
 const TAKEN = new Set([...CODE_PROJECT_IDS, ...LABS.map((lab) => lab.id)])
 const SECTION_ITEMS = PROJECT_SECTIONS.map((s) => ({ value: s.id, label: s.zh }))
 const sectionOf = projectType
-const sectionName = (id) => PROJECT_SECTIONS.find((s) => s.id === id)?.zh
-const parseTags = (text) => [...new Set(text.split(/[,，、]/).map((t) => t.trim()).filter(Boolean))]
+const sectionName = (id: ProjectType) => PROJECT_SECTIONS.find((s) => s.id === id)?.zh
+const parseTags = (text: string) => [...new Set(text.split(/[,，、]/).map((t) => t.trim()).filter(Boolean))]
 
 function useWorkEditing() {
   const cms = useWork()
   return { cms, ...useCmsEditing(cms) }
 }
 
-function SectionPicker({ value, onSelect }) {
+function SectionPicker({ value, onSelect }: { value: ProjectType; onSelect: (value: ProjectType) => void }) {
   return (
     <DropdownMenu
       label="區段"
@@ -45,8 +46,8 @@ export function WorkListEditPanel() {
   const navigate = useNavigate()
   const { cms, ready, panelProps } = useWorkEditing()
   const [slug, setSlug] = useState('')
-  const [type, setType] = useState('web')
-  if (!ready) return null
+  const [type, setType] = useState<ProjectType>('web')
+  if (!ready || !cms.draft) return null
 
   const items = cms.draft.items
   const slugError = !slug
@@ -67,7 +68,7 @@ export function WorkListEditPanel() {
     navigate(`/projects/${slug}`)
   }
 
-  const remove = (item) => {
+  const remove = (item: WorkItem) => {
     if (!window.confirm(`刪除「${projectTitle(item)}」？內頁的中英文內容會一起刪除，儲存後才會生效。`)) return
     cms.updateDraft((d) => {
       d.items = d.items.filter((x) => x.id !== item.id)
@@ -104,11 +105,11 @@ export function WorkListEditPanel() {
       <PanelSection title="專案">
         <SortRows
           items={items}
-          keyOf={(item) => item.id}
+          keyOf={(item: WorkItem) => item.id}
           nameOf={projectTitle}
-          onMove={(from, to) => cms.updateDraft((d) => d.items.splice(to, 0, d.items.splice(from, 1)[0]))}
+          onMove={(from: number, to: number) => cms.updateDraft((d) => d.items.splice(to, 0, d.items.splice(from, 1)[0]))}
         >
-          {(item, i) => (
+          {(item: WorkItem, i: number) => (
             <>
               <div className="cms-post__num">{String(i + 1).padStart(2, '0')}</div>
               <div className="cms-post__body">
@@ -133,24 +134,32 @@ export function WorkListEditPanel() {
 }
 
 /** One project: the card's fields, and for a project with an editable page, publishing and translation. */
-export function ProjectEditPanel({ id, coded = false }) {
+interface ProjectEditPanelProps {
+  id: string
+  /** The page is written in code (the first three cases): only the card's fields are edited. */
+  coded?: boolean
+}
+
+export function ProjectEditPanel({ id, coded = false }: ProjectEditPanelProps) {
   const { lang } = useLang()
   const { admin, cms, ready, panelProps, saveWith } = useWorkEditing()
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState('')
-  if (!ready) return null
+  const draft = ready ? cms.draft : null
+  if (!draft) return null
 
-  const item = cms.draft.items.find((x) => x.id === id)
+  const item = draft.items.find((x) => x.id === id)
   if (!item) return null
 
-  const hasPage = Boolean(projectBody(cms.draft, id, 'zh'))
-  const set = (change) =>
+  const hasPage = Boolean(projectBody(draft, id, 'zh'))
+  const set = (change: (item: WorkItem) => void) =>
     cms.updateDraft((d) => {
-      change(d.items.find((x) => x.id === id))
+      const x = d.items.find((y) => y.id === id)
+      if (x) change(x)
     })
   // Title and client belong to one language. The rest is shared.
   const text = lang === 'en' ? { title: item.en?.title ?? '', client: item.en?.client ?? '' } : { title: projectTitle(item), client: item.client }
-  const setText = (key, value) =>
+  const setText = (key: 'title' | 'client', value: string) =>
     set((x) => {
       if (lang === 'en') x.en = { ...x.en, [key]: value }
       else {
@@ -160,7 +169,7 @@ export function ProjectEditPanel({ id, coded = false }) {
       }
     })
 
-  const upload = async (file) => {
+  const upload = async (file: File | undefined) => {
     if (!file) return
     setUploading(true)
     setUploadError('')
@@ -170,7 +179,7 @@ export function ProjectEditPanel({ id, coded = false }) {
         x.thumbImage = { url }
       })
     } catch (err) {
-      setUploadError(err.message || '上傳失敗')
+      setUploadError((err instanceof Error && err.message) || '上傳失敗')
     } finally {
       setUploading(false)
     }
@@ -181,8 +190,9 @@ export function ProjectEditPanel({ id, coded = false }) {
       d.content = { zh: { ...d.content?.zh, [id]: { doc: emptyDoc() } }, en: { ...d.content?.en, [id]: { doc: emptyDoc() } } }
     })
 
-  const markDraft = (draft) => (d) => {
-    d.items.find((x) => x.id === id).draft = draft
+  const markDraft = (asDraft: boolean) => (d: WorkData) => {
+    const x = d.items.find((y) => y.id === id)
+    if (x) x.draft = asDraft
   }
   // Saving never changes whether the project is public. Publishing and unpublishing are their own actions in the menu.
   const actions = item.draft
@@ -207,14 +217,14 @@ export function ProjectEditPanel({ id, coded = false }) {
       actions={
         hasPage ? (
             <TranslateSection
-              zhDoc={getDoc(projectBody(cms.draft, id, 'zh'))}
-              enDoc={getDoc(projectBody(cms.draft, id, 'en'))}
+              zhDoc={getDoc(projectBody(draft, id, 'zh'))}
+              enDoc={getDoc(projectBody(draft, id, 'en'))}
               fields={{ title: projectTitle(item), client: item.client }}
-              onDone={({ doc, fields }) => {
+              onDone={({ doc, fields }: { doc: Doc; fields: Record<string, string> }) => {
                 cms.updateDraft((d) => {
-                  d.content.en = { ...d.content.en, [id]: { doc } }
+                  d.content = { ...d.content, en: { ...d.content?.en, [id]: { doc } } }
                   const x = d.items.find((y) => y.id === id)
-                  x.en = { ...x.en, ...fields }
+                  if (x) x.en = { ...x.en, ...fields }
                 })
                 admin.reloadEditor()
               }}
@@ -232,7 +242,7 @@ export function ProjectEditPanel({ id, coded = false }) {
         <TextField id="cms-project-client" value={text.client} onChange={(v) => setText('client', v)} />
       </FormRow>
       <FormRow label="標籤" htmlFor="cms-project-tags" hint="用逗號分開，中英文共用">
-        <TagsInput key={id} id="cms-project-tags" tags={item.tags ?? []} parse={parseTags} onChange={(tags) => set((x) => (x.tags = tags))} />
+        <TagsInput key={id} id="cms-project-tags" tags={item.tags ?? []} parse={parseTags} onChange={(tags: string[]) => set((x) => (x.tags = tags))} />
       </FormRow>
       <FormRow
         label="封面圖"
@@ -243,14 +253,14 @@ export function ProjectEditPanel({ id, coded = false }) {
           {item.thumbImage?.url ? <img className="cms-thumb" src={item.thumbImage.url} alt="" /> : null}
           <Button as="label" variant="ghost">
             {uploading ? '上傳中' : item.thumbImage?.url ? '更換' : '上傳'}
-            <input type="file" accept="image/*" hidden onChange={(e) => upload(e.target.files[0])} />
+            <input type="file" accept="image/*" hidden onChange={(e) => upload(e.target.files?.[0])} />
           </Button>
         </div>
       </FormRow>
       <FormRow label="外部連結" htmlFor="cms-project-link" hint={hasPage ? '專案的網站。顯示在內頁的標題下方' : coded ? '內頁寫在程式碼裡，這個欄位目前用不到' : '沒有內頁時，卡片直接連到這個網址'}>
         <TextField id="cms-project-link" value={item.link ?? ''} onChange={(v) => set((x) => (x.link = v.trim()))} placeholder="https://" />
       </FormRow>
-      <p className="cms-row__hint">卡片現在連到 {projectLink(item, cms.draft)}</p>
+      <p className="cms-row__hint">卡片現在連到 {projectLink(item, draft)}</p>
       {hasPage || coded ? null : (
         <FormRow label="內頁" hint="這個專案沒有內頁。建立之後可以在頁面上寫內文">
           <Button variant="ghost" onClick={addPage}>
