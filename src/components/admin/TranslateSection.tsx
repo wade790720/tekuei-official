@@ -6,6 +6,8 @@ import { useLang } from '../../i18n'
 import { translateTexts } from '../../lib/adminApi.ts'
 import { docSlots } from '../../lib/docTranslate.ts'
 import { hasBody } from '../../lib/richText.ts'
+import type { Doc } from '../../lib/siteData.ts'
+import type { Slot } from '../../lib/docTranslate.ts'
 
 const DONE_MS = 5000 // how long the "translated" note stays
 
@@ -13,18 +15,21 @@ const DONE_MS = 5000 // how long the "translated" note stays
  * The translate button of an edit panel: fills the English draft from the Chinese one. Nothing is saved:
  * Wade reads it, edits it, then saves. It works from either language, since it always writes the English side.
  * Goes in SidePanel's `actions`.
- * @param {{
- *   zhDoc: object, enDoc: object,
- *   fields?: Record<string, string>,  // short Chinese texts outside the body, e.g. the title
- *   onDone: (result: { doc: object, fields: Record<string, string> }) => void,
- * }} props
  */
-export function TranslateSection({ zhDoc, enDoc, fields = {}, onDone }) {
+export interface TranslateSectionProps {
+  zhDoc: Doc
+  enDoc: Doc
+  /** Short Chinese texts outside the body, e.g. the title. */
+  fields?: Record<string, string | undefined>
+  onDone: (result: { doc: Doc; fields: Record<string, string> }) => void
+}
+
+export function TranslateSection({ zhDoc, enDoc, fields = {}, onDone }: TranslateSectionProps) {
   const { lang } = useLang()
   const admin = useAdmin()
-  const [progress, setProgress] = useState(null)
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null)
   const [status, setStatus] = useState({ error: '', done: false })
-  const abort = useRef(null)
+  const abort = useRef<AbortController | null>(null)
 
   useEffect(() => () => abort.current?.abort(), [])
 
@@ -38,30 +43,27 @@ export function TranslateSection({ zhDoc, enDoc, fields = {}, onDone }) {
   async function run() {
     if (hasBody(enDoc) && !window.confirm(T.confirm)) return
     const { doc, slots } = docSlots(zhDoc)
-    const out = {}
-    const all = [
-      ...slots,
-      ...Object.entries(fields)
-        .filter(([, v]) => v?.trim())
-        .map(([k, v]) => ({ text: v, set: (t) => (out[k] = t) })),
-    ]
+    const out: Record<string, string> = {}
+    const all: Slot[] = [...slots]
+    for (const [k, v] of Object.entries(fields)) if (v?.trim()) all.push({ text: v, set: (t) => (out[k] = t) })
     if (!all.length) {
       setStatus({ error: T.empty, done: false })
       return
     }
-    abort.current = new AbortController()
+    const controller = new AbortController()
+    abort.current = controller
     setStatus({ error: '', done: false })
     setProgress({ done: 0, total: 1 })
     try {
       const texts = await translateTexts(all.map((s) => s.text), admin.getToken(), {
-        signal: abort.current.signal,
+        signal: controller.signal,
         onProgress: (done, total) => setProgress({ done, total }),
       })
       all.forEach((s, i) => s.set(texts[i]))
       onDone({ doc, fields: out })
       setStatus({ error: '', done: true })
     } catch (err) {
-      if (err.name !== 'AbortError') setStatus({ error: err.message, done: false })
+      if (!(err instanceof Error && err.name === 'AbortError')) setStatus({ error: err instanceof Error ? err.message : String(err), done: false })
     } finally {
       setProgress(null)
     }

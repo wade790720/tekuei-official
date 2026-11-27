@@ -5,6 +5,8 @@ import { HOME_FOOTER } from '../data/homepage.ts'
 import { useLang } from '../i18n'
 import '../styles/siteFooter.css'
 
+type SocialName = keyof typeof SOCIAL_ICONS
+const isSocial = (label: string): label is SocialName => Object.hasOwn(SOCIAL_ICONS, label)
 
 /**
  * One-row footer: the brand, the site links and the social icons. An underline sits under the current
@@ -14,22 +16,24 @@ export function SiteFooter() {
   const { lang } = useLang()
   const { pathname } = useLocation()
   const { explore, contact } = HOME_FOOTER[lang]
-  const email = contact.find((c) => c.href?.startsWith('mailto:'))
-  const links = [...explore, ...(email ? [{ label: 'Contact', href: email.href }] : [])]
+  const email = contact.find((c) => c.href?.startsWith('mailto:'))?.href
+  const links = [...explore, ...(email ? [{ label: 'Contact', href: email }] : [])]
   // The same accounts as the Journal footer. One with no address yet shows as a plain icon.
-  const socials = contact
-    .map((c) => (c.href?.startsWith('mailto:') ? { ...c, label: 'Email' } : c))
-    .filter((c) => SOCIAL_ICONS[c.label])
+  const socials = contact.flatMap((c) => {
+    const label = c.href?.startsWith('mailto:') ? 'Email' : c.label
+    return isSocial(label) ? [{ label, href: c.href }] : []
+  })
   const current = links.findIndex((l) => pathname === l.href || pathname.startsWith(`${l.href}/`))
 
   const [hot, setHot] = useState(-1)
-  const nav = useRef(null)
+  const nav = useRef<HTMLElement>(null)
   const target = hot >= 0 ? hot : current
 
   useLayoutEffect(() => {
     const el = nav.current
+    if (!el) return
     const place = () => {
-      const a = el.querySelectorAll('li > a')[target]
+      const a = el.querySelectorAll<HTMLAnchorElement>('li > a')[target]
       el.dataset.underline = a ? 'on' : 'off'
       if (!a) return
       el.style.setProperty('--underline-x', `${a.offsetLeft}px`)
@@ -37,7 +41,9 @@ export function SiteFooter() {
     }
     place()
     // The first position is set without a glide; from then on it moves.
-    const raf = requestAnimationFrame(() => (el.dataset.ready = ''))
+    const raf = requestAnimationFrame(() => {
+      el.dataset.ready = ''
+    })
     const resize = new ResizeObserver(place)
     resize.observe(el)
     return () => {
@@ -58,7 +64,7 @@ export function SiteFooter() {
             {links.map((l, i) => {
               const props = {
                 className: i === current ? 'is-active' : undefined,
-                'aria-current': i === current ? 'page' : undefined,
+                'aria-current': i === current ? ('page' as const) : undefined,
                 onPointerEnter: () => setHot(i),
                 onFocus: () => setHot(i),
                 onBlur: () => setHot(-1),
