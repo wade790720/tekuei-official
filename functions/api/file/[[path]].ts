@@ -1,12 +1,14 @@
-export async function onRequestGet({ request, env }) {
+import type { ApiContext } from '../../env.d.ts'
+
+export async function onRequestGet({ request, env }: ApiContext) {
   const u = new URL(request.url)
-  let key
+  let key: string
   try {
     key = decodeURIComponent(u.pathname.replace(/^\/api\/file\//, ''))
   } catch {
     return new Response('Bad key', { status: 400 }) // a broken % escape
   }
-  // Only uploaded images are public (functions/api/upload.js writes them under images/).
+  // Only uploaded images are public (functions/api/upload.ts writes them under images/).
   // The bucket also holds data.json and the admin attempt counter.
   if (!key.startsWith('images/') || key.includes('..')) {
     return new Response('Not found', { status: 404 })
