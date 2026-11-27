@@ -508,3 +508,15 @@
     color: var(--ember);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .howto-checkin-page .fade-in,
+  .howto-checkin-hero__eyebrow,
+  .howto-checkin-hero__title,
+  .howto-checkin-hero__subtitle {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+}

@@ -357,3 +357,13 @@ html.has-scroll-document body {
     gap: var(--space-3);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .work-card__photo {
+    transition: none;
+  }
+
+  .work-card:hover .work-card__photo {
+    transform: none;
+  }
+}

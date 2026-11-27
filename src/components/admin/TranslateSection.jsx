@@ -5,7 +5,7 @@ import { TRANSLATE_LABELS as T } from '../../data/admin.js'
 import { useLang } from '../../i18n'
 import { translateTexts } from '../../lib/adminApi.js'
 import { docSlots } from '../../lib/docTranslate.js'
-import { docText } from '../../lib/richText.js'
+import { hasBody } from '../../lib/richText.js'
 
 const DONE_MS = 5000 // how long the "translated" note stays
 
@@ -36,7 +36,7 @@ export function TranslateSection({ zhDoc, enDoc, fields = {}, onDone }) {
   }, [status.done])
 
   async function run() {
-    if (docText(enDoc).trim() && !window.confirm(T.confirm)) return
+    if (hasBody(enDoc) && !window.confirm(T.confirm)) return
     const { doc, slots } = docSlots(zhDoc)
     const out = {}
     const all = [

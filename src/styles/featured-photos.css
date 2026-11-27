@@ -21,7 +21,7 @@
 .featured__stage img {
   display: block;
   width: 100%;
-  border-radius: var(--radius-lg);
+  border-radius: var(--featured-radius, var(--radius-lg));
   background: var(--surface-1);
   aspect-ratio: 16 / 9;
   object-fit: cover;

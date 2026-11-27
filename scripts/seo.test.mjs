@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
 import { JOURNAL_META } from '../src/data/journal.js'
 import { sampleJournal } from './fixtures/journal.mjs'
-import { injectPage, journalIndexPage, llmsTxt, postPage, serveCase, servePage, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.js'
+import { docHtml, injectPage, journalIndexPage, llmsTxt, postPage, serveCase, servePage, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.js'
 import { fakeR2 } from './fakeR2.mjs'
 
 const journal = sampleJournal()
@@ -162,4 +162,13 @@ it('a project written in the editor gets its own page, and a draft or outside li
   assert.ok(hrefs.includes('/projects/show') && hrefs.includes('/projects/coded'))
   assert.ok(hrefs.includes('/projects/both'), 'a project with a page is listed at its page, not its outside link')
   assert.ok(!hrefs.includes('/projects/hidden') && !hrefs.some((h) => h.startsWith('http')))
+})
+
+describe('docHtml', () => {
+  it('writes a picture set name only for the work layout, where the page shows it', () => {
+    const set = (layout) => docHtml({ type: 'slidesCard', attrs: { layout, title: 'Name', text: 'Words', slides: [{ src: 'a.webp', alt: 'A' }] } })
+    assert.match(set('work'), /<h3>Name<\/h3><p>Words<\/p><figure>/)
+    assert.doesNotMatch(set('gallery'), /Name|Words/)
+    assert.match(set('gallery'), /<figure>/)
+  })
 })

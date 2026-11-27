@@ -1,3 +1,5 @@
+import { hasBody } from '../lib/richText.js'
+
 export const JOURNAL_META = {
   zh: {
     title: 'Journal · TEKUEI',
@@ -72,9 +74,6 @@ export const copyJournalDraft = (j) => ({
 })
 
 /** @param {JournalData} journal @param {string} slug */
-// The editor starts every translation as one empty paragraph, so "has a key" is not "has a body".
-const hasBody = (c) =>
-  Boolean(c) && (c.blocks ? c.blocks.length > 0 : /"text":"[^"]|"type":"(imageCard|videoCard|slidesCard)"/.test(JSON.stringify(c.doc ?? c)))
 
 /**
  * The posts readers may see. A post marked `draft` (in either language) is left out, with its body, and the
