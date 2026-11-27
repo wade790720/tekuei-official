@@ -1,7 +1,7 @@
 import { useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { ScrollShadow } from './ScrollShadow.jsx'
-import { usePresence } from '../hooks/usePresence.js'
+import { usePresence } from '../hooks/usePresence.ts'
 import '../styles/drawer.css'
 
 /**

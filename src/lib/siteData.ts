@@ -101,10 +101,15 @@ export interface CaseAssets {
   media?: { fullWidthImage?: ImageRef; inlineImage?: ImageRef }
 }
 
-export interface SiteData {
-  journal?: JournalData
-  work?: WorkData
-  aboutPage?: AboutPageData
+/** The sections an editor saves whole, by their key in data.json. */
+export interface EditableSections {
+  journal: JournalData
+  work: WorkData
+  aboutPage: AboutPageData
+}
+export type SectionKey = keyof EditableSections
+
+export interface SiteData extends Partial<EditableSections> {
   cases?: Record<string, CaseAssets>
   /** Old About copy. No page reads it; it is kept so no save replaces it. */
   about?: unknown

@@ -42,7 +42,7 @@ export function getAdminToken(): string {
   return ''
 }
 
-function authHeader(token: string): Record<string, string> {
+function authHeader(token: string | null): Record<string, string> {
   if (!token) return {}
   return { Authorization: `Bearer ${token}` }
 }
@@ -114,7 +114,7 @@ export function onSiteVersion(fn: VersionListener): () => void {
  * @param etag  the version this editor loaded; the server refuses the save (409) if it changed since
  * @returns etag of the saved version
  */
-export async function saveSitePatch(patch: SiteData, token: string, etag: string | null): Promise<{ etag: string | null }> {
+export async function saveSitePatch(patch: SiteData, token: string | null, etag: string | null): Promise<{ etag: string | null }> {
   const res = await adminFetch('/api/data', {
     method: 'PUT',
     headers: {
@@ -139,7 +139,7 @@ export async function saveSitePatch(patch: SiteData, token: string, etag: string
  */
 export async function translateTexts(
   texts: string[],
-  token: string,
+  token: string | null,
   { signal, onProgress }: { signal?: AbortSignal; onProgress?: (done: number, total: number) => void } = {},
 ): Promise<string[]> {
   const batches = batchTexts(texts)
@@ -162,7 +162,7 @@ export async function translateTexts(
 }
 
 /** Stores an image and returns `{ url }`. The API takes 1MB at most, so the image is shrunk here, for every caller. */
-export async function uploadSiteImage(file: File, token: string): Promise<{ url: string }> {
+export async function uploadSiteImage(file: File, token: string | null): Promise<{ url: string }> {
   const form = new FormData()
   form.append('file', await compressImage(file))
   const res = await adminFetch('/api/upload', {

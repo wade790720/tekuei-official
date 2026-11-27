@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
-import { LangContext } from './langContext.js'
+import type { ReactNode } from 'react'
+import type { Lang } from '../lib/siteData.ts'
+import { LangContext } from './langContext.ts'
 
-export function LangProvider({ children }) {
+export function LangProvider({ children }: { children: ReactNode }) {
   // Anything but "en" is Chinese. Every text lookup is keyed by this value, so a stale or
   // hand-edited one would blank the whole site, header included.
   // Storage throws when the browser blocks site data; this provider sits outside the page error boundary.
-  const [lang, setLang] = useState(() => {
+  const [lang, setLang] = useState<Lang>(() => {
     try {
       return localStorage.getItem('lang') === 'en' ? 'en' : 'zh'
     } catch {
@@ -14,7 +16,7 @@ export function LangProvider({ children }) {
   })
   const toggle = () =>
     setLang((l) => {
-      const next = l === 'zh' ? 'en' : 'zh'
+      const next: Lang = l === 'zh' ? 'en' : 'zh'
       try {
         localStorage.setItem('lang', next)
       } catch {

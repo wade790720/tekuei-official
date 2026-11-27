@@ -1,6 +1,6 @@
 import { SidePanel } from '../SidePanel.jsx'
 import { TranslateSection } from '../admin/TranslateSection.jsx'
-import { useCmsEditing } from '../../hooks/useCmsEditing.js'
+import { useCmsEditing } from '../../hooks/useCmsEditing.ts'
 import { getDoc } from '../../lib/richText.ts'
 
 /** The About page has no fields: everything is the body, edited on the page, so it gets the toolbar instead of the drawer. */

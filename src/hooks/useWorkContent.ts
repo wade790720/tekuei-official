@@ -1,5 +1,5 @@
-import { useAdmin } from '../context/admin.js'
-import { useWork } from '../context/work.js'
+import { useAdmin } from '../context/admin.ts'
+import { useWork } from '../context/work.ts'
 import { localizeWork, publishedWork } from '../data/work.ts'
 import { useLang } from '../i18n'
 
