@@ -23,3 +23,7 @@ ts	phase	decision	why	evidence	result
 2026-11-27T15:33:15Z	A-hooks	SiteData 拆出 EditableSections 和 SectionKey，useCmsSection 以鍵決定內容型別	不用轉型就能從 data[sectionKey] 讀到正確型別	dd057df src/lib/siteData.ts	done
 2026-11-27T15:33:15Z	A-bug	儲存進行中離開編輯模式時，saveDraft 的 updater 會對 null 呼叫 copyDraft 而當掉；加判斷	strict 型別指出 cur 可能是 null；hook 沒有測試環境，所以沒有先寫測試	dd057df src/hooks/useCmsSection.ts	fixed-untested
 2026-11-27T15:33:15Z	A-verify	用假的 /api（scripts/fakeAdminApi.js）登入 About 編輯模式、打字、Ctrl+S，送出的 PUT 只有 aboutPage 且含修改	確認 useCmsSection 的型別化儲存路徑；沒有寫到正式資料	window.__api: PUT /api/data keys=[aboutPage]	pass
+2026-11-27T15:46:21Z	B	Editor 節點屬性用 attrsOf<A>(node) 一處轉型	ProseMirror 的 Attrs 是 any 值的索引型別，無法直接指定給介面；schema 為每個宣告的屬性補預設值，就是執行期的保證	src/components/Editor.tsx attrsOf	各 NodeView 讀到具名屬性型別，只有一個 as
+2026-11-27T15:46:21Z	B	選單回傳的 string 用 isBlockKind 收窄成 BlockKind	DropdownMenu 和 MenuItems 的 onSelect/onPick 依 JSDoc 是 (value: string)，applyBlock 只接受 BlockKind	src/components/Editor.tsx isBlockKind	不依賴 UI 元件是否改成泛型
+2026-11-27T15:46:22Z	B	getPos() 為 undefined 時不拖曳圖組、找不到 .cms-ed 時不畫格式工具列	Tiptap 3 的 getPos 可能回 undefined，closest 可能回 null；原本會丟例外	src/components/Editor.tsx moveTo、Toolbar	正常情況行為不變，例外情況改成什麼都不做
+2026-11-27T15:46:22Z	B	'@tiptap/core Commands 模組擴充宣告 setLead	Lead 節點的自訂指令要讓 chain().setLead() 有型別	src/components/Editor.tsx declare module	不用轉型
