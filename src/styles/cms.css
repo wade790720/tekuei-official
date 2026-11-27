@@ -369,6 +369,11 @@
   bottom: -1px;
 }
 
+/* A list with no rows, when a row from another list is over it */
+.cms-sort[data-drop] {
+  box-shadow: 0 0 0 1px var(--ember);
+}
+
 .cms-sort[data-dragging] {
   cursor: grabbing;
   user-select: none;

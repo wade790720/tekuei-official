@@ -161,6 +161,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 絕對定位的裝飾：`left`、`right` 也要加上 `var(--page-gutter)`。
 - 全寬的圖帶：寬度用 `min(100vw, var(--page-max))`，置中用 `margin`，不要用 `transform`（淡入動畫會覆寫 `transform`）。
 - 會被螢幕邊緣切掉的大圖：寬螢幕上改在內容邊緣切掉，或讓邊緣淡出（例如 `mask-image`）。
+- 例外：案例和專案內頁的開場圖延伸到螢幕左右邊緣（它是一個案例的開場，可以有自己的版型）。壓在上面的文字仍在 1920px 內。
 - `heroFx.js` 的 `MAX_W` 要和 `--page-max` 一致。
 - 驗收：用 2560px 寬的視窗打開頁面，文字和圖片都要在中間的 1920px 內。
 

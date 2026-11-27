@@ -19,6 +19,8 @@ import '../styles/project.css'
 const Editor = lazy(() => import('./Editor.jsx').then((m) => ({ default: m.Editor })))
 const ProjectEditPanel = lazy(() => import('./work/WorkEditPanel.jsx').then((m) => ({ default: m.ProjectEditPanel })))
 
+const typeOf = (x) => x.type ?? PROJECT_TYPES[x.id] ?? 'web'
+
 /** A project whose page is written in the editor: a title and one rich-text body, set out in the Journal post column. */
 export default function ProjectPage() {
   const { slug } = useParams()
@@ -56,52 +58,88 @@ export default function ProjectPage() {
     )
   }
 
-  const section = PROJECT_SECTIONS.find((s) => s.id === (item.type ?? PROJECT_TYPES[item.id] ?? 'web'))
+  const section = PROJECT_SECTIONS.find((s) => s.id === typeOf(item))
   const setDoc = (next) =>
     cms.updateDraft((d) => {
       d.content[lang] = { ...d.content[lang], [slug]: { doc: next } }
     })
   const upload = async (file) => (await uploadSiteImage(file, admin.getToken())).url
   const saved = <RichText doc={doc} />
+  const cover = item.thumbImage?.url
+  // The card's number on the Projects list: section by section, in saved order.
+  const num = PROJECT_SECTIONS.flatMap((s) => content.items.filter((x) => typeOf(x) === s.id)).findIndex((x) => x.id === slug) + 1
+  const facts = [
+    [t.type, [section[lang]]],
+    item.client && [t.client, [item.client]],
+    item.tags?.length && [t.scope, item.tags],
+    item.link && [t.link, [item.link.replace(/^https?:\/\/(www\.)?/, '').replace(/\/.*$/, '')], item.link],
+  ].filter(Boolean)
 
   return (
     <div className="journal-page journal-page--post">
       <main>
-        {item.thumbImage?.url ? (
-          <div className="project-cover fade-in">
-            <img src={item.thumbImage.url} alt="" />
-          </div>
-        ) : null}
-        <article className="journal-post project-post" lang={untranslated ? 'zh-Hant' : undefined}>
+        <article className={`journal-post project-post${cover ? ' project-post--cover' : ''}`} lang={untranslated ? 'zh-Hant' : undefined}>
           <header className="journal-post__header">
-            {/* Wrapped so the fade-in transition does not replace the links' hover transition */}
-            <div className="fade-in">
-              <Breadcrumbs label={t.crumbs} className="journal-post__crumbs">
-                <BreadcrumbsItem href="/">{t.home}</BreadcrumbsItem>
-                <BreadcrumbsItem href="/projects">Projects</BreadcrumbsItem>
-                <BreadcrumbsItem>{title}</BreadcrumbsItem>
-              </Breadcrumbs>
-            </div>
-            <div className="journal-post__meta fade-in" style={{ '--i': 1 }}>
-              <span>{section[lang]}</span>
-              {item.client ? (
-                <>
-                  <span aria-hidden>·</span>
-                  <span>{item.client}</span>
-                </>
-              ) : null}
-            </div>
-            <h1 className="journal-post__title fade-in" style={{ '--i': 2 }}>{title}</h1>
-            <div className="fade-in" style={{ '--i': 3 }}>
-              <TagList tags={item.tags ?? []} variant="outline" />
-            </div>
-            {item.link ? (
-              <div className="journal-post__visit fade-in" style={{ '--i': 4 }}>
-                <Button as="a" variant="ghost" href={item.link} target="_blank" rel="noreferrer">
-                  {t.visit} ↗
-                </Button>
-              </div>
-            ) : null}
+            {cover ? (
+              <>
+                <div className="project-cover fade-in" aria-hidden>
+                  <img src={cover} alt="" />
+                </div>
+                <div className="project-hero__num fade-in" style={{ '--i': 1 }}>
+                  {t.num} {String(num).padStart(2, '0')}
+                </div>
+                <h1 className="journal-post__title fade-in" style={{ '--i': 2 }}>{title}</h1>
+                <dl className="project-hero__facts fade-in" style={{ '--i': 3 }}>
+                  {facts.map(([label, lines, href]) => (
+                    <div key={label}>
+                      <dt>{label}</dt>
+                      <dd>
+                        {href ? (
+                          <a href={href} target="_blank" rel="noreferrer">
+                            {lines[0]} ↗
+                          </a>
+                        ) : (
+                          lines.map((line) => <span key={line}>{line}</span>)
+                        )}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </>
+            ) : (
+              <>
+                {/* Wrapped so the fade-in transition does not replace the links' hover transition */}
+                <div className="fade-in">
+                  <Breadcrumbs label={t.crumbs} className="journal-post__crumbs">
+                    <BreadcrumbsItem href="/">{t.home}</BreadcrumbsItem>
+                    <BreadcrumbsItem href="/projects">Projects</BreadcrumbsItem>
+                    <BreadcrumbsItem>{title}</BreadcrumbsItem>
+                  </Breadcrumbs>
+                </div>
+                <div className="journal-post__meta fade-in" style={{ '--i': 1 }}>
+                  <span>{section[lang]}</span>
+                  {item.client ? (
+                    <>
+                      <span aria-hidden>·</span>
+                      <span>{item.client}</span>
+                    </>
+                  ) : null}
+                </div>
+                <h1 className="journal-post__title fade-in" style={{ '--i': 2 }}>{title}</h1>
+                {item.tags?.length ? (
+                  <div className="journal-post__tags fade-in" style={{ '--i': 3 }}>
+                    <TagList tags={item.tags} variant="outline" />
+                  </div>
+                ) : null}
+                {item.link ? (
+                  <div className="journal-post__visit fade-in" style={{ '--i': 4 }}>
+                    <Button as="a" variant="ghost" href={item.link} target="_blank" rel="noreferrer">
+                      {t.visit} ↗
+                    </Button>
+                  </div>
+                ) : null}
+              </>
+            )}
             {untranslated ? (
               <p className="journal-post__notice fade-in" lang="en" style={{ '--i': 5 }}>
                 {t.untranslated}

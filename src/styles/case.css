@@ -42,7 +42,7 @@
   flex-direction: column;
   justify-content: flex-end;
   padding: 0 0 var(--space-24);
-  min-height: 100vh;
+  min-height: var(--hero-height);
 }
 
 .case-hero-bg {
@@ -73,15 +73,7 @@
 }
 
 .case-hero-bg--photo::after {
-  background: linear-gradient(
-  to bottom,
-  transparent 0%,
-  transparent 25%,
-  color-mix(in srgb, var(--surface-0) 28%, transparent) 50%,
-  color-mix(in srgb, var(--surface-0) 62%, transparent) 68%,
-  color-mix(in srgb, var(--surface-0) 82%, transparent) 82%,
-  color-mix(in srgb, var(--surface-0) 90%, transparent) 100%
-  );
+  background: var(--hero-scrim);
 }
 
 .case-hero--has-photo .case-num {
@@ -131,10 +123,11 @@
 .case-hero .case-title {
   margin-bottom: var(--space-2);
   color: var(--gray-a11);
-  font-weight: 400;
-  font-size: clamp(40px, 6vw, 72px);
+  letter-spacing: var(--type-display-ls);
+  font-weight: var(--weight-light);
+  font-size: var(--type-display);
   font-family: var(--fd);
-  line-height: 1.05;
+  line-height: var(--type-display-lh);
   opacity: 0;
   animation: case-fade-up var(--duration-reveal) var(--ease-touch) 0.7s forwards;
 }
@@ -147,7 +140,7 @@
 .case-hero .case-subtitle {
   color: var(--gray-a11);
   letter-spacing: var(--type-label-ls);
-  font-weight: var(--weight-light);
+  font-weight: var(--weight-regular);
   font-size: clamp(13px, 1.4vw, 16px);
   font-family: var(--fc);
   opacity: 0;
@@ -176,9 +169,10 @@
 }
 
 .meta-value {
+  margin: 0;
   color: var(--text-secondary);
   letter-spacing: 0;
-  font-weight: var(--weight-light);
+  font-weight: var(--weight-regular);
   font-size: var(--type-caption);
   font-family: var(--fc);
   line-height: 1.8;

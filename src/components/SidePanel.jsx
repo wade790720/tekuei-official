@@ -295,32 +295,54 @@ export function FormRow({ label, hint, children, htmlFor }) {
 
 /**
  * Rows that reorder: drag one by its handle (mouse, pen or touch), or focus the handle and press ↑ / ↓.
+ * With listAt and onMoveTo, a row can also be dragged into another list of the same kind.
  * @param {{
  *   items: unknown[],
  *   keyOf: (item: any) => string,
  *   nameOf: (item: any) => string,           // names the row in the handle's label
  *   onMove: (from: number, to: number) => void,
+ *   listAt?: (x: number, y: number) => Element | null | undefined,  // the .cms-sort under the pointer
+ *   onMoveTo?: (from: number, list: Element, at: number) => void,   // dropped in another list, before its row `at`
  *   rowClassName?: string,                   // the row's own layout; the default is the panel's list row
  *   children: (item: any, i: number) => import('react').ReactNode,  // the cells after the handle
  * }} props
  */
-export function SortRows({ items, keyOf, nameOf, onMove, rowClassName = 'cms-row cms-post', children }) {
-  const [drag, setDrag] = useState(null) // { from, gap } while a row is dragged; gap k = insert before row k
+export function SortRows({ items, keyOf, nameOf, onMove, listAt, onMoveTo, rowClassName = 'cms-row cms-post', children }) {
+  const [drag, setDrag] = useState(null) // { from, gap, list } while a row is dragged; gap k = insert before row k; list = another list, or null
+  const root = useRef(null)
   const rows = useRef([])
-  const gapAt = (y) => {
-    const k = rows.current.slice(0, items.length).findIndex((el) => el && y < el.getBoundingClientRect().top + el.offsetHeight / 2)
-    return k < 0 ? items.length : k
+  const marked = useRef(null)
+  const rowsOf = (list) => [...list.querySelectorAll(':scope > .cms-sort__row')]
+  const gapIn = (list, y) => {
+    const k = rowsOf(list).findIndex((el) => y < el.getBoundingClientRect().top + el.offsetHeight / 2)
+    return k < 0 ? rowsOf(list).length : k
+  }
+  // The other list belongs to another component, so its drop line is set on the DOM.
+  const mark = (list, gap) => {
+    marked.current?.removeAttribute('data-drop')
+    const els = list ? rowsOf(list) : []
+    marked.current = list ? (els[gap] ?? els.at(-1) ?? list) : null
+    marked.current?.setAttribute('data-drop', gap < els.length ? 'before' : 'after')
   }
   // Removing the dragged row first shifts the rows below it up by one.
   const target = (d) => (d.gap > d.from ? d.gap - 1 : d.gap)
   const dragMove = (e) => {
     if (!drag) return
-    const gap = gapAt(e.clientY)
-    if (gap !== drag.gap) setDrag({ ...drag, gap }) // pointermove fires far more often than the gap changes
+    const under = listAt?.(e.clientX, e.clientY)
+    const list = under && under !== root.current ? under : null
+    const gap = gapIn(list ?? root.current, e.clientY)
+    if (gap === drag.gap && list === drag.list) return // pointermove fires far more often than the gap changes
+    mark(list, gap)
+    setDrag({ ...drag, gap, list })
+  }
+  const dragStop = () => {
+    mark(null)
+    setDrag(null)
   }
   const dragEnd = () => {
-    if (drag && target(drag) !== drag.from) onMove(drag.from, target(drag))
-    setDrag(null)
+    if (drag?.list) onMoveTo(drag.from, drag.list, drag.gap)
+    else if (drag && target(drag) !== drag.from) onMove(drag.from, target(drag))
+    dragStop()
   }
   const dragKey = (e, i) => {
     const to = e.key === 'ArrowUp' ? i - 1 : e.key === 'ArrowDown' ? i + 1 : -1
@@ -329,10 +351,10 @@ export function SortRows({ items, keyOf, nameOf, onMove, rowClassName = 'cms-row
     onMove(i, to)
     requestAnimationFrame(() => rows.current[to]?.querySelector('.cms-drag')?.focus())
   }
-  const moved = drag && target(drag) !== drag.from
+  const moved = drag && !drag.list && target(drag) !== drag.from
 
   return (
-    <div className="cms-sort" data-dragging={drag ? '' : undefined}>
+    <div className="cms-sort" ref={root} data-dragging={drag ? '' : undefined}>
       {items.map((item, i) => (
         <div
           className={`cms-sort__row ${rowClassName}`}
@@ -348,11 +370,11 @@ export function SortRows({ items, keyOf, nameOf, onMove, rowClassName = 'cms-row
             onPointerDown={(e) => {
               e.preventDefault()
               e.currentTarget.setPointerCapture(e.pointerId)
-              setDrag({ from: i, gap: i })
+              setDrag({ from: i, gap: i, list: null })
             }}
             onPointerMove={dragMove}
             onPointerUp={dragEnd}
-            onPointerCancel={() => setDrag(null)}
+            onPointerCancel={dragStop}
             onKeyDown={(e) => dragKey(e, i)}
           >
             <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden>
