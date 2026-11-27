@@ -14,9 +14,9 @@ export const PROJECTS_PAGE = {
 
 // The list is shown in these sections, in this order. A section with no project is left out.
 export const PROJECT_SECTIONS = [
-  { id: 'web', zh: '網頁', en: 'Web' },
+  { id: 'web', zh: '網站', en: 'Website' },
   { id: 'exhibition', zh: '展覽', en: 'Exhibitions' },
-  { id: 'side', zh: 'Side Projects', en: 'Side Projects' },
+  { id: 'side', zh: '個人項目', en: 'Side Projects' },
 ]
 
 // Which section a client project is in, by id: the R2 items carry no type. Labs are always in `side`.
