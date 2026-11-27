@@ -1,4 +1,5 @@
 import { ADMIN_SESSION_KEY, CMS_LABELS, TRANSLATE_LABELS } from '../data/admin.js'
+import { compressImage } from './compressImage.js'
 import { batchTexts } from './docTranslate.js'
 
 export function apiPath(path) {
@@ -143,9 +144,10 @@ export async function translateTexts(texts, token, { signal, onProgress } = {}) 
   return out
 }
 
+/** Stores an image and returns `{ url }`. The API takes 1MB at most, so the image is shrunk here, for every caller. */
 export async function uploadSiteImage(file, token) {
   const form = new FormData()
-  form.append('file', file)
+  form.append('file', await compressImage(file))
   const res = await adminFetch('/api/upload', {
     method: 'POST',
     headers: authHeader(token),

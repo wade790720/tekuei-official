@@ -136,7 +136,8 @@ export function WorkListEditPanel() {
 export function ProjectEditPanel({ id, coded = false }) {
   const { lang } = useLang()
   const { admin, cms, ready, panelProps, saveWith } = useWorkEditing()
-  const [uploading, setUploading] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
   if (!ready) return null
 
   const item = cms.draft.items.find((x) => x.id === id)
@@ -161,15 +162,17 @@ export function ProjectEditPanel({ id, coded = false }) {
 
   const upload = async (file) => {
     if (!file) return
-    setUploading('上傳中')
+    setUploading(true)
+    setUploadError('')
     try {
       const { url } = await uploadSiteImage(file, admin.getToken())
       set((x) => {
         x.thumbImage = { url }
       })
-      setUploading('')
     } catch (err) {
-      setUploading(err.message || '上傳失敗')
+      setUploadError(err.message || '上傳失敗')
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -233,12 +236,13 @@ export function ProjectEditPanel({ id, coded = false }) {
       </FormRow>
       <FormRow
         label="封面圖"
-        hint={uploading || (WORK_THUMBS[id]?.cover ? '這個專案的封面圖寫在程式碼裡（src/data/workMedia.js），這裡上傳的圖不會顯示' : WORK_THUMBS[id] ? '列表卡片用的是程式碼裡的影片，這張圖只用在內頁的開場' : '列表卡片和內頁的開場都用這張。橫式、寬 2400px 以上最合適，中英文共用')}
+        hint={WORK_THUMBS[id]?.cover ? '這個專案的封面圖寫在程式碼裡（src/data/workMedia.js），這裡上傳的圖不會顯示' : '列表卡片和內頁的開場都用這張。橫式、寬 2000px 以上最合適，中英文共用'}
+        error={uploadError}
       >
         <div className="cms-inline">
           {item.thumbImage?.url ? <img className="cms-thumb" src={item.thumbImage.url} alt="" /> : null}
           <Button as="label" variant="ghost">
-            {item.thumbImage?.url ? '更換' : '上傳'}
+            {uploading ? '上傳中' : item.thumbImage?.url ? '更換' : '上傳'}
             <input type="file" accept="image/*" hidden onChange={(e) => upload(e.target.files[0])} />
           </Button>
         </div>

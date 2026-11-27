@@ -15,7 +15,6 @@ import { Switch } from './Switch.jsx'
 import { SortRows } from './SidePanel.jsx'
 import { Button } from './Button.jsx'
 import { TooltipGroup } from './Tooltip.jsx'
-import { compressImage } from '../lib/compressImage.js'
 import { safeHref } from '../lib/richText.js'
 
 
@@ -55,7 +54,7 @@ async function rehost(src, upload) {
   } catch {
     throw Object.assign(new Error('對方網站不讓瀏覽器下載這張圖，目前連到原網址。請改用右鍵「複製圖片」再貼上'), { keepSrc: src })
   }
-  return upload(await compressImage(file))
+  return upload(file)
 }
 
 const isOwnImage = (src) => !src || src.startsWith('blob:') || src.includes('/api/file/')
@@ -71,7 +70,7 @@ function rehostSlice(slice, upload) {
 function insertImages(view, files, upload, pos) {
   const nodes = files.map((file) => {
     const src = URL.createObjectURL(file)
-    track(src, compressImage(file).then(upload))
+    track(src, upload(file))
     return view.state.schema.nodes.imageCard.create({ src })
   })
   const tr = view.state.tr
@@ -225,7 +224,7 @@ function ImageCardView({ node, updateAttributes, deleteNode, selected, extension
     if (!file) return
     setErr('')
     setBusy(true)
-    follow(compressImage(file).then(extension.options.upload))
+    follow(extension.options.upload(file))
   }
 
   // A pasted or dropped image: finish the upload that imagePasteProps started for the preview URL the card was made with.
@@ -368,7 +367,7 @@ function CarouselView({ node, updateAttributes, deleteNode, selected, extension,
     for (const [n, file] of files.entries()) {
       setBatch(`上傳中 ${n + 1} / ${files.length}`)
       try {
-        const src = await compressImage(file).then(extension.options.upload)
+        const src = await extension.options.upload(file)
         latest.current = [...latest.current, { src, alt: '', caption: '' }]
         setSlides(latest.current)
       } catch (e) {
@@ -407,7 +406,7 @@ function CarouselView({ node, updateAttributes, deleteNode, selected, extension,
     setErr('')
     setBusy(i)
     try {
-      setSlide(i, { src: await compressImage(file).then(extension.options.upload) })
+      setSlide(i, { src: await extension.options.upload(file) })
     } catch (e) {
       setErr(e.message || '上傳失敗')
     } finally {

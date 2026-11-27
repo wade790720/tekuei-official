@@ -278,8 +278,8 @@ function EditBar({ title, error, status, children }) {
   )
 }
 
-/** One label | value row, as in the Framer CMS sheet. */
-export function FormRow({ label, hint, children, htmlFor }) {
+/** One label | value row, as in the Framer CMS sheet. `hint` shows while the field is in use; `error` always shows. */
+export function FormRow({ label, hint, error, children, htmlFor }) {
   return (
     <div className="cms-row">
       <label className="cms-row__label" htmlFor={htmlFor}>
@@ -288,6 +288,11 @@ export function FormRow({ label, hint, children, htmlFor }) {
       <div className="cms-row__value">
         {children}
         {hint ? <div className="cms-row__hint">{hint}</div> : null}
+        {error ? (
+          <div className="cms-row__error" role="alert">
+            {error}
+          </div>
+        ) : null}
       </div>
     </div>
   )
