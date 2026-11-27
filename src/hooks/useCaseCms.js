@@ -43,7 +43,6 @@ export function useCaseCms(slug) {
   const staticCase = LOCAL_CASES[slug]?.[lang] ?? null
   // Memoised: the page's effects depend on this object.
   const content = useMemo(() => (staticCase ? mergeAssets(staticCase, data.cases?.[slug]) : null), [staticCase, data, slug])
-  const work = data.work ?? siteDefaults.work
 
-  return { content, work, loading }
+  return { content, loading }
 }

@@ -1,8 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { localizeWork, PROJECT_PAGE_LABELS, projectFacts, projectNumber, projectTitle, publishedWork } from '../data/work.js'
+import { PROJECT_PAGE_LABELS, projectFacts, projectNumber, projectTitle } from '../data/work.js'
 import { projectCover } from '../data/workMedia.js'
 import { useCaseCms } from '../hooks/useCaseCms.js'
+import { useWorkContent } from '../hooks/useWorkContent.js'
 import { useLang } from '../i18n'
 import { caseDoc } from '../lib/caseDoc.js'
 import { RichText } from './RichText.jsx'
@@ -15,7 +16,9 @@ import '../styles/project.css'
 export default function CaseStudyPage() {
   const { slug } = useParams()
   const { lang } = useLang()
-  const { content: data, work, loading } = useCaseCms(slug)
+  const { content: data, loading } = useCaseCms(slug)
+  // The list the edit panel changes, so an edit there shows here before it is saved
+  const { items } = useWorkContent().content
   const doc = useMemo(() => (data ? caseDoc(data, lang) : null), [data, lang])
   const t = PROJECT_PAGE_LABELS[lang]
 
@@ -27,10 +30,10 @@ export default function CaseStudyPage() {
 
   const { hero } = data
   // The card's number on the Projects list; a case that is not on the list keeps its own.
-  const listed = projectNumber(publishedWork(work).items, slug)
+  const listed = projectNumber(items, slug)
   // The title, the facts and the cover come from the case's card, as on a project page, so the edit panel changes
   // both. A case that is no longer on the list falls back to what is stored with it.
-  const item = localizeWork(work, lang).items.find((x) => x.id === slug)
+  const item = items.find((x) => x.id === slug)
   const cover = projectCover(item) || hero.image?.url
   // The card of a case has no site link of its own until one is typed in the panel; the case's stored link fills in.
   const site = hero.meta.find((m) => m.href)
