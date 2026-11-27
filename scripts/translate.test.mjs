@@ -53,6 +53,9 @@ test('a stray tag from the model never reaches the page', () => {
 
 test('batches keep order and respect the limit', () => {
   assert.deepEqual(batchTexts(['aaa', 'bb', 'cccc', 'd'], 5), [['aaa', 'bb'], ['cccc', 'd']])
+  // The API also refuses a request with too many strings, however short
+  assert.deepEqual(batchTexts(['a', 'b', 'c'], 5, 2), [['a', 'b'], ['c']])
+  assert.ok(batchTexts(Array(900).fill('短')).every((b) => b.length <= 300))
 })
 
 const env = (replies, extra = {}) => {

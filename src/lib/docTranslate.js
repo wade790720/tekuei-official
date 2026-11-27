@@ -5,6 +5,8 @@ const HAN = /\p{Script=Han}/u
 const INLINE = new Set(['text', 'hardBreak'])
 const ATTR_TEXT = { imageCard: ['alt', 'caption'], videoCard: ['caption'], slidesCard: ['title', 'text'], blockquote: ['cite'] }
 export const BATCH_CHARS = 6000
+// The most strings /api/translate takes in one request
+export const BATCH_TEXTS = 300
 
 const escapeText = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const unescapeText = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
@@ -73,12 +75,12 @@ export function docSlots(doc) {
   return { doc: copy, slots }
 }
 
-/** Splits strings into runs of at most `limit` characters, in order. A longer string gets a batch of its own. */
-export function batchTexts(texts, limit = BATCH_CHARS) {
+/** Splits strings into runs of at most `limit` characters and `max` strings, in order. A longer string gets a batch of its own. */
+export function batchTexts(texts, limit = BATCH_CHARS, max = BATCH_TEXTS) {
   const batches = []
   let size = 0
   for (const t of texts) {
-    if (!batches.length || size + t.length > limit) {
+    if (!batches.length || size + t.length > limit || batches.at(-1).length >= max) {
       batches.push([])
       size = 0
     }
