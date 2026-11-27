@@ -47,7 +47,8 @@
   min-width: 140px;
   padding: var(--space-1);
   border-radius: var(--radius-md);
-  background: var(--surface-2);
+  /* The fill of an open trigger, made solid: the menu and its button read as one colour */
+  background: linear-gradient(var(--line), var(--line)), var(--surface-1);
   box-shadow: 0 0 0 1px var(--line), 0 16px 40px rgba(0, 0, 0, 0.5);
   /* Transitions, not keyframes: reopening mid-close turns back from where it is */
   transition:

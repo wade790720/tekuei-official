@@ -824,8 +824,8 @@
   color: var(--text-tertiary);
 }
 
-/* The ⋯ menu sits near the drawer's right edge, so it opens leftward */
-.cms-panel .dropdown-menu__list {
+/* The ⋯ menu sits near the drawer's right edge, so it opens leftward. A picker in a form row opens under its button. */
+.cms-panel .cms-actions .dropdown-menu__list {
   right: 0;
   left: auto;
 }
