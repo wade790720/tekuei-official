@@ -6,8 +6,6 @@
     "moduleDetection": "force",
     "strict": true,
     "noEmit": true,
-    "allowJs": true,
-    "checkJs": false,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "erasableSyntaxOnly": true,
