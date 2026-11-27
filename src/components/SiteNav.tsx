@@ -45,7 +45,7 @@ export function SiteNav({ current, variant = 'default' }: SiteNavProps) {
   // The toggle unmounts while the menu is open; give it focus back once the menu has gone.
   const onMenuExited = () => toggleRef.current?.focus()
 
-  const scrolled = useSyncExternalStore(subscribeScroll, () => window.scrollY > 80)
+  const scrolled = useSyncExternalStore(subscribeScroll, () => window.scrollY > 80, () => false)
 
   const navClass = [
     'site-nav',

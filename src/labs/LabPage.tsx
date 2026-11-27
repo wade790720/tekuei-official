@@ -24,11 +24,6 @@ export default function LabPage() {
   const { slug: id } = useParams()
   const { lang } = useLang()
   const item = id ? LAB_BY_ID[id] : undefined
-  const title = item?.[lang].title
-
-  useEffect(() => {
-    if (title) document.title = `${title} · TEKUEI`
-  }, [title])
 
   if (!item) return <CaseStub />
   const text = item[lang]
@@ -37,6 +32,8 @@ export default function LabPage() {
 
   return (
     <>
+      <title>{`${text.title} · TEKUEI`}</title>
+      <meta name="description" content={text.summary} />
       <main className="lab">
         <header className="lab__head">
           <Breadcrumbs label={labels.crumbs} className="lab__crumbs">

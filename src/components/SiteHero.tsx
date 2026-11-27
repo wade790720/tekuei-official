@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import '../styles/hero.css'
 import '../styles/home.css'
 import { HomeHero } from './HomeHero.tsx'
@@ -9,14 +8,10 @@ export default function SiteHero() {
   const { lang } = useLang()
   const meta = HOME_META[lang]
 
-  useEffect(() => {
-    document.title = meta.title
-    const metaEl = document.querySelector('meta[name="description"]')
-    if (metaEl) metaEl.setAttribute('content', meta.description)
-  }, [meta])
-
   return (
     <div className="hero-root home">
+      <title>{meta.title}</title>
+      <meta name="description" content={meta.description} />
       <main>
         <HomeHero />
       </main>

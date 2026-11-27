@@ -127,10 +127,6 @@ export default function CheckinPage() {
   )
 
   useEffect(() => {
-    document.title = CHECKIN_META[lang].title
-  }, [lang])
-
-  useEffect(() => {
     let cancelled = false
 
     async function init() {
@@ -239,6 +235,7 @@ export default function CheckinPage() {
 
   return (
     <div className="checkin-page">
+      <title>{CHECKIN_META[lang].title}</title>
       <div
         className={['checkin-wrap', visible ? 'is-visible' : ''].filter(Boolean).join(' ')}
       >

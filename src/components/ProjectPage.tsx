@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Breadcrumbs, BreadcrumbsItem } from './Breadcrumbs.tsx'
 import { Button } from './Button.tsx'
@@ -13,7 +13,7 @@ import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, projectBody, projectFacts, proje
 import { useWorkContent } from '../hooks/useWorkContent.ts'
 import { useLang } from '../i18n'
 import { uploadSiteImage } from '../lib/adminApi.ts'
-import { getDoc, hasBody, safeHref } from '../lib/richText.ts'
+import { docText, getDoc, hasBody, safeHref } from '../lib/richText.ts'
 import type { Doc } from '../lib/siteData.ts'
 import '../styles/journal.css'
 import '../styles/project.css'
@@ -39,10 +39,6 @@ export default function ProjectPage() {
   const doc = getDoc(untranslated ? zh : item && projectBody(content, slug, lang))
   const title = item ? projectTitle(item) : ''
 
-  useEffect(() => {
-    document.title = title ? `${title} · Projects · TEKUEI` : 'Not Found · Projects · TEKUEI'
-  }, [title])
-
   // A project that only exists in R2 is missing until the remote data arrives.
   if (!zh && loading) return <div className="site-loading-bar" />
 
@@ -50,6 +46,7 @@ export default function ProjectPage() {
   if (!item || (!zh && !editing)) {
     return (
       <div className="journal-page journal-page--post">
+        {item ? <title>{`${title} · Projects · TEKUEI`}</title> : <title>Not Found · Projects · TEKUEI</title>}
         <div className="journal-not-found">
           <div className="journal-not-found__num">—</div>
           <h1>{t.notFound}</h1>
@@ -71,6 +68,8 @@ export default function ProjectPage() {
 
   return (
     <div className="journal-page journal-page--post">
+      <title>{`${title} · Projects · TEKUEI`}</title>
+      <meta name="description" content={docText(doc).slice(0, 120) || item.client} />
       <main>
         {cover ? <ProjectHero cover={cover} num={`${t.num} ${projectNumber(content.items, slug)}`} title={title} facts={projectFacts(item, lang)} /> : null}
         <article className={`journal-post project-post${cover ? ' project-post--cover' : ''}`} lang={untranslated ? 'zh-Hant' : undefined}>

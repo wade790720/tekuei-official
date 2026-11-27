@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Button } from '../Button.tsx'
 import { CheckIcon } from '../CodeBlock.tsx'
 import { SOCIAL_ICONS } from '../socialIcons.tsx'
@@ -6,6 +7,7 @@ import { TooltipGroup } from '../Tooltip.tsx'
 import { JOURNAL_POST_LABELS } from '../../data/journal.ts'
 import { useLang } from '../../i18n'
 import { writeClipboard } from '../../lib/clipboard.ts'
+import { SITE_URL } from '../../lib/siteUrl.ts'
 
 const SHOWN_MS = 1600 // how long the copy button shows its tick
 
@@ -29,7 +31,7 @@ export function ShareLinks() {
   const t = JOURNAL_POST_LABELS[lang]
   const [result, setResult] = useState<'copied' | 'failed' | ''>('')
   // Without the query and hash: those belong to this visit, not to the post.
-  const url = `${window.location.origin}${window.location.pathname}`
+  const url = `${SITE_URL}${useLocation().pathname}`
 
   useEffect(() => {
     if (!result) return undefined

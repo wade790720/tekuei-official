@@ -40,14 +40,10 @@ export default function JournalListPage() {
     return mountGlyphField(glyphs.current)
   }, [])
 
-  useEffect(() => {
-    document.title = meta.title
-    const metaEl = document.querySelector('meta[name="description"]')
-    if (metaEl) metaEl.setAttribute('content', meta.description)
-  }, [meta])
-
   return (
     <div className="journal-page">
+      <title>{meta.title}</title>
+      <meta name="description" content={meta.description} />
       <main>
       <header className="journal-header">
         <canvas className="journal-header__glyphs" ref={glyphs} aria-hidden />
