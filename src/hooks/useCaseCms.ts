@@ -3,10 +3,12 @@ import { siteDefaults } from '../data/siteDefaults.ts'
 import { fetchSiteData, isRemoteSync } from '../lib/adminApi.ts'
 import { LOCAL_CASES } from '../data/cases/index.ts'
 import { useLang } from '../i18n'
+import type { CaseStudy, CaseWithImages } from '../lib/caseDoc.ts'
+import type { CaseAssets, SiteData } from '../lib/siteData.ts'
 
 // Its own file so the case texts load with the case page, not in the main bundle.
 
-function mergeAssets(staticCase, assets) {
+function mergeAssets(staticCase: CaseStudy, assets: CaseAssets | undefined): CaseWithImages {
   return {
     ...staticCase,
     hero: {
@@ -22,10 +24,10 @@ function mergeAssets(staticCase, assets) {
 }
 
 /** Case page content: static text from src/data/cases plus the images stored in R2. Read only. */
-export function useCaseCms(slug) {
+export function useCaseCms(slug: string): { content: CaseWithImages | null; loading: boolean } {
   const { lang } = useLang()
   // Only the site data is state. The page content follows from it at render, so a language switch needs no reload.
-  const [data, setData] = useState(siteDefaults)
+  const [data, setData] = useState<SiteData>(siteDefaults)
   const [loading, setLoading] = useState(isRemoteSync)
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
-import { useAdmin } from '../../context/admin.js'
-import { useJournal } from '../../context/journal.js'
+import { useAdmin } from '../../context/admin.ts'
+import { useJournal } from '../../context/journal.ts'
 import { useLang } from '../../i18n'
 import { uploadSiteImage } from '../../lib/adminApi.ts'
 import { getDoc } from '../../lib/richText.ts'

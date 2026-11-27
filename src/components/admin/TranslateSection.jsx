@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '../Button.jsx'
-import { useAdmin } from '../../context/admin.js'
+import { useAdmin } from '../../context/admin.ts'
 import { TRANSLATE_LABELS as T } from '../../data/admin.ts'
 import { useLang } from '../../i18n'
 import { translateTexts } from '../../lib/adminApi.ts'

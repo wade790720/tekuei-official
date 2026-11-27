@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent, useId, useRef, useState } from 'react'
-import { usePresence } from '../hooks/usePresence.js'
+import { usePresence } from '../hooks/usePresence.ts'
 import '../styles/dropdownMenu.css'
 
 
