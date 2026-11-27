@@ -206,11 +206,10 @@ function PickerMenuDemo() {
   )
 }
 
-// 123456 is the "right" code.
 function OtpInputDemo({ length = 6, startInvalid = false }: { length?: number; startInvalid?: boolean }) {
   const [code, setCode] = useState('')
   const [wrong, setWrong] = useState(startInvalid)
-  const right = '123456'.slice(0, length)
+  const [right] = useState(() => Array.from({ length }, () => Math.floor(Math.random() * 10)).join(''))
   return (
     <div className="cl-box cl-box--row">
       <OtpInput

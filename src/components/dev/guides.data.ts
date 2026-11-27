@@ -258,7 +258,7 @@ npm run dev`,
           title: '元件與效果',
           rows: [
             ['Radix UI', 'https://www.radix-ui.com/', '文件的分類、每頁的編排、Typography 頁', 'Component Library'],
-            ['React Bits Pro', 'https://pro.reactbits.dev/', '下拉選單，一列頁尾的滑動底線（footer-14），兩個方向的 logo 跑馬燈（social-proof-9）', 'DropdownMenu、SiteFooter、Marquee'],
+            ['React Bits Pro', 'https://pro.reactbits.dev/', '只參考外觀，程式自行重寫：下拉選單，一列頁尾的滑動底線（footer-14），兩個方向的 logo 跑馬燈（social-proof-9）', 'DropdownMenu、SiteFooter、Marquee'],
             ['HeroUI', 'https://www.heroui.com/', '元件的粒度，Breadcrumbs 和 Accordion 的尺寸，Skeleton、ScrollShadow 和它們的示範，細捲軸', 'Breadcrumbs、Accordion、Skeleton、ScrollShadow、tokens.css、Component Library'],
             ['Notion', 'https://www.notion.com/', '每一行左邊的「+」和「⠿」，選取文字時浮出的格式工具列，貼上別的網站的圖片時存一份自己的', 'Editor'],
             ['Editor.js', 'https://editorjs.io/', '段落和清單的行高 1.6、段落之間 12px，「+」和「⠿」，格式工具列', 'Editor、journal.css'],

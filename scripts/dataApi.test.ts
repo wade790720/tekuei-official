@@ -3,10 +3,11 @@ import assert from 'node:assert/strict'
 import { onRequestGet, onRequestPut } from '../functions/api/data.ts'
 import { onRequestGet as getFile } from '../functions/api/file/[[path]].ts'
 import { fakeR2 } from './fakeR2.ts'
+import { testCodes } from './testCodes.ts'
 
 type TestEnv = { ADMIN_SECRET?: string; BUCKET: ReturnType<typeof fakeR2> }
 
-const SECRET = '123456'
+const { right: SECRET, wrong } = testCodes()
 const site = () => ({ journal: { posts: ['old'] }, work: { items: ['matsu'] } })
 const env = (initial: Record<string, unknown> = { 'data.json': site() }): TestEnv => ({ ADMIN_SECRET: SECRET, BUCKET: fakeR2(initial) })
 
@@ -60,13 +61,13 @@ test('later saves on the same day keep the first backup of that day', async () =
 
 test('a refused save writes no backup', async () => {
   const e = env()
-  await put(e, { journal: { posts: ['new'] } }, { code: '000000', etag: await etagOf(e) })
+  await put(e, { journal: { posts: ['new'] } }, { code: wrong(), etag: await etagOf(e) })
   assert.equal(readBackup(e, backupKeys()), null)
 })
 
 test('a wrong code cannot save', async () => {
   const e = env()
-  assert.equal((await put(e, { journal: {} }, { code: '000000', etag: await etagOf(e) })).status, 401)
+  assert.equal((await put(e, { journal: {} }, { code: wrong(), etag: await etagOf(e) })).status, 401)
   assert.deepEqual(e.BUCKET.read('data.json'), site())
 })
 

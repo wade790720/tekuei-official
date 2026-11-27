@@ -1,4 +1,4 @@
-/* ScrollStack. Sizes and the per-step lift, shrink, blur and dim are measured from React Bits Pro's Scroll Stack.
+/* ScrollStack. Sizes and the per-step lift, shrink, blur and dim follow the look of React Bits Pro's Scroll Stack (rewritten, none of its code).
    A parent can set --scroll-stack-width, -height, -top and -gap. The defaults centre a 68svh card
    and give each card one screen of scrolling. */
 

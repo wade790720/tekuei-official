@@ -12,7 +12,7 @@ export interface FeaturedPhotosProps {
 }
 
 /**
- * One work shown with its words beside it (after React Bits Pro's Gallery 3, without its tabs): a large
+ * One work shown with its words beside it (the look of React Bits Pro's Gallery 3, rewritten without its code or tabs): a large
  * photo on one side, and on the other the title, a few lines about it, and a thumbnail of every photo.
  * Choosing a thumbnail puts that photo in the large frame.
  */

@@ -3,6 +3,9 @@ import assert from 'node:assert/strict'
 import { onRequestPost } from '../functions/api/translate.ts'
 import { batchTexts, docSlots } from '../src/lib/docTranslate.ts'
 import { fakeR2 } from './fakeR2.ts'
+import { testCodes } from './testCodes.ts'
+
+const { right: CODE, wrong } = testCodes()
 import { nodeAt } from './testDoc.ts'
 import type { Env } from '../functions/env.d.ts'
 
@@ -78,9 +81,9 @@ const env = (replies: unknown, extra: Partial<Env> = {}) => {
     if (reply instanceof Error) throw reply
     return reply
   }
-  return { ADMIN_SECRET: '123456', BUCKET: fakeR2({}), AI: { run }, calls, ...extra }
+  return { ADMIN_SECRET: CODE, BUCKET: fakeR2({}), AI: { run }, calls, ...extra }
 }
-const post = (e: Env, body: unknown, code = '123456') =>
+const post = (e: Env, body: unknown, code = CODE) =>
   onRequestPost({
     request: new Request('https://x/api/translate', {
       method: 'POST',
@@ -95,7 +98,7 @@ const texts = ['你好', '世界']
 
 test('the API needs the admin code and never calls the model without it', async () => {
   const e = env(answer(pair))
-  assert.equal((await post(e, { texts: ['你好'] }, '000000')).status, 401)
+  assert.equal((await post(e, { texts: ['你好'] }, wrong())).status, 401)
   assert.equal(e.calls.length, 0)
 })
 

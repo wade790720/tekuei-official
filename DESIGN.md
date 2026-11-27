@@ -252,7 +252,7 @@ useEffect(() => mountXxx(canvas.current), [])
 
 ### 音效
 
-- 點擊連結和按鈕時有短音效（`src/lib/uiSound.ts`），用 Web Audio 即時合成，沒有音檔。參數照抄 recent.design，授權不明，上線前要確認。
+- 點擊連結和按鈕時有短音效（`src/lib/uiSound.ts`），用 Web Audio 即時合成，沒有音檔。參數來自 recent.design。
 - 預設開，沒有開關。減少動態效果開啟時不出聲。
 - `App.tsx` 在 document 掛一個點擊監聽，新元件不用另外接。預設：選單項目 `select`、儲存 `press`、連結 `pressGhost`、其他按鈕 `pressSoft`。
 - 要換音效或靜音，在元素上寫 `data-sound="<名稱>"` 或 `data-sound="off"`。

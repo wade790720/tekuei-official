@@ -1,5 +1,5 @@
 /* Gallery. Photos in rows of two, read left to right, with every fifth one across the whole row so the wall
-   has a rhythm. The 16px gap and the 20px corners are measured from React Bits Pro's Gallery 8.
+   has a rhythm. The 16px gap and the 20px corners follow the look of React Bits Pro's Gallery 8 (rewritten, none of its code).
    A parent can set --gallery-radius. */
 
 .gallery {

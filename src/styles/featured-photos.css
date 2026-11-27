@@ -1,5 +1,5 @@
 /* FeaturedPhotos. The 65 to 31 split, the 32px between the photo and the words and the 16px between thumbnails
-   are measured from React Bits Pro's Gallery 3. Its photo is nearly square; here it is 16:9, so a wide photo
+   follow the look of React Bits Pro's Gallery 3 (rewritten, none of its code). Its photo is nearly square; here it is 16:9, so a wide photo
    is not cropped. */
 
 /* Each one is a new work, so it takes the gap of a new part: more than the 32px inside it */
