@@ -1,5 +1,7 @@
-import siteDefaults from './data.json'
+import { siteDefaults } from './siteDefaults.ts'
 import { localizeWork as localizeIn, projectBody, projectHref, projectLink, projectTitle, publishedWork, withCodeProjects } from '../lib/projectHref.ts'
+import type { CodeProject } from '../lib/projectHref.ts'
+import type { Lang, Localized, ProjectType, WorkData, WorkItem } from '../lib/siteData.ts'
 
 export { projectBody, projectHref, projectLink, projectTitle, publishedWork }
 
@@ -13,36 +15,40 @@ export const PROJECTS_PAGE = {
 }
 
 // The list is shown in these sections, in this order. A section with no project is left out.
-export const PROJECT_SECTIONS = [
-  { id: 'web', zh: '網站', en: 'Websites' },
-  { id: 'exhibition', zh: '展覽', en: 'Exhibitions' },
-  { id: 'side', zh: '個人項目', en: 'Side Projects' },
-]
+const SECTION_NAMES: Record<ProjectType, Localized<string>> = {
+  web: { zh: '網站', en: 'Websites' },
+  exhibition: { zh: '展覽', en: 'Exhibitions' },
+  side: { zh: '個人項目', en: 'Side Projects' },
+}
+export const PROJECT_SECTIONS: ({ id: ProjectType } & Localized<string>)[] = (['web', 'exhibition', 'side'] as const).map((id) => ({
+  id,
+  ...SECTION_NAMES[id],
+}))
 
 /** The section a project is listed in. */
-export const projectType = (item) => item.type ?? PROJECT_TYPES[item.id] ?? 'web'
+export const projectType = (item: WorkItem): ProjectType => item.type ?? PROJECT_TYPES[item.id] ?? 'web'
 
 /** A project's number on the Projects list, as two digits: section by section, in saved order. */
-export const projectNumber = (items, id) =>
+export const projectNumber = (items: WorkItem[], id: string): string =>
   String(PROJECT_SECTIONS.flatMap((s) => items.filter((x) => projectType(x) === s.id)).findIndex((x) => x.id === id) + 1).padStart(2, '0')
 
 // Which section a client project is in, by id: the R2 items carry no type. Labs are always in `side`.
-export const PROJECT_TYPES = {
+export const PROJECT_TYPES: Record<string, ProjectType> = {
   'matsu-biennial': 'web',
   monolab: 'web',
   'lustre-yellow': 'web',
   sre: 'web',
 }
 
-export const getDefaultWork = () => DEFAULT_WORK
+export const getDefaultWork = (): WorkData => DEFAULT_WORK
 
-const BUNDLED_EN = {
+const BUNDLED_EN: Record<string, Partial<WorkItem>> = {
   'matsu-biennial': { client: 'Matsu Biennial · National Matsu Arts Festival', title: 'Biennial', titleEmWord: 'Matsu' },
   monolab: { client: 'MONOLAB · MORAN Interactive Design', title: 'MONOLAB', titleEmWord: '' },
   'lustre-yellow': { client: 'Lustre Yellow · Crystal Art Flowers', title: 'Lustre Yellow', titleEmWord: '' },
 }
 /** The work section in one language, with the translations bundled above for the first cases. */
-export const localizeWork = (work, lang) => localizeIn(work, lang, BUNDLED_EN)
+export const localizeWork = (work: WorkData, lang: Lang): WorkData => localizeIn(work, lang, BUNDLED_EN)
 
 export const PROJECT_PAGE_LABELS = {
   zh: { home: '首頁', crumbs: '導覽路徑', back: '返回 Projects', notFound: '找不到這個專案', visit: '造訪網站', num: 'Project', type: 'Type', client: 'Client', scope: 'Scope', link: 'Link', noPage: '這個專案沒有內頁，卡片直接連到外部連結。在右邊的面板可以建立內頁。', untranslated: 'This project is only in Chinese for now.' },
@@ -50,20 +56,22 @@ export const PROJECT_PAGE_LABELS = {
 }
 
 /** The row of facts a project's page opens with, read from its card: [label, lines, href?]. Empty ones are left out. */
-export function projectFacts(item, lang) {
+export type ProjectFact = [label: string, lines: string[], href?: string]
+export function projectFacts(item: WorkItem, lang: Lang): ProjectFact[] {
   const t = PROJECT_PAGE_LABELS[lang]
-  return [
-    [t.type, [PROJECT_SECTIONS.find((s) => s.id === projectType(item))[lang]]],
+  const facts: (ProjectFact | '' | 0 | undefined)[] = [
+    [t.type, [SECTION_NAMES[projectType(item)][lang]]],
     item.client && [t.client, [item.client]],
     item.tags?.length && [t.scope, item.tags],
     item.link && [t.link, [item.link.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')], item.link],
-  ].filter(Boolean)
+  ]
+  return facts.filter((f): f is ProjectFact => Array.isArray(f))
 }
 
 // Client work that began as code. It joins the saved list, with a short page, until the list has it, so it is
 // edited in the panel like any other project; the first save writes it to R2. `removed` remembers one Wade deleted.
 // Copy comes from Wade's CV (src/labs/falling-figure/content.js).
-const CODE_PROJECTS = [
+const CODE_PROJECTS: CodeProject[] = [
   {
     id: 'sre',
     type: 'web',
@@ -83,7 +91,7 @@ const CODE_PROJECTS = [
 ]
 export const CODE_PROJECT_IDS = CODE_PROJECTS.map((item) => item.id)
 
-export const cloneWork = (work) => withCodeProjects(work, CODE_PROJECTS)
+export const cloneWork = (work: WorkData): WorkData => withCodeProjects(work, CODE_PROJECTS)
 
 export const WORK_LABELS = {
   zh: { loading: '作品載入中', draft: '草稿' },

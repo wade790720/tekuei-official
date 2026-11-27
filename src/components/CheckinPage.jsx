@@ -10,7 +10,7 @@ import {
   PREFERRED_PHONE_COUNTRIES,
   isCheckinDevBypass,
   isCheckinLiveSubmit,
-} from '../data/checkin.js'
+} from '../data/checkin.ts'
 import { digitsToE164, validateCheckinPhone } from '../lib/phoneE164.ts'
 import { useLang } from '../i18n'
 import '../styles/checkin.css'

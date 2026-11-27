@@ -2,6 +2,7 @@
 // edited in place like a Journal post. This file is only the default before R2 has one.
 // Not `about`: that key still holds the old About copy, and a save would replace it.
 // Facts come from Wade's CV (src/labs/falling-figure/content.js). Lines in 【】 are placeholders.
+import type { AboutPageData, Doc } from '../lib/siteData.ts'
 
 export const ABOUT_META = {
   zh: { title: 'About', documentTitle: 'About · TEKUEI 德溎', clients: '合作過的單位' },
@@ -36,15 +37,15 @@ export const ABOUT_CLIENTS = [
   ],
 ]
 
-const text = (t) => [{ type: 'text', text: t }]
-const link = (t, href) => ({ type: 'text', text: t, marks: [{ type: 'link', attrs: { href } }] })
-const p = (t) => ({ type: 'paragraph', content: text(t) })
-const lead = (t) => ({ type: 'lead', content: text(t) })
-const h2 = (t) => ({ type: 'heading', attrs: { level: 2 }, content: text(t) })
-const list = (items) => ({ type: 'bulletList', content: items.map((t) => ({ type: 'listItem', content: [p(t)] })) })
-const doc = (...content) => ({ doc: { type: 'doc', content } })
+const text = (t: string): Doc[] => [{ type: 'text', text: t }]
+const link = (t: string, href: string): Doc => ({ type: 'text', text: t, marks: [{ type: 'link', attrs: { href } }] })
+const p = (t: string): Doc => ({ type: 'paragraph', content: text(t) })
+const lead = (t: string): Doc => ({ type: 'lead', content: text(t) })
+const h2 = (t: string): Doc => ({ type: 'heading', attrs: { level: 2 }, content: text(t) })
+const list = (items: string[]): Doc => ({ type: 'bulletList', content: items.map((t) => ({ type: 'listItem', content: [p(t)] })) })
+const doc = (...content: Doc[]): { doc: Doc } => ({ doc: { type: 'doc', content } })
 
-const DEFAULT_ABOUT = {
+const DEFAULT_ABOUT: AboutPageData = {
   zh: doc(
     lead('我是朱德溎（Wade），寫了十年程式，也策劃過十場以上的展覽。我幫品牌和團隊把想法做成網站、展覽和互動體驗。'),
     p('【照片：在這一行按「+」插入圖片，然後刪掉這一行】'),
@@ -81,5 +82,5 @@ const DEFAULT_ABOUT = {
   ),
 }
 
-export const cloneAbout = (v) => structuredClone(v)
-export const getDefaultAbout = () => DEFAULT_ABOUT
+export const cloneAbout = (v: AboutPageData): AboutPageData => structuredClone(v)
+export const getDefaultAbout = (): AboutPageData => DEFAULT_ABOUT

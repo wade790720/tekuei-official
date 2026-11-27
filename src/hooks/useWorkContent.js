@@ -1,6 +1,6 @@
 import { useAdmin } from '../context/admin.js'
 import { useWork } from '../context/work.js'
-import { localizeWork, publishedWork } from '../data/work.js'
+import { localizeWork, publishedWork } from '../data/work.ts'
 import { useLang } from '../i18n'
 
 /** The work section as the page shows it: in the reader's language, and without drafts unless Wade is editing. */

@@ -1,5 +1,5 @@
 import { sitemapXml, readSiteData, siteCases, siteJournal } from '../src/lib/seo.ts'
-import { WORK_ITEMS } from '../src/data/work.js'
+import { WORK_ITEMS } from '../src/data/work.ts'
 
 export async function onRequestGet({ env }) {
   const data = await readSiteData(env.BUCKET)

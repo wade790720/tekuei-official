@@ -6,7 +6,7 @@ import {
   HOW_TO_CHECKIN_PERKS,
   HOW_TO_CHECKIN_PERKS_LABEL,
   HOW_TO_CHECKIN_STEPS,
-} from '../data/howToCheckin.js'
+} from '../data/howToCheckin.ts'
 import { useLang } from '../i18n'
 import '../styles/howToCheckin.css'
 

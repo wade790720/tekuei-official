@@ -1,3 +1,4 @@
+import type { CaseStudy } from '../../lib/caseDoc.ts'
 // Recordings of matsubiennial.tw/2025 (a scroll tour with a drawn cursor), shown on the case page.
 // Each webp is a representative frame of its video.
 import homeVideo from '../../assets/cases/matsu-biennial/home.mp4'
@@ -13,7 +14,7 @@ const VIDEOS = [
   { src: artworksVideo, poster: artworksPoster },
 ]
 
-const ZH = {
+const ZH: CaseStudy = {
   slug: 'matsu-biennial',
   documentTitle: 'TEKUEI · Matsu Biennial',
   hero: {
@@ -93,7 +94,7 @@ const ZH = {
   },
 }
 
-const EN = {
+const EN: CaseStudy = {
   slug: 'matsu-biennial',
   documentTitle: 'TEKUEI · Matsu Biennial',
   hero: {

@@ -1,4 +1,4 @@
-import { ADMIN_SESSION_KEY, CMS_LABELS, TRANSLATE_LABELS } from '../data/admin.js'
+import { ADMIN_SESSION_KEY, CMS_LABELS, TRANSLATE_LABELS } from '../data/admin.ts'
 import { compressImage } from './compressImage.ts'
 import { batchTexts } from './docTranslate.ts'
 import { parseSiteData } from './siteData.ts'

@@ -1,4 +1,4 @@
-import { cloneWork, getDefaultWork } from '../data/work.js'
+import { cloneWork, getDefaultWork } from '../data/work.ts'
 import { useCmsSection } from '../hooks/useCmsSection.js'
 import { WorkContext } from './work.js'
 

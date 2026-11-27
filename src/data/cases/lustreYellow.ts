@@ -1,3 +1,4 @@
+import type { CaseStudy } from '../../lib/caseDoc.ts'
 // The recording is a scroll tour of lustreyellow.com; the webp is a representative frame of it.
 import tourVideo from '../../assets/work/lustre-yellow.mp4'
 import tourPoster from '../../assets/work/lustre-yellow.webp'
@@ -5,7 +6,7 @@ import tourPoster from '../../assets/work/lustre-yellow.webp'
 const BG = 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 92%, transparent) 0%, color-mix(in srgb, var(--surface-1) 82%, transparent) 45%, rgba(16, 15, 17, 0.72) 100%)'
 const FULL_BG = 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 94%, transparent) 0%, color-mix(in srgb, var(--surface-1) 84%, transparent) 50%, rgba(16, 15, 17, 0.76) 100%)'
 
-const ZH = {
+const ZH: CaseStudy = {
   slug: 'lustre-yellow',
   documentTitle: 'TEKUEI · Lustre Yellow',
   hero: {
@@ -87,7 +88,7 @@ const ZH = {
   },
 }
 
-const EN = {
+const EN: CaseStudy = {
   slug: 'lustre-yellow',
   documentTitle: 'TEKUEI · Lustre Yellow',
   hero: {

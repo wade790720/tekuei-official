@@ -10,7 +10,7 @@ import { mountReveal } from './lib/reveal.ts'
 import { AdminProvider } from './context/AdminProvider.jsx'
 import { JournalProvider } from './context/JournalProvider.jsx'
 import { WorkProvider } from './context/WorkProvider.jsx'
-import { PAGE_ERROR } from './data/nav.js'
+import { PAGE_ERROR } from './data/nav.ts'
 import { useLang } from './i18n'
 
 // Labs load when first visited, so Lenis and the canvas effects stay out of the main bundle.

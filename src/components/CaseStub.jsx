@@ -1,6 +1,6 @@
 ﻿import { useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { WORK_ITEMS } from '../data/work.js'
+import { WORK_ITEMS } from '../data/work.ts'
 import '../styles/work.css'
 
 export default function CaseStub() {

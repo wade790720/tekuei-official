@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAdmin } from '../context/admin.js'
-import { CASE_BY_SLUG } from '../data/cases/index.js'
+import { CASE_BY_SLUG } from '../data/cases/index.ts'
 import CaseStudyPage from './CaseStudyPage.jsx'
 import ProjectPage from './ProjectPage.jsx'
 

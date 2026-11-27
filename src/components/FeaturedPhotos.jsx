@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CARD_LABELS } from '../data/cards.js'
+import { CARD_LABELS } from '../data/cards.ts'
 import { useLang } from '../i18n'
 import '../styles/featured-photos.css'
 
