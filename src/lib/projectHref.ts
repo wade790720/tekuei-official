@@ -1,3 +1,4 @@
+import { safeHref } from './richText.ts'
 import type { Body, Lang, Localized, WorkData, WorkItem } from './siteData.ts'
 
 // Case pages moved from /cases/<slug> to /projects/<slug>. R2 and data.json still store the old links.
@@ -17,8 +18,11 @@ export const projectBody = (work: WorkData | undefined, id: string, lang: Lang):
  * Only a project with no page goes straight to its outside link.
  * @param work  the work section, for the pages written in the editor
  */
-export const projectLink = (item: WorkItem, work?: WorkData): string =>
-  item.link && !item.caseHref && !projectBody(work, item.id, 'zh') ? item.link : projectHref(item.caseHref ?? `/projects/${item.id}`)
+export function projectLink(item: WorkItem, work?: WorkData): string {
+  const link = safeHref(item.link)
+  if (link && !item.caseHref && !projectBody(work, item.id, 'zh')) return link
+  return safeHref(projectHref(item.caseHref)) ?? `/projects/${item.id}`
+}
 
 /** The English fields written in the edit panel, without the empty ones. */
 function ownEnglish(item: WorkItem): Partial<WorkItem> {

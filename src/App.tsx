@@ -1,4 +1,5 @@
 ﻿import { Component, lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react'
+import type { ReactNode } from 'react'
 import { BrowserRouter, Navigate, Routes, Route, useLocation, useNavigationType, useParams } from 'react-router-dom'
 import SiteHero from './components/SiteHero.tsx'
 import WorkListPage from './components/WorkListPage.tsx'
@@ -28,7 +29,7 @@ const ComponentLibrary = import.meta.env.DEV
   : null
 
 // Scroll position of each history entry, so back / forward returns to where the reader was.
-const scrollByEntry = new Map()
+const scrollByEntry = new Map<string, number>()
 
 /**
  * A new page starts at the top. Back and forward (POP) return to the saved position instead.
@@ -38,7 +39,7 @@ function ScrollClasses() {
   const { pathname, key } = useLocation()
   const type = useNavigationType()
   const entry = useRef(key)
-  const lastPath = useRef(null)
+  const lastPath = useRef<string | null>(null)
 
   useEffect(() => {
     document.documentElement.classList.add('has-scroll-document')
@@ -55,7 +56,7 @@ function ScrollClasses() {
     // A new page (not the first load): move focus to its h1, so a screen reader announces where you are
     if (lastPath.current !== null && pathname !== lastPath.current) {
       requestAnimationFrame(() => {
-        const h1 = document.querySelector('main h1')
+        const h1 = document.querySelector<HTMLElement>('main h1')
         if (!h1) return
         h1.setAttribute('tabindex', '-1')
         h1.focus({ preventScroll: true })
@@ -68,19 +69,25 @@ function ScrollClasses() {
 
 // Without this, one error while a page draws (a field missing in the saved data, a chunk that
 // failed to load) takes the whole site down to a blank screen. The header stays, so the reader can leave.
-class PageBoundary extends Component {
-  state = { failed: false }
+interface PageBoundaryProps {
+  path: string
+  fallback: ReactNode
+  children: ReactNode
+}
+
+class PageBoundary extends Component<PageBoundaryProps, { failed: boolean }> {
+  override state = { failed: false }
 
   static getDerivedStateFromError() {
     return { failed: true }
   }
 
   // Another page gets a fresh try.
-  componentDidUpdate(prev) {
+  override componentDidUpdate(prev: PageBoundaryProps) {
     if (this.state.failed && prev.path !== this.props.path) this.setState({ failed: false })
   }
 
-  render() {
+  override render() {
     return this.state.failed ? this.props.fallback : this.props.children
   }
 }
@@ -96,7 +103,7 @@ function PageError() {
   )
 }
 
-function Pages({ children }) {
+function Pages({ children }: { children: ReactNode }) {
   const { pathname } = useLocation()
   return (
     <PageBoundary path={pathname} fallback={<PageError />}>

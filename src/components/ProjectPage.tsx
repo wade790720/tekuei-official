@@ -13,7 +13,8 @@ import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, projectBody, projectFacts, proje
 import { useWorkContent } from '../hooks/useWorkContent.ts'
 import { useLang } from '../i18n'
 import { uploadSiteImage } from '../lib/adminApi.ts'
-import { getDoc, hasBody } from '../lib/richText.ts'
+import { getDoc, hasBody, safeHref } from '../lib/richText.ts'
+import type { Doc } from '../lib/siteData.ts'
 import '../styles/journal.css'
 import '../styles/project.css'
 
@@ -23,7 +24,7 @@ const ProjectEditPanel = lazy(() => import('./work/WorkEditPanel.tsx').then((m) 
 
 /** A project whose page is written in the editor: a title and one rich-text body, set out in the Journal post column. */
 export default function ProjectPage() {
-  const { slug } = useParams()
+  const { slug = '' } = useParams<{ slug: string }>()
   const { lang } = useLang()
   const admin = useAdmin()
   const cms = useWork()
@@ -46,7 +47,7 @@ export default function ProjectPage() {
   if (!zh && loading) return <div className="site-loading-bar" />
 
   // A project with no page of its own (its card links elsewhere) still opens here in edit mode, for its fields.
-  if (!zh && !(editing && item)) {
+  if (!item || (!zh && !editing)) {
     return (
       <div className="journal-page journal-page--post">
         <div className="journal-not-found">
@@ -59,13 +60,14 @@ export default function ProjectPage() {
   }
 
   const section = PROJECT_SECTIONS.find((s) => s.id === projectType(item))
-  const setDoc = (next) =>
+  const setDoc = (next: Doc) =>
     cms.updateDraft((d) => {
-      d.content[lang] = { ...d.content[lang], [slug]: { doc: next } }
+      d.content = { ...d.content, [lang]: { ...d.content?.[lang], [slug]: { doc: next } } }
     })
-  const upload = async (file) => (await uploadSiteImage(file, admin.getToken())).url
+  const upload = async (file: File) => (await uploadSiteImage(file, admin.getToken())).url
   const saved = <RichText doc={withProjectVideo(doc, slug, lang)} />
   const cover = projectCover(item)
+  const link = safeHref(item.link)
 
   return (
     <div className="journal-page journal-page--post">
@@ -84,7 +86,7 @@ export default function ProjectPage() {
                   </Breadcrumbs>
                 </div>
                 <div className="journal-post__meta fade-in" style={{ '--i': 1 }}>
-                  <span>{section[lang]}</span>
+                  <span>{section?.[lang]}</span>
                   {item.client ? (
                     <>
                       <span aria-hidden>·</span>
@@ -98,9 +100,9 @@ export default function ProjectPage() {
                     <TagList tags={item.tags} variant="outline" />
                   </div>
                 ) : null}
-                {item.link ? (
+                {link ? (
                   <div className="journal-post__visit fade-in" style={{ '--i': 4 }}>
-                    <Button as="a" variant="ghost" href={item.link} target="_blank" rel="noreferrer">
+                    <Button as="a" variant="ghost" href={link} target="_blank" rel="noreferrer">
                       {t.visit} ↗
                     </Button>
                   </div>
