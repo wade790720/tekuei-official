@@ -3,6 +3,8 @@ import * as upload from '../functions/api/upload.ts'
 import * as file from '../functions/api/file/[[path]].ts'
 import * as translate from '../functions/api/translate.ts'
 import * as verify from '../functions/api/admin/verify.ts'
+import * as sitemap from '../functions/sitemap.xml.ts'
+import * as llms from '../functions/llms.txt.ts'
 import type { ApiContext, Env } from '../functions/env.d.ts'
 
 type Handler = (context: ApiContext) => Promise<Response>
@@ -18,9 +20,8 @@ const API: Record<string, Methods> = {
   '/api/upload': { POST: upload.onRequestPost },
   '/api/translate': { POST: translate.onRequestPost },
   '/api/admin/verify': { POST: verify.onRequestPost },
-  // Loaded on first use: they import src/data/work.ts, whose JSON import node --test cannot load.
-  '/sitemap.xml': { GET: async (c) => (await import('../functions/sitemap.xml.ts')).onRequestGet(c) },
-  '/llms.txt': { GET: async (c) => (await import('../functions/llms.txt.ts')).onRequestGet(c) },
+  '/sitemap.xml': { GET: sitemap.onRequestGet },
+  '/llms.txt': { GET: llms.onRequestGet },
 }
 const FILE: Methods = { GET: file.onRequestGet }
 

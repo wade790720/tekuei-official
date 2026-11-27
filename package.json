@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "react-router dev",
     "build": "react-router build",
+    "build:next": "node scripts/buildNext.ts",
     "preview": "npm run build && vite preview",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings --include-runtime=false",
     "lint": "eslint . && node scripts/noSlop.ts && npm run typecheck",

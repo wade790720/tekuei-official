@@ -54,6 +54,15 @@ describe('Worker API table', () => {
     assert.equal(await res.text(), '"png"')
   })
 
+  it('GET /sitemap.xml and /llms.txt reach their functions', async () => {
+    const sitemap = await call('GET', '/sitemap.xml')
+    assert.equal(sitemap.headers.get('Content-Type'), 'application/xml; charset=utf-8')
+    assert.match(await sitemap.text(), /<urlset/)
+    const llms = await call('GET', '/llms.txt')
+    assert.equal(llms.headers.get('Content-Type'), 'text/markdown; charset=utf-8')
+    assert.match(await llms.text(), /tekuei\.com/)
+  })
+
   it('answers 405 to a method the handler does not export', async () => {
     for (const [method, path] of [
       ['GET', '/api/upload'],
