@@ -8,7 +8,7 @@ import { TagList } from './Tag.jsx'
 import { ProjectHero } from './work/ProjectHero.jsx'
 import { useAdmin } from '../context/admin.js'
 import { useWork } from '../context/work.js'
-import { projectCover, WORK_THUMBS } from '../data/workMedia.js'
+import { projectCover, withProjectVideo, WORK_THUMBS } from '../data/workMedia.js'
 import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, projectBody, projectNumber, projectTitle, projectType } from '../data/work.js'
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { useLang } from '../i18n'
@@ -64,7 +64,7 @@ export default function ProjectPage() {
       d.content[lang] = { ...d.content[lang], [slug]: { doc: next } }
     })
   const upload = async (file) => (await uploadSiteImage(file, admin.getToken())).url
-  const saved = <RichText doc={doc} />
+  const saved = <RichText doc={withProjectVideo(doc, slug, lang)} />
   const cover = projectCover(item)
   const facts = [
     [t.type, [section[lang]]],
