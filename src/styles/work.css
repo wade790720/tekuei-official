@@ -211,6 +211,28 @@ html.has-scroll-document body {
   object-fit: cover;
 }
 
+/* The dark behind the text. It starts well above the text and deepens in many small steps, so no edge shows, and
+   it is dark enough at the text for a white screenshot. */
+.work-card__media::after {
+  position: absolute;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--surface-0) 94%, transparent),
+    color-mix(in srgb, var(--surface-0) 90%, transparent) 18%,
+    color-mix(in srgb, var(--surface-0) 82%, transparent) 34%,
+    color-mix(in srgb, var(--surface-0) 66%, transparent) 50%,
+    color-mix(in srgb, var(--surface-0) 44%, transparent) 64%,
+    color-mix(in srgb, var(--surface-0) 24%, transparent) 76%,
+    color-mix(in srgb, var(--surface-0) 10%, transparent) 87%,
+    color-mix(in srgb, var(--surface-0) 3%, transparent) 95%,
+    transparent
+  );
+  content: '';
+  pointer-events: none;
+
+  inset: 25% 0 0;
+}
+
 .work-thumb-mark {
   color: var(--text-secondary);
   opacity: 0.35;
@@ -233,13 +255,6 @@ html.has-scroll-document body {
   display: flex;
   flex-direction: column;
   padding: var(--space-12) var(--work-card-pad) var(--work-card-pad);
-  /* The gradient belongs to the text, not the picture: it is as tall as the text, and dark enough for a white screenshot */
-  background: linear-gradient(
-  to top,
-  color-mix(in srgb, var(--surface-0) 94%, transparent),
-  color-mix(in srgb, var(--surface-0) 82%, transparent) 60%,
-  transparent
-  );
 
   gap: var(--space-4);
 }
