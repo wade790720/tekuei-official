@@ -1,5 +1,5 @@
 // What each step range is for, shared by every 12-step scale.
-const ROLES = [
+const ROLES: [number, number, string][] = [
   [1, 2, '背景'],
   [3, 5, '互動元件'],
   [6, 8, '邊框'],
@@ -11,9 +11,8 @@ const STEPS = Array.from({ length: 12 }, (_, i) => i + 1)
 
 /**
  * A 12-step color scale: the solid row, the alpha row over a checkerboard, step numbers and the job of each range.
- * @param {{ name: 'gray' | 'accent' }} props
  */
-export function ColorScale({ name }) {
+export function ColorScale({ name }: { name: 'gray' | 'accent' }) {
   return (
     <div className="doc-scale-color" role="img" aria-label={`${name} 色階，1 到 12 階`}>
       <div className="doc-scale-color__row">

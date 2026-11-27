@@ -2,9 +2,8 @@ import { Link } from 'react-router-dom'
 
 /**
  * A grid of cards that each lead to another page ("延伸閱讀").
- * @param {{ items: { to: string, title: string, text: string }[] }} props
  */
-export function LinkCards({ items }) {
+export function LinkCards({ items }: { items: { to: string; title: string; text: string }[] }) {
   return (
     <div className="doc-links">
       {items.map((it) => (

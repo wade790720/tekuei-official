@@ -1,8 +1,7 @@
 /**
  * A plain list of rules or notes. Items that start with 「待修」 are known problems and stand out.
- * @param {{ items: string[] }} props
  */
-export function RuleList({ items }) {
+export function RuleList({ items }: { items: string[] }) {
   return (
     <ul className="fd-rules">
       {items.map((t) => (

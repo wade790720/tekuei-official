@@ -3,9 +3,87 @@
 // Write as reference docs: state the rule or the fact. No design history, no outside sites.
 
 const BASE = '/dev/component-library'
-const to = (id) => `${BASE}/${id}`
+const to = (id: string) => `${BASE}/${id}`
 
-export const GUIDES = {
+/** [id, label] pairs for the "本頁" nav; each id matches a section the page renders. */
+export type TocEntry = [id: string, label: string]
+
+interface GuideHead {
+  name: string
+  lead: string
+  toc: TocEntry[]
+}
+
+interface CodeNote {
+  text: string
+  code: string
+}
+
+interface LinkItem {
+  to: string
+  title: string
+  text: string
+}
+
+interface BibliographyGroup {
+  title: string
+  lead?: string
+  rows: [site: string, url: string, what: string, where: string][]
+}
+
+export type GuideId = keyof GuidesData
+
+interface GuidesData {
+  introduction: GuideHead & {
+    intro: string
+    steps: { id: string; title: string; text: string; lang: string; code: string }[]
+    next: LinkItem[]
+  }
+  styling: GuideHead & {
+    intro: string
+    tokens: CodeNote
+    naming: CodeNote
+    issues: { id: string; title: string; text: string }[]
+  }
+  layout: GuideHead & {
+    maxWidth: CodeNote & { rows: string[][] }
+    fullBleed: CodeNote
+    decoration: CodeNote
+    sections: CodeNote
+  }
+  resources: GuideHead & {
+    files: string[][]
+    bibliography: { lead?: string; groups: BibliographyGroup[] }
+  }
+  theme: GuideHead & { anatomy: CodeNote; principles: string[]; tokens: LinkItem[] }
+  color: GuideHead & {
+    intro: string
+    accent: string
+    gray: string
+    alpha: string
+    alphaCode: string
+    semantic: string
+    backgrounds: string
+    backgroundsCode: string
+    focus: string
+    focusCode: string
+  }
+  spacing: GuideHead & { scale: string; rhythm: string; rhythmRows: string[][]; spec: string }
+  radius: GuideHead & { scale: string; rows: string[][]; code: string }
+  motion: GuideHead & {
+    easing: string
+    easingCode: string
+    durations: string[][]
+    durationNote: string
+    reduced: string
+    reducedCode: string
+    signature: string
+    signatureRows: string[][]
+  }
+  breakpoints: GuideHead & { rows: string[][]; usage: string; code: string }
+}
+
+export const GUIDES: GuidesData = {
   introduction: {
     name: '開始使用',
     lead: '用 tokens.css 的變數和 Component Library 裡的元件組頁面',
@@ -34,7 +112,7 @@ export const GUIDES = {
         title: '2. 使用元件',
         text: '先找 Component Library 裡已有的元件，從 src/components/ 匯入。',
         lang: 'jsx',
-        code: `import { ImageCard } from '../components/ImageCard.jsx'
+        code: `import { ImageCard } from '../components/ImageCard.tsx'
 
 <ImageCard src={src} alt="設定頁的截圖" caption="設定頁" />`,
       },
@@ -133,7 +211,7 @@ npm run dev`,
   padding-inline: calc(var(--page-gutter) + var(--page-pad));
 }`,
       rows: [
-        ['--page-max', '1920px', '內容的最大寬度，heroFx.js 的 MAX_W 要一樣'],
+        ['--page-max', '1920px', '內容的最大寬度，heroFx.ts 的 MAX_W 要一樣'],
         ['--page-gutter', 'max(0px, (100vw − 1920px) / 2)', '超過 1920px 時兩側多出的寬度，1920px 以下是 0'],
         ['--page-pad', 'clamp(20px, 4vw, 68px)', '內容和螢幕邊緣的距離'],
       ],
@@ -186,7 +264,7 @@ npm run dev`,
             ['Editor.js', 'https://editorjs.io/', '段落和清單的行高 1.6、段落之間 12px，「+」和「⠿」，格式工具列', 'Editor、journal.css'],
             ['motionsites.ai：Living Portrait', 'https://motionsites.ai/?prompt=living-portrait-hero', '首頁改版前的 Hero', 'Living Portrait（Labs）'],
             ['webgl-noise（Ashima Arts，MIT）', 'https://github.com/ashima/webgl-noise', '2D simplex noise 的 GLSL 程式碼', 'grainHaze.ts'],
-            ['pixelui：Tracked Butterfly ASCII','https://pixelui.dev/components/tracked-butterfly-ascii', 'hover 時的 ASCII 追蹤框和第二張圖', 'heroFx.js'],
+            ['pixelui：Tracked Butterfly ASCII','https://pixelui.dev/components/tracked-butterfly-ascii', 'hover 時的 ASCII 追蹤框和第二張圖', 'heroFx.ts'],
             ['motionsites.ai', 'https://motionsites.ai/', '版畫圖由碎片組合的頁尾', 'shatterImage.js、Shatter Footer'],
             ['motionsites.ai：Koi Pond', 'https://motionsites.ai/?prompt=koi-pond', '錦鯉在文字後面游、四個角落的排法、右下角的大字名字', 'koiPond.js、首頁 Hero'],
             ['p5aholic.me', 'https://p5aholic.me/', '背景的做法和數值：自己扭曲自己的雜訊場、六次方、每個像素固定的顆粒偏移，左上角幾行小字的自我介紹和斷行方式', 'grainHaze.js、首頁 Hero'],
