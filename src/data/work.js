@@ -49,6 +49,17 @@ export const PROJECT_PAGE_LABELS = {
   en: { home: 'Home', crumbs: 'Breadcrumb', back: 'Back to Projects', notFound: 'Project not found', visit: 'Visit site', num: 'Project', type: 'Type', client: 'Client', scope: 'Scope', link: 'Link', noPage: '這個專案沒有內頁，卡片直接連到外部連結。在右邊的面板可以建立內頁。', untranslated: 'This project is only in Chinese for now.' },
 }
 
+/** The row of facts a project's page opens with, read from its card: [label, lines, href?]. Empty ones are left out. */
+export function projectFacts(item, lang) {
+  const t = PROJECT_PAGE_LABELS[lang]
+  return [
+    [t.type, [PROJECT_SECTIONS.find((s) => s.id === projectType(item))[lang]]],
+    item.client && [t.client, [item.client]],
+    item.tags?.length && [t.scope, item.tags],
+    item.link && [t.link, [item.link.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')], item.link],
+  ].filter(Boolean)
+}
+
 // Client work that began as code. It joins the saved list, with a short page, until the list has it, so it is
 // edited in the panel like any other project; the first save writes it to R2. `removed` remembers one Wade deleted.
 // Copy comes from Wade's CV (src/labs/falling-figure/content.js).

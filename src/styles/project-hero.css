@@ -57,14 +57,6 @@
   line-height: var(--type-display-lh);
 }
 
-.project-hero__subtitle {
-  margin: var(--gap-tight) 0 0;
-  color: var(--text-secondary);
-  font-size: var(--type-small);
-  font-family: var(--font-serif);
-  line-height: var(--type-small-lh);
-}
-
 /* The line spans the page frame; the facts under it keep the 8px inset */
 .project-hero__facts {
   display: grid;
