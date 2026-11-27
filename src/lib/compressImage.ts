@@ -1,4 +1,4 @@
-// Shrinks an image in the browser so it passes functions/api/upload.js (JPG, PNG, WEBP, 1MB max).
+// Shrinks an image in the browser so it passes functions/api/upload.ts (JPG, PNG, WEBP, 1MB max).
 // 2000px on the long edge is wider than the post column at 2× density, so the loss does not show.
 
 export const MAX_IMAGE_BYTES = 1024 * 1024

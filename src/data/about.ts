@@ -1,7 +1,7 @@
 // The About page. Its body lives in R2 data.json under `aboutPage` ({ zh: { doc }, en: { doc } }) and is
 // edited in place like a Journal post. This file is only the default before R2 has one.
 // Not `about`: that key still holds the old About copy, and a save would replace it.
-// Facts come from Wade's CV (src/labs/falling-figure/content.js). Lines in 【】 are placeholders.
+// Facts come from Wade's CV (src/labs/falling-figure/content.ts). Lines in 【】 are placeholders.
 import type { AboutPageData, Doc } from '../lib/siteData.ts'
 
 export const ABOUT_META = {
