@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router'
 import './lab.css'
 import { Breadcrumbs, BreadcrumbsItem } from '../components/Breadcrumbs.tsx'
 import { Button } from '../components/Button.tsx'

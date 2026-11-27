@@ -3,7 +3,7 @@
 // App.tsx mounts it only when import.meta.env.DEV, so the page and its assets stay out of production.
 import { useEffect, useState } from 'react'
 import type { ComponentType } from 'react'
-import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router'
 import { ColorPage } from './ColorPage.tsx'
 import { ComponentPage } from './ComponentPage.tsx'
 import { componentToc, type TocItem } from './componentToc.ts'

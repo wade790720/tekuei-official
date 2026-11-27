@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router'
 import { PROJECT_PAGE_LABELS, projectFacts, projectNumber, projectTitle } from '../data/work.ts'
 import type { ProjectFact } from '../data/work.ts'
 import { projectCover } from '../data/workMedia.ts'
@@ -12,6 +12,7 @@ import { SiteFooter } from './SiteFooter.tsx'
 import { ProjectHero } from './work/ProjectHero.tsx'
 import '../styles/journal.css'
 import '../styles/project.css'
+import { DefaultHead } from './DefaultHead.tsx'
 
 /** One of the first three cases. Its text is in code; the page is laid out as a project page (ProjectPage). */
 export default function CaseStudyPage() {
@@ -23,7 +24,7 @@ export default function CaseStudyPage() {
   const doc = useMemo(() => (data ? caseDoc(data, lang) : null), [data, lang])
   const t = PROJECT_PAGE_LABELS[lang]
 
-  if (loading || !data || !doc) return <div className="site-loading-bar" />
+  if (loading || !data || !doc) return <><DefaultHead /><div className="site-loading-bar" /></>
 
   const { hero } = data
   // The card's number on the Projects list; a case that is not on the list keeps its own.
@@ -40,8 +41,7 @@ export default function CaseStudyPage() {
 
   return (
     <div className="journal-page journal-page--post">
-      <title>{data.documentTitle}</title>
-      {item ? <meta name="description" content={(item.descriptionLines ?? []).join('') || item.client} /> : null}
+      <DefaultHead title={data.documentTitle} description={item ? (item.descriptionLines ?? []).join('') || item.client : undefined} />
       <main>
         <ProjectHero
           cover={cover}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import 'lenis/dist/lenis.css'
 import './aboutFall.css'
 import figureSrc from './carving.png'

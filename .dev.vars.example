@@ -1,4 +1,4 @@
-# 複製為 .dev.vars（勿提交）供 wrangler pages dev 使用
-# 值須與 Cloudflare Pages 專案中的 ADMIN_SECRET 一致，R2 綁定見 wrangler.toml
+# 複製為 .dev.vars（勿提交），npm run dev 和 npm run preview 的本機 Worker 會讀它
+# 本機的 R2 是 .wrangler/state 裡的模擬 bucket，這裡的密碼只給本機用，不要填正式站的 ADMIN_SECRET
 # ADMIN_SECRET 是編輯模式的密碼，必須是 6 位數字（密碼框只收 6 位數字）
 ADMIN_SECRET=

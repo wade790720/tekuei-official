@@ -1,11 +1,12 @@
 ﻿import { Component, lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
-import { BrowserRouter, Navigate, Routes, Route, useLocation, useNavigationType, useParams } from 'react-router-dom'
+import { Navigate, Routes, Route, useLocation, useNavigationType, useParams } from 'react-router'
 import SiteHero from './components/SiteHero.tsx'
 import WorkListPage from './components/WorkListPage.tsx'
 import JournalListPage from './components/JournalListPage.tsx'
 import JournalPostPage from './components/JournalPostPage.tsx'
 import { SiteNav } from './components/SiteNav.tsx'
+import { DefaultHead } from './components/DefaultHead.tsx'
 import { mountClickSounds } from './lib/uiSound.ts'
 import { mountReveal } from './lib/reveal.ts'
 import { AdminProvider } from './context/AdminProvider.tsx'
@@ -92,11 +93,12 @@ class PageBoundary extends Component<PageBoundaryProps, { failed: boolean }> {
   }
 }
 
-function PageError() {
+export function PageError() {
   const { lang } = useLang()
   const t = PAGE_ERROR[lang]
   return (
     <main className="page-error" role="alert">
+      <DefaultHead />
       <h1>{t.title}</h1>
       <p>{t.hint}</p>
     </main>
@@ -133,8 +135,7 @@ export default function App() {
   useEffect(() => mountClickSounds(), [])
   useEffect(() => mountReveal(), [])
   return (
-    <BrowserRouter>
-      <AdminProvider>
+    <AdminProvider>
       <JournalProvider>
       <WorkProvider>
       <ScrollClasses />
@@ -145,7 +146,7 @@ export default function App() {
         <Route path="/" element={<SiteHero />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/projects" element={<WorkListPage />} />
-        <Route path="/work" element={<Navigate to="/projects" replace />} />
+        <Route path="/work" element={<><DefaultHead /><Navigate to="/projects" replace /></>} />
         <Route path="/journal" element={<JournalListPage />} />
         <Route path="/journal/:slug" element={<JournalPostPage />} />
         <Route path="/projects/:slug" element={<CaseRouter />} />
@@ -164,18 +165,23 @@ export default function App() {
             }
           />
         ) : null}
+        <Route path="*" element={<DefaultHead />} />
       </Routes>
       </Suspense>
       </Pages>
       </WorkProvider>
       </JournalProvider>
       </AdminProvider>
-    </BrowserRouter>
   )
 }
 
 /** Old case links (/cases/<slug>) in the app; on the live site a Pages Function answers them with a 301 first. */
 function MovedCase() {
   const { slug } = useParams()
-  return <Navigate to={`/projects/${slug}`} replace />
+  return (
+    <>
+      <DefaultHead />
+      <Navigate to={`/projects/${slug}`} replace />
+    </>
+  )
 }

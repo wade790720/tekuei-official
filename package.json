@@ -4,16 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:pages": "npm run build && npx wrangler pages dev dist --compatibility-date=2024-11-01",
-    "build": "vite build",
-    "deploy": "wrangler pages deploy dist --commit-dirty=true",
+    "dev": "react-router dev",
+    "build": "react-router build",
+    "preview": "npm run build && vite preview",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings --include-runtime=false",
     "lint": "eslint . && node scripts/noSlop.ts && npm run typecheck",
-    "preview": "vite preview",
     "seed": "node scripts/seed-data.ts",
     "test": "node --test \"scripts/*.test.ts\"",
     "test:phone": "node --test scripts/phoneE164.test.ts",
-    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.functions.json && tsc -p tsconfig.node.json"
+    "typecheck": "react-router typegen && tsc -p tsconfig.app.json && tsc -p tsconfig.functions.json && tsc -p tsconfig.node.json"
   },
   "dependencies": {
     "@tiptap/extension-blockquote": "^3.34.0",
@@ -25,25 +24,26 @@
     "@tiptap/suggestion": "^3.34.0",
     "lenis": "^1.1.13",
     "libphonenumber-js": "^1.13.9",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "react-phone-input-2": "^2.15.1",
-    "react-router-dom": "^7.14.2"
+    "react-router": "^8.5.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260702.1",
+    "@cloudflare/vite-plugin": "^1.70.2",
+    "@cloudflare/workers-types": "^5.20261127.1",
     "@eslint/js": "^10.0.1",
+    "@react-router/dev": "^8.5.3",
     "@types/node": "^26.6.11",
     "@types/react": "^19.3.3",
     "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^4.7.0",
     "eslint": "^10.2.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.74.0",
-    "vite": "^6.4.3",
-    "wrangler": "^4.14.0"
+    "vite": "^7.3.8",
+    "wrangler": "^4.169.0"
   }
 }

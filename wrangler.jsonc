@@ -1,0 +1,13 @@
+// The site as one Worker: React Router renders pages, workers/app.ts sends /api/* to functions/api/.
+// Secrets are not here: ADMIN_SECRET comes from .dev.vars locally (see .dev.vars.example).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tekuei-official",
+  "main": "./workers/app.ts",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./build/client" },
+  "observability": { "enabled": true },
+  "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "tekuei-cms" }],
+  // The editor's English translation uses Workers AI, no key needed.
+  "ai": { "binding": "AI" }
+}

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { HOME_FOOTER } from '../../data/homepage.ts'
 import { useLang } from '../../i18n'
 import { mountShatterImage } from './shatterImage.ts'

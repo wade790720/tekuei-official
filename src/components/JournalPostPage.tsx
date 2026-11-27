@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 import type { MouseEvent, ReactNode } from 'react'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { SiteFooter } from './SiteFooter.tsx'
 import { TagList } from './Tag.tsx'
 import { JournalPostBody } from './journal/JournalPostBody.tsx'
@@ -15,6 +15,7 @@ import type { ReadableJournal } from '../data/journal.ts'
 import { useLang } from '../i18n'
 import '../styles/work.css'
 import '../styles/journal.css'
+import { DefaultHead } from './DefaultHead.tsx'
 
 // Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.
 const JournalPostEditPanel = lazy(() => import('./journal/JournalEditPanel.tsx').then((m) => ({ default: m.JournalPostEditPanel })))
@@ -40,12 +41,12 @@ export default function JournalPostPage() {
   const sig = lang === 'zh' ? '— 德 溎 · TEKUEI' : '— W A D E · TEKUEI'
 
   // A post that only exists in R2 is missing until the remote data arrives.
-  if ((!post || !content) && loading) return <div className="site-loading-bar" />
+  if ((!post || !content) && loading) return <><DefaultHead /><div className="site-loading-bar" /></>
 
   if (!post || !content) {
     return (
       <div className="journal-page journal-page--post">
-        <title>Not Found · Journal · TEKUEI</title>
+        <DefaultHead title="Not Found · Journal · TEKUEI" />
         <div className="journal-not-found">
           <div className="journal-not-found__num">—</div>
           <h1>{t.notFound}</h1>

@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router'
 import { Skeleton } from './Skeleton.tsx'
 import { Tag, TagList } from './Tag.tsx'
 import { JOURNAL_FILTER, JOURNAL_HEADER, JOURNAL_META, postTags, readableJournal, tagCounts } from '../data/journal.ts'

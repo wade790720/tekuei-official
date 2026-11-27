@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router'
 import { SidePanel, EyeOffIcon, PublishIcon, FormRow, PanelSection, SortRows, TagsInput } from '../SidePanel.tsx'
 import { TextField } from '../TextField.tsx'
 import { Button } from '../Button.tsx'
