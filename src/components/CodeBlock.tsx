@@ -7,12 +7,15 @@ import { Card } from './Card.tsx'
 import { ScrollShadow } from './ScrollShadow.tsx'
 import '../styles/cards.css'
 
-const BADGE = { bash: 'SH', shell: 'SH', zsh: 'SH', javascript: 'JS', typescript: 'TS', python: 'PY', yaml: 'YML', text: 'TXT' }
+const BADGE: Partial<Record<string, string>> = { bash: 'SH', shell: 'SH', zsh: 'SH', javascript: 'JS', typescript: 'TS', python: 'PY', yaml: 'YML', text: 'TXT' }
 
-/**
- * @param {{ code: string, lang?: string, filename?: string }} props
- */
-export function CodeBlock({ code, lang = 'ts', filename }) {
+export interface CodeBlockProps {
+  code: string
+  lang?: string
+  filename?: string
+}
+
+export function CodeBlock({ code, lang = 'ts', filename }: CodeBlockProps) {
   const { lang: ui } = useLang()
   const t = CARD_LABELS[ui]
   const tokens = useMemo(() => tokenize(code, lang), [code, lang])

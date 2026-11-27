@@ -1,29 +1,52 @@
 import { useEffect, useEffectEvent, useId, useRef, useState } from 'react'
+import type { ButtonHTMLAttributes, KeyboardEvent, ReactNode } from 'react'
 import { usePresence } from '../hooks/usePresence.ts'
 import '../styles/dropdownMenu.css'
 
+export interface MenuChoice<V extends string = string> {
+  value: V
+  label: string
+  icon?: ReactNode
+  kbd?: string
+}
+
+export type MenuItem<V extends string = string> = MenuChoice<V> | 'divider'
+
+export interface DropdownMenuProps<V extends string = string> {
+  /** accessible name of the trigger */
+  label: string
+  trigger: ReactNode
+  items: readonly MenuItem<V>[]
+  /** set for a picker: the current item is checked */
+  value?: V
+  onSelect: (value: V) => void
+  triggerClassName?: string
+  /** tooltip text for the warm-tooltip toolbar */
+  tip?: string
+  /** extra props for the trigger button, e.g. draggable */
+  triggerProps?: ButtonHTMLAttributes<HTMLButtonElement>
+}
 
 /**
  * A menu that drops down from a button: icon, label and shortcut per row, thin dividers between groups.
  * Same role as Radix / shadcn DropdownMenu. With `value` it works as a picker and checks the current item.
  * Use it instead of the native <select>, whose open list the OS draws in light colours.
  * Keyboard: Enter / Space / ↓ opens, ↑ ↓ Home End move, Enter picks, Esc or Tab closes.
- * @param {{
- *   label: string,                 // accessible name of the trigger
- *   trigger: import('react').ReactNode,
- *   items: ({ value: string, label: string, icon?: import('react').ReactNode, kbd?: string } | 'divider')[],
- *   value?: string,                // set for a picker: the current item is checked
- *   onSelect: (value: string) => void,
- *   triggerClassName?: string,
- *   tip?: string,                  // tooltip text for the warm-tooltip toolbar
- *   triggerProps?: Record<string, unknown>, // extra props for the trigger button, e.g. draggable
- * }} props
  */
-export function DropdownMenu({ label, trigger, items, value, onSelect, triggerClassName = 'dropdown-menu__trigger', tip, triggerProps }) {
+export function DropdownMenu<V extends string = string>({
+  label,
+  trigger,
+  items,
+  value,
+  onSelect,
+  triggerClassName = 'dropdown-menu__trigger',
+  tip,
+  triggerProps,
+}: DropdownMenuProps<V>) {
   const [open, setOpen] = useState(false)
-  const root = useRef(null)
-  const button = useRef(null)
-  const list = useRef(null)
+  const root = useRef<HTMLDivElement>(null)
+  const button = useRef<HTMLButtonElement>(null)
+  const list = useRef<HTMLDivElement>(null)
   const id = useId()
   const shown = usePresence(open, '--duration-exit')
   const choices = items.filter((it) => it !== 'divider')
@@ -31,15 +54,16 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
     console.error(`DropdownMenu「${label}」只有 ${choices.length} 個選項。一個動作用 Button，選單是給兩個以上的選項用的。`)
   }
 
-  const focusItem = (i) => list.current?.querySelectorAll('[role^=menuitem]')[(i + choices.length) % choices.length]?.focus()
+  const focusItem = (i: number) =>
+    list.current?.querySelectorAll<HTMLElement>('[role^=menuitem]')[(i + choices.length) % choices.length]?.focus()
 
   // Opening moves focus into the list: to the checked item, or the first one.
   const focusChecked = useEffectEvent(() => focusItem(Math.max(0, choices.findIndex((c) => c.value === value))))
   useEffect(() => {
     if (!open) return undefined
     focusChecked()
-    const away = (e) => {
-      if (!root.current?.contains(e.target)) setOpen(false)
+    const away = (e: PointerEvent) => {
+      if (!(e.target instanceof Node && root.current?.contains(e.target))) setOpen(false)
     }
     document.addEventListener('pointerdown', away)
     return () => document.removeEventListener('pointerdown', away)
@@ -49,13 +73,14 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
     setOpen(false)
     if (refocus) button.current?.focus()
   }
-  const pick = (v) => {
+  const pick = (v: V) => {
     close()
     onSelect(v)
   }
 
-  const listKey = (e) => {
-    const i = choices.findIndex((c) => c.value === document.activeElement?.dataset.value)
+  const listKey = (e: KeyboardEvent<HTMLDivElement>) => {
+    const focused = document.activeElement
+    const i = choices.findIndex((c) => focused instanceof HTMLElement && c.value === focused.dataset.value)
     if (e.key === 'ArrowDown') focusItem(i + 1)
     else if (e.key === 'ArrowUp') focusItem(i - 1)
     else if (e.key === 'Home') focusItem(0)
@@ -66,7 +91,7 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
     e.preventDefault()
   }
 
-  const triggerKey = (e) => {
+  const triggerKey = (e: KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault()
       setOpen(true)
@@ -110,12 +135,18 @@ export function DropdownMenu({ label, trigger, items, value, onSelect, triggerCl
   )
 }
 
+export interface MenuItemsProps<V extends string = string> {
+  items: readonly MenuItem<V>[]
+  value?: V
+  active?: V
+  onPick: (value: V) => void
+}
+
 /**
  * The rows of a menu list. DropdownMenu draws its list with it, and so does the editor's "/" menu,
  * where focus stays in the text and `active` marks the row the arrow keys are on.
- * @param {{ items: any[], value?: string, active?: string, onPick: (value: string) => void }} props
  */
-export function MenuItems({ items, value, active, onPick }) {
+export function MenuItems<V extends string = string>({ items, value, active, onPick }: MenuItemsProps<V>) {
   // A menu with no icons at all (a plain picker) has no icon column; one with some keeps the labels in line.
   const hasIcons = items.some((it) => it !== 'divider' && it.icon)
   return items.map((it, i) =>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import type { ChangeEvent } from 'react'
 import { CARD_LABELS } from '../data/cards.ts'
 import { useLang } from '../i18n'
 import { youtubeId } from '../lib/richText.ts'
@@ -7,22 +8,32 @@ import '../styles/cards.css'
 
 const RATES = [1, 1.5, 2]
 
-const clock = (s) => {
+const clock = (s: number) => {
   const t = Math.floor(Number.isFinite(s) ? s : 0)
   return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`
 }
 
-/**
- * A video in a post. A YouTube link plays in YouTube's player; a video file (mp4) in the site's own player.
- * @param {{ src: string, poster?: string, caption?: string, loop?: boolean }} props
- */
-export function VideoPlayer(props) {
+// iOS Safari has no Fullscreen API on elements; only the video element can go full screen.
+interface IOSVideoElement extends HTMLVideoElement {
+  webkitEnterFullscreen?: () => void
+}
+
+export interface VideoPlayerProps {
+  /** a video file (mp4) or a YouTube link */
+  src: string
+  poster?: string
+  caption?: string
+  loop?: boolean
+}
+
+/** A video in a post. A YouTube link plays in YouTube's player; a video file (mp4) in the site's own player. */
+export function VideoPlayer(props: VideoPlayerProps) {
   const id = youtubeId(props.src)
   return id ? <YouTubeVideo id={id} caption={props.caption} loop={props.loop} /> : <FileVideo {...props} />
 }
 
 /** YouTube's own player in privacy mode (youtube-nocookie.com): no cookies until the visitor plays it. */
-function YouTubeVideo({ id, caption, loop = false }) {
+function YouTubeVideo({ id, caption, loop = false }: { id: string; caption?: string; loop?: boolean }) {
   const { lang } = useLang()
   const t = CARD_LABELS[lang]
   const query = loop ? `?loop=1&playlist=${id}` : ''
@@ -43,11 +54,11 @@ function YouTubeVideo({ id, caption, loop = false }) {
   )
 }
 
-function FileVideo({ src, poster, caption, loop = false }) {
+function FileVideo({ src, poster, caption, loop = false }: VideoPlayerProps) {
   const { lang } = useLang()
   const t = CARD_LABELS[lang]
-  const root = useRef(null)
-  const video = useRef(null)
+  const root = useRef<HTMLDivElement>(null)
+  const video = useRef<IOSVideoElement>(null)
   const [playing, setPlaying] = useState(false)
   const [time, setTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -56,31 +67,33 @@ function FileVideo({ src, poster, caption, loop = false }) {
   // A cached video can finish loading metadata before React attaches onLoadedMetadata.
   useEffect(() => {
     const v = video.current
-    if (v.readyState >= 1) setDuration(v.duration)
+    if (v && v.readyState >= 1) setDuration(v.duration)
   }, [src])
 
   const toggle = () => {
     const v = video.current
+    if (!v) return
     if (v.paused) v.play().catch(() => {}) // play() rejects when the browser blocks it; the button stays on "play"
     else v.pause()
   }
 
-  const seek = (e) => {
-    video.current.currentTime = Number(e.target.value)
-    setTime(video.current.currentTime)
+  const seek = (e: ChangeEvent<HTMLInputElement>) => {
+    const v = video.current
+    if (!v) return
+    v.currentTime = Number(e.target.value)
+    setTime(v.currentTime)
   }
 
   const nextRate = () => {
     const r = RATES[(RATES.indexOf(rate) + 1) % RATES.length]
-    video.current.playbackRate = r
+    if (video.current) video.current.playbackRate = r
     setRate(r)
   }
 
   const fullscreen = () => {
-    const v = video.current
     if (document.fullscreenElement) document.exitFullscreen()
-    else if (root.current.requestFullscreen) root.current.requestFullscreen()
-    else v.webkitEnterFullscreen?.() // iOS Safari: only the video element can go full screen
+    else if (root.current?.requestFullscreen) root.current.requestFullscreen()
+    else video.current?.webkitEnterFullscreen?.()
   }
 
   const progress = duration ? (time / duration) * 100 : 0
@@ -148,7 +161,7 @@ function FileVideo({ src, poster, caption, loop = false }) {
   )
 }
 
-function PlayIcon({ size = 14 }) {
+function PlayIcon({ size = 14 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" aria-hidden>
       <path d="M4.5 2.8v10.4a.8.8 0 0 0 1.2.7l8.4-5.2a.8.8 0 0 0 0-1.4L5.7 2.1a.8.8 0 0 0-1.2.7z" />

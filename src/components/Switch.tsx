@@ -1,12 +1,15 @@
 import '../styles/switch.css'
 
-/**
- * An on / off switch. It has no visible label of its own: put text next to it, and give it `label`.
- * @param {{ checked: boolean, onChange: (checked: boolean) => void, label: string }} props
- */
-export function Switch({ checked, onChange, label }) {
+export interface SwitchProps {
+  checked: boolean
+  onChange: (checked: boolean) => void
+  label: string
+}
+
+/** An on / off switch. It has no visible label of its own: put text next to it, and give it `label`. */
+export function Switch({ checked, onChange, label }: SwitchProps) {
   return (
-    <button type="button" role="switch" aria-checked={Boolean(checked)} aria-label={label} className="switch" onClick={() => onChange(!checked)}>
+    <button type="button" role="switch" aria-checked={checked} aria-label={label} className="switch" onClick={() => onChange(!checked)}>
       <span className="switch__knob" aria-hidden />
     </button>
   )

@@ -30,3 +30,8 @@ ts	phase	decision	why	evidence	result
 2026-11-27T15:46:21Z	B	選單回傳的 string 用 isBlockKind 收窄成 BlockKind	DropdownMenu 和 MenuItems 的 onSelect/onPick 依 JSDoc 是 (value: string)，applyBlock 只接受 BlockKind	src/components/Editor.tsx isBlockKind	不依賴 UI 元件是否改成泛型
 2026-11-27T15:46:22Z	B	getPos() 為 undefined 時不拖曳圖組、找不到 .cms-ed 時不畫格式工具列	Tiptap 3 的 getPos 可能回 undefined，closest 可能回 null；原本會丟例外	src/components/Editor.tsx moveTo、Toolbar	正常情況行為不變，例外情況改成什麼都不做
 2026-11-27T15:46:22Z	B	'@tiptap/core Commands 模組擴充宣告 setLead	Lead 節點的自訂指令要讓 chain().setLead() 有型別	src/components/Editor.tsx declare module	不用轉型
+2026-11-27T15:49:22Z	B-components	新增 src/cssVars.d.ts 擴充 CSSProperties 接受 --* 自訂屬性	全站 style 物件都寫 --i 等變數，不加就得到處 as	src/cssVars.d.ts	其他 slice 不必再各自擴充
+2026-11-27T15:49:23Z	B-components	BLOCK_TYPES 放進 src/lib/richText.ts（基礎檔）	RichText 的 switch 對節點種類窮舉，seo.ts docHtml 用同一份清單測試	src/lib/richText.ts:12	scripts/blockTypes.test.ts 通過
+2026-11-27T15:49:23Z	B-components	RichText 的 attrs 一律經 str 和 slidesOf 讀	Tiptap 把 attrs 定成 any，錯型別的值會直接進元件	src/components/RichText.tsx:20	行為不變，圖組缺 alt 時改給空字串
+2026-11-27T15:49:24Z	B-components	移除 TooltipGroup 的 as prop	沒有呼叫端使用，多型 union 讓 tsc 報 too complex	src/components/Tooltip.tsx	componentLibrary.data.tsx 的 as 那一列要刪
+2026-11-27T15:49:24Z	B-components	Button、Card 用泛型 as，DropdownMenu、MenuItems 對選項值泛型	呼叫端 props 隨 as 的元素型別檢查，選單值可收窄	src/components/Button.tsx	Editor 傳 string 照樣可用

@@ -1,21 +1,23 @@
 import { useLayoutEffect, useRef } from 'react'
+import type { ElementType, HTMLAttributes } from 'react'
 import '../styles/scrollShadow.css'
+
+export interface ScrollShadowProps extends HTMLAttributes<HTMLElement> {
+  /** element to render */
+  as?: 'div' | 'pre'
+  orientation?: 'vertical' | 'horizontal'
+  /** fade length in px */
+  size?: number
+  hideScrollBar?: boolean
+}
 
 /**
  * A scroll container whose edges fade out on the sides that still have hidden content.
  * The fade is a mask on the content itself, so it works on any background.
- * @param {{
- *   as?: string,                              // element to render, e.g. 'pre'
- *   orientation?: 'vertical' | 'horizontal',
- *   size?: number,                            // fade length in px
- *   hideScrollBar?: boolean,
- *   className?: string,
- *   style?: import('react').CSSProperties,
- *   children?: import('react').ReactNode,
- * } & Record<string, unknown>} props  other props (tabIndex, aria-*) go to the element
+ * Other props (tabIndex, aria-*) go to the element.
  */
 export function ScrollShadow({
-  as: Element = 'div',
+  as = 'div',
   orientation = 'vertical',
   size = 40,
   hideScrollBar = false,
@@ -23,13 +25,14 @@ export function ScrollShadow({
   style,
   children,
   ...rest
-}) {
-  const ref = useRef(null)
+}: ScrollShadowProps) {
+  const ref = useRef<HTMLElement>(null)
 
   // Subscribes once. New content can make the box scrollable without resizing it, so a
   // MutationObserver re-measures and watches new children. Depending on `children` would re-subscribe every render.
   useLayoutEffect(() => {
     const el = ref.current
+    if (!el) return
     const horizontal = orientation === 'horizontal'
     const update = () => {
       const pos = horizontal ? Math.abs(el.scrollLeft) : el.scrollTop
@@ -54,10 +57,13 @@ export function ScrollShadow({
     }
   }, [orientation])
 
+  const Element: ElementType = as
   const classes = ['scroll-shadow', `scroll-shadow--${orientation}`, hideScrollBar && 'scroll-shadow--no-bar', className]
   return (
     <Element
-      ref={ref}
+      ref={(el: HTMLElement | null) => {
+        ref.current = el
+      }}
       className={classes.filter(Boolean).join(' ')}
       style={{ '--scroll-shadow-size': `${size}px`, ...style }}
       {...rest}
