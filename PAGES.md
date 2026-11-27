@@ -5,7 +5,7 @@
 
 - 點連結換頁時從最上面開始。瀏覽器的上一頁、下一頁回到離開時的捲動位置（`App.jsx` 的 `ScrollClasses`）。
 - 頁首 logo：「TEKUEI CHU」後面接一個 8 × 2px、約 1 秒亮 1 秒暗的底線游標。只有頁首用到，所以直接寫在 SiteNav 和 NavOverlay 裡，不抽成元件（class `site-logo`）。
-- Projects、Journal 列表、Journal 文章頁、About、Lab 頁的最下面都是同一個 `SiteFooter`（規格見 About）。首頁和 `/labs/<id>/live` 沒有頁尾。
+- Projects、Journal 列表、Journal 文章頁、專案內頁、案例頁、About、Lab 頁的最下面都是同一個 `SiteFooter`（規格見 About）。首頁和 `/labs/<id>/live` 沒有頁尾。
 - 頁尾的品牌字維持字距拉開的「T E K U E I」。
 - 網站圖示是一條錦鯉，呼應首頁 Hero 的錦鯉池。`public/favicon.svg` 給瀏覽器分頁，背景透明，身體跟著系統的深淺色切換（淺色用深色身體、深色用象牙白），斑紋都是金色（`--ember`）。`public/apple-touch-icon.png`（180px）給手機主畫面，主畫面不能透明，所以用深色方塊（`--surface-0`）當底。`index.html` 的 `theme-color` 是同一個深色，手機瀏覽器的網址列跟著變深。
 - 分享到 Threads、LINE、Facebook 時的預覽圖：預設是 `public/og.jpg`（1200 × 630，正式站首頁 Hero 的截圖），文章、專案和 About 有圖片時改用內文的第一張圖（專案先用縮圖）。
@@ -61,12 +61,12 @@
 - 頁首有量測標註線（`measureLines.js`，Projects 的招牌效果）：頁首下緣是一條標出欄寬的尺寸線，取代原本的分隔線；標題左邊是一條標出高度的尺寸線，右上角是角標。數字是即時量的像素值，進場時跟著線一起數上去。下緣的尺寸線像一把尺，每 24px 一個小刻度，上面有一個金色的小三角形跟著游標的水平位置移動。沒有十字線：十字線只在頁首出現會像壞掉，鋪滿整頁又太吵。手機不畫左邊的高度線。
 - Projects 的資料都在 R2 `data.json` 的 `work`：`items` 是卡片，`content` 是內頁（`{ zh: { <id>: { doc } }, en: … }`，Tiptap 文件）。`WorkProvider` 讓列表和內頁共用同一份狀態，所以在列表新增的專案，還沒儲存就能到內頁編輯。
 - 列表的編輯面板（`WorkListEditPanel`）：新增專案（選區段、填網址代稱）、拖曳排序、刪除。排序是每一區裡面的先後。Labs 寫在程式碼裡，不在面板裡。SRE 原本也寫在程式碼裡（`CODE_PROJECTS`）：R2 還沒有它時，載入後會自動補進清單，連同一段內頁的內文，第一次儲存就寫進 R2，之後和其他專案一樣編輯；刪掉它時 `work.removed` 會記下來，不會再被補回去。
-- 專案的編輯面板（`ProjectEditPanel`）在內頁打開：標題和單位每種語言各一份（英文存在卡片的 `en`，留空時顯示中文），區段、標籤、縮圖、外部連結中英文共用。專案有草稿和已發布兩種狀態，新專案是草稿，讀者看不到，sitemap 和 llms.txt 也不列。專案不自動儲存。儲存按鈕和 Ctrl+S 只儲存內容，不改變公開狀態：草稿的按鈕叫「儲存草稿」，已發布的叫「更新」。「發布」和「取消公開」都在「⋯」選單裡，要另外選才會發生。
+- 專案的編輯面板（`ProjectEditPanel`）在內頁打開：標題和單位每種語言各一份（英文存在卡片的 `en`，留空時顯示中文），區段、標籤、封面圖、外部連結中英文共用。面板的第一個欄位是區段。封面圖同時是列表卡片的圖和內頁的開場圖（資料欄位仍叫 `thumbImage`），三個案例頁也一樣，還沒設定時用案例原本存的圖。Matsu Biennial 和 SRE 的封面圖寫在程式碼裡（`workMedia.js` 的 `cover`，檔案在 `src/assets/work/`），會取代面板上傳的圖：Matsu Biennial 是官網首頁的黃昏橫幅，列表卡片也用它；SRE 是官網首頁的截圖，列表卡片維持影片。專案有草稿和已發布兩種狀態，新專案是草稿，讀者看不到，sitemap 和 llms.txt 也不列。專案不自動儲存。儲存按鈕和 Ctrl+S 只儲存內容，不改變公開狀態：草稿的按鈕叫「儲存草稿」，已發布的叫「更新」。「發布」和「取消公開」都在「⋯」選單裡，要另外選才會發生。
 - 在面板新增的專案有自己的內頁（`ProjectPage`），網址 `/projects/<代稱>`：Breadcrumbs、區段和單位、標題、標籤、一篇內文，文字樣式照 Journal 文章頁，內文直接在頁面上編輯。版面比文章頁寬，因為專案是用看的，圖片是主角（`src/styles/project.css`）：外框寬到頁面左右留白為止（最寬 `--page-max`），標題、文字和所有圖片都從外框的左緣開始，所以左邊是同一條線。文字最寬 `--page-reading`；圖片、影片、輪播、圖庫佔滿外框；堆疊的卡片會黏在頁首下面，所以寬度不超過螢幕放得下的 16:9。768px 以下，圖片、輪播、堆疊、圖庫和「作品」的大圖都貼齊螢幕左右邊緣、沒有圓角，文字和「作品」的縮圖維持邊距。編輯時內文維持閱讀寬度，按「預覽」才是寬版。專案有縮圖時，內頁用它當開場圖，和最早三個案例頁的開場是同一套：照片高 `--hero-height`（88% 螢幕高，下面的內文會露出來），寬螢幕上也延伸到螢幕左右邊緣（文字仍在 `--page-max` 內），下半部漸暗（`--hero-scrim`，手機的文字疊得比較高，暗的範圍也從比較高的地方開始）。照片上由上到下是編號（`PROJECT 05`，和列表卡片的編號相同）、標題（`--type-display`）、一條 0.5px 的線、一列資訊（Type、Client、Scope、Link，標籤一律英文，和案例頁一樣；沒有資料的格子不顯示），桌面四欄、768px 以下兩欄。文字的左緣和下面的內文是同一條線。有開場圖時不顯示 Breadcrumbs，標籤和外部連結都在資訊列裡。沒有縮圖就沒有開場圖，頁首維持原樣。每個專案的卡片都連到自己的內頁，包括 SRE。「外部連結」是專案的網站，顯示在內頁標籤下方的「造訪網站 ↗」，開新分頁。只有沒有內頁的專案，卡片才直接連到外部連結；這種專案在編輯模式仍然可以打開 `/projects/<代稱>` 改欄位，面板裡有「建立內頁」。英文內文是空的時，英文版顯示中文內文。
 - 內頁的內文會寫進 HTML（`functions/projects/[slug].js` 的 `serveProject`），和 Journal 文章一樣。
-- 內文段落（`case-prose`）最寬 `--page-reading`，字級 `--type-body`。
-- 標題、交付項目、時間軸維持外欄寬度。
-- 案例資料可以有 `videos`（`src`、`poster`、`caption`）：用 `VideoPlayer` 排在「背景」段落後面，外欄寬度，循環播放。影片放在 `src/assets/cases/<slug>/`，是從案例網站錄的捲動導覽。目前只有 Matsu Biennial（首頁、策展主題頁、藝術作品頁）。
+- 最早的三個案例頁（Matsu Biennial、MONOLAB、Lustre Yellow，`CaseStudyPage`）和專案內頁是同一個版型：開場是 `ProjectHero`（`src/components/work/`，兩種頁面共用），內文用同一套文字樣式和寬度，結尾是「── 返回 Projects」和 `SiteFooter`。和專案內頁的差別只有三點：內容寫在程式碼裡（`src/data/cases/`），標題下方多一行副標，資訊列是案例資料的 `meta`（Client、Scope、Year、Link）。
+- 案例的內容在程式碼裡仍然分段存放，顯示前由 `src/lib/caseDoc.js` 轉成和編輯器相同的文件：每一段的標題是小標題，段落照原樣，引言是引言，交付項目和時間軸是清單（「名稱：說明」），影片和圖片是卡片。沒有檔案的圖片不顯示。
+- 案例資料可以有 `videos`（`src`、`poster`、`caption`）：排在「背景」段落後面，循環播放。影片放在 `src/assets/cases/<slug>/`，是從案例網站錄的捲動導覽。目前只有 Matsu Biennial（首頁、策展主題頁、藝術作品頁）。
 
 ## Labs
 
@@ -77,7 +77,7 @@
 - 舊網址 `/cases/living-portrait`、`/cases/falling-figure` 301 轉到 `/labs/`，其他 `/cases/<slug>` 301 轉到 `/projects/<slug>`。轉址寫在 `src/lib/seo.js` 的 `serveCase`，不在 `public/_redirects`，因為 Pages Function 會先接走這些網址。
 - 不存在的 `/projects/<slug>` 和 `/labs/<id>` 回 404 狀態碼（`functions/projects/`、`functions/labs/`），畫面仍由前端顯示。
 - 每個 lab 都要寫參考來源、介紹和 prompt。
-- Projects 列表的縮圖可以是影片：從實際效果錄的短循環 mp4，靜音自動播放，擷取的 webp 當 poster。減少動態效果開啟時只顯示 webp。客戶案例的縮圖放在 `src/assets/work/`，對照表在 `src/data/workMedia.js`，會取代 R2 的縮圖。目前只有 Lustre Yellow 有影片。Matsu Biennial 用 R2 的縮圖，錄影放在案例頁。
+- Projects 列表的縮圖可以是影片：從實際效果錄的短循環 mp4，靜音自動播放，擷取的 webp 當 poster。減少動態效果開啟時只顯示 webp。客戶案例的縮圖放在 `src/assets/work/`，對照表在 `src/data/workMedia.js`，會取代 R2 的縮圖。有影片的是 Lustre Yellow 和 SRE。Matsu Biennial 的卡片用封面圖，錄影放在案例頁。
 - 現有三個：`living-portrait`（`LivingPortrait`，首頁改版前的 Hero）、`falling-figure`（`FallingFigure`，About 改版前的 About 頁）、`shatter-footer`（`ShatterFooter`，Journal 改版前的頁尾）。
 - Shatter Footer：四欄（品牌、Explore、Resources、Contact）。Resources 讀 `HOME_FOOTER` 的 `resources`，FAQ 和 Privacy policy 還沒有頁面，先顯示成文字。下面是版畫海浪（`shatterImage.js`），露出 35% 時由碎片拼起來，文字依序淡入。預覽框是 4:3，比預設高，海浪才能接近全寬。live 頁的頁尾佔滿一個螢幕，海浪縮到剛好放得下，所以在預覽框裡也看得到整個效果。燈塔在圖的 75% 處，海浪變窄時仍讓這一點落在寬度的 75%，對齊第三條虛線；畫面太矮時（手機的預覽框）海浪至少佔 40% 高，其餘往下捲。
 

@@ -4,7 +4,7 @@ import { useWorkContent } from '../hooks/useWorkContent.js'
 import { labWorkItems } from '../labs/media.js'
 import { SiteFooter } from './SiteFooter.jsx'
 import { WORK_THUMBS } from '../data/workMedia.js'
-import { projectLink, PROJECT_SECTIONS, PROJECT_TYPES, PROJECTS_PAGE, projectTitle, WORK_LABELS } from '../data/work.js'
+import { projectLink, PROJECT_SECTIONS, PROJECTS_PAGE, projectTitle, projectType, WORK_LABELS } from '../data/work.js'
 import { useAdmin } from '../context/admin.js'
 import { useLang } from '../i18n'
 import { mountMeasureLines } from '../lib/measureLines.js'
@@ -108,7 +108,7 @@ export default function WorkListPage() {
     ...content.items.map((item) => ({
       ...item,
       // A project nobody has filed yet still has to show up somewhere
-      type: item.type ?? PROJECT_TYPES[item.id] ?? 'web',
+      type: projectType(item),
       thumbImage: WORK_THUMBS[item.id] ?? item.thumbImage,
       caseHref: projectLink(item, content),
     })),

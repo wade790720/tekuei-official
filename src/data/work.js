@@ -19,6 +19,13 @@ export const PROJECT_SECTIONS = [
   { id: 'side', zh: '個人項目', en: 'Side Projects' },
 ]
 
+/** The section a project is listed in. */
+export const projectType = (item) => item.type ?? PROJECT_TYPES[item.id] ?? 'web'
+
+/** A project's number on the Projects list, as two digits: section by section, in saved order. */
+export const projectNumber = (items, id) =>
+  String(PROJECT_SECTIONS.flatMap((s) => items.filter((x) => projectType(x) === s.id)).findIndex((x) => x.id === id) + 1).padStart(2, '0')
+
 // Which section a client project is in, by id: the R2 items carry no type. Labs are always in `side`.
 export const PROJECT_TYPES = {
   'matsu-biennial': 'web',
