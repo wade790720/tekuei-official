@@ -8,13 +8,13 @@ export const WORK_ITEMS = siteDefaults.work.items.map((item) => ({ ...item, case
 
 // The list's title and labels live here, not in R2, so the page can be renamed without touching saved data.
 export const PROJECTS_PAGE = {
-  zh: { title: 'TEKUEI · Projects', pre: 'PROJECTS · 專案', heading: 'Projects', countSuffix: 'Projects' },
-  en: { title: 'TEKUEI · Projects', pre: 'PROJECTS', heading: 'Projects', countSuffix: 'Projects' },
+  zh: { title: 'TEKUEI · Projects', pre: 'PROJECTS · 專案', heading: 'Projects', countSuffix: 'Projects', description: 'Wade 做過的網站、展覽和個人項目' },
+  en: { title: 'TEKUEI · Projects', pre: 'PROJECTS', heading: 'Projects', countSuffix: 'Projects', description: 'Websites, exhibitions and side projects by Wade' },
 }
 
 // The list is shown in these sections, in this order. A section with no project is left out.
 export const PROJECT_SECTIONS = [
-  { id: 'web', zh: '網站', en: 'Website' },
+  { id: 'web', zh: '網站', en: 'Websites' },
   { id: 'exhibition', zh: '展覽', en: 'Exhibitions' },
   { id: 'side', zh: '個人項目', en: 'Side Projects' },
 ]

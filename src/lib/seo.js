@@ -4,7 +4,8 @@
 
 import { getDoc, docText, safeHref, youtubeId } from './richText.js'
 import { getDefaultJournal, postTags, publishedJournal } from '../data/journal.js'
-import { labLinks } from '../labs/index.js'
+import { ABOUT_CLIENTS, ABOUT_META, getDefaultAbout } from '../data/about.js'
+import { LAB_BY_ID, labLinks } from '../labs/index.js'
 import { projectBody, projectHref, projectLink, projectTitle } from './projectHref.js'
 
 export const SITE_URL = 'https://tekuei.com'
@@ -45,6 +46,21 @@ export function siteJournal(r2Data) {
 }
 
 export const isoDate = (d) => String(d ?? '').replace(/\./g, '-')
+
+// Social sites fetch the preview image themselves, so it needs a full URL. An inline data: picture is not one.
+const imageUrl = (src) => (/^(https?:|\/)/.test(src ?? '') ? new URL(src, SITE_URL).href : undefined)
+
+/** The first picture in a doc: an image card, a picture set's first slide, or a video's poster. */
+function firstImage(node) {
+  const a = node.attrs ?? {}
+  const own = { imageCard: a.src, slidesCard: a.slides?.[0]?.src, videoCard: a.poster }[node.type]
+  if (imageUrl(own)) return imageUrl(own)
+  for (const kid of node.content ?? []) {
+    const found = firstImage(kid)
+    if (found) return found
+  }
+  return undefined
+}
 
 function inlineHtml(nodes = []) {
   return nodes
@@ -119,17 +135,21 @@ export function postPage(journal, slug) {
   if (!post || !body) return null
   const url = `${SITE_URL}/journal/${slug}`
   const doc = getDoc(body)
+  const image = firstImage(doc)
   return {
     title: `${post.title} · Journal · TEKUEI`,
     description: post.excerpt || docText(doc).slice(0, 120),
     url,
     type: 'article',
+    image,
     ld: {
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',
       headline: post.title,
       description: post.excerpt,
       datePublished: isoDate(post.date),
+      dateModified: isoDate(post.updated || post.date),
+      ...(image ? { image } : {}),
       inLanguage: 'zh-Hant',
       url,
       mainEntityOfPage: url,
@@ -187,9 +207,15 @@ export function injectPage(indexHtml, page) {
     `<meta property="og:description" content="${esc(page.description)}">`,
     `<meta name="twitter:title" content="${esc(page.title)}">`,
     `<meta name="twitter:description" content="${esc(page.description)}">`,
+    ...(page.image
+      ? [`<meta property="og:image" content="${esc(page.image)}">`, `<meta name="twitter:image" content="${esc(page.image)}">`]
+      : []),
     jsonLd(page.ld),
   ].join('\n    ')
-  return indexHtml
+  // The default image's width and height go too: the page's own picture has other sizes.
+  const ownImage = (html) =>
+    page.image ? html.replace(/<meta (?:property="og:image[^"]*"|name="twitter:image")[^>]*>\s*/g, '') : html
+  return ownImage(indexHtml)
     // Every replacement is a function: in a replacement string, "$1" or "$&" in a title or an excerpt
     // (a price, say) would be read as a command.
     .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(page.title)}</title>`)
@@ -227,6 +253,7 @@ export function projectPage(work, slug) {
     description,
     url,
     type: 'article',
+    image: imageUrl(item.thumbImage?.url) ?? firstImage(doc),
     ld: {
       '@context': 'https://schema.org',
       '@type': 'CreativeWork',
@@ -245,12 +272,90 @@ export function projectPage(work, slug) {
   }
 }
 
+const paragraphs = (lines) => lines.filter(Boolean).map((t) => `<p>${esc(t)}</p>`).join('')
+
+/**
+ * A case or lab whose page is written in code: the text of its card, or of its lab entry.
+ * The old case files also import videos, which a Pages Function cannot bundle, so their long copy is not used.
+ */
+export function casePage(item) {
+  const url = `${SITE_URL}${item.caseHref}`
+  const lab = item.caseHref.startsWith('/labs/') ? LAB_BY_ID[item.id]?.zh : null
+  const title = lab?.title ?? projectTitle(item)
+  const description = lab?.summary ?? ((item.descriptionLines ?? []).join('') || item.client)
+  const tags = lab?.tags ?? item.tags ?? []
+  return {
+    title: `${title} · ${lab ? 'Labs' : 'Projects'} · TEKUEI`,
+    description,
+    url,
+    type: 'article',
+    ld: {
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWork',
+      name: title,
+      description,
+      inLanguage: 'zh-Hant',
+      url,
+      mainEntityOfPage: url,
+      creator: PERSON,
+      ...(tags.length ? { keywords: tags.join(', ') } : {}),
+    },
+    html:
+      `<article><h1>${esc(title)}</h1>` +
+      paragraphs(lab ? [lab.subtitle, ...lab.intro] : [item.client, description]) +
+      (tags.length ? `<p>${esc(tags.join('、'))}</p>` : '') +
+      `<p><a href="/projects">Projects</a></p></article>`,
+  }
+}
+
+/** @param {{ caseHref: string }[]} cases  siteCases: what the Projects list shows, with a page here */
+export function projectsIndexPage(cases, meta) {
+  const url = `${SITE_URL}/projects`
+  const items = cases
+    .map((w) => `<li><a href="${esc(w.caseHref)}">${esc(projectTitle(w))}</a><p>${esc(w.client)}</p></li>`)
+    .join('')
+  return {
+    title: meta.title,
+    description: meta.description,
+    url,
+    type: 'website',
+    ld: {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: meta.title,
+      description: meta.description,
+      url,
+      inLanguage: 'zh-Hant',
+      author: PERSON,
+      hasPart: cases.map((w) => ({ '@type': 'CreativeWork', name: projectTitle(w), url: `${SITE_URL}${w.caseHref}` })),
+    },
+    html: `<main><h1>${esc(meta.heading)}</h1><p>${esc(meta.description)}</p><ul>${items}</ul></main>`,
+  }
+}
+
+/** The About page: R2's `aboutPage` body, else the bundled default, and the clients named under it. */
+export function aboutPage(r2Data) {
+  const url = `${SITE_URL}/about`
+  const doc = getDoc(r2Data?.aboutPage?.zh ?? getDefaultAbout().zh)
+  const meta = ABOUT_META.zh
+  const clients = ABOUT_CLIENTS.flat().map((c) => `<li>${esc(c.zh)}</li>`).join('')
+  return {
+    title: meta.documentTitle,
+    description: docText(doc).slice(0, 120),
+    url,
+    type: 'profile',
+    image: firstImage(doc),
+    ld: { '@context': 'https://schema.org', '@type': 'ProfilePage', url, inLanguage: 'zh-Hant', mainEntity: PERSON },
+    html: `<main><h1>${esc(meta.title)}</h1>${docHtml(doc)}<h2>${esc(meta.clients)}</h2><ul>${clients}</ul></main>`,
+  }
+}
+
 const STATIC_PATHS = ['/', '/journal', '/projects', '/about']
 
 export function sitemapXml(journal, workItems) {
   const rows = [
     ...STATIC_PATHS.map((p) => ({ loc: `${SITE_URL}${p}` })),
-    ...journal.posts.zh.map((p) => ({ loc: `${SITE_URL}/journal/${p.slug}`, lastmod: isoDate(p.date) })),
+    ...journal.posts.zh.map((p) => ({ loc: `${SITE_URL}/journal/${p.slug}`, lastmod: isoDate(p.updated || p.date) })),
     ...workItems.filter((w) => w.caseHref).map((w) => ({ loc: `${SITE_URL}${w.caseHref}` })),
   ]
   const urls = rows
@@ -304,7 +409,9 @@ export async function serveCase({ request, env }, workItems) {
   if (MOVED[path]) return Response.redirect(new URL(MOVED[path], url).href, 301)
   if (path.startsWith('/cases/')) return Response.redirect(new URL(projectHref(path), url).href, 301)
   const shell = await env.ASSETS.fetch(new URL('/', url))
-  if (!shell.ok || siteCases(workItems).some((w) => w.caseHref === path)) return shell
+  if (!shell.ok) return shell
+  const item = siteCases(workItems).find((w) => w.caseHref === path)
+  if (item) return rendered(shell, casePage(item))
   return new Response(shell.body, {
     status: 404,
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
@@ -316,7 +423,8 @@ export async function servePage({ request, env }, build) {
   const data = readSiteData(env.BUCKET) // runs while the shell loads; it catches its own errors
   const shell = await env.ASSETS.fetch(new URL('/', request.url))
   if (!shell.ok) return shell
-  const page = build(siteJournal(await data))
+  const site = await data
+  const page = build(siteJournal(site), site)
   // Unknown slug: the app still renders its own "not found", but crawlers get a 404 instead of an empty 200.
   // Not cached: a slug can be missing only because R2 was unreachable for a moment.
   if (!page) {

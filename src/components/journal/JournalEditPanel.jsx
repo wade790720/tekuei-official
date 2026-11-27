@@ -6,7 +6,7 @@ import { TextField } from '../TextField.jsx'
 import { Button } from '../Button.jsx'
 import { TranslateSection } from '../admin/TranslateSection.jsx'
 import { useJournal } from '../../context/journal.js'
-import { differsOnlyIn, parseTags, postTags } from '../../data/journal.js'
+import { differsOnlyIn, parseTags, postTags, today } from '../../data/journal.js'
 import { CMS_LABELS as T } from '../../data/admin.js'
 import { useCmsEditing } from '../../hooks/useCmsEditing.js'
 import { useLang } from '../../i18n'
@@ -17,12 +17,6 @@ const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 // The number shown on the site (01, 02 …) follows the list order.
 const renumber = (d) => {
   for (const l of LANGS) d.posts[l]?.forEach((p, i) => (p.num = String(i + 1).padStart(2, '0')))
-}
-
-// Local date, not toISOString (UTC): in Taipei that would be yesterday until 08:00.
-const today = () => {
-  const d = new Date()
-  return [d.getFullYear(), d.getMonth() + 1, d.getDate()].map((n) => String(n).padStart(2, '0')).join('.')
 }
 
 function useJournalEditing() {
