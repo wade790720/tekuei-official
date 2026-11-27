@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import './lab.css'
 import { Breadcrumbs, BreadcrumbsItem } from '../components/Breadcrumbs.tsx'
@@ -22,7 +23,7 @@ import { useLang } from '../i18n'
 export default function LabPage() {
   const { slug: id } = useParams()
   const { lang } = useLang()
-  const item = LAB_BY_ID[id]
+  const item = id ? LAB_BY_ID[id] : undefined
   const title = item?.[lang].title
 
   useEffect(() => {
@@ -49,15 +50,15 @@ export default function LabPage() {
             <TagList tags={[labels.category, ...text.tags]} variant="outline" />
           </div>
           <div className="lab__actions">
-            <Button as="a" href={liveHref(id)} target="_blank" rel="noreferrer" variant="ghost">
+            <Button as="a" href={liveHref(item.id)} target="_blank" rel="noreferrer" variant="ghost">
               {labels.showPreview} <span aria-hidden>↗</span>
             </Button>
-            <CopyPromptButton prompt={LAB_PROMPTS[id]} labels={labels} />
+            <CopyPromptButton prompt={LAB_PROMPTS[item.id]} labels={labels} />
           </div>
         </header>
 
-        <Card className="lab__preview" style={item.previewAspect ? { '--lab-aspect': item.previewAspect } : undefined}>
-          <iframe src={liveHref(id)} title={`${text.title} · ${labels.preview}`} />
+        <Card className="lab__preview" style={item.previewAspect ? ({ '--lab-aspect': item.previewAspect } as CSSProperties) : undefined}>
+          <iframe src={liveHref(item.id)} title={`${text.title} · ${labels.preview}`} />
         </Card>
 
         <section className="lab__about" aria-labelledby="lab-about-title">
@@ -110,9 +111,14 @@ export default function LabPage() {
 }
 
 /** Copies the lab's prompt; the copy icon turns into a check for a moment, like the CodeBlock copy button. */
-function CopyPromptButton({ prompt, labels }) {
+interface CopyPromptButtonProps {
+  prompt: string
+  labels: { copyPrompt: string; copied: string }
+}
+
+function CopyPromptButton({ prompt, labels }: CopyPromptButtonProps) {
   const [copied, setCopied] = useState(false)
-  const timer = useRef(0)
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => () => clearTimeout(timer.current), [])
 
