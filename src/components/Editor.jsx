@@ -350,7 +350,7 @@ const SLIDE_LAYOUTS = [
 ]
 const SLIDE_LAYOUT_LABEL = Object.fromEntries(SLIDE_LAYOUTS.map((x) => [x.value, x.label]))
 
-function CarouselView({ node, updateAttributes, deleteNode, selected, extension }) {
+function CarouselView({ node, updateAttributes, deleteNode, selected, extension, editor, getPos }) {
   const slides = node.attrs.slides ?? []
   const layout = node.attrs.layout || 'carousel'
   const [busy, setBusy] = useState(-1)
@@ -383,6 +383,23 @@ function CarouselView({ node, updateAttributes, deleteNode, selected, extension 
     const next = [...slides]
     next.splice(to, 0, next.splice(from, 1)[0])
     setSlides(next)
+  }
+  // Both picture sets change in one step, so one undo puts the photo back.
+  const moveTo = (from, list, at) => {
+    const { state, view } = editor
+    let to = -1
+    state.doc.descendants((n, pos) => {
+      if (n.type.name === 'slidesCard' && view.nodeDOM(pos)?.contains(list)) to = pos
+    })
+    if (to < 0) return
+    const other = state.doc.nodeAt(to)
+    const into = [...(other.attrs.slides ?? [])]
+    into.splice(at, 0, slides[from])
+    view.dispatch(
+      state.tr
+        .setNodeMarkup(getPos(), null, { ...node.attrs, slides: slides.filter((_, j) => j !== from) })
+        .setNodeMarkup(to, null, { ...other.attrs, slides: into }),
+    )
   }
 
   async function upload(i, file) {
@@ -455,6 +472,8 @@ function CarouselView({ node, updateAttributes, deleteNode, selected, extension 
         keyOf={(s) => String(slides.indexOf(s))}
         nameOf={(s) => s.alt || `第 ${slides.indexOf(s) + 1} 張`}
         onMove={move}
+        listAt={(x, y) => document.elementFromPoint(x, y)?.closest('.cms-ed-card')?.querySelector('.cms-sort')}
+        onMoveTo={moveTo}
         rowClassName="cms-ed-slide"
       >
         {(s, i) => (
@@ -806,7 +825,7 @@ const ICON = {
   h3: <Glyph d="M3 3v10M9 3v10M3 8h6M12 8.5a1.5 1.2 0 113 .3c0 .7-1.5.7-1.5.7s1.5 0 1.5 .8a1.5 1.2 0 01-3 .2" />,
   code: <Glyph d="M5.5 4.5L2 8l3.5 3.5M10.5 4.5L14 8l-3.5 3.5" />,
   image: <Glyph d="M2.5 3.5h11v9h-11zM2.5 10.5l3-3 3 3 2-2 3 3" />,
-  slides: <Glyph d="M4.5 4.5h7v7h-7zM2 6v4M14 6v4" />,
+  slides: <Glyph d="M2.5 5.5h8.5v8h-8.5zM5 3h8.5v8M2.5 11.5l2.5-2.5 2.5 2.5 1.5-1.5 2 2" />,
   video: <Glyph d="M2.5 4h8v8h-8zM10.5 7l3-2v6l-3-2" />,
   hr: <Glyph d="M2 8h12" />,
 }
