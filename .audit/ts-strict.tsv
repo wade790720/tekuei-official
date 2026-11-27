@@ -35,3 +35,4 @@ ts	phase	decision	why	evidence	result
 2026-11-27T15:49:23Z	B-components	RichText 的 attrs 一律經 str 和 slidesOf 讀	Tiptap 把 attrs 定成 any，錯型別的值會直接進元件	src/components/RichText.tsx:20	行為不變，圖組缺 alt 時改給空字串
 2026-11-27T15:49:24Z	B-components	移除 TooltipGroup 的 as prop	沒有呼叫端使用，多型 union 讓 tsc 報 too complex	src/components/Tooltip.tsx	componentLibrary.data.tsx 的 as 那一列要刪
 2026-11-27T15:49:24Z	B-components	Button、Card 用泛型 as，DropdownMenu、MenuItems 對選項值泛型	呼叫端 props 隨 as 的元素型別檢查，選單值可收窄	src/components/Button.tsx	Editor 傳 string 照樣可用
+2026-11-27T15:50:35Z	phaseB	合併 labs、Editor、UI 元件三個分支；接受兩個小行為變化：圖組缺 alt 時輸出空 alt、AccordionItem 放錯位置時丟出清楚的錯誤	兩者只影響原本就錯的情況，空 alt 對讀屏更好	08ce241	Editor、labs、共用元件 tsc 零錯誤；剩 dev 232、頁面與子資料夾約 360
