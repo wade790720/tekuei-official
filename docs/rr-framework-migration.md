@@ -375,7 +375,7 @@ AGENTS.md（專案表、指令、資料夾表、坑的第 1 條改成本機 R2�
 
 ## 十、風險
 
-- Workers Free 方案每個請求的 CPU 時間上限是 10 ms，React SSR 加上解析整份 `data.json` 可能超過，第二個 PR 會先量。超過的話有兩種做法：升級到 Paid 方案（每月 5 美元，上限 30 秒），或把整頁 HTML 用 Cache API 依網址和 ETag 快取。Wade 現在用哪個方案要先確認。
+- Workers Free 方案每個請求的 CPU 時間上限是 10 ms，React SSR 加上解析整份 `data.json` 可能超過，第二個 PR 會先量。Cloudflare 對偶爾超過有一點寬容，持續超過會回 Error 1102。超過時先把整頁 HTML 用 Cache API 依網址和 ETag 快取，還是不夠才升級到 Paid 方案（每月 5 美元，上限 30 秒）。
 - v8 的 Cloudflare 綁定寫法（1.6）沒有官方範例，是從型別推出來的，第二個 PR 實際建置前都只是推測。
 - 網域從 Pages 移到 Worker 的步驟，Cloudflare 文件沒有逐步說明，這是推論，可能有短暫中斷。
 - 換語言變成換頁之後，如果 `shouldRevalidate` 沒有攔住，字會在水波結束之後才換。第三個 PR 要實際看。
@@ -387,7 +387,7 @@ AGENTS.md（專案表、指令、資料夾表、坑的第 1 條改成本機 R2�
 
 1. 用 React Router 8，不是 7。任務寫的是 7，但 7 已經不是最新的穩定版，`react-router-dom` 也只到 7。建議直接用 8.5.3，否則之後還要再遷移一次。
 2. 從 Cloudflare Pages 搬到 Workers。部署方式和 Git 連動會改，網域要移一次。建議搬，留在 Pages 沒有 Vite 外掛，本機開發會變差。
-3. Workers 的方案。Free 的 10 ms CPU 可能不夠，需要知道現在的方案，以及能不能接受每月 5 美元，也可以等第二個 PR 量完再決定。
+3. Workers 的方案。建議先用 Free。Pages Functions 本來就算 Workers 的請求，現在的 Journal、Projects、About、sitemap 已經在用同一份免費額度（每天 100,000 次、每次 10 ms CPU），JS、CSS、圖片這些靜態檔在 Workers 上仍然免費、不限次數。差別只在首頁和 Lab 頁也會執行 Worker，個人網站的流量離每天 100,000 次很遠。真正要量的是 10 ms CPU，第二個 PR 量完如果超過，先用 Cache API 把每頁的 HTML 依網址和 `data.json` 的 ETag 快取起來，內容沒變就不重新畫，還是不夠才升 Paid（每月 5 美元）。
 4. `GET /api/data` 要不要加密碼。加了之後草稿不再公開（第 4 項），代價是每次進入編輯模式多算一次嘗試次數，全站鎖定時編輯器也載入不了，因為這碰到 admin 驗證，所以要你同意。建議加，之後有 session token 再改掉這個代價。
 5. CORS middleware 的型別要改一行。`functions/_middleware.ts` 的參數型別從 Pages 的 `EventContext` 改成只要 `request` 和 `next`，邏輯不動，否則 Worker 呼叫不了它。AGENTS.md 規定不改這個檔案，所以要問。
 6. 之前選了英文的讀者。建議不處理，他們第一次會看到中文，按一次語言按鈕就好。另一個做法是第一次載入時讀到 `localStorage` 的 `lang=en` 就轉到英文網址，代價是這些讀者會多載入一次。
