@@ -52,3 +52,6 @@ ts	phase	decision	why	evidence	result
 2026-11-27T16:00:00Z	B	元件庫資料加上 ComponentEntry/ApiPart/PropRow 型別	漏欄位會在編譯時擋下，編譯器因此抓到 DropdownMenu 的 MenuItems 小節誤寫成 title	src/components/dev/libraryTypes.ts	已修正為 part
 2026-11-27T16:00:01Z	B	元件庫的屬性表對齊真實型別	Button、Card 的 as 改泛型，DropdownMenu 的 value 為 V，Tag 為聯集，TooltipGroup 已無 as	src/components/dev/componentLibrary.data.tsx	已更新
 2026-11-27T16:00:01Z	B	元件庫文字裡過期的檔名改成 .ts/.tsx	舊檔名 .jsx/.js 已不存在	src/components/dev	已更新
+2026-11-27T16:03:51Z	B-pages	專案的外部連結改經 safeHref	R2 存的 link 原本直接進卡片、ProjectHero 和造訪網站按鈕，javascript: 會變成可點的連結	scripts/projects.test.ts、src/lib/projectHref.ts projectLink、src/data/work.ts projectFacts、src/components/ProjectPage.tsx	測試先紅後綠；不安全的連結改連到專案內頁或不顯示
+2026-11-27T16:03:53Z	B-pages	LIFF 和 Zaraz 只宣告頁面用到的部分	兩者是 script tag 注入的全域，沒有套件型別；CheckinPage 和 HowToCheckinPage 各自 declare global	src/components/CheckinPage.tsx、src/components/HowToCheckinPage.tsx	SDK 載入後沒有 window.liff 時改為 reject，頁面顯示錯誤畫面
+2026-11-27T16:03:53Z	B-pages	history state 的 fromList 用 listDepth 解析	useLocation().state 是外部資料，型別是 unknown	src/components/JournalPostPage.tsx listDepth	行為不變

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import type { FormEvent } from 'react'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import {
@@ -12,25 +13,47 @@ import {
   isCheckinLiveSubmit,
 } from '../data/checkin.ts'
 import { digitsToE164, validateCheckinPhone } from '../lib/phoneE164.ts'
+import type { PhoneCountry } from '../lib/phoneE164.ts'
 import { useLang } from '../i18n'
 import '../styles/checkin.css'
 
 const LIFF_SDK = 'https://static.line-scdn.net/liff/edge/2/sdk.js'
 const LOG = '[checkin]'
 
-function loadLiffSdk() {
+interface LiffProfile {
+  userId: string
+  displayName: string
+}
+
+/** The part of the LINE LIFF SDK this page calls. The SDK is a script tag, not a package. */
+interface Liff {
+  init(config: { liffId: string }): Promise<void>
+  isLoggedIn(): boolean
+  login(): void
+  getProfile(): Promise<LiffProfile>
+  closeWindow?(): void
+}
+
+declare global {
+  interface Window {
+    liff?: Liff
+  }
+}
+
+function loadLiffSdk(): Promise<Liff> {
   if (window.liff) return Promise.resolve(window.liff)
   return new Promise((resolve, reject) => {
+    const settle = () => (window.liff ? resolve(window.liff) : reject(new Error('LIFF SDK loaded without window.liff')))
     const existing = document.querySelector(`script[src="${LIFF_SDK}"]`)
     if (existing) {
-      existing.addEventListener('load', () => resolve(window.liff))
+      existing.addEventListener('load', settle)
       existing.addEventListener('error', reject)
       return
     }
     const script = document.createElement('script')
     script.src = LIFF_SDK
     script.async = true
-    script.onload = () => resolve(window.liff)
+    script.onload = settle
     script.onerror = reject
     document.head.appendChild(script)
   })
@@ -88,14 +111,14 @@ const UI = {
 export default function CheckinPage() {
   const { lang } = useLang()
   const ui = UI[lang]
-  const [phase, setPhase] = useState('loading')
+  const [phase, setPhase] = useState<'loading' | 'form' | 'success' | 'error'>('loading')
   const [phone, setPhone] = useState('')
-  const [countryMeta, setCountryMeta] = useState(null)
+  const [countryMeta, setCountryMeta] = useState<PhoneCountry | null>(null)
   const [errorText, setErrorText] = useState('')
   const [submitting, setSubmitting] = useState(false)
-  const [userProfile, setUserProfile] = useState(null)
+  const [userProfile, setUserProfile] = useState<LiffProfile | null>(null)
   const [devMode, setDevMode] = useState(false)
-  const [lastPayload, setLastPayload] = useState(null)
+  const [lastPayload, setLastPayload] = useState<LiffProfile & { phone: string } | null>(null)
 
   const visible = phase !== 'loading'
   const e164Preview = useMemo(
@@ -149,7 +172,7 @@ export default function CheckinPage() {
     }
   }, [])
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const result = validateCheckinPhone(phone, countryMeta)
 
@@ -159,6 +182,8 @@ export default function CheckinPage() {
       return
     }
 
+    // The form only shows once a profile is set.
+    if (!userProfile) return
     const payload = {
       userId: userProfile.userId,
       displayName: userProfile.displayName,
@@ -255,7 +280,7 @@ export default function CheckinPage() {
                   country={DEFAULT_PHONE_COUNTRY}
                   preferredCountries={PREFERRED_PHONE_COUNTRIES}
                   value={phone}
-                  onChange={(value, data) => {
+                  onChange={(value, data: PhoneCountry & { name?: string }) => {
                     const digitsOnly = String(value || '').replace(/\D/g, '')
                     setPhone(digitsOnly)
                     setCountryMeta(data)

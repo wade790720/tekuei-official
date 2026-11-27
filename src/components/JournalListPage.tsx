@@ -8,6 +8,8 @@ import { useAdmin } from '../context/admin.ts'
 import { useLang } from '../i18n'
 import { mountGlyphField } from '../lib/glyphField.ts'
 import { SiteFooter } from './SiteFooter.tsx'
+import type { ReadablePost } from '../data/journal.ts'
+import type { JournalPost } from '../lib/siteData.ts'
 import '../styles/work.css'
 import '../styles/journal.css'
 
@@ -24,16 +26,19 @@ export default function JournalListPage() {
   const { content, loading } = useJournal()
   const { editing } = useAdmin()
   // Until R2 answers, content holds the bundled default posts; show placeholders instead of swapping them out.
-  const allPosts = loading ? [] : (editing ? content : readableJournal(content)).posts[lang]
+  const allPosts: ReadablePost[] = loading ? [] : (editing ? content : readableJournal(content)).posts[lang]
   // The chosen tag lives in the URL (?tag=AI), so a filtered list can be shared.
   const [params, setParams] = useSearchParams()
   const tag = params.get('tag')?.toUpperCase() ?? null
   const posts = tag ? allPosts.filter((p) => postTags(p).includes(tag)) : allPosts
   const [latest, ...rest] = posts
-  const chooseTag = (t) => setParams(t ? { tag: t } : {}, { replace: true, preventScrollReset: true })
-  const glyphs = useRef(null)
+  const chooseTag = (t: string | null) => setParams(t ? { tag: t } : {}, { replace: true, preventScrollReset: true })
+  const glyphs = useRef<HTMLCanvasElement>(null)
 
-  useEffect(() => mountGlyphField(glyphs.current), [])
+  useEffect(() => {
+    if (!glyphs.current) return
+    return mountGlyphField(glyphs.current)
+  }, [])
 
   useEffect(() => {
     document.title = meta.title
@@ -105,7 +110,13 @@ export default function JournalListPage() {
 }
 
 /** One row of tag pills over the list, each with its post count. Hidden when there is nothing to choose between. */
-function TagFilter({ posts, tag, onChoose }) {
+interface TagFilterProps {
+  posts: JournalPost[]
+  tag: string | null
+  onChoose: (tag: string | null) => void
+}
+
+function TagFilter({ posts, tag, onChoose }: TagFilterProps) {
   const { lang } = useLang()
   const t = JOURNAL_FILTER[lang]
   const tags = tagCounts(posts)
@@ -125,7 +136,7 @@ function TagFilter({ posts, tag, onChoose }) {
 }
 
 /** Placeholders in the shape of the featured card and three rows, using the same grids. */
-function ListSkeleton({ label }) {
+function ListSkeleton({ label }: { label: string }) {
   return (
     <div className="journal-skeleton" role="status" aria-label={label}>
       <div className="journal-filter tag-group">
@@ -172,8 +183,8 @@ function ListSkeleton({ label }) {
 }
 
 /** Posts in their stored order, grouped by the year of their date: [['2026', [...]], ...]. */
-function byYear(posts) {
-  const groups = new Map()
+function byYear<P extends JournalPost>(posts: P[]): [string, P[]][] {
+  const groups = new Map<string, P[]>()
   for (const p of posts) {
     const year = p.date.slice(0, 4)
     groups.set(year, [...(groups.get(year) ?? []), p])
@@ -181,7 +192,7 @@ function byYear(posts) {
   return [...groups]
 }
 
-function FeaturedPost({ post }) {
+function FeaturedPost({ post }: { post: JournalPost }) {
   return (
     <Link to={`/journal/${post.slug}`} state={FROM_LIST} className="fade-in journal-card">
       <div className="journal-card__index">
