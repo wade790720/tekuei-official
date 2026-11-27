@@ -1,35 +1,41 @@
 import { useRef, useState } from 'react'
+import type { KeyboardEvent } from 'react'
 import { CARD_LABELS } from '../data/cards.ts'
 import { useLang } from '../i18n'
 import { Button } from './Button.tsx'
+import type { Slide } from './Carousel.tsx'
 import '../styles/gallery.css'
+
+export interface GalleryProps {
+  photos: readonly Slide[]
+  /** show only this many on the page, with a button that opens the rest in the dialog */
+  limit?: number
+}
 
 /**
  * A wall of photos in rows of two, read left to right, with every fifth photo across the whole row. Each
  * frame is 16:9, and a caption shows over the photo on hover. A photo opens large and uncropped in a dialog,
  * where ← / → and the buttons move through the set and Esc closes.
- * @param {{ photos: { src: string, alt: string, caption?: string }[], limit?: number }} props
- *   limit  show only this many on the page, with a button that opens the rest in the dialog
  */
-export function Gallery({ photos, limit }) {
+export function Gallery({ photos, limit }: GalleryProps) {
   const { lang } = useLang()
   const t = CARD_LABELS[lang]
-  const view = useRef(null)
+  const view = useRef<HTMLDialogElement>(null)
   const [at, setAt] = useState(-1)
-  const count = (i) => t.slide.replace('{n}', i + 1).replace('{total}', photos.length)
+  const count = (i: number) => t.slide.replace('{n}', String(i + 1)).replace('{total}', String(photos.length))
 
-  const open = (i) => {
+  const open = (i: number) => {
     setAt(i)
-    view.current.showModal()
+    view.current?.showModal()
   }
-  const step = (by) => setAt((i) => (i + by + photos.length) % photos.length)
-  const key = (e) => {
+  const step = (by: number) => setAt((i) => (i + by + photos.length) % photos.length)
+  const key = (e: KeyboardEvent<HTMLDialogElement>) => {
     if (e.key === 'ArrowLeft') step(-1)
     else if (e.key === 'ArrowRight') step(1)
   }
 
   if (!photos.length) return null
-  const shown = photos[at]
+  const shown: Slide | undefined = photos[at] // at is -1 while the dialog is closed
   const onPage = limit && photos.length > limit ? photos.slice(0, limit) : photos
 
   return (
@@ -46,7 +52,7 @@ export function Gallery({ photos, limit }) {
       </ul>
       {onPage.length < photos.length ? (
         <Button variant="ghost" className="gallery__more" onClick={() => open(onPage.length)}>
-          {t.showAll.replace('{total}', photos.length)}
+          {t.showAll.replace('{total}', String(photos.length))}
         </Button>
       ) : null}
       <dialog
@@ -66,7 +72,7 @@ export function Gallery({ photos, limit }) {
                 {shown.caption}
               </figcaption>
             </figure>
-            <Button variant="overlay" className="gallery__close" onClick={() => view.current.close()} aria-label={t.close}>
+            <Button variant="overlay" className="gallery__close" onClick={() => view.current?.close()} aria-label={t.close}>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
                 <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" />
               </svg>
@@ -88,7 +94,7 @@ export function Gallery({ photos, limit }) {
   )
 }
 
-function Chevron({ dir }) {
+function Chevron({ dir }: { dir: -1 | 1 }) {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
       <path d={dir < 0 ? 'M10 3.5L5.5 8l4.5 4.5' : 'M6 3.5L10.5 8 6 12.5'} strokeLinecap="round" strokeLinejoin="round" />

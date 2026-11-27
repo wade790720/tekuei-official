@@ -9,6 +9,24 @@
 
 import type { Body, Doc, LegacyBlock } from './siteData.ts'
 
+/** Every block node a body can hold. RichText (the page) and seo.ts docHtml (the crawler HTML) each render all of them. */
+export const BLOCK_TYPES = [
+  'paragraph',
+  'lead',
+  'heading',
+  'blockquote',
+  'bulletList',
+  'orderedList',
+  'listItem',
+  'codeBlock',
+  'imageCard',
+  'videoCard',
+  'slidesCard',
+  'horizontalRule',
+] as const
+export type BlockType = (typeof BLOCK_TYPES)[number]
+export const isBlockType = (t: string | undefined): t is BlockType => BLOCK_TYPES.some((b) => b === t)
+
 const text = (t: string | undefined): Doc[] => (t ? [{ type: 'text', text: t }] : [])
 
 /** @param blocks old block list */

@@ -23,3 +23,8 @@ ts	phase	decision	why	evidence	result
 2026-11-27T15:33:15Z	A-hooks	SiteData 拆出 EditableSections 和 SectionKey，useCmsSection 以鍵決定內容型別	不用轉型就能從 data[sectionKey] 讀到正確型別	dd057df src/lib/siteData.ts	done
 2026-11-27T15:33:15Z	A-bug	儲存進行中離開編輯模式時，saveDraft 的 updater 會對 null 呼叫 copyDraft 而當掉；加判斷	strict 型別指出 cur 可能是 null；hook 沒有測試環境，所以沒有先寫測試	dd057df src/hooks/useCmsSection.ts	fixed-untested
 2026-11-27T15:33:15Z	A-verify	用假的 /api（scripts/fakeAdminApi.js）登入 About 編輯模式、打字、Ctrl+S，送出的 PUT 只有 aboutPage 且含修改	確認 useCmsSection 的型別化儲存路徑；沒有寫到正式資料	window.__api: PUT /api/data keys=[aboutPage]	pass
+2026-11-27T15:49:22Z	B-components	新增 src/cssVars.d.ts 擴充 CSSProperties 接受 --* 自訂屬性	全站 style 物件都寫 --i 等變數，不加就得到處 as	src/cssVars.d.ts	其他 slice 不必再各自擴充
+2026-11-27T15:49:23Z	B-components	BLOCK_TYPES 放進 src/lib/richText.ts（基礎檔）	RichText 的 switch 對節點種類窮舉，seo.ts docHtml 用同一份清單測試	src/lib/richText.ts:12	scripts/blockTypes.test.ts 通過
+2026-11-27T15:49:23Z	B-components	RichText 的 attrs 一律經 str 和 slidesOf 讀	Tiptap 把 attrs 定成 any，錯型別的值會直接進元件	src/components/RichText.tsx:20	行為不變，圖組缺 alt 時改給空字串
+2026-11-27T15:49:24Z	B-components	移除 TooltipGroup 的 as prop	沒有呼叫端使用，多型 union 讓 tsc 報 too complex	src/components/Tooltip.tsx	componentLibrary.data.tsx 的 as 那一列要刪
+2026-11-27T15:49:24Z	B-components	Button、Card 用泛型 as，DropdownMenu、MenuItems 對選項值泛型	呼叫端 props 隨 as 的元素型別檢查，選單值可收窄	src/components/Button.tsx	Editor 傳 string 照樣可用

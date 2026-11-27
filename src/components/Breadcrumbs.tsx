@@ -1,24 +1,29 @@
-import { Children } from 'react'
+import { Children, isValidElement } from 'react'
+import type { ComponentType, HTMLAttributes, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import '../styles/breadcrumbs.css'
+
+export interface BreadcrumbsProps {
+  /** accessible name of the nav, e.g. 「導覽路徑」 */
+  label: string
+  /** replaces the chevron */
+  separator?: ReactNode
+  className?: string
+  /** BreadcrumbsItem elements */
+  children: ReactNode
+}
 
 /**
  * Where the page sits in the site: links to each level above, then the current page.
  * A chevron separates the items. The current item shrinks with an ellipsis when the row is too narrow.
- * @param {{
- *   label: string,                          // accessible name of the nav, e.g. 「導覽路徑」
- *   separator?: import('react').ReactNode,  // replaces the chevron
- *   className?: string,
- *   children: import('react').ReactNode,    // BreadcrumbsItem elements
- * }} props
  */
-export function Breadcrumbs({ label, separator = <ChevronIcon />, className = '', children }) {
+export function Breadcrumbs({ label, separator = <ChevronIcon />, className = '', children }: BreadcrumbsProps) {
   const items = Children.toArray(children)
   return (
     <nav className={`breadcrumbs ${className}`.trim()} aria-label={label}>
       <ol className="breadcrumbs__list">
         {items.map((item, i) => (
-          <li key={item.key ?? i} className="breadcrumbs__item">
+          <li key={(isValidElement(item) && item.key) || i} className="breadcrumbs__item">
             {item}
             {i < items.length - 1 ? (
               <span className="breadcrumbs__separator" aria-hidden>
@@ -32,16 +37,15 @@ export function Breadcrumbs({ label, separator = <ChevronIcon />, className = ''
   )
 }
 
-/**
- * One level. With `href` it is a link; without it is the current page (aria-current="page").
- * `as` renders another link component instead, e.g. one that steps back in history.
- * @param {{
- *   href?: string,
- *   as?: import('react').ElementType,
- *   children: import('react').ReactNode,
- * } & Record<string, unknown>} props  other props go to the link
- */
-export function BreadcrumbsItem({ href, as: Element, children, ...rest }) {
+export interface BreadcrumbsItemProps extends Omit<HTMLAttributes<HTMLElement>, 'children'> {
+  href?: string
+  /** renders another link component instead, e.g. one that steps back in history */
+  as?: ComponentType<{ className: string; children: ReactNode }>
+  children: ReactNode
+}
+
+/** One level. With `href` it is a link; without it is the current page (aria-current="page"). Other props go to the link. */
+export function BreadcrumbsItem({ href, as: Element, children, ...rest }: BreadcrumbsItemProps) {
   if (Element) {
     return (
       <Element className="breadcrumbs__link" {...rest}>
