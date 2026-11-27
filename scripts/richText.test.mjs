@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { blocksToDoc, docText, getDoc, safeHref, youtubeId } from '../src/lib/richText.js'
+import { blocksToDoc, docText, getDoc, hasBody, safeHref, youtubeId } from '../src/lib/richText.js'
 
 describe('youtubeId', () => {
   it('reads share, watch, Shorts and embed links', () => {
@@ -79,5 +79,14 @@ describe('safeHref', () => {
 
   it('turns protocol-relative links into https', () => {
     assert.equal(safeHref('//cdn.example.com/a.png'), 'https://cdn.example.com/a.png')
+  })
+})
+
+describe('hasBody', () => {
+  it('counts a picture set with no text as a body, and an empty paragraph as none', () => {
+    assert.equal(hasBody({ doc: { type: 'doc', content: [{ type: 'paragraph' }] } }), false)
+    assert.equal(hasBody({ type: 'doc', content: [{ type: 'slidesCard', attrs: { slides: [] } }] }), true)
+    assert.equal(hasBody({ doc: { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'a' }] }] } }), true)
+    assert.equal(hasBody(undefined), false)
   })
 })

@@ -11,7 +11,7 @@ import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, PROJECT_TYPES, projectBody, proj
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { useLang } from '../i18n'
 import { uploadSiteImage } from '../lib/adminApi.js'
-import { docText, getDoc } from '../lib/richText.js'
+import { getDoc, hasBody } from '../lib/richText.js'
 import '../styles/journal.css'
 import '../styles/project.css'
 
@@ -34,7 +34,7 @@ export default function ProjectPage() {
   const editing = admin.editing && cms.isEditing
   const zh = item && projectBody(content, slug, 'zh')
   // Like an untranslated post: readers of an empty English page see the Chinese one.
-  const untranslated = !editing && lang === 'en' && !docText(getDoc(projectBody(content, slug, 'en'))).trim()
+  const untranslated = !editing && lang === 'en' && !hasBody(projectBody(content, slug, 'en'))
   const doc = getDoc(untranslated ? zh : item && projectBody(content, slug, lang))
   const title = item ? projectTitle(item) : ''
 

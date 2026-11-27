@@ -6,7 +6,7 @@ import { useAdmin } from '../context/admin.js'
 import { useCmsSection } from '../hooks/useCmsSection.js'
 import { ABOUT_CLIENTS, ABOUT_META, cloneAbout, getDefaultAbout } from '../data/about.js'
 import { uploadSiteImage } from '../lib/adminApi.js'
-import { docText, getDoc } from '../lib/richText.js'
+import { getDoc, hasBody } from '../lib/richText.js'
 import { mountGrainHaze } from '../lib/grainHaze.js'
 import { useLang } from '../i18n'
 import '../styles/journal.css'
@@ -45,7 +45,7 @@ export default function AboutPage() {
 
   const editing = admin.editing && cms.isEditing
   // Like an untranslated post: readers of an empty English page see the Chinese one.
-  const untranslated = !editing && lang === 'en' && !docText(getDoc(cms.content.en)).trim()
+  const untranslated = !editing && lang === 'en' && !hasBody(cms.content.en)
   const doc = getDoc(cms.content[untranslated ? 'zh' : lang])
 
   const setDoc = (next) =>

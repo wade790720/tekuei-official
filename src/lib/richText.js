@@ -3,7 +3,8 @@
 //
 // Node types: paragraph, lead, heading (level 2 | 3), blockquote (attrs.cite), bulletList, orderedList,
 // listItem, codeBlock (attrs.language, attrs.filename), imageCard, videoCard,
-// slidesCard (attrs.slides: [{ src, alt, caption }]), horizontalRule, hardBreak, text.
+// slidesCard (attrs.slides: [{ src, alt, caption }], attrs.layout, attrs.collapsed, attrs.title, attrs.text),
+// horizontalRule, hardBreak, text.
 // Marks: bold, italic, underline, strike, code, link (attrs.href).
 
 const text = (t) => (t ? [{ type: 'text', text: t }] : [])
@@ -90,7 +91,15 @@ export function youtubeId(src) {
   return id && /^[\w-]{11}$/.test(id) ? id : null
 }
 
-/** Plain text of a doc, for word counts and checks. */
+/**
+ * Whether a stored body, or a doc, has anything to show: text, or a picture, video or picture set.
+ * The editor starts every translation as one empty paragraph, so "has a key" is not "has a body".
+ * @param {{ doc?: object, blocks?: any[] } | object | null | undefined} c
+ */
+export const hasBody = (c) =>
+  Boolean(c) && (c.blocks ? c.blocks.length > 0 : /"text":"[^"]|"type":"(imageCard|videoCard|slidesCard)"/.test(JSON.stringify(c.doc ?? c)))
+
+/** Plain text of a doc, for word counts and descriptions. */
 export function docText(node) {
   if (!node) return ''
   if (node.type === 'text') return node.text ?? ''

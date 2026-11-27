@@ -574,7 +574,7 @@ const ImageCardNode = card('imageCard', { src: '', alt: '', caption: '', frame: 
   },
 })
 
-/** A set of pictures, shown as a carousel, a scroll stack or a gallery. `slides` is a list, so it goes through HTML as JSON. */
+/** A set of pictures, shown as a carousel, a scroll stack, a gallery or one work. `slides` is a list, so it goes through HTML as JSON. */
 const CarouselNode = card('slidesCard', {}, CarouselView).extend({
   addAttributes: () => ({
     ...attr('layout', 'carousel'),

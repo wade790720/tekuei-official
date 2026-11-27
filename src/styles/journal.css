@@ -892,3 +892,12 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .journal-card__arrow-line {
+    transition: none;
+  }
+
+  .journal-card:hover .journal-card__arrow-line {
+    transform: none;
+  }
+}
