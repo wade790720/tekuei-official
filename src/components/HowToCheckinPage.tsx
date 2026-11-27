@@ -104,17 +104,13 @@ export default function HowToCheckinPage() {
   const final = HOW_TO_CHECKIN_FINAL[lang]
 
   useEffect(() => {
-    document.title = meta.title
-    const metaEl = document.querySelector('meta[name="description"]')
-    if (metaEl) metaEl.setAttribute('content', meta.description)
-  }, [meta])
-
-  useEffect(() => {
     window.zaraz?.track('Lead')
   }, [])
 
   return (
     <div className="howto-checkin-page">
+      <title>{meta.title}</title>
+      <meta name="description" content={meta.description} />
       <div className="howto-checkin-content">
         <header className="howto-checkin-hero">
           <div className="howto-checkin-hero__inner">

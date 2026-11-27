@@ -29,11 +29,6 @@ export function FallingFigure() {
     return () => document.documentElement.classList.remove('about-fall-doc')
   }, [])
 
-  useEffect(() => {
-    document.title = meta.title
-    document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description)
-  }, [meta])
-
   // The scene reads the act sections from the DOM, so it is rebuilt when the language changes.
   useEffect(() => {
     if (!canvas.current || !figure.current || !main.current) return
@@ -58,6 +53,8 @@ export function FallingFigure() {
 
   return (
     <div className="about-fall">
+      <title>{meta.title}</title>
+      <meta name="description" content={meta.description} />
       <canvas className="about-fall__canvas" ref={canvas} aria-hidden />
       <img ref={figure} src={figureSrc} alt="" hidden />
 

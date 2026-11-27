@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo } from 'react'
+﻿import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { WORK_ITEMS } from '../data/work.ts'
 import '../styles/work.css'
@@ -17,12 +17,9 @@ export default function CaseStub() {
       : item.title
     : (slug ?? '').replace(/-/g, ' ')
 
-  useEffect(() => {
-    document.title = item ? `TEKUEI · ${title}` : 'TEKUEI · Case'
-  }, [item, title])
-
   return (
     <div className="work-page">
+      <title>{item ? `TEKUEI · ${title}` : 'TEKUEI · Case'}</title>
       <main className="case-stub">
         <h1>{item ? `${title}` : `Case · ${slug}`}</h1>
         <p>案例詳情頁面尚未接上，之後由獨立專題頁承接此路由。</p>

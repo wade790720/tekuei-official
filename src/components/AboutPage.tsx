@@ -6,7 +6,7 @@ import { useAdmin } from '../context/admin.ts'
 import { useCmsSection } from '../hooks/useCmsSection.ts'
 import { ABOUT_CLIENTS, ABOUT_META, cloneAbout, getDefaultAbout } from '../data/about.ts'
 import { uploadSiteImage } from '../lib/adminApi.ts'
-import { getDoc, hasBody } from '../lib/richText.ts'
+import { docText, getDoc, hasBody } from '../lib/richText.ts'
 import { mountGrainHaze } from '../lib/grainHaze.ts'
 import { useLang } from '../i18n'
 import type { Doc } from '../lib/siteData.ts'
@@ -50,10 +50,6 @@ export default function AboutPage() {
     return mountGrainHaze(haze.current)
   }, [])
 
-  useEffect(() => {
-    document.title = meta.documentTitle
-  }, [meta.documentTitle])
-
   const editing = admin.editing && cms.isEditing
   // Like an untranslated post: readers of an empty English page see the Chinese one.
   const untranslated = !editing && lang === 'en' && !hasBody(cms.content.en)
@@ -68,6 +64,8 @@ export default function AboutPage() {
 
   return (
     <div className="journal-page journal-page--post about-page">
+      <title>{meta.documentTitle}</title>
+      <meta name="description" content={docText(doc).slice(0, 120)} />
       <div className="about-backdrop" aria-hidden>
         <canvas className="about-backdrop__haze" ref={haze} />
       </div>

@@ -8,6 +8,7 @@ import { ABOUT_CLIENTS, ABOUT_META, getDefaultAbout } from '../data/about.ts'
 import { LAB_BY_ID, labLinks } from '../labs/index.ts'
 import { projectBody, projectHref, projectLink, projectTitle } from './projectHref.ts'
 import { parseSiteData } from './siteData.ts'
+import { SITE_URL } from './siteUrl.ts'
 import type { Doc, JournalData, SiteData, WorkData, WorkItem } from './siteData.ts'
 
 /** One page's head and body text, as injectPage writes them into index.html. */
@@ -33,7 +34,6 @@ export interface SeoContext {
   params?: { slug?: string | string[] }
 }
 
-export const SITE_URL = 'https://tekuei.com'
 export const SITE_NAME = 'TEKUEI 德溎'
 
 export const PERSON = {

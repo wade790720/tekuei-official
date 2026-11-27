@@ -225,15 +225,12 @@ export default function ComponentLibrary() {
   }, [legacy, navigate])
 
   useEffect(() => {
-    document.title = page && page.id !== 'introduction' ? `${page.name} · Component Library` : 'Component Library · TEKUEI'
-  }, [page])
-
-  useEffect(() => {
     window.scrollTo(0, 0)
   }, [pageId])
 
   return (
     <div className="journal-page cl-page">
+      <title>{page && page.id !== 'introduction' ? `${page.name} · Component Library` : 'Component Library · TEKUEI'}</title>
       <Sidebar current={page} open={menuOpen} onToggle={() => setMenuOpen((o) => !o)} onPick={() => setMenuOpen(false)} />
 
       <div className="cl-body">

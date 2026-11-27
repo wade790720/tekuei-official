@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useRef, useSyncExternalStore } from 'react'
 import { Link } from 'react-router-dom'
 import { useWorkContent } from '../hooks/useWorkContent.ts'
 import { labWorkItems } from '../labs/media.ts'
@@ -59,7 +59,14 @@ function WorkThumbGraphic({ thumbSvg }: { thumbSvg?: string }) {
 }
 
 // A video thumbnail shows only its poster when the system asks for less motion.
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const REDUCE_MOTION = '(prefers-reduced-motion: reduce)'
+function subscribeReduceMotion(onChange: () => void) {
+  const query = window.matchMedia(REDUCE_MOTION)
+  query.addEventListener('change', onChange)
+  return () => query.removeEventListener('change', onChange)
+}
+// The server cannot read the setting, so it draws the poster and the browser swaps in the video.
+const useReduceMotion = () => useSyncExternalStore(subscribeReduceMotion, () => window.matchMedia(REDUCE_MOTION).matches, () => true)
 
 /** A card as the list draws it: its section, where it links and its cover are settled. */
 type CardItem = Omit<WorkItem, 'type' | 'caseHref' | 'thumbImage'> & {
@@ -69,6 +76,7 @@ type CardItem = Omit<WorkItem, 'type' | 'caseHref' | 'thumbImage'> & {
 }
 
 function WorkCard({ item, total }: { item: CardItem; total: string }) {
+  const reduceMotion = useReduceMotion()
   return (
     <article className="work-card fade-in">
       <Link className="work-card__link" to={item.caseHref}>
@@ -130,10 +138,6 @@ export default function WorkListPage() {
   })).filter((section) => section.items.length)
   const total = pad(shown)
 
-  useEffect(() => {
-    document.title = page.title
-  }, [page.title])
-
   // The header is not there until the data is in
   useEffect(() => {
     if (loading || !measure.current || !block.current) return
@@ -142,6 +146,8 @@ export default function WorkListPage() {
 
   return (
     <div className="work-page">
+      <title>{page.title}</title>
+      <meta name="description" content={page.description} />
       {/* Nothing until the data is in: a loading bar and the footer would flash at the top for a moment */}
       {loading ? (
         <div className="work-page-loading" role="status" aria-label={WORK_LABELS[lang].loading} />

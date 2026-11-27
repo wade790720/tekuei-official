@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { PROJECT_PAGE_LABELS, projectFacts, projectNumber, projectTitle } from '../data/work.ts'
 import type { ProjectFact } from '../data/work.ts'
@@ -23,10 +23,6 @@ export default function CaseStudyPage() {
   const doc = useMemo(() => (data ? caseDoc(data, lang) : null), [data, lang])
   const t = PROJECT_PAGE_LABELS[lang]
 
-  useEffect(() => {
-    if (data) document.title = data.documentTitle
-  }, [data])
-
   if (loading || !data || !doc) return <div className="site-loading-bar" />
 
   const { hero } = data
@@ -44,6 +40,8 @@ export default function CaseStudyPage() {
 
   return (
     <div className="journal-page journal-page--post">
+      <title>{data.documentTitle}</title>
+      {item ? <meta name="description" content={(item.descriptionLines ?? []).join('') || item.client} /> : null}
       <main>
         <ProjectHero
           cover={cover}

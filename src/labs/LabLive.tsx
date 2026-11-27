@@ -7,6 +7,7 @@ import { LivingPortrait } from './living-portrait/LivingPortrait.tsx'
 import { ShatterFooterStage } from './shatter-footer/ShatterFooter.tsx'
 import { HOME_HERO } from '../data/homepage.ts'
 import { useLang } from '../i18n'
+import { LAB_BY_ID } from './index.ts'
 
 /** The bare piece behind each lab page, without the site nav. LabPage shows it in an iframe. */
 export default function LabLive() {
@@ -18,8 +19,20 @@ export default function LabLive() {
     return () => document.documentElement.classList.remove('lab-live-doc')
   }, [])
 
-  if (slug === 'living-portrait') return <LivingPortrait name={HOME_HERO[lang].name} label="Living Portrait" />
-  if (slug === 'falling-figure') return <FallingFigure />
-  if (slug === 'shatter-footer') return <ShatterFooterStage />
-  return <CaseStub />
+  // Falling Figure and the stub render their own title.
+  const title = slug && slug !== 'falling-figure' ? LAB_BY_ID[slug]?.[lang].title : undefined
+  return (
+    <>
+      {title ? <title>{`${title} · TEKUEI`}</title> : null}
+      {slug === 'living-portrait' ? (
+        <LivingPortrait name={HOME_HERO[lang].name} label="Living Portrait" />
+      ) : slug === 'falling-figure' ? (
+        <FallingFigure />
+      ) : slug === 'shatter-footer' ? (
+        <ShatterFooterStage />
+      ) : (
+        <CaseStub />
+      )}
+    </>
+  )
 }
