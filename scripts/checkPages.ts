@@ -67,11 +67,16 @@ const PAGES: Expect[] = [
   { path: '/robots.txt', status: 200, html: false, oneUrl: true },
 ]
 
+const REVALIDATE = 'public, max-age=0, must-revalidate'
+
 const english = (page: Expect): Expect => {
   const en = (p: string) => (p === '/' ? '/en' : `/en${p}`)
   return { ...page, path: en(page.path), location: page.location && en(page.location) }
 }
-const ALL = [...PAGES, ...PAGES.filter((p) => !p.oneUrl).map(english), { path: '/en/', status: 301, location: '/en', html: false }]
+const HTML = [...PAGES, ...PAGES.filter((p) => !p.oneUrl).map(english), { path: '/en/', status: 301, location: '/en', html: false }]
+// The data a client-side navigation fetches carries the same status and Cache-Control as the page.
+const DATA = HTML.filter((p) => p.r2 && !p.path.includes('?')).map((p) => ({ ...p, path: `${p.path}.data`, html: false }))
+const ALL = [...HTML, ...DATA]
 
 const decode = (s: string) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'")
 /** The text a reader sees: no scripts (the loader data is in one), no tags. */
@@ -92,7 +97,7 @@ async function check(url: Expect): Promise<string[]> {
   if (r2 === 'missing' && url.missing) page = { ...url, status: url.missing }
   const res = await fetch(new URL(page.path, base), { redirect: 'manual' })
   const body = await res.text()
-  if (page.html !== false) pages.set(page.path, body)
+  if (page.html !== false || page.path.endsWith('.data')) pages.set(page.path, body)
   const raw = res.headers.get('Location')
   const location = raw ? new URL(raw, base).pathname : undefined
   const cache = res.headers.get('Cache-Control')
@@ -109,9 +114,9 @@ async function check(url: Expect): Promise<string[]> {
     const wantLang = page.path === '/en' || page.path.startsWith('/en/') ? 'en' : 'zh-Hant'
     if (!page.oneUrl && lang !== wantLang) problems.push(`${page.path}: <html lang="${lang}">, expected ${wantLang}`)
   }
-  // Pages that read R2 are cached for five minutes when they are fine, never when they are missing or failing.
+  // Pages that read R2 are checked again on every visit when they are fine, never stored when missing or failing.
   if (page.r2) {
-    const want = res.status === 200 ? 'public, max-age=300' : 'no-store'
+    const want = res.status === 200 ? REVALIDATE : 'no-store'
     if (cache !== want) problems.push(`${page.path}: Cache-Control ${cache}, expected ${want}`)
   }
   return problems
@@ -142,7 +147,7 @@ async function checkContent(site: SiteData): Promise<string[]> {
   for (const [path, html] of pages) {
     for (const marker of new Set(drafts)) if (html.includes(marker)) problems.push(`${path}: shows the draft "${marker}"`)
   }
-  console.log(`Drafts: ${new Set(drafts).size} draft slugs and titles looked for in ${pages.size} HTML pages.`)
+  console.log(`Drafts: ${new Set(drafts).size} draft slugs and titles looked for in ${pages.size} pages and their loader data.`)
   return problems
 }
 
