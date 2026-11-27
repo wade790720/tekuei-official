@@ -172,3 +172,91 @@ describe('docHtml', () => {
     assert.match(set('gallery'), /<figure>/)
   })
 })
+
+describe('social image', () => {
+  const withPicture = (src) => {
+    const j = structuredClone(journal)
+    j.content.zh[slug] = { doc: { type: 'doc', content: [{ type: 'paragraph' }, { type: 'imageCard', attrs: { src, alt: 'A' } }] } }
+    return j
+  }
+
+  it('keeps the site image for a page without a picture', () => {
+    const html = injectPage(indexHtml, postPage(journal, slug))
+    assert.match(html, /property="og:image" content="https:\/\/tekuei.com\/og.jpg"/)
+    assert.match(html, /name="twitter:card" content="summary_large_image"/)
+  })
+
+  it('uses the first picture of a post, as a full URL, in place of the site image', () => {
+    const page = postPage(withPicture('/api/file/a.webp'), slug)
+    assert.equal(page.image, 'https://tekuei.com/api/file/a.webp')
+    const html = injectPage(indexHtml, page)
+    assert.equal(html.match(/property="og:image"/g).length, 1)
+    assert.doesNotMatch(html, /og:image:width|og.jpg/)
+    assert.match(html, /name="twitter:image" content="https:\/\/tekuei.com\/api\/file\/a.webp"/)
+  })
+
+  it('skips an inline data picture', () => {
+    assert.equal(postPage(withPicture('data:image/png;base64,AAAA'), slug).image, undefined)
+  })
+})
+
+describe('dateModified', () => {
+  it('is the date the post was last changed, or its publish date', async () => {
+    const ld = (post) => postPage({ ...journal, posts: { ...journal.posts, zh: [post] } }, slug).ld
+    const post = journal.posts.zh[0]
+    assert.equal(ld(post).dateModified, ld(post).datePublished)
+    assert.equal(ld({ ...post, updated: '2026.12.01' }).dateModified, '2026-12-01')
+  })
+
+  it('stampUpdated marks only the posts a save changes, in both languages', async () => {
+    const { stampUpdated, today } = await import('../src/data/journal.js')
+    const saved = structuredClone(journal)
+    const next = structuredClone(journal)
+    const [a, b] = next.posts.zh
+    a.title = '改過的標題'
+    next.posts.zh.forEach((p, i) => (p.num = String(i + 9)))
+    stampUpdated(next, saved, '2026.12.01')
+    assert.equal(a.updated, '2026.12.01')
+    assert.equal(next.posts.en.find((p) => p.slug === a.slug)?.updated, '2026.12.01')
+    assert.equal(b.updated, undefined, 'renumbering is not a change')
+    const again = structuredClone(next)
+    stampUpdated(again, next, '2026.12.02')
+    assert.equal(again.posts.zh[0].updated, '2026.12.01', 'the mark alone is not a change')
+    assert.equal(today(new Date(2026, 0, 5)), '2026.01.05')
+  })
+})
+
+describe('pages written in code', () => {
+  const ctx = (path, data = { journal }) => ({
+    request: new Request(`https://tekuei.com${path}`),
+    params: {},
+    env: { ASSETS: { fetch: async () => new Response(indexHtml) }, BUCKET: fakeR2({ 'data.json': data }) },
+  })
+
+  it('renders a case from its card and a lab from its entry', async () => {
+    const caseHtml = await (await serveCase(ctx('/projects/matsu-biennial'), work)).text()
+    assert.match(caseHtml, /<title>Matsu Biennial · Projects · TEKUEI<\/title>/)
+    assert.match(caseHtml, /<div id="root"><article><h1>Matsu Biennial<\/h1>.*馬祖國際藝術島/)
+    assert.match(caseHtml, /rel="canonical" href="https:\/\/tekuei.com\/projects\/matsu-biennial"/)
+    const labHtml = await (await serveCase(ctx('/labs/living-portrait'), work)).text()
+    assert.match(labHtml, /<title>Living Portrait · Labs · TEKUEI<\/title>/)
+    assert.match(labHtml, /首頁改版前的 Hero/)
+  })
+
+  it('lists every project page on /projects', async () => {
+    const { projectsIndexPage } = await import('../src/lib/seo.js')
+    const page = projectsIndexPage(siteCases(work), { title: 'TEKUEI · Projects', heading: 'Projects', description: '專案' })
+    assert.match(page.html, /href="\/projects\/matsu-biennial"/)
+    assert.match(page.html, /href="\/labs\/shatter-footer"/)
+    assert.equal(page.ld.hasPart.length, siteCases(work).length)
+  })
+
+  it('renders About from R2, with the clients', async () => {
+    const { aboutPage } = await import('../src/lib/seo.js')
+    const doc = { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: '我是 Wade' }] }] }
+    const res = await servePage(ctx('/about', { journal, aboutPage: { zh: { doc } } }), (_, data) => aboutPage(data))
+    const html = await res.text()
+    assert.match(html, /<main><h1>About<\/h1><p>我是 Wade<\/p><h2>合作過的單位<\/h2><ul><li>LG<\/li>/)
+    assert.match(html, /"@type":"ProfilePage"/)
+  })
+})

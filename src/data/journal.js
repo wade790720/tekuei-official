@@ -144,6 +144,33 @@ export function getAdjacentPosts(journal, slug, lang = 'zh') {
 // Labels for the code, image and video cards in post bodies.
 
 
+// Local date, not toISOString (UTC): in Taipei that would be yesterday until 08:00.
+export const today = (d = new Date()) =>
+  [d.getFullYear(), d.getMonth() + 1, d.getDate()].map((n) => String(n).padStart(2, '0')).join('.')
+
+/**
+ * Marks each post whose fields or body changed since `saved` as `updated` on `day`, in every language.
+ * The list number and the mark itself do not count as a change. Edits `next` in place.
+ * @param {JournalData} next @param {JournalData} saved @param {string} day
+ */
+export function stampUpdated(next, saved, day) {
+  const slugs = new Set(Object.values(next.posts).flatMap((list) => list.map((p) => p.slug)))
+  const state = (j, slug) =>
+    JSON.stringify(
+      Object.keys(j.posts).map((l) => {
+        const post = j.posts[l].find((p) => p.slug === slug)
+        return [post && { ...post, num: undefined, updated: undefined }, j.content?.[l]?.[slug]]
+      }),
+    )
+  for (const slug of slugs) {
+    if (state(next, slug) === state(saved, slug)) continue
+    for (const list of Object.values(next.posts)) {
+      const post = list.find((p) => p.slug === slug)
+      if (post) post.updated = day
+    }
+  }
+}
+
 /**
  * True when the two journals differ only in one post (its fields, its bodies, the list numbering).
  * A draft autosaves only then, so it never carries other unsaved edits, such as a deleted post, along.

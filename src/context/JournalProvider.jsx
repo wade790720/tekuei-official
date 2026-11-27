@@ -1,4 +1,4 @@
-import { cloneJournal, copyJournalDraft, getDefaultJournal } from '../data/journal.js'
+import { cloneJournal, copyJournalDraft, getDefaultJournal, stampUpdated, today } from '../data/journal.js'
 import { useCmsSection } from '../hooks/useCmsSection.js'
 import { JournalContext } from './journal.js'
 
@@ -6,5 +6,11 @@ import { JournalContext } from './journal.js'
 // share it, so an unsaved draft survives moving between pages.
 export function JournalProvider({ children }) {
   const cms = useCmsSection('journal', getDefaultJournal, cloneJournal, copyJournalDraft)
-  return <JournalContext value={cms}>{children}</JournalContext>
+  // Every save marks the posts it changes, so search engines can tell an edited post from an old one.
+  const saveDraft = (token, change) =>
+    cms.saveDraft(token, (d) => {
+      change?.(d)
+      stampUpdated(d, cms.savedContent, today())
+    })
+  return <JournalContext value={{ ...cms, saveDraft }}>{children}</JournalContext>
 }

@@ -8,6 +8,9 @@
 - Projects、Journal 列表、Journal 文章頁、About、Lab 頁的最下面都是同一個 `SiteFooter`（規格見 About）。首頁和 `/labs/<id>/live` 沒有頁尾。
 - 頁尾的品牌字維持字距拉開的「T E K U E I」。
 - 網站圖示是一條錦鯉，呼應首頁 Hero 的錦鯉池。`public/favicon.svg` 給瀏覽器分頁，背景透明，身體跟著系統的深淺色切換（淺色用深色身體、深色用象牙白），斑紋都是金色（`--ember`）。`public/apple-touch-icon.png`（180px）給手機主畫面，主畫面不能透明，所以用深色方塊（`--surface-0`）當底。`index.html` 的 `theme-color` 是同一個深色，手機瀏覽器的網址列跟著變深。
+- 分享到 Threads、LINE、Facebook 時的預覽圖：預設是 `public/og.jpg`（1200 × 630，正式站首頁 Hero 的截圖），文章、專案和 About 有圖片時改用內文的第一張圖（專案先用縮圖）。
+- 每頁的內容都寫進 HTML（`src/lib/seo.js`），不跑 JS 也讀得到：Journal、Projects 列表、About、每個專案和 Lab。程式碼寫的舊案例頁只寫卡片上的文字，因為它們的資料檔會匯入影片，Pages Function 打包不了。
+- 文章每次儲存時，內容有變的文章會記下 `updated`（`stampUpdated`），JSON-LD 的 `dateModified` 和 sitemap 的 `lastmod` 讀它。
 
 ## 首頁
 
@@ -52,7 +55,7 @@
 
 - 作品列表叫 Projects，網址 `/projects`，案例頁是 `/projects/<slug>`，和 Journal 一樣列表和內頁同一個開頭。舊的 `/work` 301 轉到 `/projects`（`public/_redirects`）。列表的標題寫在 `src/data/work.js` 的 `PROJECTS_PAGE`，不讀 R2；R2 存的 `/cases/` 連結由 `projectHref` 轉成新網址，正式資料不用改。程式裡的檔名和 R2 的 `work` 區段維持原名。
 
-- 列表只有一種檢視：一覽全部專案的格線，分成三區，依序是「網站」、「展覽」、「個人項目」（英文版是 Website、Exhibitions、Side Projects）（`PROJECT_SECTIONS`）。每區一個小標題和數量，下面是兩欄的卡片（照 shadcnblocks 的 Case Studies 12），900px 以下一欄。沒有專案的區段不顯示。精選和一次看一張的版型屬於首頁，不放在這裡。
+- 列表只有一種檢視：一覽全部專案的格線，分成三區，依序是「網站」、「展覽」、「個人項目」（英文版是 Websites、Exhibitions、Side Projects）（`PROJECT_SECTIONS`）。每區一個小標題和數量，下面是兩欄的卡片（照 shadcnblocks 的 Case Studies 12），900px 以下一欄。沒有專案的區段不顯示。精選和一次看一張的版型屬於首頁，不放在這裡。
 - 專案屬於哪一區寫在程式碼裡：`src/data/work.js` 的 `PROJECT_TYPES`，用 id 對照，R2 的資料不用改。Labs 一律在「個人項目」，Chrome 擴充功能也歸這一區。一個專案只歸一區，依 Wade 實際做的東西分，例如替展覽做的網站歸「網站」。沒有登記的專案先排在「網站」。
 - 卡片（`WorkCard`）是 16:10，手機 4:5：圖片或影片鋪滿，右上角是編號（依顯示順序，跨區連續），文字在下方的漸層上（單位、標題）。列表的卡片不顯示標籤，標籤在專案內頁才出現。圓角 22px、內距 36px（手機 24px）照 React Bits Pro 的 Scroll Stack，不用 `--radius-lg`。
 - 頁首有量測標註線（`measureLines.js`，Projects 的招牌效果）：頁首下緣是一條標出欄寬的尺寸線，取代原本的分隔線；標題左邊是一條標出高度的尺寸線，右上角是角標。數字是即時量的像素值，進場時跟著線一起數上去。下緣的尺寸線像一把尺，每 24px 一個小刻度，上面有一個金色的小三角形跟著游標的水平位置移動。沒有十字線：十字線只在頁首出現會像壞掉，鋪滿整頁又太吵。手機不畫左邊的高度線。
