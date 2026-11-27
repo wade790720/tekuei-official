@@ -6,14 +6,14 @@ import { ColorScale } from './doc/ColorScale.tsx'
 import { DocSection } from './doc/DocSection.tsx'
 import { DocTable } from './doc/DocTable.tsx'
 import { Example } from './doc/Example.tsx'
-import { hex, ratio, readColors } from './doc/contrast.ts'
+import { hex, ratio, readColors, type Rgba } from './doc/contrast.ts'
 import { COLOR_GROUPS } from './foundations.data.ts'
 import { GUIDES } from './guides.data.ts'
 
 const g = GUIDES.color
 
 // Token lists grouped by what each step is for, as the scale tokens are meant to be used.
-const scaleCode = (name) => `/* 背景 */
+const scaleCode = (name: string) => `/* 背景 */
 var(--${name}-1);  var(--${name}-2);
 
 /* 互動元件 */
@@ -32,7 +32,7 @@ var(--${name}-11); var(--${name}-12);
 var(--${name}-a1) … var(--${name}-a12);`
 
 // Which scale step each semantic token points at (mirrors tokens.css; computed styles only give the final value).
-const POINTS_AT = {
+const POINTS_AT: Record<string, string> = {
   '--surface-0': '--gray-1',
   '--surface-1': '--gray-3',
   '--surface-2': '--gray-5',
@@ -57,7 +57,7 @@ function readSemantic() {
   const card = colors['--surface-1'].rgba
   return SEMANTIC.map(({ token, use, text }) => {
     const c = colors[token].rgba
-    const contrast = (bg) => {
+    const contrast = (bg: Rgba) => {
       const v = ratio(c, bg)
       return <span className="fd-ratio" data-pass={v >= 4.5 || undefined}>{v.toFixed(1)}</span>
     }

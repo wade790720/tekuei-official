@@ -1,7 +1,7 @@
 // Component pages of /dev/component-library. Dev-only, Chinese only (internal page, not site copy).
 // Page model, as in the Radix Themes docs:
 //   summary   one sentence: what the component does
-//   hero      the first example: a live demo (key in demos.jsx) and/or its code
+//   hero      the first example: a live demo (key in demos.tsx) and/or its code
 //   api       API Reference, one entry per part (a component made of parts lists each part)
 //   examples  one entry per prop or variant worth showing
 //   keyboard  key → action, for interactive components
@@ -9,7 +9,9 @@
 // Components are listed alphabetically. Write as reference docs:
 // what the component does, no design history, no outside sites.
 
-export const GROUPS = [
+import type { ComponentGroup } from './libraryTypes.ts'
+
+export const GROUPS: ComponentGroup[] = [
   {
     id: 'components',
     title: '元件',
@@ -18,17 +20,16 @@ export const GROUPS = [
       {
         id: 'card',
         name: 'Card',
-        file: 'src/components/Card.jsx',
+        file: 'src/components/Card.tsx',
         summary: '卡片的底：炭灰底色、12px 圓角、1px 象牙白光環，不用邊框',
         hero: { demo: 'card', code: '<Card className="code-block">…</Card>' },
         api: [
           {
             description: 'CodeBlock、ImageCard、VideoPlayer、Carousel 都用它當外殼。內距和內容由使用的元件決定',
             props: [
-              ['as', 'string | Component', "'div'", '要渲染的元素，例如 figure'],
+              ['as', 'T extends ElementType', "'div'", '要渲染的元素，例如 figure。其餘 props 的型別跟著它變'],
               ['className', 'string', "''", '附加的 class'],
-              ['children', 'node', '—', '內容'],
-              ['…rest', '—', '—', '其他 props 傳給元素，包括 ref'],
+              ['…rest', 'ComponentProps<T>', '—', '其他 props 傳給元素，包括 children 和 ref'],
             ],
           },
         ],
@@ -39,16 +40,16 @@ export const GROUPS = [
       {
         id: 'button',
         name: 'Button',
-        file: 'src/components/Button.jsx',
+        file: 'src/components/Button.tsx',
         summary: '按鈕，有實心、透明、圖示、浮在圖上四種',
         hero: { demo: 'button', code: '<Button onClick={save}>儲存</Button>' },
         api: [
           {
             props: [
               ['variant', "'solid' | 'ghost' | 'icon' | 'overlay'", "'solid'", 'solid 是主要動作，ghost 是次要動作，icon 是放一個圖示的 32px 方塊，overlay 是放在圖片或影片上的 32px 圓鈕'],
-              ['as', 'string | Component', "'button'", "要渲染的元素。包住檔案欄位時用 'label'，點整顆按鈕就能選檔案"],
+              ['as', 'T extends ElementType', "'button'", "要渲染的元素。包住檔案欄位時用 'label'，點整顆按鈕就能選檔案。其餘 props 的型別跟著它變"],
               ['className', 'string', "''", '附加的 class'],
-              ['…rest', '—', '—', '其他 props 傳給元素'],
+              ['…rest', 'ComponentProps<T>', '—', '其他 props 傳給元素'],
             ],
           },
         ],
@@ -72,7 +73,7 @@ export const GROUPS = [
       {
         id: 'switch',
         name: 'Switch',
-        file: 'src/components/Switch.jsx',
+        file: 'src/components/Switch.tsx',
         summary: '開和關的切換，開啟時是金色',
         hero: { demo: 'switch', code: '<Switch checked={loop} onChange={setLoop} label="重複播放" />' },
         api: [
@@ -93,7 +94,7 @@ export const GROUPS = [
       {
         id: 'text-area',
         name: 'TextArea',
-        file: 'src/components/TextArea.jsx',
+        file: 'src/components/TextArea.tsx',
         summary: '多行的 TextField，隨內容長高',
         hero: { demo: 'text-field', code: '<TextArea value={excerpt} onChange={setExcerpt} placeholder="一兩句話說明這篇文章" />' },
         api: [
@@ -113,7 +114,7 @@ export const GROUPS = [
       {
         id: 'text-field',
         name: 'TextField',
-        file: 'src/components/TextField.jsx',
+        file: 'src/components/TextField.tsx',
         summary: '看起來像一般文字的單行輸入欄位',
         hero: { demo: 'text-field', code: '<TextField value={title} onChange={setTitle} placeholder="文章標題" />' },
         api: [
@@ -134,7 +135,7 @@ export const GROUPS = [
       {
         id: 'tooltip',
         name: 'TooltipGroup',
-        file: 'src/components/Tooltip.jsx',
+        file: 'src/components/Tooltip.tsx',
         summary: '一排按鈕共用一個提示：第一次等一下才出現，之後在按鈕間移動時立刻出現並滑過去',
         hero: {
           demo: 'tooltip',
@@ -147,9 +148,8 @@ export const GROUPS = [
             part: 'TooltipGroup',
             description: '包住一排按鈕，提示顯示在這一排的下方',
             props: [
-              ['as', 'string | Component', "'div'", '要渲染的元素'],
-              ['ref', 'Ref', '—', '傳給外層元素'],
-              ['…rest', '—', '—', '其他 props 傳給元素，例如 role="toolbar"'],
+              ['ref', 'Ref<HTMLDivElement>', '—', '傳給外層的 div'],
+              ['…rest', 'HTMLAttributes<HTMLDivElement>', '—', '其他 props 傳給 div，例如 role="toolbar"'],
             ],
           },
           {
@@ -173,7 +173,7 @@ export const GROUPS = [
       {
         id: 'code-block',
         name: 'CodeBlock',
-        file: 'src/components/CodeBlock.jsx',
+        file: 'src/components/CodeBlock.tsx',
         summary: '顯示一段程式碼，附語言標籤、檔名和複製按鈕',
         hero: { demo: 'code', code: `<CodeBlock lang="ts" filename="route.ts" code={source} />` },
         api: [
@@ -213,7 +213,7 @@ export const GROUPS = [
       {
         id: 'image-card',
         name: 'ImageCard',
-        file: 'src/components/ImageCard.jsx',
+        file: 'src/components/ImageCard.tsx',
         summary: '顯示一張圖片和選填的圖說',
         hero: { demo: 'image', code: `<ImageCard src={src} alt="設定頁的截圖" caption="滿版" />` },
         api: [
@@ -248,7 +248,7 @@ export const GROUPS = [
       {
         id: 'carousel',
         name: 'Carousel',
-        file: 'src/components/Carousel.jsx',
+        file: 'src/components/Carousel.tsx',
         summary: '一組可以左右切換的圖片，相鄰的圖從兩側露出一部分',
         hero: {
           demo: 'slides',
@@ -276,7 +276,7 @@ export const GROUPS = [
       {
         id: 'featured-photos',
         name: 'FeaturedPhotos',
-        file: 'src/components/FeaturedPhotos.jsx',
+        file: 'src/components/FeaturedPhotos.tsx',
         summary: '一件作品配一段文字：一邊是一張大圖，另一邊是標題、說明和每張照片的縮圖',
         hero: {
           demo: 'featured-photos',
@@ -309,7 +309,7 @@ export const GROUPS = [
       {
         id: 'gallery',
         name: 'Gallery',
-        file: 'src/components/Gallery.jsx',
+        file: 'src/components/Gallery.tsx',
         summary: '一面照片牆，兩張一排，每五張有一張佔滿整排，點一張放大檢視',
         hero: {
           demo: 'gallery',
@@ -343,7 +343,7 @@ export const GROUPS = [
       {
         id: 'video-player',
         name: 'VideoPlayer',
-        file: 'src/components/VideoPlayer.jsx',
+        file: 'src/components/VideoPlayer.tsx',
         summary: '播放一段影片：影片檔用自己的播放器，附播放、時間、進度、倍速和全螢幕控制；YouTube 連結用 YouTube 的播放器',
         hero: { demo: 'video', code: `<VideoPlayer src={clip} poster={poster} caption="拖曳排序的過程" />` },
         api: [
@@ -385,7 +385,7 @@ export const GROUPS = [
       {
         id: 'dropdown-menu',
         name: 'DropdownMenu',
-        file: 'src/components/DropdownMenu.jsx',
+        file: 'src/components/DropdownMenu.tsx',
         summary: '從按鈕打開的一組動作或選項',
         hero: { demo: 'menu-actions', code: `<DropdownMenu label="插入" trigger="＋ 插入" items={ACTIONS} onSelect={insert} />` },
         api: [
@@ -394,22 +394,22 @@ export const GROUPS = [
             props: [
               ['label', 'string', '—', '必填，按鈕和選單的無障礙名稱'],
               ['trigger', 'node', '—', '必填，按鈕的內容'],
-              ['items', "({ value, label, icon?, kbd? } | 'divider')[]", '—', "必填，'divider' 是分隔線"],
-              ['value', 'string', '—', '有值時當作選擇器，目前的項目打勾'],
-              ['onSelect', '(value) => void', '—', '必填'],
+              ['items', "readonly ({ value: V, label: string, icon?: ReactNode, kbd?: string } | 'divider')[]", '—', "必填，'divider' 是分隔線。V 是 value 的字串型別，由 items 推出"],
+              ['value', 'V', '—', '有值時當作選擇器，目前的項目打勾'],
+              ['onSelect', '(value: V) => void', '—', '必填'],
               ['triggerClassName', 'string', "'dropdown-menu__trigger'", '按鈕的 class'],
               ['tip', 'string', '—', '工具列提示的文字'],
-              ['triggerProps', 'object', '—', '加在按鈕上的其他屬性，例如 draggable、onDragStart。按鈕按下時不會搶走編輯器的選取，可以拖曳的按鈕例外'],
+              ['triggerProps', 'ButtonHTMLAttributes<HTMLButtonElement>', '—', '加在按鈕上的其他屬性，例如 draggable、onDragStart。按鈕按下時不會搶走編輯器的選取，可以拖曳的按鈕例外'],
             ],
           },
           {
-            title: 'MenuItems',
+            part: 'MenuItems',
             description: '清單裡的項目列。DropdownMenu 用它畫清單，編輯器的「/」選單也用它，兩邊的項目長得一樣',
             props: [
-              ['items', "({ value, label, icon?, kbd? } | 'divider')[]", '—', '必填，和 DropdownMenu 相同'],
-              ['value', 'string', '—', '有值時目前的項目打勾'],
-              ['active', 'string', '—', '焦點留在別處時（編輯器的「/」選單），用方向鍵移到的項目，用底色標出'],
-              ['onPick', '(value) => void', '—', '必填'],
+              ['items', "readonly ({ value: V, label: string, icon?: ReactNode, kbd?: string } | 'divider')[]", '—', '必填，和 DropdownMenu 相同'],
+              ['value', 'V', '—', '有值時目前的項目打勾'],
+              ['active', 'V', '—', '焦點留在別處時（編輯器的「/」選單），用方向鍵移到的項目，用底色標出'],
+              ['onPick', '(value: V) => void', '—', '必填'],
             ],
           },
         ],
@@ -454,7 +454,7 @@ export const GROUPS = [
       {
         id: 'editor',
         name: 'Editor',
-        file: 'src/components/Editor.jsx',
+        file: 'src/components/Editor.tsx',
         summary: '文章內文的所見即所得編輯器，輸出 RichText 使用的文件',
         hero: { demo: 'editor', code: `<Editor key={slug} doc={getDoc(body)} onChange={setDoc} upload={upload} previewing={admin.previewing} />
 {admin.previewing ? <RichText doc={getDoc(body)} /> : null}` },
@@ -493,7 +493,7 @@ export const GROUPS = [
           {
             id: 'paste-image',
             title: '貼上或拖放圖片',
-            description: '在內文裡貼上圖片，或把圖檔拖進來，會在游標或放下的位置插入圖片卡並自動上傳。上傳前在瀏覽器裡壓縮（src/lib/compressImage.js）：超過 1MB 或不是 JPG、PNG、WEBP 的圖，長邊縮到 2000px 並轉成 WEBP。貼上或拖進一段含圖片的網頁內容時，每個 <img> 都變成圖片卡，編輯器會下載並轉存一份。對方網站擋下載時，卡片保留原網址並顯示提醒，上線前要改成自己的圖',
+            description: '在內文裡貼上圖片，或把圖檔拖進來，會在游標或放下的位置插入圖片卡並自動上傳。上傳前在瀏覽器裡壓縮（src/lib/compressImage.ts）：超過 1MB 或不是 JPG、PNG、WEBP 的圖，長邊縮到 2000px 並轉成 WEBP。貼上或拖進一段含圖片的網頁內容時，每個 <img> 都變成圖片卡，編輯器會下載並轉存一份。對方網站擋下載時，卡片保留原網址並顯示提醒，上線前要改成自己的圖',
           },
         ],
         keyboard: [
@@ -506,33 +506,33 @@ export const GROUPS = [
         notes: [
           '「＋」插入程式碼、圖片、輪播、影片和分隔線。Card 的設定直接在 Card 上填。',
           '工具列的提示用 TooltipGroup。',
-          '新增節點時，同時修改 Editor.jsx、RichText 和 src/lib/richText.js。',
+          '新增節點時，同時修改 Editor.jsx、RichText 和 src/lib/richText.ts。',
         ],
       },
 
       {
         id: 'tag',
         name: 'Tag',
-        file: 'src/components/Tag.jsx',
+        file: 'src/components/Tag.tsx',
         summary: '文章的標籤。可以只顯示文字，也可以當篩選按鈕',
         hero: { demo: 'tag', code: '<TagList tags={postTags(post)} />' },
         api: [
           {
             part: 'Tag',
-            description: '沒有 onClick 時是金色的標籤文字；有 onClick 時是膠囊按鈕，用 aria-pressed 表示選取',
+            description: '沒有 onClick 時是金色的標籤文字；有 onClick 時是膠囊按鈕，用 aria-pressed 表示選取。兩種用法的 props 不能混用：count 和 selected 只在有 onClick 時能傳，variant 只在沒有 onClick 時能傳，混用會編譯失敗',
             props: [
-              ['children', 'node', '—', '標籤文字，英文大寫'],
-              ['count', 'number', '—', '按鈕上的篇數，只在按鈕時顯示'],
-              ['selected', 'boolean', 'false', '目前選取的標籤，框線變金色'],
+              ['children', 'ReactNode', '—', '必填，標籤文字，英文大寫'],
+              ['count', 'number', '—', '按鈕上的篇數，只在按鈕時能傳'],
+              ['selected', 'boolean', 'false', '目前選取的標籤，框線變金色，只在按鈕時能傳'],
               ['onClick', '() => void', '—', '有這個 prop 就變成按鈕'],
-              ['variant', "'plain' | 'outline'", "'plain'", '只對文字標籤有效。outline 是有框線的膠囊，用在 Work 的卡片，滑過卡片時框線變金色'],
+              ['variant', "'plain' | 'outline'", "'plain'", '只在文字標籤時能傳。outline 是有框線的膠囊，用在 Work 的卡片，滑過卡片時框線變金色'],
             ],
           },
           {
             part: 'TagList',
             description: '一排純文字標籤，用在列表、精選文章和文章頁的 meta',
             props: [
-              ['tags', 'string[]', '—', '必填，用 postTags(post) 取得'],
+              ['tags', 'readonly string[]', '—', '必填，用 postTags(post) 取得'],
               ['variant', "'plain' | 'outline'", "'plain'", '傳給每一個 Tag'],
             ],
           },
@@ -567,7 +567,7 @@ export const GROUPS = [
       {
         id: 'otp-input',
         name: 'OtpInput',
-        file: 'src/components/OtpInput.jsx',
+        file: 'src/components/OtpInput.tsx',
         summary: '輸入固定長度的密碼或驗證碼，一格一個字元，只顯示圓點',
         hero: { demo: 'otp-input', code: `<OtpInput value={code} onChange={setCode} onComplete={verify} label="密碼" />` },
         api: [
@@ -619,7 +619,7 @@ export const GROUPS = [
       {
         id: 'drawer',
         name: 'Drawer',
-        file: 'src/components/Drawer.jsx',
+        file: 'src/components/Drawer.tsx',
         summary: '從右側滑出，有標題列和可以捲動的內容',
         hero: {
           demo: 'drawer',
@@ -668,7 +668,7 @@ export const GROUPS = [
       {
         id: 'breadcrumbs',
         name: 'Breadcrumbs',
-        file: 'src/components/Breadcrumbs.jsx',
+        file: 'src/components/Breadcrumbs.tsx',
         summary: '顯示這一頁在網站裡的位置：上層的連結，最後是目前這一頁',
         hero: {
           demo: 'breadcrumbs',
@@ -728,7 +728,7 @@ export const GROUPS = [
       {
         id: 'marquee',
         name: 'Marquee',
-        file: 'src/components/Marquee.jsx',
+        file: 'src/components/Marquee.tsx',
         summary: '一排不停往側邊捲動的項目，左右兩端淡出。兩排可以往相反的方向走',
         hero: {
           demo: 'marquee',
@@ -758,7 +758,7 @@ export const GROUPS = [
       {
         id: 'scroll-stack',
         name: 'ScrollStack',
-        file: 'src/components/ScrollStack.jsx',
+        file: 'src/components/ScrollStack.tsx',
         summary: '捲動時一張接一張疊起來的卡片。目前這張固定在畫面上，下一張從下方蓋上來',
         hero: {
           demo: 'scroll-stack',
@@ -792,7 +792,7 @@ export const GROUPS = [
       {
         id: 'accordion',
         name: 'Accordion',
-        file: 'src/components/Accordion.jsx',
+        file: 'src/components/Accordion.tsx',
         summary: '一組可以展開和收合的項目。標題是按鈕，按下後內容在下面展開',
         hero: {
           demo: 'accordion',
@@ -870,7 +870,7 @@ export const GROUPS = [
       {
         id: 'scroll-shadow',
         name: 'ScrollShadow',
-        file: 'src/components/ScrollShadow.jsx',
+        file: 'src/components/ScrollShadow.tsx',
         summary: '可以捲動的容器。還有內容沒看到的那一邊會淡出',
         hero: {
           demo: 'scroll-shadow',
@@ -907,7 +907,7 @@ export const GROUPS = [
       {
         id: 'skeleton',
         name: 'Skeleton',
-        file: 'src/components/Skeleton.jsx',
+        file: 'src/components/Skeleton.tsx',
         summary: '資料載入前的灰色佔位方塊，形狀照著之後要出現的內容',
         hero: {
           demo: 'skeleton',
@@ -977,7 +977,7 @@ export const GROUPS = [
       {
         id: 'shatter-image',
         name: 'mountShatterImage',
-        file: 'src/labs/shatter-footer/shatterImage.js',
+        file: 'src/labs/shatter-footer/shatterImage.ts',
         summary: '碎片從左到右拼成一張圖，然後靜止',
         hero: { demo: 'shatter', code: `useEffect(() => mountShatterImage(canvas.current, { src, crop: [0, 583, 1920, 705] }), [])` },
         api: [
@@ -1090,7 +1090,7 @@ export const GROUPS = [
       {
         id: 'hero-fx',
         name: 'mountHeroFx',
-        file: 'src/labs/living-portrait/heroFx.js',
+        file: 'src/labs/living-portrait/heroFx.ts',
         summary: 'Living Portrait 的互動：游標移到人物上出現追蹤框和 ASCII，雙擊出現 glitch',
         hero: { code: `useEffect(() => mountHeroFx({ root, bg, cut, alt, canvas }), [])` },
         api: [
@@ -1105,7 +1105,7 @@ export const GROUPS = [
       {
         id: 'fall-scene',
         name: 'mountFallScene',
-        file: 'src/labs/falling-figure/fallScene.js',
+        file: 'src/labs/falling-figure/fallScene.ts',
         summary: '粒子組成的人形隨捲動往下掉，穿過刻字的石板',
         hero: { code: `useEffect(() => mountFallScene({ canvas, figure, sections, acts, progressDot, onAct }), [])` },
         api: [
@@ -1157,7 +1157,7 @@ export const GROUPS = [
         api: [
           {
             part: 'mountReveal()',
-            description: '監看全站的 .fade-in 元素，進入畫面時加上 is-visible，只觸發一次。App.jsx 呼叫一次，回傳 cleanup。新元件不用另外接',
+            description: '監看全站的 .fade-in 元素，進入畫面時加上 is-visible，只觸發一次。App.tsx 呼叫一次，回傳 cleanup。新元件不用另外接',
             props: [],
           },
           {
@@ -1191,7 +1191,7 @@ export const GROUPS = [
           },
           {
             part: 'mountClickSounds()',
-            description: '在 document 掛一個點擊監聽，全站的連結和按鈕自動出聲。App.jsx 呼叫一次，回傳 cleanup。新元件不用另外接',
+            description: '在 document 掛一個點擊監聽，全站的連結和按鈕自動出聲。App.tsx 呼叫一次，回傳 cleanup。新元件不用另外接',
             props: [],
           },
           {

@@ -3,9 +3,15 @@ import { tokenize } from '../../../lib/highlight.ts'
 
 /**
  * Highlighted code on its own (token lists, install steps). Example puts the same block under a preview.
- * @param {{ code: string, lang?: string, joined?: boolean }} props  joined: sits under a preview, no own frame
+ * `joined`: sits under a preview, no own frame.
  */
-export function DocCode({ code, lang = 'jsx', joined = false }) {
+interface DocCodeProps {
+  code: string
+  lang?: string
+  joined?: boolean
+}
+
+export function DocCode({ code, lang = 'jsx', joined = false }: DocCodeProps) {
   const tokens = useMemo(() => tokenize(code, lang), [code, lang])
   return (
     <pre className={`doc-code${joined ? ' doc-code--joined' : ''}`} tabIndex={0}>

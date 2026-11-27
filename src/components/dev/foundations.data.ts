@@ -1,7 +1,17 @@
 // Brand foundations shown at the top of /dev/component-library: colour, type, spacing.
 // Values live in src/styles/tokens.css; this file only says what each token is for.
 
-export const COLOR_GROUPS = [
+import type { TypeStep } from './doc/TypeScalePicker.tsx'
+import type { Doc, LegacyBlock } from '../../lib/siteData.ts'
+
+export interface ColorGroup {
+  title: string
+  note: string
+  text?: boolean
+  swatches: [token: string, use: string][]
+}
+
+export const COLOR_GROUPS: ColorGroup[] = [
   {
     title: '表面',
     note: '三層深淺，越上層越亮。',
@@ -58,7 +68,7 @@ export const COLOR_GROUPS = [
 ]
 
 // The type scale, smallest last. `family` and `tracking` mark the steps that change font or letter spacing.
-export const TYPE_STEPS = [
+export const TYPE_STEPS: (TypeStep & { use: string })[] = [
   { name: 'Display', token: '--type-display', use: '每頁最多一個：Journal、About 的大標', sample: 'Journal', tracking: true },
   { name: 'H1', token: '--type-h1', use: '文章標題', sample: '留白的建築' },
   { name: 'H2', token: '--type-h2', use: '文章裡的小標題', sample: '為什麼高級品牌都敢留白' },
@@ -85,7 +95,14 @@ export const TYPE_STEPS = [
 ]
 
 // Copy for the Typography page, one entry per section.
-export const TYPE_DOC = {
+export const TYPE_DOC: {
+  base: { lead: string; blocks: LegacyBlock[] }
+  formatting: { lead: string; doc: Doc; code: string }
+  scale: string
+  weight: { lead: string; rows: [name: string, token: string, use: string][] }
+  family: { lead: string; rows: [use: string, token: string, sample: string][] }
+  spec: string
+} = {
   base: {
     lead: '文章的標題和內文由 RichText 畫出，字級、行高、顏色都來自 token，寫文章時不用另外設定。',
     blocks: [
@@ -149,7 +166,7 @@ export const TYPE_RULES = [
   '一行中文 35–40 字，約 640–720px',
 ]
 
-export const SPACE_SCALE = [
+export const SPACE_SCALE: [token: string, use: string][] = [
   ['--space-1', '元件內部：圖示和文字'],
   ['--space-2', '相關的元素：標籤和欄位、同一組按鈕'],
   ['--space-3', '按鈕和輸入框的左右內距'],

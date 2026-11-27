@@ -1,6 +1,7 @@
-// Live demos for the component pages. Each entry in componentLibrary.data.js names one by key.
+// Live demos for the component pages. Each entry in componentLibrary.data.tsx names one by key.
 // Demo data only: nothing here is real content, and nothing is sent anywhere.
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import type { ComponentProps, ComponentType, MouseEvent, ReactNode } from 'react'
 import { CodeBlock } from '../CodeBlock.tsx'
 import { ImageCard } from '../ImageCard.tsx'
 import { RichText } from '../RichText.tsx'
@@ -8,7 +9,7 @@ import { Carousel } from '../Carousel.tsx'
 import { Gallery } from '../Gallery.tsx'
 import { FeaturedPhotos } from '../FeaturedPhotos.tsx'
 import { VideoPlayer } from '../VideoPlayer.tsx'
-import { DropdownMenu } from '../DropdownMenu.tsx'
+import { DropdownMenu, type MenuItem } from '../DropdownMenu.tsx'
 import { Button } from '../Button.tsx'
 import { Card } from '../Card.tsx'
 import { Drawer, DrawerBody, DrawerHeader } from '../Drawer.tsx'
@@ -59,7 +60,7 @@ const EDITOR_SAMPLE = blocksToDoc([
   { type: 'code', lang: 'ts', filename: 'demo.ts', code: 'const x = 1' },
 ])
 
-const STYLE_ITEMS = [
+const STYLE_ITEMS: MenuItem[] = [
   { value: 'paragraph', label: '段落', kbd: '⌘⌥0' },
   { value: 'lead', label: '前言' },
   'divider',
@@ -67,7 +68,7 @@ const STYLE_ITEMS = [
   { value: 'h3', label: '次標題', kbd: '⌘⌥3' },
 ]
 
-const ACTION_ITEMS = [
+const ACTION_ITEMS: MenuItem[] = [
   { value: 'code', label: '程式碼' },
   { value: 'image', label: '圖片' },
   { value: 'slides', label: '圖片輪播' },
@@ -76,7 +77,12 @@ const ACTION_ITEMS = [
   { value: 'rule', label: '分隔線' },
 ]
 
-function Replayable({ children }) {
+const labelOf = (items: MenuItem[], value: string) => {
+  const hit = items.find((i) => i !== 'divider' && i.value === value)
+  return hit && hit !== 'divider' ? hit.label : undefined
+}
+
+function Replayable({ children }: { children: ReactNode }) {
   const [run, setRun] = useState(0)
   return (
     <>
@@ -89,13 +95,16 @@ function Replayable({ children }) {
 }
 
 function ShatterDemo() {
-  const canvas = useRef(null)
-  useEffect(() => mountShatterImage(canvas.current, { src: seaImage, crop: [0, 583, 1920, 705] }), [])
+  const canvas = useRef<HTMLCanvasElement>(null)
+  useEffect(() => {
+    const c = canvas.current
+    return c ? mountShatterImage(c, { src: seaImage, crop: [0, 583, 1920, 705] }) : undefined
+  }, [])
   return <canvas ref={canvas} className="cl-shatter" aria-hidden />
 }
 
 function RippleDemo() {
-  const play = (e) => {
+  const play = (e: MouseEvent<HTMLButtonElement>) => {
     const r = e.currentTarget.getBoundingClientRect()
     const fromPointer = e.detail > 0
     playWaterRipple(fromPointer ? e.clientX : r.left + r.width / 2, fromPointer ? e.clientY : r.top + r.height / 2)
@@ -121,8 +130,11 @@ function SoundDemo() {
 }
 
 function GlyphDemo() {
-  const canvas = useRef(null)
-  useEffect(() => mountGlyphField(canvas.current), [])
+  const canvas = useRef<HTMLCanvasElement>(null)
+  useEffect(() => {
+    const c = canvas.current
+    return c ? mountGlyphField(c) : undefined
+  }, [])
   return (
     <div className="cl-glyph">
       <canvas ref={canvas} className="journal-header__glyphs" aria-hidden />
@@ -131,9 +143,13 @@ function GlyphDemo() {
 }
 
 function MeasureDemo() {
-  const canvas = useRef(null)
-  const block = useRef(null)
-  useEffect(() => mountMeasureLines(canvas.current, { block: block.current }), [])
+  const canvas = useRef<HTMLCanvasElement>(null)
+  const block = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const c = canvas.current
+    const b = block.current
+    return c && b ? mountMeasureLines(c, { block: b }) : undefined
+  }, [])
   return (
     <div style={{ position: 'relative', zIndex: 0, width: '100%', padding: 'var(--space-12) 0' }}>
       <canvas ref={canvas} className="work-page-header__measure" aria-hidden />
@@ -145,8 +161,11 @@ function MeasureDemo() {
 }
 
 function KoiDemo() {
-  const canvas = useRef(null)
-  useEffect(() => mountKoiPond(canvas.current), [])
+  const canvas = useRef<HTMLCanvasElement>(null)
+  useEffect(() => {
+    const c = canvas.current
+    return c ? mountKoiPond(c) : undefined
+  }, [])
   return (
     <div className="cl-glyph">
       <canvas ref={canvas} className="cl-koi" aria-hidden />
@@ -155,8 +174,11 @@ function KoiDemo() {
 }
 
 function HazeDemo() {
-  const canvas = useRef(null)
-  useEffect(() => mountGrainHaze(canvas.current), [])
+  const canvas = useRef<HTMLCanvasElement>(null)
+  useEffect(() => {
+    const c = canvas.current
+    return c ? mountGrainHaze(c) : undefined
+  }, [])
   return (
     <div className="cl-glyph">
       <canvas ref={canvas} className="cl-koi" aria-hidden />
@@ -169,14 +191,14 @@ function ActionMenuDemo() {
   return (
     <div className="cl-box cl-box--row">
       <DropdownMenu label="插入" trigger="＋ 插入" items={ACTION_ITEMS} onSelect={setLast} />
-      <span>{last ? `選了：${ACTION_ITEMS.find((i) => i.value === last)?.label}` : '打開選單選一個動作'}</span>
+      <span>{last ? `選了：${labelOf(ACTION_ITEMS, last)}` : '打開選單選一個動作'}</span>
     </div>
   )
 }
 
 function PickerMenuDemo() {
   const [v, setV] = useState('paragraph')
-  const label = STYLE_ITEMS.find((i) => i.value === v)?.label
+  const label = labelOf(STYLE_ITEMS, v)
   return (
     <div className="cl-box cl-box--row">
       <DropdownMenu label="段落樣式" trigger={`${label} ▾`} items={STYLE_ITEMS} value={v} onSelect={setV} />
@@ -185,7 +207,7 @@ function PickerMenuDemo() {
 }
 
 // 123456 is the "right" code.
-function OtpInputDemo({ length = 6, startInvalid = false }) {
+function OtpInputDemo({ length = 6, startInvalid = false }: { length?: number; startInvalid?: boolean }) {
   const [code, setCode] = useState('')
   const [wrong, setWrong] = useState(startInvalid)
   const right = '123456'.slice(0, length)
@@ -254,7 +276,15 @@ function DrawerDemo() {
 }
 
 // One pane of the editor demo: a header with a direction icon, then the content.
-function IoPane({ dir, title, meta, className = '', children }) {
+interface IoPaneProps {
+  dir: 'in' | 'out'
+  title: string
+  meta: string
+  className?: string
+  children: ReactNode
+}
+
+function IoPane({ dir, title, meta, className = '', children }: IoPaneProps) {
   return (
     <section className="cl-editor__pane" aria-label={title}>
       <header className="cl-editor__head">
@@ -295,7 +325,7 @@ function EditorDemo() {
   )
 }
 
-const DEMOS = {
+const DEMOS: Record<string, ComponentType> = {
   code: () => <CodeBlock lang="ts" filename="route.ts" code={SAMPLE_CODE} />,
   'code-shell': () => <CodeBlock lang="bash" code={'# install and run\nnpm install\nnpm run dev'} />,
   'code-plain': () => <CodeBlock lang="css" code={'.journal-card {\n  padding: var(--space-4);\n}'} />,
@@ -526,11 +556,7 @@ const DEMOS = {
   'skeleton-types': () => (
     <div className="cl-stage">
       <div className="cl-sk-types">
-        {[
-          ['shimmer', 'Shimmer'],
-          ['pulse', 'Pulse'],
-          ['none', 'None'],
-        ].map(([type, label]) => (
+        {SKELETON_TYPES.map(([type, label]) => (
           <div key={type}>
             <p className="cl-sk-type-label">{label}</p>
             <div className="cl-sk-panel cl-sk-stack">
@@ -545,13 +571,19 @@ const DEMOS = {
   ),
 }
 
+const SKELETON_TYPES: ['shimmer' | 'pulse' | 'none', string][] = [
+  ['shimmer', 'Shimmer'],
+  ['pulse', 'Pulse'],
+  ['none', 'None'],
+]
+
 const ACCORDION_DEMO = [
   ['stack', '網站用什麼做的？', '示範文字：Vite、React 和 Cloudflare Pages，文章存在 R2。'],
   ['update', '多久更新一次？', '示範文字：想到就寫，沒有固定的頻率。'],
   ['contact', '怎麼聯絡？', '示範文字：頁尾有 Email 和 Instagram。'],
 ]
 
-function AccordionDemo({ disabledId, ...props }) {
+function AccordionDemo({ disabledId, ...props }: { disabledId?: string } & Omit<ComponentProps<typeof Accordion>, 'children'>) {
   return (
     <div style={{ width: '100%', maxWidth: 560 }}>
       <Accordion {...props}>
@@ -566,8 +598,8 @@ function AccordionDemo({ disabledId, ...props }) {
 }
 
 function TagFilterDemo() {
-  const [tag, setTag] = useState(null)
-  const tags = [['AI', 2], ['MARKETING', 1], ['ENGINEERING', 1]]
+  const [tag, setTag] = useState<string | null>(null)
+  const tags: [string, number][] = [['AI', 2], ['MARKETING', 1], ['ENGINEERING', 1]]
   return (
     <div className="tag-group" role="group" aria-label="依標籤篩選">
       <Tag count={4} selected={!tag} onClick={() => setTag(null)}>
@@ -583,7 +615,7 @@ function TagFilterDemo() {
 }
 
 /** Renders the live demo registered under `name`, or nothing. */
-export function Demo({ name }) {
+export function Demo({ name }: { name: string }) {
   const D = DEMOS[name]
   return D ? <D /> : null
 }
