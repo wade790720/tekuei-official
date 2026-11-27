@@ -1,4 +1,4 @@
-/* ScrollShadow (src/components/ScrollShadow.jsx).
+/* ScrollShadow (src/components/ScrollShadow.tsx).
    A mask fades the content at each edge that has more to scroll. The script sets
    data-scroll-start / data-scroll-end; the fade length grows from 0 to --scroll-shadow-size. */
 

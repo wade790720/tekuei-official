@@ -64,7 +64,7 @@ figcaption {
   margin: 0;
 }
 
-/* A page that failed to draw (PageBoundary in App.jsx): two quiet lines in the middle of the screen. */
+/* A page that failed to draw (PageBoundary in App.tsx): two quiet lines in the middle of the screen. */
 .page-error {
   display: grid;
   place-content: center;

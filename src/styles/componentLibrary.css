@@ -1,4 +1,4 @@
-/* Dev-only component library page (/dev/component-library). Imported only by ComponentLibrary.jsx.
+/* Dev-only component library page (/dev/component-library). Imported only by ComponentLibrary.tsx.
    Layout after Radix Themes docs: a fixed sidebar, one page per entry, and a "本頁" nav on the right.
    Both navs are position: fixed, because html/body set overflow-x: hidden and that breaks sticky. */
 

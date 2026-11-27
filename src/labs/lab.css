@@ -1,4 +1,4 @@
-/* Lab page (LabPage.jsx), after a Framer Marketplace component page: heading and actions, a playable preview, the write-up, the other labs. */
+/* Lab page (LabPage.tsx), after a Framer Marketplace component page: heading and actions, a playable preview, the write-up, the other labs. */
 
 .lab {
   display: flex;
@@ -182,7 +182,7 @@
   }
 }
 
-/* Live page (LabLive.jsx): no scrollbar or reserved gutter, the piece fills the frame edge to edge. */
+/* Live page (LabLive.tsx): no scrollbar or reserved gutter, the piece fills the frame edge to edge. */
 html.has-scroll-document.lab-live-doc {
   scrollbar-width: none;
   scrollbar-gutter: auto;

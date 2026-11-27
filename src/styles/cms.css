@@ -674,7 +674,7 @@
 
 .cms-ed-gutter .btn--icon {
   width: 24px;
-  height: 24px; /* HANDLE in Editor.jsx */
+  height: 24px; /* HANDLE in Editor.tsx */
   color: var(--text-tertiary);
 }
 

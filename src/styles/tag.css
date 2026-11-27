@@ -1,4 +1,4 @@
-/* Tag (src/components/Tag.jsx). Plain: gold label text. Button: a pill in a filter bar.
+/* Tag (src/components/Tag.tsx). Plain: gold label text. Button: a pill in a filter bar.
    Gold marks the chosen pill and hover only, as everywhere else on the site. */
 
 .tag {

@@ -3,7 +3,7 @@
 .living-portrait {
   position: relative;
   background: var(--surface-0);
-  /* Fills the viewport (or the iframe on a lab page). heroFx.js scales the picture to cover it. */
+  /* Fills the viewport (or the iframe on a lab page). heroFx.ts scales the picture to cover it. */
   height: 100svh;
   overflow: hidden;
   touch-action: pan-y;
@@ -38,7 +38,7 @@
   position: absolute;
 }
 
-/* heroFx.js positions the images. They stay hidden until it has. */
+/* heroFx.ts positions the images. They stay hidden until it has. */
 .living-portrait__stage img {
   max-width: none;
   opacity: 0;

@@ -93,7 +93,7 @@
   --ember-whisper: var(--accent-a4);
 
   /* Page width. Content stops growing at --page-max; wider screens extend the sides.
-     heroFx.js has the same number as MAX_W. */
+     heroFx.ts has the same number as MAX_W. */
   --page-max: 1920px;
   --page-gutter: max(0px, (100vw - var(--page-max)) / 2);
   --page-pad: clamp(20px, 4vw, 68px);
