@@ -110,11 +110,6 @@
 }
 
 @media (max-width: 768px) {
-  /* A wide picture is cut to a tall slice here; --hero-focus says which part of its width to keep */
-  .project-hero__cover img {
-    object-position: var(--hero-focus, center) center;
-  }
-
   .project-hero__facts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

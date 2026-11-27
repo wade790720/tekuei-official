@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { labWorkItems } from '../labs/media.js'
 import { SiteFooter } from './SiteFooter.jsx'
-import { WORK_THUMBS } from '../data/workMedia.js'
+import { projectCover } from '../data/workMedia.js'
 import { projectLink, PROJECT_SECTIONS, PROJECTS_PAGE, projectTitle, projectType, WORK_LABELS } from '../data/work.js'
 import { useAdmin } from '../context/admin.js'
 import { useLang } from '../i18n'
@@ -109,7 +109,7 @@ export default function WorkListPage() {
       ...item,
       // A project nobody has filed yet still has to show up somewhere
       type: projectType(item),
-      thumbImage: WORK_THUMBS[item.id] ?? item.thumbImage,
+      thumbImage: { ...item.thumbImage, url: projectCover(item) },
       caseHref: projectLink(item, content),
     })),
     ...labWorkItems(lang, 1).map((item) => ({ ...item, type: 'side' })),

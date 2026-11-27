@@ -8,7 +8,7 @@ import { TagList } from './Tag.jsx'
 import { ProjectHero } from './work/ProjectHero.jsx'
 import { useAdmin } from '../context/admin.js'
 import { useWork } from '../context/work.js'
-import { projectCover, withProjectVideo, WORK_THUMBS } from '../data/workMedia.js'
+import { projectCover, withProjectVideo } from '../data/workMedia.js'
 import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, projectBody, projectFacts, projectNumber, projectTitle, projectType } from '../data/work.js'
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { useLang } from '../i18n'
@@ -70,7 +70,7 @@ export default function ProjectPage() {
   return (
     <div className="journal-page journal-page--post">
       <main>
-        {cover ? <ProjectHero cover={cover} focus={WORK_THUMBS[slug]?.coverFocus} num={`${t.num} ${projectNumber(content.items, slug)}`} title={title} facts={projectFacts(item, lang)} /> : null}
+        {cover ? <ProjectHero cover={cover} num={`${t.num} ${projectNumber(content.items, slug)}`} title={title} facts={projectFacts(item, lang)} /> : null}
         <article className={`journal-post project-post${cover ? ' project-post--cover' : ''}`} lang={untranslated ? 'zh-Hant' : undefined}>
           <header className="journal-post__header">
             {cover ? null : (

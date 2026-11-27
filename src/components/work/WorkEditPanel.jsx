@@ -7,7 +7,7 @@ import { DropdownMenu } from '../DropdownMenu.jsx'
 import { TranslateSection } from '../admin/TranslateSection.jsx'
 import { useWork } from '../../context/work.js'
 import { CODE_PROJECT_IDS, PROJECT_SECTIONS, projectBody, projectLink, projectTitle, projectType } from '../../data/work.js'
-import { WORK_THUMBS } from '../../data/workMedia.js'
+import { projectCover } from '../../data/workMedia.js'
 import { LABS } from '../../labs/index.js'
 import { CMS_LABELS as T } from '../../data/admin.js'
 import { useCmsEditing } from '../../hooks/useCmsEditing.js'
@@ -236,7 +236,7 @@ export function ProjectEditPanel({ id, coded = false }) {
       </FormRow>
       <FormRow
         label="封面圖"
-        hint={WORK_THUMBS[id]?.cover ? '這個專案的封面圖寫在程式碼裡（src/data/workMedia.js），這裡上傳的圖不會顯示' : '列表卡片和內頁的開場都用這張。橫式、寬 2000px 以上最合適，中英文共用'}
+        hint={projectCover(item) === item.thumbImage?.url ? '列表卡片和內頁的開場都用這張。橫式、寬 2000px 以上最合適，中英文共用' : '現在顯示的是程式碼裡的圖。在這裡上傳之後，就改用你上傳的'}
         error={uploadError}
       >
         <div className="cms-inline">
