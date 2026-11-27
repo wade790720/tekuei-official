@@ -6,7 +6,7 @@ import { AdminContext } from './admin.ts'
 import type { AdminState } from './admin.ts'
 
 // Only Wade opens the code gate, so it and cms.css load on first use, not for every visitor.
-const OtpGate = lazy(() => import('../components/admin/OtpGate.jsx').then((m) => ({ default: m.OtpGate })))
+const OtpGate = lazy(() => import('../components/admin/OtpGate.tsx').then((m) => ({ default: m.OtpGate })))
 
 // Ctrl+S (Windows) or ⌘+S (Mac):
 //   not logged in -> the code gate
