@@ -158,7 +158,7 @@ const { env } = context.get(cf)
 - `toggle` 改成 `navigate()` 到另一個語言的同一頁，帶 `preventScrollReset`，捲動位置不變。
 - `<html lang>` 改由 `src/root.tsx` 的 `Layout` 直接輸出，不在 effect 裡設。
 
-舊的 `localStorage` `lang` 不再讀取，第一次載入時刪掉。之前選了英文的讀者會先看到中文，再按一次語言按鈕，這一點列為待決定的事。
+`localStorage` 的 `lang` 不再決定畫面，只記讀者按語言按鈕時的選擇。讀者選過英文、之後點進中文網址時，hydrate 之後在瀏覽器裡換到同一頁的英文網址（見第十一節第 6 題），伺服器和爬蟲不受影響。
 
 ### 2.3 水波按鈕
 
@@ -355,7 +355,7 @@ JSON-LD、canonical、hreflang、og 寫進各頁元件和 `src/root.tsx`，`/sit
 
 #### 第五個 PR：編輯模式改用 loader 的資料，關閉公開的草稿
 
-`useCmsSection` 改成進入編輯模式時才取完整區段，儲存後 `revalidate()`，拿掉 `onSiteVersion`。如果 Wade 同意第十一節第 4 題，`GET /api/data` 加上 `adminGate`，`adminApi.ts` 取資料時帶 `Authorization`。
+`useCmsSection` 改成進入編輯模式時才取完整區段，儲存後 `revalidate()`，拿掉 `onSiteVersion`。`GET /api/data` 加上 `adminGate`（第十一節第 4 題），`adminApi.ts` 取資料時帶 `Authorization`。
 
 - 檢查：共通檢查、9.2 的完整編輯器測試（Journal、Projects、About 各一次）、換頁後未儲存的草稿還在、儲存後讀者畫面更新、`dataApi.test.ts` 新增「沒有密碼讀不到 `/api/data`」的測試。
 - 工作量：一天。
@@ -383,16 +383,23 @@ AGENTS.md（專案表、指令、資料夾表、坑的第 1 條改成本機 R2�
 - 第二到第四個 PR 之間，`tekuei-next` 的 SEO 比正式站差（注入的程式刪了，新的還沒做完），所以不能提早切換網域。
 - LIFF 報到只能在 LINE 裡測，切換之前沒辦法完整驗證。
 
-## 十一、需要 Wade 決定的事
+## 十一、已決定的事
 
-1. 用 React Router 8，不是 7。任務寫的是 7，但 7 已經不是最新的穩定版，`react-router-dom` 也只到 7。建議直接用 8.5.3，否則之後還要再遷移一次。
-2. 從 Cloudflare Pages 搬到 Workers。部署方式和 Git 連動會改，網域要移一次。建議搬，留在 Pages 沒有 Vite 外掛，本機開發會變差。
-3. Workers 的方案。建議先用 Free。Pages Functions 本來就算 Workers 的請求，現在的 Journal、Projects、About、sitemap 已經在用同一份免費額度（每天 100,000 次、每次 10 ms CPU），JS、CSS、圖片這些靜態檔在 Workers 上仍然免費、不限次數。差別只在首頁和 Lab 頁也會執行 Worker，個人網站的流量離每天 100,000 次很遠。真正要量的是 10 ms CPU，第二個 PR 量完如果超過，先用 Cache API 把每頁的 HTML 依網址和 `data.json` 的 ETag 快取起來，內容沒變就不重新畫，還是不夠才升 Paid（每月 5 美元）。
-4. `GET /api/data` 要不要加密碼。加了之後草稿不再公開（第 4 項），代價是每次進入編輯模式多算一次嘗試次數，全站鎖定時編輯器也載入不了，因為這碰到 admin 驗證，所以要你同意。建議加，之後有 session token 再改掉這個代價。
-5. CORS middleware 的型別要改一行。`functions/_middleware.ts` 的參數型別從 Pages 的 `EventContext` 改成只要 `request` 和 `next`，邏輯不動，否則 Worker 呼叫不了它。AGENTS.md 規定不改這個檔案，所以要問。
-6. 之前選了英文的讀者。建議不處理，他們第一次會看到中文，按一次語言按鈕就好。另一個做法是第一次載入時讀到 `localStorage` 的 `lang=en` 就轉到英文網址，代價是這些讀者會多載入一次。
-7. 哪些頁面有英文網址。建議 `/checkin` 和 `/labs/:slug/live` 只有一個網址，其他頁面都有 `/en`。
-8. 英文網址的結尾斜線。PRODUCT.md 寫的是 `/en/`，建議 canonical 一律不帶斜線（`/en`、`/en/journal`），`/en/` 301 到 `/en`，和中文網址的寫法一致。
+Wade 審核後同意第 1 到 5、7、8 題的建議，第 6 題改成下面的做法。
+
+1. 用 React Router 8.5.3。
+2. 從 Cloudflare Pages 搬到 Workers。
+3. 先用 Workers Free，第二個 PR 量 CPU 時間，超過時先用 Cache API 快取 HTML，還是不夠才升 Paid。Pages Functions 本來就算 Workers 的請求，靜態檔在 Workers 上仍然免費。
+4. `GET /api/data` 加上 `adminGate`。
+5. `functions/_middleware.ts` 的參數型別改成只要 `request` 和 `next`，邏輯不動。
+6. 英文和中文一樣重要，Wade 之後要接國外的案子。做法有三層：
+   - 每一頁都有完整的英文網址和 hreflang，從 Google 用英文搜尋的人直接進到 `/en`。
+   - 讀者按語言按鈕時記住選擇（`localStorage` 的 `lang`），之後點進中文網址時，在瀏覽器裡換到同一頁的英文網址。只記讀者自己的選擇，不依瀏覽器語言自動轉址，因為 Google 建議不要依語言自動轉址，爬蟲也會被轉走。
+   - 舊版存下的 `lang=en` 照樣有效，不用另外轉換。
+7. `/checkin` 和 `/labs/:slug/live` 只有一個網址。
+8. 網址不帶結尾斜線，`/en/` 301 到 `/en`。
+
+正式站的切換（第七個 PR）要在 Cloudflare 後台移網域和設定密鑰，Wade 在場時才做。在那之前，遷移的程式留在整合分支 `migrate/rr8`，因為 Pages 和 Git 連動，合進 `main` 就會重新部署正式站。
 
 ## 附錄：查證來源
 
