@@ -95,7 +95,7 @@ html.has-scroll-document body {
   font-family: var(--font-label);
 }
 
-/* measureLines.js draws here: dimension lines for the header, in the label type */
+/* measureLines.ts draws here: dimension lines for the header, in the label type */
 .work-page-header__measure {
   position: absolute;
   z-index: -1;

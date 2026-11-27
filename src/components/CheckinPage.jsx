@@ -11,7 +11,7 @@ import {
   isCheckinDevBypass,
   isCheckinLiveSubmit,
 } from '../data/checkin.js'
-import { digitsToE164, validateCheckinPhone } from '../lib/phoneE164.js'
+import { digitsToE164, validateCheckinPhone } from '../lib/phoneE164.ts'
 import { useLang } from '../i18n'
 import '../styles/checkin.css'
 

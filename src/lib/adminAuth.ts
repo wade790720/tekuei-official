@@ -6,17 +6,30 @@ const KEY = 'admin/attempts.json'
 export const MAX_FAILS = 5
 export const WINDOW_MS = 15 * 60 * 1000
 
-/**
- * @param {Request} request  carries `Authorization: Bearer <code>`
- * @param {{ ADMIN_SECRET?: string, BUCKET: R2Bucket }} env
- * @returns {Promise<'ok' | 'denied' | 'locked'>}
- */
-export async function checkAdmin(request, env, now = Date.now()) {
+// The parts of R2Bucket used here, so this file also type-checks in the browser project, which has no workers types.
+interface AttemptsBucket {
+  get(key: string): Promise<{ etag: string; json(): Promise<unknown> } | null>
+  put(key: string, value: string, options?: { onlyIf: { etagMatches: string } }): Promise<unknown>
+}
+export interface AdminEnv {
+  ADMIN_SECRET?: string
+  BUCKET: AttemptsBucket
+}
+interface Attempts {
+  fails: number
+  since: number
+}
+const isAttempts = (v: unknown): v is Attempts =>
+  typeof v === 'object' && v !== null && 'fails' in v && 'since' in v && typeof v.fails === 'number' && typeof v.since === 'number'
+
+/** @param request  carries `Authorization: Bearer <code>` */
+export async function checkAdmin(request: Request, env: AdminEnv, now = Date.now()): Promise<'ok' | 'denied' | 'locked'> {
   const secret = env.ADMIN_SECRET
   if (!secret) return 'denied'
 
   const prev = await env.BUCKET.get(KEY)
-  let state = prev ? await prev.json().catch(() => null) : null
+  const saved = prev ? await prev.json().catch(() => null) : null
+  let state = isAttempts(saved) ? saved : null
   if (!state || !(now - state.since <= WINDOW_MS)) state = { fails: 0, since: now }
   if (state.fails >= MAX_FAILS) return 'locked'
 
@@ -35,11 +48,11 @@ export async function checkAdmin(request, env, now = Date.now()) {
   return ok ? 'ok' : 'denied'
 }
 
-export const json = (body, status = 200) =>
+export const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
 
 /** The error response for a failed check, or null when the request may go on. */
-export async function adminGate(request, env) {
+export async function adminGate(request: Request, env: AdminEnv): Promise<Response | null> {
   const result = await checkAdmin(request, env)
   if (result === 'ok') return null
   if (result === 'locked') return json({ error: 'Too many attempts', locked: true }, 429)

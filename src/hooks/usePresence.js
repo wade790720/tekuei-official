@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { tokenMs } from '../lib/tokenMs.js'
+import { tokenMs } from '../lib/tokenMs.ts'
 
 /**
  * Keeps an element mounted for the `exitToken` duration (a tokens.css name) after `open` turns false, so its exit animation can play.

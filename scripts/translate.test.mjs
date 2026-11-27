@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { onRequestPost } from '../functions/api/translate.js'
-import { batchTexts, docSlots } from '../src/lib/docTranslate.js'
+import { batchTexts, docSlots } from '../src/lib/docTranslate.ts'
 import { fakeR2 } from './fakeR2.mjs'
 
 const doc = {

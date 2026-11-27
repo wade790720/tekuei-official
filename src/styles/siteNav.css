@@ -184,7 +184,7 @@
   right: calc(var(--page-gutter) + var(--page-pad));
 }
 
-/* Water ripple after the language switch (waterRipple.js). The canvas is a coarse grid, stretched and smoothed. */
+/* Water ripple after the language switch (waterRipple.ts). The canvas is a coarse grid, stretched and smoothed. */
 .water-ripple {
   position: fixed;
   inset: 0;

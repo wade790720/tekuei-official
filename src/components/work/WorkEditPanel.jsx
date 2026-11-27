@@ -12,8 +12,8 @@ import { LABS } from '../../labs/index.js'
 import { CMS_LABELS as T } from '../../data/admin.js'
 import { useCmsEditing } from '../../hooks/useCmsEditing.js'
 import { useLang } from '../../i18n'
-import { uploadSiteImage } from '../../lib/adminApi.js'
-import { emptyDoc, getDoc } from '../../lib/richText.js'
+import { uploadSiteImage } from '../../lib/adminApi.ts'
+import { emptyDoc, getDoc } from '../../lib/richText.ts'
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 // Ids a new project cannot take: a project that began in code keeps its id even after it is deleted, and each lab has a card.

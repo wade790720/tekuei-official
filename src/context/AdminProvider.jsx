@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ADMIN_SESSION_KEY } from '../data/admin.js'
-import { getAdminToken, loginAdmin } from '../lib/adminApi.js'
+import { getAdminToken, loginAdmin } from '../lib/adminApi.ts'
 import { AdminContext } from './admin.js'
 
 // Only Wade opens the code gate, so it and cms.css load on first use, not for every visitor.

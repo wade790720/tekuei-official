@@ -19,7 +19,7 @@
   -webkit-user-select: none;
 }
 
-/* Both canvases fill the pond and end at the content edge. grainHaze.js draws the light under the koi. */
+/* Both canvases fill the pond and end at the content edge. grainHaze.ts draws the light under the koi. */
 .home-koi__haze,
 .home-koi__pond {
   position: absolute;
@@ -29,7 +29,7 @@
   color: var(--text-primary);
 }
 
-/* koiPond.js draws here and reads the font and these three colours. */
+/* koiPond.ts draws here and reads the font and these three colours. */
 .home-koi__pond {
   font-family: var(--font-label);
   --koi-mark: var(--ember);

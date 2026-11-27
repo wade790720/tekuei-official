@@ -2,8 +2,8 @@ import { lazy, Suspense } from 'react'
 import { useAdmin } from '../../context/admin.js'
 import { useJournal } from '../../context/journal.js'
 import { useLang } from '../../i18n'
-import { uploadSiteImage } from '../../lib/adminApi.js'
-import { getDoc } from '../../lib/richText.js'
+import { uploadSiteImage } from '../../lib/adminApi.ts'
+import { getDoc } from '../../lib/richText.ts'
 import { RichText } from '../RichText.jsx'
 
 // Tiptap is large; load it only when Wade opens a post in edit mode, not for every visitor.

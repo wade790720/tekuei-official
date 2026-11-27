@@ -5,10 +5,11 @@ export const MAX_IMAGE_BYTES = 1024 * 1024
 const MAX_EDGE = 2000
 const KEEP_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
-const toBlob = (canvas, type, quality) => new Promise((resolve) => canvas.toBlob(resolve, type, quality))
+const toBlob = (canvas: HTMLCanvasElement, type: string, quality: number) =>
+  new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, type, quality))
 
 // Safari cannot encode WEBP and quietly returns PNG, so fall back to JPEG there.
-async function encode(canvas, quality) {
+async function encode(canvas: HTMLCanvasElement, quality: number) {
   const webp = await toBlob(canvas, 'image/webp', quality)
   if (webp?.type === 'image/webp') return webp
   return toBlob(canvas, 'image/jpeg', quality)
@@ -20,11 +21,11 @@ async function encode(canvas, quality) {
  * @param {File} file
  * @returns {Promise<File>}
  */
-export async function compressImage(file) {
+export async function compressImage(file: File): Promise<File> {
   if (!file.type.startsWith('image/')) throw new Error('只支援圖片檔')
   if (KEEP_TYPES.includes(file.type) && file.size <= MAX_IMAGE_BYTES) return file
 
-  let bitmap
+  let bitmap: ImageBitmap
   try {
     bitmap = await createImageBitmap(file)
   } catch {
@@ -37,7 +38,7 @@ export async function compressImage(file) {
       const canvas = document.createElement('canvas')
       canvas.width = Math.round(bitmap.width * scale)
       canvas.height = Math.round(bitmap.height * scale)
-      canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+      canvas.getContext('2d')?.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
       const blob = await encode(canvas, quality)
       if (blob && blob.size <= MAX_IMAGE_BYTES) {
         const name = file.name.replace(/\.[^.]*$/, '') || 'image'

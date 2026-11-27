@@ -997,7 +997,7 @@ export const GROUPS = [
       {
         id: 'glyph-field',
         name: 'mountGlyphField',
-        file: 'src/lib/glyphField.js',
+        file: 'src/lib/glyphField.ts',
         summary: '持續落下的暗淡字元，游標附近的字元變亮',
         hero: { demo: 'glyph', code: `useEffect(() => mountGlyphField(glyphs.current), [])` },
         api: [
@@ -1012,7 +1012,7 @@ export const GROUPS = [
       {
         id: 'measure-lines',
         name: 'mountMeasureLines',
-        file: 'src/lib/measureLines.js',
+        file: 'src/lib/measureLines.ts',
         summary: '頁首的量測標註線：標出寬度和高度的尺寸線，尺上的小三角形跟著游標的水平位置移動',
         hero: { demo: 'measure', code: `useEffect(() => mountMeasureLines(canvas.current, { block: block.current }), [])` },
         api: [
@@ -1037,7 +1037,7 @@ export const GROUPS = [
       {
         id: 'koi-pond',
         name: 'mountKoiPond',
-        file: 'src/lib/koiPond.js',
+        file: 'src/lib/koiPond.ts',
         summary: '字元拼成的錦鯉在畫面裡游，點一下丟飼料，附近的錦鯉游過來吃',
         hero: { demo: 'koi', code: `useEffect(() => mountKoiPond(canvas.current, { surface: root.current, onCount: setCount }), [])` },
         api: [
@@ -1069,7 +1069,7 @@ export const GROUPS = [
       {
         id: 'grain-haze',
         name: 'mountGrainHaze',
-        file: 'src/lib/grainHaze.js',
+        file: 'src/lib/grainHaze.ts',
         summary: '一塊柔邊的光碎成沙粒，明暗很慢地流動',
         hero: { demo: 'haze', code: `useEffect(() => mountGrainHaze(canvas.current), [])` },
         api: [
@@ -1120,7 +1120,7 @@ export const GROUPS = [
       {
         id: 'water-ripple',
         name: 'playWaterRipple',
-        file: 'src/lib/waterRipple.js',
+        file: 'src/lib/waterRipple.ts',
         summary: '在一個點滴下水滴，水波 0.8 秒內擴散到畫面對角，整頁文字跟著扭曲，1 秒內結束',
         hero: { demo: 'ripple', code: `playWaterRipple(e.clientX, e.clientY, toggleLang)` },
         api: [
@@ -1151,7 +1151,7 @@ export const GROUPS = [
       {
         id: 'reveal',
         name: 'mountReveal',
-        file: 'src/lib/reveal.js',
+        file: 'src/lib/reveal.ts',
         summary: '元素露出 15% 時加上 is-visible，全站的淡入都用它',
         hero: { demo: 'fade', code: `<Link to={href} className="fade-in journal-card">…</Link>` },
         api: [
@@ -1180,7 +1180,7 @@ export const GROUPS = [
       {
         id: 'ui-sound',
         name: 'playSound',
-        file: 'src/lib/uiSound.js',
+        file: 'src/lib/uiSound.ts',
         summary: '點擊連結和按鈕時的短音效，用 Web Audio 即時合成，沒有音檔',
         hero: { demo: 'sounds', code: `<button type="button" data-sound="select">…</button>` },
         api: [

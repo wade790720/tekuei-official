@@ -1,4 +1,11 @@
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import type { CountryCode } from 'libphonenumber-js'
+
+/** What react-phone-input-2 reports about the chosen country. */
+export interface PhoneCountry {
+  dialCode?: string
+  countryCode?: string
+}
 
 const MOBILE_TYPES = new Set(['MOBILE', 'FIXED_LINE_OR_MOBILE'])
 
@@ -6,16 +13,13 @@ const MOBILE_TYPES = new Set(['MOBILE', 'FIXED_LINE_OR_MOBILE'])
  * 將 react-phone-input-2 的 value（國碼+號碼數字）轉成標準 E.164
  * 例：8860912869565 → +886912869565（去掉 trunk 0）
  *
- * @param {string} value
- * @param {{ dialCode?: string, countryCode?: string } | null} [country]
  */
-export function digitsToE164(value, country = null) {
+export function digitsToE164(value: string | null | undefined, country: PhoneCountry | null = null): string {
   const digits = String(value || '').replace(/\D/g, '')
   if (!digits) return ''
 
-  const iso = country?.countryCode
-    ? String(country.countryCode).toUpperCase()
-    : undefined
+  // An unknown code makes libphonenumber return undefined, which falls through to the next attempt.
+  const iso = country?.countryCode ? (country.countryCode.toUpperCase() as CountryCode) : undefined
   const dial = String(country?.dialCode || '').replace(/\D/g, '')
 
   // 優先用 libphonenumber 依國家解析（會自動去掉 trunk prefix）
@@ -45,7 +49,7 @@ export function digitsToE164(value, country = null) {
 }
 
 /** 例：+886912869565（僅格式，不保證為有效手機） */
-export function isValidE164(phone) {
+export function isValidE164(phone: string): boolean {
   if (!/^\+[1-9]\d{7,14}$/.test(phone)) return false
   const parsed = parsePhoneNumberFromString(phone)
   return Boolean(parsed?.isValid())
@@ -53,9 +57,11 @@ export function isValidE164(phone) {
 
 /**
  * 報到用：必須是有效手機（含 FIXED_LINE_OR_MOBILE）
- * @returns {{ ok: boolean, e164: string, reason: 'empty' | 'invalid' | null }}
  */
-export function validateCheckinPhone(value, country = null) {
+export function validateCheckinPhone(
+  value: string | null | undefined,
+  country: PhoneCountry | null = null,
+): { ok: boolean; e164: string; reason: 'empty' | 'invalid' | null } {
   const digits = String(value || '').replace(/\D/g, '')
   if (!digits) {
     return { ok: false, e164: '', reason: 'empty' }

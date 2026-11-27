@@ -7,8 +7,20 @@
 
 const SILENT = 1e-4 // setTargetAtTime never reaches 0
 
+type Frequency = number | { start: number; end: number }
+type Source =
+  | { type: 'noise'; color: 'white' | 'pink' }
+  | { type: OscillatorType; frequency: Frequency; fm?: { ratio: number; depth: number } }
+interface Layer {
+  source: Source
+  filter?: { type: BiquadFilterType; frequency: number; resonance?: number }
+  envelope: { attack?: number; decay: number; sustain?: number; release?: number }
+  delay?: number
+  gain?: number
+}
+
 /** @type {Record<string, { layers: object[] }>} */
-export const SOUNDS = {
+export const SOUNDS: Record<string, { layers: Layer[] }> = {
   press: {
     layers: [
       { source: { type: 'noise', color: 'white' }, filter: { type: 'bandpass', frequency: 2100, resonance: 0.9 }, envelope: { attack: 0, decay: 0.006, release: 0.003 }, gain: 0.124 },
@@ -97,20 +109,21 @@ export const SOUNDS = {
   },
 }
 
-let ctx = null
-const noiseCache = new Map()
+let ctx: AudioContext | null = null
+const noiseCache = new Map<string, AudioBuffer>()
 const reducedMotion = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : null
 
-function audio() {
+function audio(): AudioContext {
   if (!ctx || ctx.state === 'closed') ctx = new AudioContext()
   if (ctx.state === 'suspended') ctx.resume()
   return ctx
 }
 
 // One second of noise per colour, reused. Pink is Paul Kellet's filter on white noise.
-function noise(ac, color) {
+function noise(ac: BaseAudioContext, color: string): AudioBuffer {
   const key = `${color}@${ac.sampleRate}`
-  if (noiseCache.has(key)) return noiseCache.get(key)
+  const cached = noiseCache.get(key)
+  if (cached) return cached
   const buffer = ac.createBuffer(1, ac.sampleRate, ac.sampleRate)
   const d = buffer.getChannelData(0)
   let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0
@@ -133,7 +146,7 @@ function noise(ac, color) {
   return buffer
 }
 
-function playLayer(ac, { source, filter, envelope, delay = 0, gain = 0.5 }) {
+function playLayer(ac: AudioContext, { source, filter, envelope, delay = 0, gain = 0.5 }: Layer) {
   const t = ac.currentTime + delay
   const { attack = 0, decay, sustain = 0, release = 0 } = envelope
   const length = attack + decay + release
@@ -148,8 +161,8 @@ function playLayer(ac, { source, filter, envelope, delay = 0, gain = 0.5 }) {
     amp.gain.setTargetAtTime(SILENT, t + attack + decay, release / 3)
   } else amp.gain.setTargetAtTime(SILENT, t + attack, decay / 3)
 
-  const nodes = [amp]
-  let src
+  const nodes: AudioNode[] = [amp]
+  let src: AudioBufferSourceNode | OscillatorNode
   if (source.type === 'noise') {
     src = ac.createBufferSource()
     src.buffer = noise(ac, source.color)
@@ -175,7 +188,7 @@ function playLayer(ac, { source, filter, envelope, delay = 0, gain = 0.5 }) {
   }
   nodes.push(src)
 
-  let out = src
+  let out: AudioNode = src
   if (filter) {
     const biquad = ac.createBiquadFilter()
     biquad.type = filter.type
@@ -194,7 +207,7 @@ function playLayer(ac, { source, filter, envelope, delay = 0, gain = 0.5 }) {
  * Play one of SOUNDS. Call it from a user gesture (click, key): browsers start audio only after one.
  * @param {keyof typeof SOUNDS} name
  */
-export function playSound(name) {
+export function playSound(name: string) {
   const sound = SOUNDS[name]
   if (!sound || reducedMotion?.matches || typeof AudioContext !== 'function') return
   const ac = audio()
@@ -208,10 +221,11 @@ export function playSound(name) {
  * @param {Element} target
  * @returns {string | null}
  */
-export function soundFor(target) {
+export function soundFor(target: Element): string | null {
   const el = target.closest('[data-sound], [role^="menuitem"], button, a[href], [role="button"]')
   if (!el) return null
-  if (el.dataset.sound) return el.dataset.sound === 'off' ? null : el.dataset.sound
+  const sound = el.getAttribute('data-sound')
+  if (sound) return sound === 'off' ? null : sound
   if (el.getAttribute('role')?.startsWith('menuitem')) return 'select'
   if (el.classList.contains('cms-save')) return 'press'
   if (el.matches('a[href]')) return 'pressGhost'
@@ -222,8 +236,8 @@ export function soundFor(target) {
  * Every link and button click on the page plays its sound (see soundFor). Returns cleanup.
  * One listener on the document, so new components need no wiring.
  */
-export function mountClickSounds(root = document) {
-  const onClick = (e) => {
+export function mountClickSounds(root: Document = document): () => void {
+  const onClick = (e: MouseEvent) => {
     if (!(e.target instanceof Element)) return
     const name = soundFor(e.target)
     if (name) playSound(name)

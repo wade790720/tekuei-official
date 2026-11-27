@@ -6,11 +6,11 @@ import { TextField } from '../TextField.jsx'
 import { Button } from '../Button.jsx'
 import { TranslateSection } from '../admin/TranslateSection.jsx'
 import { useJournal } from '../../context/journal.js'
-import { differsOnlyIn, parseTags, postTags, today } from '../../data/journal.js'
+import { differsOnlyIn, parseTags, postTags, today } from '../../data/journal.ts'
 import { CMS_LABELS as T } from '../../data/admin.js'
 import { useCmsEditing } from '../../hooks/useCmsEditing.js'
 import { useLang } from '../../i18n'
-import { emptyDoc, getDoc } from '../../lib/richText.js'
+import { emptyDoc, getDoc } from '../../lib/richText.ts'
 
 const LANGS = ['zh', 'en']
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/

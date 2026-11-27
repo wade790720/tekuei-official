@@ -7,7 +7,7 @@ import { projectCover } from '../data/workMedia.js'
 import { projectLink, PROJECT_SECTIONS, PROJECTS_PAGE, projectTitle, projectType, WORK_LABELS } from '../data/work.js'
 import { useAdmin } from '../context/admin.js'
 import { useLang } from '../i18n'
-import { mountMeasureLines } from '../lib/measureLines.js'
+import { mountMeasureLines } from '../lib/measureLines.ts'
 import '../styles/work.css'
 
 // Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.

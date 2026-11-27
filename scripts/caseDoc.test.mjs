@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { caseDoc } from '../src/lib/caseDoc.js'
+import { caseDoc } from '../src/lib/caseDoc.ts'
 
 const data = {
   videos: [{ src: 'v.mp4', poster: 'v.webp', caption: 'Home' }],

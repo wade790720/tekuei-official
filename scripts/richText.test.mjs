@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { blocksToDoc, docText, getDoc, hasBody, safeHref, youtubeId } from '../src/lib/richText.js'
+import { blocksToDoc, docText, getDoc, hasBody, safeHref, youtubeId } from '../src/lib/richText.ts'
 
 describe('youtubeId', () => {
   it('reads share, watch, Shorts and embed links', () => {

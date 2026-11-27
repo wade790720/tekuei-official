@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { localizeWork, projectLink, publishedWork, withCodeProjects } from '../src/lib/projectHref.js'
+import { localizeWork, projectLink, publishedWork, withCodeProjects } from '../src/lib/projectHref.ts'
 
 const CODE = [{ id: 'sre', title: 'SRE', link: 'https://example.com/', page: { zh: '中文', en: 'English' } }]
 const saved = () => ({ items: [{ id: 'matsu', title: 'Biennial', titleEmWord: 'Matsu', caseHref: '/cases/matsu' }] })

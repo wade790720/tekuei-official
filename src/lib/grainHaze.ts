@@ -4,7 +4,7 @@
 // The shader is written for this site. Her grain and blur textures are replaced by a hash and a formula.
 // The colour comes from CSS `color`.
 
-import { cssRgb } from './cssRgb.js'
+import { cssRgb } from './cssRgb.ts'
 
 const P5_CONTRAST = 0.45 // her lightest grey (0.5) over her background (0.05)
 const SHARE = 0.375 // ours is 35 to 40% as strong as hers
@@ -87,8 +87,9 @@ void main() {
   gl_FragColor = vec4(tint * alpha, alpha);
 }`
 
-function compile(gl, type, source) {
+function compile(gl: WebGLRenderingContext, type: number, source: string) {
   const shader = gl.createShader(type)
+  if (!shader) return null
   gl.shaderSource(shader, source)
   gl.compileShader(shader)
   return shader
@@ -98,13 +99,16 @@ function compile(gl, type, source) {
  * @param {HTMLCanvasElement} canvas  size comes from CSS; it is decoration, give it aria-hidden
  * @returns {() => void} cleanup
  */
-export function mountGrainHaze(canvas) {
+export function mountGrainHaze(canvas: HTMLCanvasElement): () => void {
   const gl = canvas.getContext('webgl', { antialias: false })
   if (!gl) return () => {} // no WebGL: the page keeps its plain background
 
   const program = gl.createProgram()
-  gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, VERTEX))
-  gl.attachShader(program, compile(gl, gl.FRAGMENT_SHADER, FRAGMENT))
+  const vertex = compile(gl, gl.VERTEX_SHADER, VERTEX)
+  const fragment = compile(gl, gl.FRAGMENT_SHADER, FRAGMENT)
+  if (!vertex || !fragment) return () => {}
+  gl.attachShader(program, vertex)
+  gl.attachShader(program, fragment)
   gl.linkProgram(program)
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return () => {}
   gl.useProgram(program)
@@ -116,7 +120,7 @@ export function mountGrainHaze(canvas) {
   gl.enableVertexAttribArray(corner)
   gl.vertexAttribPointer(corner, 2, gl.FLOAT, false, 0, 0)
 
-  const uniform = (name) => gl.getUniformLocation(program, name)
+  const uniform = (name: string) => gl.getUniformLocation(program, name)
   const [r, g, b] = cssRgb(getComputedStyle(canvas).color)
   gl.uniform3f(uniform('tint'), r / 255, g / 255, b / 255)
   gl.uniform1f(uniform('strength'), P5_CONTRAST * SHARE)
@@ -125,12 +129,12 @@ export function mountGrainHaze(canvas) {
   const time = uniform('time')
 
   const started = performance.now()
-  function draw() {
+  const draw = () => {
     gl.uniform1f(time, (performance.now() - started) / 1000)
     gl.drawArrays(gl.TRIANGLES, 0, 3)
   }
 
-  function resize() {
+  const resize = () => {
     const rect = canvas.getBoundingClientRect()
     if (rect.width < 1 || rect.height < 1) return
     const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR)
@@ -149,7 +153,7 @@ export function mountGrainHaze(canvas) {
   let raf = 0
   let last = 0
   let onScreen = true
-  const loop = (now) => {
+  const loop = (now: number) => {
     raf = requestAnimationFrame(loop)
     if (now - last < FRAME_MS) return
     last = now

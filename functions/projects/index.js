@@ -1,4 +1,4 @@
-import { projectsIndexPage, servePage, siteCases } from '../../src/lib/seo.js'
+import { projectsIndexPage, servePage, siteCases } from '../../src/lib/seo.ts'
 import { PROJECTS_PAGE, WORK_ITEMS } from '../../src/data/work.js'
 
 export const onRequestGet = (ctx) =>

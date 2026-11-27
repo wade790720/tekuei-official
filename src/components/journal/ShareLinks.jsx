@@ -3,9 +3,9 @@ import { Button } from '../Button.jsx'
 import { CheckIcon } from '../CodeBlock.jsx'
 import { SOCIAL_ICONS } from '../socialIcons.jsx'
 import { TooltipGroup } from '../Tooltip.jsx'
-import { JOURNAL_POST_LABELS } from '../../data/journal.js'
+import { JOURNAL_POST_LABELS } from '../../data/journal.ts'
 import { useLang } from '../../i18n'
-import { writeClipboard } from '../../lib/clipboard.js'
+import { writeClipboard } from '../../lib/clipboard.ts'
 
 const SHOWN_MS = 1600 // how long the copy button shows its tick
 

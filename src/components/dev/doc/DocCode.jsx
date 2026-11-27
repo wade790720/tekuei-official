@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { tokenize } from '../../../lib/highlight.js'
+import { tokenize } from '../../../lib/highlight.ts'
 
 /**
  * Highlighted code on its own (token lists, install steps). Example puts the same block under a preview.

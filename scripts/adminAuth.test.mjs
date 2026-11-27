@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { checkAdmin, MAX_FAILS, WINDOW_MS } from '../src/lib/adminAuth.js'
+import { checkAdmin, MAX_FAILS, WINDOW_MS } from '../src/lib/adminAuth.ts'
 import { fakeR2 as fakeBucket } from './fakeR2.mjs'
 
 const req = (code) => new Request('https://x/api', { headers: { Authorization: `Bearer ${code}` } })

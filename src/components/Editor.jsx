@@ -1,5 +1,5 @@
 // Rich-text editor (Tiptap): toolbar, card node views and the document schema, in one file.
-// Outputs the document format that RichText renders (see src/lib/richText.js).
+// Outputs the document format that RichText renders (see src/lib/richText.ts).
 import { memo, useEffect, useEffectEvent, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Blockquote from '@tiptap/extension-blockquote'
@@ -15,7 +15,7 @@ import { Switch } from './Switch.jsx'
 import { SortRows } from './SidePanel.jsx'
 import { Button } from './Button.jsx'
 import { TooltipGroup } from './Tooltip.jsx'
-import { safeHref } from '../lib/richText.js'
+import { safeHref } from '../lib/richText.ts'
 
 
 // In-editor views for the custom journal nodes.
@@ -133,7 +133,7 @@ function QuoteView({ node, updateAttributes }) {
   )
 }
 
-// The highlighter (src/lib/highlight.js) uses one grammar for all of these; the choice sets the label and # comments.
+// The highlighter (src/lib/highlight.ts) uses one grammar for all of these; the choice sets the label and # comments.
 const CODE_LANGS = [
   { value: 'ts', label: 'TypeScript' },
   { value: 'tsx', label: 'TSX' },
@@ -509,7 +509,7 @@ function CarouselView({ node, updateAttributes, deleteNode, selected, extension,
 }
 
 
-// Tiptap extensions for the journal editor. The node names and attributes match src/lib/richText.js,
+// Tiptap extensions for the journal editor. The node names and attributes match src/lib/richText.ts,
 // which documents the stored format, and RichText.jsx, which renders it on the site.
 
 const attr = (name, fallback = '') => ({
@@ -686,7 +686,7 @@ function editorExtensions({ upload, placeholder, slash }) {
 
 /**
  * Rich-text editor for a post body, with a Framer-style toolbar.
- * The document is the editor's own JSON (src/lib/richText.js). doc, onChange and upload are read once on mount;
+ * The document is the editor's own JSON (src/lib/richText.ts). doc, onChange and upload are read once on mount;
  * remount with a new key to load a different post. Only `previewing` re-renders it, so typing upstream does not.
  * @param {{
  *   doc: object, onChange: (doc: object) => void, upload: (file: File) => Promise<string>,

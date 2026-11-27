@@ -1,4 +1,4 @@
-import { cloneJournal, copyJournalDraft, getDefaultJournal, stampUpdated, today } from '../data/journal.js'
+import { cloneJournal, copyJournalDraft, getDefaultJournal, stampUpdated, today } from '../data/journal.ts'
 import { useCmsSection } from '../hooks/useCmsSection.js'
 import { JournalContext } from './journal.js'
 
