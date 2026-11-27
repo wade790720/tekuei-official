@@ -26,3 +26,7 @@ ts	phase	decision	why	evidence	result
 2026-11-27T15:35:23Z	phaseB	先把剩下 118 個檔一次改名並 commit（typecheck 暫時紅），再讓子代理各自在獨立 worktree 修型別；第一波：UI 基本元件、Editor、labs、functions+scripts；第二波：頁面與子資料夾、Component Library	多個代理同時跑改名 codemod 會互相改到對方檔案；先統一改名，每個代理只碰自己的檔案，合併不衝突；基本元件先有型別，頁面才拿得到正確的 props	16071fd	test 124 pass, build ok, typecheck red
 2026-11-27T15:41:08Z	B	fallScene 畫面外停止 rAF	原本畫布在畫面外（例如 iframe 捲出視窗）仍持續重繪，違反 DESIGN.md；改用 IntersectionObserver 暫停與恢復，減少動態效果時維持單張靜止畫面	src/labs/falling-figure/fallScene.ts	完成
 2026-11-27T15:41:08Z	B	Canvas 2D context 用執行期檢查	getContext 回傳 null 時不再拋錯：效果直接略過並回傳空的 cleanup，shatterImage 仍呼叫 onPlay 讓頁尾文字顯示	src/labs/shatter-footer/shatterImage.ts	完成
+2026-11-27T15:46:21Z	B	Editor 節點屬性用 attrsOf<A>(node) 一處轉型	ProseMirror 的 Attrs 是 any 值的索引型別，無法直接指定給介面；schema 為每個宣告的屬性補預設值，就是執行期的保證	src/components/Editor.tsx attrsOf	各 NodeView 讀到具名屬性型別，只有一個 as
+2026-11-27T15:46:21Z	B	選單回傳的 string 用 isBlockKind 收窄成 BlockKind	DropdownMenu 和 MenuItems 的 onSelect/onPick 依 JSDoc 是 (value: string)，applyBlock 只接受 BlockKind	src/components/Editor.tsx isBlockKind	不依賴 UI 元件是否改成泛型
+2026-11-27T15:46:22Z	B	getPos() 為 undefined 時不拖曳圖組、找不到 .cms-ed 時不畫格式工具列	Tiptap 3 的 getPos 可能回 undefined，closest 可能回 null；原本會丟例外	src/components/Editor.tsx moveTo、Toolbar	正常情況行為不變，例外情況改成什麼都不做
+2026-11-27T15:46:22Z	B	'@tiptap/core Commands 模組擴充宣告 setLead	Lead 節點的自訂指令要讓 chain().setLead() 有型別	src/components/Editor.tsx declare module	不用轉型
