@@ -11,7 +11,7 @@ const SHOWN_MS = 1600 // how long the copy button shows its tick
 
 // Where each service takes a link to share. The names are brand names, the same in both languages.
 const SERVICES = [
-  { name: 'LINE', icon: <LineIcon />, href: (url) => `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}` },
+  { name: 'LINE', icon: <LineIcon />, href: (url: string) => `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}` },
   {
     name: 'Facebook',
     icon: (
@@ -19,7 +19,7 @@ const SERVICES = [
         {SOCIAL_ICONS.Facebook}
       </svg>
     ),
-    href: (url) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+    href: (url: string) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
   },
 ]
 
@@ -27,7 +27,7 @@ const SERVICES = [
 export function ShareLinks() {
   const { lang } = useLang()
   const t = JOURNAL_POST_LABELS[lang]
-  const [result, setResult] = useState('') // 'copied' | 'failed' | ''
+  const [result, setResult] = useState<'copied' | 'failed' | ''>('')
   // Without the query and hash: those belong to this visit, not to the post.
   const url = `${window.location.origin}${window.location.pathname}`
 

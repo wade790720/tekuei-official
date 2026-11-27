@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { SiteFooter } from './SiteFooter.tsx'
 import { TagList } from './Tag.tsx'
@@ -10,6 +11,7 @@ import { getDoc } from '../lib/richText.ts'
 import { useJournal } from '../context/journal.ts'
 import { useAdmin } from '../context/admin.ts'
 import { getAdjacentPosts, getJournalPost, JOURNAL_POST_LABELS, postTags, readableJournal } from '../data/journal.ts'
+import type { ReadableJournal } from '../data/journal.ts'
 import { useLang } from '../i18n'
 import '../styles/work.css'
 import '../styles/journal.css'
@@ -17,18 +19,23 @@ import '../styles/journal.css'
 // Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.
 const JournalPostEditPanel = lazy(() => import('./journal/JournalEditPanel.tsx').then((m) => ({ default: m.JournalPostEditPanel })))
 
+/** How many posts were read since the list, from the history entry's state (0: not opened from the list). */
+function listDepth(state: unknown): number {
+  return typeof state === 'object' && state !== null && 'fromList' in state && typeof state.fromList === 'number' ? state.fromList : 0
+}
+
 export default function JournalPostPage() {
-  const { slug } = useParams()
+  const { slug = '' } = useParams<{ slug: string }>()
   const { lang } = useLang()
-  const fromList = useLocation().state?.fromList
+  const fromList = listDepth(useLocation().state)
   const t = JOURNAL_POST_LABELS[lang]
   const { content: stored, loading } = useJournal()
   const { editing } = useAdmin()
   // While editing, the page shows the real English draft, even when it is still empty
-  const journal = editing ? stored : readableJournal(stored)
+  const journal: ReadableJournal = editing ? stored : readableJournal(stored)
   const post = getJournalPost(journal, slug, lang)
   const content = slug ? journal.content[lang]?.[slug] : null
-  const { prev, next } = getAdjacentPosts(journal, slug ?? '', lang)
+  const { prev, next } = getAdjacentPosts(journal, slug, lang)
 
   const sig = lang === 'zh' ? '— 德 溎 · TEKUEI' : '— W A D E · TEKUEI'
 
@@ -96,7 +103,7 @@ export default function JournalPostPage() {
           <div className="journal-post__sig">{sig}</div>
           <nav className="journal-post__nav" aria-label="post navigation">
             {prev ? (
-              <Link to={`/journal/${prev.slug}`} state={fromList && { fromList: fromList + 1 }} className="journal-post__nav-link journal-post__nav-link--prev">
+              <Link to={`/journal/${prev.slug}`} state={fromList ? { fromList: fromList + 1 } : undefined} className="journal-post__nav-link journal-post__nav-link--prev">
                 <span className="journal-post__nav-label">Previous</span>
                 <span className="journal-post__nav-title">{prev.title}</span>
               </Link>
@@ -104,7 +111,7 @@ export default function JournalPostPage() {
               <span />
             )}
             {next ? (
-              <Link to={`/journal/${next.slug}`} state={fromList && { fromList: fromList + 1 }} className="journal-post__nav-link journal-post__nav-link--next">
+              <Link to={`/journal/${next.slug}`} state={fromList ? { fromList: fromList + 1 } : undefined} className="journal-post__nav-link journal-post__nav-link--next">
                 <span className="journal-post__nav-label">Next</span>
                 <span className="journal-post__nav-title">{next.title}</span>
               </Link>
@@ -134,10 +141,10 @@ export default function JournalPostPage() {
  * returns with its tag filter and scroll position. `fromList` counts the posts read since the list
  * (previous / next add one). Opened from anywhere else, it is a plain link to /journal.
  */
-function BackLink({ className, children }) {
+function BackLink({ className, children }: { className: string; children: ReactNode }) {
   const navigate = useNavigate()
-  const fromList = useLocation().state?.fromList
-  const back = (e) => {
+  const fromList = listDepth(useLocation().state)
+  const back = (e: MouseEvent<HTMLAnchorElement>) => {
     if (!fromList || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return // keep "open in new tab"
     e.preventDefault()
     navigate(-fromList)

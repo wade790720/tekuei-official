@@ -9,14 +9,22 @@ import { uploadSiteImage } from '../lib/adminApi.ts'
 import { getDoc, hasBody } from '../lib/richText.ts'
 import { mountGrainHaze } from '../lib/grainHaze.ts'
 import { useLang } from '../i18n'
+import type { Doc } from '../lib/siteData.ts'
 import '../styles/journal.css'
 import '../styles/about.css'
 
 // Only Wade edits, so Tiptap, the panel and cms.css load in edit mode, not for every visitor.
-const LOGOS = import.meta.glob('../assets/about/clients/*', { eager: true, import: 'default' })
+const LOGOS = import.meta.glob<string>('../assets/about/clients/*', { eager: true, import: 'default' })
 
 /** A client in the marquee: its logo in the text colour (the file is used as a mask), or its name. */
-function Client({ name, logo, height }) {
+interface ClientProps {
+  name: string
+  logo?: string
+  /** The logo's height in px, when it differs from the default. */
+  height?: number
+}
+
+function Client({ name, logo, height }: ClientProps) {
   const src = logo && LOGOS[`../assets/about/clients/${logo}`]
   if (!src) return name
   return (
@@ -35,9 +43,12 @@ export default function AboutPage() {
   const admin = useAdmin()
   const cms = useCmsSection('aboutPage',getDefaultAbout, cloneAbout)
   const meta = ABOUT_META[lang]
-  const haze = useRef(null)
+  const haze = useRef<HTMLCanvasElement>(null)
 
-  useEffect(() => mountGrainHaze(haze.current), [])
+  useEffect(() => {
+    if (!haze.current) return
+    return mountGrainHaze(haze.current)
+  }, [])
 
   useEffect(() => {
     document.title = meta.documentTitle
@@ -48,11 +59,11 @@ export default function AboutPage() {
   const untranslated = !editing && lang === 'en' && !hasBody(cms.content.en)
   const doc = getDoc(cms.content[untranslated ? 'zh' : lang])
 
-  const setDoc = (next) =>
+  const setDoc = (next: Doc) =>
     cms.updateDraft((d) => {
       d[lang] = { doc: next }
     })
-  const upload = async (file) => (await uploadSiteImage(file, admin.getToken())).url
+  const upload = async (file: File) => (await uploadSiteImage(file, admin.getToken())).url
   const saved = <RichText doc={doc} />
 
   return (
