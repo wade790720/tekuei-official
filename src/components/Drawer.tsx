@@ -1,21 +1,25 @@
 import { useLayoutEffect } from 'react'
+import type { ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { ScrollShadow } from './ScrollShadow.tsx'
 import { usePresence } from '../hooks/usePresence.ts'
 import '../styles/drawer.css'
 
+export interface DrawerProps {
+  open: boolean
+  /** accessible name of the panel */
+  label: string
+  /** wide screens (1100px+): the page moves left instead of being covered */
+  push?: boolean
+  className?: string
+  children?: ReactNode
+}
+
 /**
  * A panel that slides in from the right edge. Put DrawerHeader and DrawerBody inside.
  * Portalled to <body>: page roots such as .journal-page set z-index and would trap it under the nav.
- * @param {{
- *   open: boolean,
- *   label: string,      // accessible name of the panel
- *   push?: boolean,     // wide screens (1100px+): the page moves left instead of being covered
- *   className?: string,
- *   children?: import('react').ReactNode,
- * }} props
  */
-export function Drawer({ open, label, push = false, className = '', children }) {
+export function Drawer({ open, label, push = false, className = '', children }: DrawerProps) {
   // html.has-drawer pads the body (drawer.css) and stops the fixed nav at the drawer (siteNav.css).
   useLayoutEffect(() => {
     if (!open || !push) return undefined
@@ -34,8 +38,15 @@ export function Drawer({ open, label, push = false, className = '', children }) 
   )
 }
 
+export interface DrawerHeaderProps {
+  title: ReactNode
+  subtitle?: ReactNode
+  /** the actions on the right */
+  children?: ReactNode
+}
+
 /** Title, optional subtitle, and the actions (children) on the right. */
-export function DrawerHeader({ title, subtitle, children }) {
+export function DrawerHeader({ title, subtitle, children }: DrawerHeaderProps) {
   return (
     <header className="drawer__head">
       <div className="drawer__heading">
@@ -48,6 +59,6 @@ export function DrawerHeader({ title, subtitle, children }) {
 }
 
 /** The scrolling part of the drawer. */
-export function DrawerBody({ children }) {
+export function DrawerBody({ children }: { children?: ReactNode }) {
   return <ScrollShadow className="drawer__body">{children}</ScrollShadow>
 }

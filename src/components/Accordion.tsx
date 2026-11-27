@@ -1,20 +1,33 @@
 import { createContext, use, useId, useState } from 'react'
+import type { ReactNode } from 'react'
 import '../styles/accordion.css'
 
-const AccordionContext = createContext(null)
+type HeadingLevel = 2 | 3 | 4
+
+interface AccordionState {
+  open: ReadonlySet<string>
+  toggle: (id: string) => void
+  headingLevel: HeadingLevel
+}
+
+const AccordionContext = createContext<AccordionState | null>(null)
+
+export interface AccordionProps {
+  /** let several sections stay open */
+  multiple?: boolean
+  /** ids open at first */
+  defaultOpen?: string[]
+  variant?: 'default' | 'surface'
+  hideSeparator?: boolean
+  headingLevel?: HeadingLevel
+  className?: string
+  /** AccordionItem elements */
+  children: ReactNode
+}
 
 /**
  * A stack of sections that open and close under their headings. One open at a time unless `multiple`.
  * Each heading is a real heading with a button inside (aria-expanded), so the outline stays readable.
- * @param {{
- *   multiple?: boolean,            // let several sections stay open
- *   defaultOpen?: string[],        // ids open at first
- *   variant?: 'default' | 'surface',
- *   hideSeparator?: boolean,
- *   headingLevel?: 2 | 3 | 4,
- *   className?: string,
- *   children: import('react').ReactNode, // AccordionItem elements
- * }} props
  */
 export function Accordion({
   multiple = false,
@@ -24,9 +37,9 @@ export function Accordion({
   headingLevel = 3,
   className = '',
   children,
-}) {
+}: AccordionProps) {
   const [open, setOpen] = useState(() => new Set(defaultOpen))
-  const toggle = (id) =>
+  const toggle = (id: string) =>
     setOpen((prev) => {
       const next = new Set(multiple ? prev : prev.has(id) ? [id] : [])
       if (next.has(id)) next.delete(id)
@@ -42,21 +55,23 @@ export function Accordion({
   )
 }
 
-/**
- * One section: the heading button and the panel under it.
- * @param {{
- *   id: string,
- *   title: import('react').ReactNode,
- *   disabled?: boolean,
- *   indicator?: import('react').ReactNode, // replaces the chevron, which turns upside down when open
- *   children: import('react').ReactNode,
- * }} props
- */
-export function AccordionItem({ id, title, disabled = false, indicator = <ChevronIcon />, children }) {
-  const { open, toggle, headingLevel } = use(AccordionContext)
-  const isOpen = open.has(id)
+export interface AccordionItemProps {
+  id: string
+  title: ReactNode
+  disabled?: boolean
+  /** replaces the chevron, which turns upside down when open */
+  indicator?: ReactNode
+  children: ReactNode
+}
+
+/** One section: the heading button and the panel under it. */
+export function AccordionItem({ id, title, disabled = false, indicator = <ChevronIcon />, children }: AccordionItemProps) {
+  const ctx = use(AccordionContext)
   const base = useId()
-  const Heading = `h${headingLevel}`
+  if (!ctx) throw new Error('AccordionItem must be inside an Accordion')
+  const { open, toggle, headingLevel } = ctx
+  const isOpen = open.has(id)
+  const Heading = `h${headingLevel}` as const
   return (
     <div className="accordion__item" data-open={isOpen || undefined}>
       <Heading className="accordion__heading">

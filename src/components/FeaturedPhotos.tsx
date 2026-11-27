@@ -1,16 +1,22 @@
 import { useState } from 'react'
 import { CARD_LABELS } from '../data/cards.ts'
 import { useLang } from '../i18n'
+import type { Slide } from './Carousel.tsx'
 import '../styles/featured-photos.css'
+
+export interface FeaturedPhotosProps {
+  title?: string
+  /** line breaks are kept, so the maker's name can sit on a line of its own */
+  text?: string
+  photos: readonly Slide[]
+}
 
 /**
  * One work shown with its words beside it (after React Bits Pro's Gallery 3, without its tabs): a large
  * photo on one side, and on the other the title, a few lines about it, and a thumbnail of every photo.
  * Choosing a thumbnail puts that photo in the large frame.
- * @param {{ title?: string, text?: string, photos: { src: string, alt: string, caption?: string }[] }} props
- *   text  line breaks are kept, so the maker's name can sit on a line of its own
  */
-export function FeaturedPhotos({ title, text, photos }) {
+export function FeaturedPhotos({ title, text, photos }: FeaturedPhotosProps) {
   const { lang } = useLang()
   const t = CARD_LABELS[lang]
   const [at, setAt] = useState(0)
@@ -35,7 +41,7 @@ export function FeaturedPhotos({ title, text, photos }) {
                     type="button"
                     className="featured__thumb"
                     aria-pressed={i === at}
-                    aria-label={p.alt || t.slide.replace('{n}', i + 1).replace('{total}', photos.length)}
+                    aria-label={p.alt || t.slide.replace('{n}', String(i + 1)).replace('{total}', String(photos.length))}
                     onClick={() => setAt(i)}
                   >
                     <img src={p.src} alt="" loading="lazy" decoding="async" />

@@ -1,21 +1,27 @@
+import type { ChangeEvent, Ref } from 'react'
 import '../styles/otpInput.css'
+
+export interface OtpInputProps {
+  value: string
+  onChange: (value: string) => void
+  /** called once the last box is filled */
+  onComplete?: (value: string) => void
+  length?: number
+  /** digits only (default) */
+  numeric?: boolean
+  /** boxes shake once and turn red */
+  invalid?: boolean
+  disabled?: boolean
+  /** accessible name */
+  label: string
+  describedBy?: string
+  ref?: Ref<HTMLInputElement>
+}
 
 /**
  * A secret code field: one box per character, filled boxes show a dot, never the character.
  * Same idea as shadcn InputOTP, Mantine PinInput and Ant Design Input.OTP.
  * One real <input> covers the boxes, so typing, paste and the phone's one-time-code autofill all work.
- * @param {{
- *   value: string,
- *   onChange: (value: string) => void,
- *   onComplete?: (value: string) => void,  // called once the last box is filled
- *   length?: number,
- *   numeric?: boolean,                     // digits only (default)
- *   invalid?: boolean,                     // boxes shake once and turn red
- *   disabled?: boolean,
- *   label: string,                         // accessible name
- *   describedBy?: string,
- *   ref?: import('react').Ref<HTMLInputElement>,
- * }} props
  */
 export function OtpInput({
   value,
@@ -28,8 +34,8 @@ export function OtpInput({
   label,
   describedBy,
   ref,
-}) {
-  function change(e) {
+}: OtpInputProps) {
+  function change(e: ChangeEvent<HTMLInputElement>) {
     const raw = numeric ? e.target.value.replace(/\D/g, '') : e.target.value
     const next = raw.slice(0, length)
     onChange(next)
