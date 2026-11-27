@@ -1,6 +1,7 @@
 // The site's top navigation and its parts: SiteNavLinks (shared by the bar and the phone menu),
 // NavToggle (the phone menu button) and NavOverlay (the full-screen phone menu).
 import { useEffect, useEffectEvent, useRef, useState, useSyncExternalStore } from 'react'
+import type { MouseEvent, ReactNode, Ref } from 'react'
 import { createPortal } from 'react-dom'
 import { NavLink } from 'react-router-dom'
 import { HOME_FOOTER } from '../data/homepage.ts'
@@ -15,24 +16,26 @@ import '../styles/navOverlay.css'
 // With no email in the list, Contact goes to About.
 const CONTACT_HREF = HOME_FOOTER.zh.contact.find((link) => link.href?.startsWith('mailto:'))?.href ?? '/about'
 
-function subscribeScroll(onChange) {
+function subscribeScroll(onChange: () => void) {
   window.addEventListener('scroll', onChange, { passive: true })
   return () => window.removeEventListener('scroll', onChange)
 }
 
-/**
- * @param {{
- *   current?: 'projects' | 'journal'  section to mark as the current page when the URL is a child of it
- *   variant?: 'default' | 'case'
- * }} props
- */
-export function SiteNav({ current, variant = 'default' }) {
+type NavSection = 'projects' | 'journal'
+
+export interface SiteNavProps {
+  /** Section to mark as the current page when the URL is a child of it. */
+  current?: NavSection
+  variant?: 'default' | 'case'
+}
+
+export function SiteNav({ current, variant = 'default' }: SiteNavProps) {
   const [open, setOpen] = useState(false)
   const { lang, toggle } = useLang()
   const t = NAV_LABELS[lang]
-  const toggleRef = useRef(null)
+  const toggleRef = useRef<HTMLButtonElement>(null)
   const close = () => setOpen(false)
-  const switchLang = (e) => {
+  const switchLang = (e: MouseEvent<HTMLButtonElement>) => {
     // Keyboard presses have no pointer position (detail 0): start from the button's centre.
     const r = e.currentTarget.getBoundingClientRect()
     const fromPointer = e.detail > 0
@@ -90,17 +93,16 @@ export function SiteNav({ current, variant = 'default' }) {
 }
 
 
-/**
- * @param {{
- *   onNavigate?: () => void
- *   variant?: 'desktop' | 'overlay'
- *   current?: 'projects' | 'journal'
- * }} props
- */
-function SiteNavLinks({ onNavigate, variant = 'desktop', current }) {
+interface SiteNavLinksProps {
+  onNavigate?: () => void
+  variant?: 'desktop' | 'overlay'
+  current?: NavSection
+}
+
+function SiteNavLinks({ onNavigate, variant = 'desktop', current }: SiteNavLinksProps) {
   const overlay = variant === 'overlay'
 
-  const linkClass = (active) =>
+  const linkClass = (active: boolean) =>
     [overlay ? 'nav-overlay__link' : '', active ? 'is-active' : '']
       .filter(Boolean)
       .join(' ')
@@ -146,7 +148,7 @@ function SiteNavLinks({ onNavigate, variant = 'desktop', current }) {
 
 // Shown only while the menu is closed (SiteNav unmounts it when the menu opens),
 // so it announces "opens a dialog" instead of a live expanded state.
-function NavToggle({ ref, onToggle, className = '' }) {
+function NavToggle({ ref, onToggle, className = '' }: { ref: Ref<HTMLButtonElement>; onToggle: () => void; className?: string }) {
   const { lang } = useLang()
   return (
     <button
@@ -164,7 +166,7 @@ function NavToggle({ ref, onToggle, className = '' }) {
   )
 }
 
-function OverlayClose({ ref, onClose, label }) {
+function OverlayClose({ ref, onClose, label }: { ref: Ref<HTMLButtonElement>; onClose: () => void; label: string }) {
   return (
     <button
       ref={ref}
@@ -185,10 +187,18 @@ function overlayDuration() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : tokenMs('--duration-base')
 }
 
-function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
+interface NavOverlayProps {
+  open: boolean
+  onClose: () => void
+  onExited?: () => void
+  children: ReactNode
+  id?: string
+}
+
+function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }: NavOverlayProps) {
   const { lang } = useLang()
   const t = NAV_LABELS[lang]
-  const closeBtn = useRef(null)
+  const closeBtn = useRef<HTMLButtonElement>(null)
   const exited = useRef(onExited)
   const [active, setActive] = useState(false)
   const [closing, setClosing] = useState(false)
@@ -243,7 +253,7 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }) {
   }, [closing])
 
   // An event, so a new onClose from each SiteNav render does not toggle inert and the listener again.
-  const onKey = useEffectEvent((e) => {
+  const onKey = useEffectEvent((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose()
   })
 

@@ -44,3 +44,8 @@ ts	phase	decision	why	evidence	result
 2026-11-27T15:44:51Z	B-bugfix	translateTexts 檢查回傳字串數量等於送出的數量	回少了會讓後面的翻譯全部錯位；adminApi.ts 用 import.meta.env，node 測試無法載入，所以沒有測試	src/lib/adminApi.ts translateTexts	未測試，只有型別檢查
 2026-11-27T15:51:44Z	B-scripts	eslint.config 維持 .js	ESLint 10.2.1 在 Node 22.23.3 載入 .ts 設定需要 jiti（新相依）或 --flag unstable_native_nodejs_ts_config；加旗標要同時改 npm run lint、noSlop.ts 的 new ESLint() 和編輯器，不划算	npx eslint 錯誤訊息：The 'jiti' library is required；加旗標後可載入	保留 eslint.config.js
 2026-11-27T15:51:50Z	B-scripts	fakeAdminApi.ts 比照新規則：知道版本後，沒有 If-Match 的儲存回 409；fetch 收到 URL 物件時改讀它本身	假 API 要和真 API 行為一致；原本 input.url 對 URL 物件是 undefined	scripts/fakeAdminApi.ts; 在 vite dev（無 .env.local，port 5391）以 await import 載入並呼叫成功	已驗證，伺服器已關閉
+2026-11-27T15:59:33Z	B-panel	SortRows 改成泛型 SortRows<T>	Editor 已用 (s: Slide) => string 呼叫，泛型讓 keyOf、nameOf、children 跟著 items 推斷	src/components/SidePanel.tsx SortRowsProps	Editor.tsx 無型別錯誤
+2026-11-27T15:59:33Z	B-panel	SortRows 拖到別的清單時改成 onMoveTo?.()	onMoveTo 是選填，原本有 listAt 沒 onMoveTo 時放開會丟例外；現有呼叫端都同時給兩個	src/components/SidePanel.tsx dragEnd	行為只在誤用時不同
+2026-11-27T15:59:34Z	B-panel	SidePanel 的 menu 型別是 PanelMenuAction（MenuChoice 加 icon 必填、onSelect）	直接沿用 DropdownMenu 的 MenuChoice，不另寫一份形狀	src/components/SidePanel.tsx PanelMenuAction	Journal、Work 的 menu 物件相容
+2026-11-27T15:59:35Z	B-panel	AboutEditPanel 在 draft 為 null 時不畫	ready 為真時 draft 理應存在，原本為 null 會直接丟例外，型別要求先檢查	src/components/about/AboutEditPanel.tsx:11	正常流程不變
+2026-11-27T15:59:36Z	B-panel	TranslateSection 的 fields 收 string | undefined	Journal、Work 傳 zhPost?.title、item.client，可能是 undefined，原本就用 v?.trim() 過濾	src/components/admin/TranslateSection.tsx TranslateSectionProps	呼叫端不用改

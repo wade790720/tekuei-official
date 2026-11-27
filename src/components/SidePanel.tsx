@@ -1,36 +1,59 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import type { KeyboardEvent, PointerEvent, ReactNode, RefObject } from 'react'
 import { createPortal } from 'react-dom'
 import { useAdmin } from '../context/admin.ts'
 import { CMS_LABELS as T, EDIT_BAR_KEY } from '../data/admin.ts'
 import { clampOffset, parseOffset } from '../lib/editBarPosition.ts'
+import type { Offset } from '../lib/editBarPosition.ts'
 import { Button } from './Button.tsx'
 import { Drawer, DrawerBody, DrawerHeader } from './Drawer.tsx'
 import { DropdownMenu } from './DropdownMenu.tsx'
+import type { MenuChoice } from './DropdownMenu.tsx'
 import { TextField } from './TextField.tsx'
 import { TooltipGroup } from './Tooltip.tsx'
 import '../styles/cms.css'
 
 const SAVED_MS = 1600 // how long the save button shows "已儲存" after a save
 
+type SaveState = 'idle' | 'saving' | 'saved' | 'error'
+type Light = 'clean' | 'dirty' | 'saving' | 'error'
+
+/** One more action under ⋯, above logout. Each has an icon. */
+export interface PanelMenuAction extends MenuChoice {
+  icon: ReactNode
+  onSelect: () => void
+}
+
 /**
  * The edit-mode panel: a Drawer of fields, with its actions as icon buttons in the header. The live page re-renders
  * from the draft as you type. A page with no fields uses variant="bar": the same buttons in a floating toolbar.
  * Open by default; once collapsed it stays collapsed across pages until reopened from the dock button.
- * @param {{
- *   title: string, subtitle?: string,
- *   dirty: boolean, saving: boolean, error?: string,
- *   onSave: () => void, onLogout: () => void,
- *   preview?: boolean,  // adds the switch between editing and the page as readers see it
- *   saveLabel?: string,   // the save button's name in its tooltip, e.g. 發布 or 更新 instead of 儲存
- *   saveAlways?: boolean, // the save button works with nothing changed (publishing does)
- *   labels?: { dirty?: string, saved?: string },  // the status line for unsaved and saved
- *   menu?: { value: string, label: string, icon: import('react').ReactNode, onSelect: () => void }[],  // more actions under ⋯, above logout; each has an icon
- *   variant?: 'drawer' | 'bar',
- *   actions?: import('react').ReactNode,  // the page's own icon buttons, between preview and save (TranslateSection)
- *   children?: import('react').ReactNode, // the fields; the toolbar has none
- * }} props
  */
-export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, preview = false, variant = 'drawer', saveLabel = T.save, saveAlways = false, labels = {}, menu = [], actions, children }) {
+export interface SidePanelProps {
+  title: string
+  subtitle?: string
+  dirty: boolean
+  saving: boolean
+  error?: string
+  onSave: () => void
+  onLogout: () => void
+  /** Adds the switch between editing and the page as readers see it. */
+  preview?: boolean
+  /** The save button's name in its tooltip, e.g. 發布 or 更新 instead of 儲存. */
+  saveLabel?: string
+  /** The save button works with nothing changed (publishing does). */
+  saveAlways?: boolean
+  /** The status line for unsaved and saved. */
+  labels?: { dirty?: string; saved?: string }
+  menu?: PanelMenuAction[]
+  variant?: 'drawer' | 'bar'
+  /** The page's own icon buttons, between preview and save (TranslateSection). */
+  actions?: ReactNode
+  /** The fields; the toolbar has none. */
+  children?: ReactNode
+}
+
+export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLogout, preview = false, variant = 'drawer', saveLabel = T.save, saveAlways = false, labels = {}, menu = [], actions, children }: SidePanelProps) {
   const { panelOpen, setPanelOpen } = useAdmin()
   const [justSaved, setJustSaved] = useState(false)
   const [prevSaving, setPrevSaving] = useState(saving)
@@ -47,8 +70,8 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
     return () => clearTimeout(id)
   }, [justSaved])
 
-  const saveState = saving ? 'saving' : justSaved && !dirty ? 'saved' : error ? 'error' : 'idle'
-  const light = saving ? 'saving' : error ? 'error' : dirty ? 'dirty' : 'clean'
+  const saveState: SaveState = saving ? 'saving' : justSaved && !dirty ? 'saved' : error ? 'error' : 'idle'
+  const light: Light = saving ? 'saving' : error ? 'error' : dirty ? 'dirty' : 'clean'
   const status = saving ? T.saving : error ? `${T.saveFailed}：${error}` : dirty ? (labels.dirty ?? T.unsaved) : (labels.saved ?? T.saved)
   // One set of buttons for both layouts, so the drawer and the toolbar cannot drift apart.
   const buttons = (
@@ -118,7 +141,7 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
 }
 
 /** The save state as a light and a line of text: green saved, gold unsaved or saving, red failed. */
-function PanelStatus({ light, children }) {
+function PanelStatus({ light, children }: { light: Light; children: ReactNode }) {
   return (
     <span className="cms-bar__status" role="status" data-state={light}>
       <span key={light} className="cms-bar__light" aria-hidden />
@@ -132,7 +155,18 @@ function PanelStatus({ light, children }) {
  * actions (translate), save, then logout: a button of its own, or the last row of the menu when the page has
  * more actions. It sits inside a TooltipGroup.
  */
-function PanelActions({ preview, actions, saveState, saveLabel, canSave, onSave, menu, onLogout }) {
+interface PanelActionsProps {
+  preview: boolean
+  actions?: ReactNode
+  saveState: SaveState
+  saveLabel: string
+  canSave: boolean
+  onSave: () => void
+  menu: PanelMenuAction[]
+  onLogout: () => void
+}
+
+function PanelActions({ preview, actions, saveState, saveLabel, canSave, onSave, menu, onLogout }: PanelActionsProps) {
   const { previewing, setPreviewing } = useAdmin()
   const previewLabel = previewing ? T.backToEdit : T.preview
   return (
@@ -186,7 +220,7 @@ function PanelActions({ preview, actions, saveState, saveLabel, canSave, onSave,
 }
 
 // Written to the element, not to state: a drag moves it on every pointer event.
-function placeBar(el, offset, next) {
+function placeBar(el: HTMLElement, offset: RefObject<Offset>, next: Offset) {
   const room = { width: document.documentElement.clientWidth, height: document.documentElement.clientHeight }
   const box = { left: el.offsetLeft, top: el.offsetTop, width: el.offsetWidth, height: el.offsetHeight }
   const fitted = clampOffset(next, box, room)
@@ -196,12 +230,23 @@ function placeBar(el, offset, next) {
 }
 
 /** The panel's actions as a small toolbar that can be dragged anywhere and remembers where it was left. */
-function EditBar({ title, error, status, children }) {
-  const bar = useRef(null)
-  const drag = useRef(null)
-  const offset = useRef({ x: 0, y: 0 })
+const GRIP_STEPS: Partial<Record<string, [number, number]>> = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] }
 
-  const place = (next) => placeBar(bar.current, offset, next)
+interface EditBarProps {
+  title: string
+  error?: string
+  status: ReactNode
+  children: ReactNode
+}
+
+function EditBar({ title, error, status, children }: EditBarProps) {
+  const bar = useRef<HTMLDivElement>(null)
+  const drag = useRef<Offset | null>(null)
+  const offset = useRef<Offset>({ x: 0, y: 0 })
+
+  const place = (next: Offset) => {
+    if (bar.current) placeBar(bar.current, offset, next)
+  }
   const remember = () => {
     try {
       localStorage.setItem(EDIT_BAR_KEY, JSON.stringify(offset.current))
@@ -211,16 +256,18 @@ function EditBar({ title, error, status, children }) {
   }
 
   useLayoutEffect(() => {
-    let saved = null
+    const el = bar.current
+    if (!el) return
+    let saved: string | null = null
     try {
       saved = localStorage.getItem(EDIT_BAR_KEY)
     } catch {
       /* private mode: start from the resting place */
     }
-    placeBar(bar.current, offset, parseOffset(saved))
-    const again = () => placeBar(bar.current, offset, offset.current)
+    placeBar(el, offset, parseOffset(saved))
+    const again = () => placeBar(el, offset, offset.current)
     const size = new ResizeObserver(again)
-    size.observe(bar.current)
+    size.observe(el)
     window.addEventListener('resize', again)
     return () => {
       size.disconnect()
@@ -228,23 +275,23 @@ function EditBar({ title, error, status, children }) {
     }
   }, [])
 
-  const dragStart = (e) => {
-    if (e.button !== 0 || e.target.closest('button:not(.cms-bar__grip), [role=menu]')) return
+  const dragStart = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0 || (e.target instanceof Element && e.target.closest('button:not(.cms-bar__grip), [role=menu]'))) return
     e.currentTarget.setPointerCapture(e.pointerId)
     drag.current = { x: e.clientX - offset.current.x, y: e.clientY - offset.current.y }
-    bar.current.dataset.dragging = ''
+    e.currentTarget.dataset.dragging = ''
   }
-  const dragMove = (e) => {
+  const dragMove = (e: PointerEvent<HTMLDivElement>) => {
     if (drag.current) place({ x: e.clientX - drag.current.x, y: e.clientY - drag.current.y })
   }
   const dragEnd = () => {
     if (!drag.current) return
     drag.current = null
-    delete bar.current.dataset.dragging
+    if (bar.current) delete bar.current.dataset.dragging
     remember()
   }
-  const gripKey = (e) => {
-    const step = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] }[e.key]
+  const gripKey = (e: KeyboardEvent<HTMLButtonElement>) => {
+    const step = GRIP_STEPS[e.key]
     if (!step) return
     e.preventDefault()
     place({ x: offset.current.x + step[0], y: offset.current.y + step[1] })
@@ -279,7 +326,15 @@ function EditBar({ title, error, status, children }) {
 }
 
 /** One label | value row, as in the Framer CMS sheet. `hint` shows while the field is in use; `error` always shows. */
-export function FormRow({ label, hint, error, children, htmlFor }) {
+export interface FormRowProps {
+  label: ReactNode
+  hint?: ReactNode
+  error?: ReactNode
+  htmlFor?: string
+  children: ReactNode
+}
+
+export function FormRow({ label, hint, error, children, htmlFor }: FormRowProps) {
   return (
     <div className="cms-row">
       <label className="cms-row__label" htmlFor={htmlFor}>
@@ -301,38 +356,51 @@ export function FormRow({ label, hint, error, children, htmlFor }) {
 /**
  * Rows that reorder: drag one by its handle (mouse, pen or touch), or focus the handle and press ↑ / ↓.
  * With listAt and onMoveTo, a row can also be dragged into another list of the same kind.
- * @param {{
- *   items: unknown[],
- *   keyOf: (item: any) => string,
- *   nameOf: (item: any) => string,           // names the row in the handle's label
- *   onMove: (from: number, to: number) => void,
- *   listAt?: (x: number, y: number) => Element | null | undefined,  // the .cms-sort under the pointer
- *   onMoveTo?: (from: number, list: Element, at: number) => void,   // dropped in another list, before its row `at`
- *   rowClassName?: string,                   // the row's own layout; the default is the panel's list row
- *   children: (item: any, i: number) => import('react').ReactNode,  // the cells after the handle
- * }} props
  */
-export function SortRows({ items, keyOf, nameOf, onMove, listAt, onMoveTo, rowClassName = 'cms-row cms-post', children }) {
-  const [drag, setDrag] = useState(null) // { from, gap, list } while a row is dragged; gap k = insert before row k; list = another list, or null
-  const root = useRef(null)
-  const rows = useRef([])
-  const marked = useRef(null)
-  const rowsOf = (list) => [...list.querySelectorAll(':scope > .cms-sort__row')]
-  const gapIn = (list, y) => {
+export interface SortRowsProps<T> {
+  items: readonly T[]
+  keyOf: (item: T) => string
+  /** Names the row in the handle's label. */
+  nameOf: (item: T) => string
+  onMove: (from: number, to: number) => void
+  /** The .cms-sort under the pointer. */
+  listAt?: (x: number, y: number) => Element | null | undefined
+  /** Dropped in another list, before its row `at`. */
+  onMoveTo?: (from: number, list: Element, at: number) => void
+  /** The row's own layout; the default is the panel's list row. */
+  rowClassName?: string
+  /** The cells after the handle. */
+  children: (item: T, i: number) => ReactNode
+}
+
+/** While a row is dragged. gap k = insert before row k; list = another list, or null. */
+interface RowDrag {
+  from: number
+  gap: number
+  list: Element | null
+}
+
+export function SortRows<T>({ items, keyOf, nameOf, onMove, listAt, onMoveTo, rowClassName = 'cms-row cms-post', children }: SortRowsProps<T>) {
+  const [drag, setDrag] = useState<RowDrag | null>(null)
+  const root = useRef<HTMLDivElement>(null)
+  const rows = useRef<(HTMLDivElement | null)[]>([])
+  const marked = useRef<Element | null>(null)
+  const rowsOf = (list: Element) => [...list.querySelectorAll<HTMLElement>(':scope > .cms-sort__row')]
+  const gapIn = (list: Element, y: number) => {
     const k = rowsOf(list).findIndex((el) => y < el.getBoundingClientRect().top + el.offsetHeight / 2)
     return k < 0 ? rowsOf(list).length : k
   }
   // The other list belongs to another component, so its drop line is set on the DOM.
-  const mark = (list, gap) => {
+  const mark = (list: Element | null, gap = 0) => {
     marked.current?.removeAttribute('data-drop')
     const els = list ? rowsOf(list) : []
     marked.current = list ? (els[gap] ?? els.at(-1) ?? list) : null
     marked.current?.setAttribute('data-drop', gap < els.length ? 'before' : 'after')
   }
   // Removing the dragged row first shifts the rows below it up by one.
-  const target = (d) => (d.gap > d.from ? d.gap - 1 : d.gap)
-  const dragMove = (e) => {
-    if (!drag) return
+  const target = (d: RowDrag) => (d.gap > d.from ? d.gap - 1 : d.gap)
+  const dragMove = (e: PointerEvent<HTMLButtonElement>) => {
+    if (!drag || !root.current) return
     const under = listAt?.(e.clientX, e.clientY)
     const list = under && under !== root.current ? under : null
     const gap = gapIn(list ?? root.current, e.clientY)
@@ -345,16 +413,16 @@ export function SortRows({ items, keyOf, nameOf, onMove, listAt, onMoveTo, rowCl
     setDrag(null)
   }
   const dragEnd = () => {
-    if (drag?.list) onMoveTo(drag.from, drag.list, drag.gap)
+    if (drag?.list) onMoveTo?.(drag.from, drag.list, drag.gap)
     else if (drag && target(drag) !== drag.from) onMove(drag.from, target(drag))
     dragStop()
   }
-  const dragKey = (e, i) => {
+  const dragKey = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {
     const to = e.key === 'ArrowUp' ? i - 1 : e.key === 'ArrowDown' ? i + 1 : -1
     if (to < 0 || to >= items.length) return
     e.preventDefault()
     onMove(i, to)
-    requestAnimationFrame(() => rows.current[to]?.querySelector('.cms-drag')?.focus())
+    requestAnimationFrame(() => rows.current[to]?.querySelector<HTMLElement>('.cms-drag')?.focus())
   }
   const moved = drag && !drag.list && target(drag) !== drag.from
 
@@ -364,7 +432,9 @@ export function SortRows({ items, keyOf, nameOf, onMove, listAt, onMoveTo, rowCl
         <div
           className={`cms-sort__row ${rowClassName}`}
           key={keyOf(item)}
-          ref={(el) => (rows.current[i] = el)}
+          ref={(el) => {
+            rows.current[i] = el
+          }}
           data-dragged={drag?.from === i || undefined}
           data-drop={!moved ? undefined : drag.gap === i ? 'before' : drag.gap === items.length && i === items.length - 1 ? 'after' : undefined}
         >
@@ -397,7 +467,14 @@ export function SortRows({ items, keyOf, nameOf, onMove, listAt, onMoveTo, rowCl
  * Tags as one line of text. It keeps what Wade types (a trailing comma, a half-typed tag) and saves the parsed list.
  * Give it a `key` that changes with the item it edits.
  */
-export function TagsInput({ id, tags, parse, onChange }) {
+export interface TagsInputProps {
+  id: string
+  tags: string[]
+  parse: (text: string) => string[]
+  onChange: (tags: string[]) => void
+}
+
+export function TagsInput({ id, tags, parse, onChange }: TagsInputProps) {
   const [text, setText] = useState(() => tags.join(', '))
   return (
     <TextField
@@ -411,7 +488,13 @@ export function TagsInput({ id, tags, parse, onChange }) {
   )
 }
 
-export function PanelSection({ title, action, children }) {
+export interface PanelSectionProps {
+  title: ReactNode
+  action?: ReactNode
+  children: ReactNode
+}
+
+export function PanelSection({ title, action, children }: PanelSectionProps) {
   return (
     <section className="cms-section">
       <div className="cms-section__head">
@@ -427,7 +510,7 @@ export function PanelSection({ title, action, children }) {
  * Idle, saving and saved labels in one grid cell, so the button keeps the widest label's width.
  * Used by the save button and the dock button.
  */
-function SaveLabels({ state, idle }) {
+function SaveLabels({ state, idle }: { state: SaveState; idle: ReactNode }) {
   return (
     <span className="cms-save__stack">
       <span className="cms-save__label" data-on={state === 'idle' || state === 'error' || undefined}>
