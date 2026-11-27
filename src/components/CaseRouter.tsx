@@ -9,7 +9,7 @@ const ProjectEditPanel = lazy(() => import('./work/WorkEditPanel.tsx').then((m) 
 
 /** /projects/:slug. The first three cases have pages written in code; every other project's page is written in the editor. */
 export default function CaseRouter() {
-  const { slug } = useParams()
+  const { slug = '' } = useParams<{ slug: string }>()
   const { editing } = useAdmin()
 
   if (!CASE_BY_SLUG[slug]) return <ProjectPage />

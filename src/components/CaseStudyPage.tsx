@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { PROJECT_PAGE_LABELS, projectFacts, projectNumber, projectTitle } from '../data/work.ts'
+import type { ProjectFact } from '../data/work.ts'
 import { projectCover } from '../data/workMedia.ts'
 import { useCaseCms } from '../hooks/useCaseCms.ts'
 import { useWorkContent } from '../hooks/useWorkContent.ts'
@@ -14,7 +15,7 @@ import '../styles/project.css'
 
 /** One of the first three cases. Its text is in code; the page is laid out as a project page (ProjectPage). */
 export default function CaseStudyPage() {
-  const { slug } = useParams()
+  const { slug = '' } = useParams<{ slug: string }>()
   const { lang } = useLang()
   const { content: data, loading } = useCaseCms(slug)
   // The list the edit panel changes, so an edit there shows here before it is saved
@@ -26,7 +27,7 @@ export default function CaseStudyPage() {
     if (data) document.title = data.documentTitle
   }, [data])
 
-  if (loading || !doc) return <div className="site-loading-bar" />
+  if (loading || !data || !doc) return <div className="site-loading-bar" />
 
   const { hero } = data
   // The card's number on the Projects list; a case that is not on the list keeps its own.
@@ -37,9 +38,9 @@ export default function CaseStudyPage() {
   const cover = projectCover(item) || hero.image?.url
   // The card of a case has no site link of its own until one is typed in the panel; the case's stored link fills in.
   const site = hero.meta.find((m) => m.href)
-  const facts = item
-    ? [...projectFacts(item, lang), ...(item.link || !site ? [] : [[t.link, site.lines, site.href]])]
-    : hero.meta.map((m) => [m.label, m.lines, m.href])
+  const facts: ProjectFact[] = item
+    ? [...projectFacts(item, lang), ...(item.link || !site ? [] : [[t.link, site.lines, site.href] satisfies ProjectFact])]
+    : hero.meta.map((m): ProjectFact => [m.label, m.lines, m.href])
 
   return (
     <div className="journal-page journal-page--post">

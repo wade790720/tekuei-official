@@ -8,12 +8,13 @@ import { projectLink, PROJECT_SECTIONS, PROJECTS_PAGE, projectTitle, projectType
 import { useAdmin } from '../context/admin.ts'
 import { useLang } from '../i18n'
 import { mountMeasureLines } from '../lib/measureLines.ts'
+import type { ProjectType, WorkItem } from '../lib/siteData.ts'
 import '../styles/work.css'
 
 // Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.
 const WorkListEditPanel = lazy(() => import('./work/WorkEditPanel.tsx').then((m) => ({ default: m.WorkListEditPanel })))
 
-function WorkThumbGraphic({ thumbSvg }) {
+function WorkThumbGraphic({ thumbSvg }: { thumbSvg?: string }) {
   const svgProps = {
     width: 120,
     height: 120,
@@ -60,7 +61,14 @@ function WorkThumbGraphic({ thumbSvg }) {
 // A video thumbnail shows only its poster when the system asks for less motion.
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-function WorkCard({ item, total }) {
+/** A card as the list draws it: its section, where it links and its cover are settled. */
+type CardItem = Omit<WorkItem, 'type' | 'caseHref' | 'thumbImage'> & {
+  type: ProjectType
+  caseHref: string
+  thumbImage?: { url?: string; video?: string }
+}
+
+function WorkCard({ item, total }: { item: CardItem; total: string }) {
   return (
     <article className="work-card fade-in">
       <Link className="work-card__link" to={item.caseHref}>
@@ -94,17 +102,17 @@ function WorkCard({ item, total }) {
   )
 }
 
-const pad = (n) => String(n).padStart(2, '0')
+const pad = (n: number) => String(n).padStart(2, '0')
 
 export default function WorkListPage() {
   const { content, loading } = useWorkContent()
   const { lang } = useLang()
   const { editing } = useAdmin()
-  const measure = useRef(null)
-  const block = useRef(null)
+  const measure = useRef<HTMLCanvasElement>(null)
+  const block = useRef<HTMLDivElement>(null)
 
   const page = PROJECTS_PAGE[lang]
-  const all = [
+  const all: CardItem[] = [
     ...content.items.map((item) => ({
       ...item,
       // A project nobody has filed yet still has to show up somewhere
@@ -112,7 +120,7 @@ export default function WorkListPage() {
       thumbImage: { ...item.thumbImage, url: projectCover(item) },
       caseHref: projectLink(item, content),
     })),
-    ...labWorkItems(lang, 1).map((item) => ({ ...item, type: 'side' })),
+    ...labWorkItems(lang, 1).map((item) => ({ ...item, type: 'side' as const, caseHref: projectLink(item) })),
   ]
   // Cards are numbered in the order they are shown: section by section.
   let shown = 0
@@ -127,7 +135,10 @@ export default function WorkListPage() {
   }, [page.title])
 
   // The header is not there until the data is in
-  useEffect(() => (loading ? undefined : mountMeasureLines(measure.current, { block: block.current })), [loading])
+  useEffect(() => {
+    if (loading || !measure.current || !block.current) return
+    return mountMeasureLines(measure.current, { block: block.current })
+  }, [loading])
 
   return (
     <div className="work-page">
