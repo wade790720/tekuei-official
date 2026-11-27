@@ -22,28 +22,6 @@
   box-sizing: border-box;
 }
 
-html.has-scroll-document {
-  overflow-x: hidden;
-  overflow-y: auto;
-  min-height: 100%;
-  height: auto;
-
-  scroll-behavior: auto;
-  scrollbar-gutter: stable;
-}
-
-html.has-scroll-document body, html.has-scroll-document #root {
-  min-height: 100vh;
-  height: auto;
-}
-
-/* hidden would make body a scroll container that never scrolls, and position: sticky would stick to it */
-html.has-scroll-document body {
-  overflow: clip;
-}
-
-
-
 .work-page-header {
   position: relative;
   z-index: 2;
