@@ -6,7 +6,7 @@ import { Button } from '../Button.jsx'
 import { DropdownMenu } from '../DropdownMenu.jsx'
 import { TranslateSection } from '../admin/TranslateSection.jsx'
 import { useWork } from '../../context/work.js'
-import { CODE_PROJECT_IDS, PROJECT_SECTIONS, PROJECT_TYPES, projectBody, projectLink, projectTitle } from '../../data/work.js'
+import { CODE_PROJECT_IDS, PROJECT_SECTIONS, projectBody, projectLink, projectTitle, projectType } from '../../data/work.js'
 import { WORK_THUMBS } from '../../data/workMedia.js'
 import { LABS } from '../../labs/index.js'
 import { CMS_LABELS as T } from '../../data/admin.js'
@@ -19,7 +19,7 @@ const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 // Ids a new project cannot take: a project that began in code keeps its id even after it is deleted, and each lab has a card.
 const TAKEN = new Set([...CODE_PROJECT_IDS, ...LABS.map((lab) => lab.id)])
 const SECTION_ITEMS = PROJECT_SECTIONS.map((s) => ({ value: s.id, label: s.zh }))
-const sectionOf = (item) => item.type ?? PROJECT_TYPES[item.id] ?? 'web'
+const sectionOf = projectType
 const sectionName = (id) => PROJECT_SECTIONS.find((s) => s.id === id)?.zh
 const parseTags = (text) => [...new Set(text.split(/[,，、]/).map((t) => t.trim()).filter(Boolean))]
 
@@ -219,21 +219,21 @@ export function ProjectEditPanel({ id, coded = false }) {
         ) : null
       }
     >
+      <FormRow label="區段" hint="中英文共用">
+        <SectionPicker value={sectionOf(item)} onSelect={(v) => set((x) => (x.type = v))} />
+      </FormRow>
       <FormRow label="標題" htmlFor="cms-project-title" hint={lang === 'en' ? '留空時顯示中文標題' : undefined}>
         <TextField id="cms-project-title" value={text.title} onChange={(v) => setText('title', v)} placeholder="專案名稱" />
       </FormRow>
       <FormRow label="單位" htmlFor="cms-project-client" hint="卡片上方的小字，例如客戶或展覽地點">
         <TextField id="cms-project-client" value={text.client} onChange={(v) => setText('client', v)} />
       </FormRow>
-      <FormRow label="區段" hint="中英文共用">
-        <SectionPicker value={sectionOf(item)} onSelect={(v) => set((x) => (x.type = v))} />
-      </FormRow>
       <FormRow label="標籤" htmlFor="cms-project-tags" hint="用逗號分開，中英文共用">
         <TagsInput key={id} id="cms-project-tags" tags={item.tags ?? []} parse={parseTags} onChange={(tags) => set((x) => (x.tags = tags))} />
       </FormRow>
       <FormRow
-        label="縮圖"
-        hint={uploading || (WORK_THUMBS[id] ? '這個專案的縮圖是程式碼裡的影片，這裡上傳的圖不會顯示' : '16:10 的圖最合適，中英文共用')}
+        label="封面圖"
+        hint={uploading || (WORK_THUMBS[id]?.cover ? '這個專案的封面圖寫在程式碼裡（src/data/workMedia.js），這裡上傳的圖不會顯示' : WORK_THUMBS[id] ? '列表卡片用的是程式碼裡的影片，這張圖只用在內頁的開場' : '列表卡片和內頁的開場都用這張。橫式、寬 2400px 以上最合適，中英文共用')}
       >
         <div className="cms-inline">
           {item.thumbImage?.url ? <img className="cms-thumb" src={item.thumbImage.url} alt="" /> : null}

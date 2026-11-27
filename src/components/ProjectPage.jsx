@@ -5,9 +5,11 @@ import { Button } from './Button.jsx'
 import { RichText } from './RichText.jsx'
 import { SiteFooter } from './SiteFooter.jsx'
 import { TagList } from './Tag.jsx'
+import { ProjectHero } from './work/ProjectHero.jsx'
 import { useAdmin } from '../context/admin.js'
 import { useWork } from '../context/work.js'
-import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, PROJECT_TYPES, projectBody, projectTitle } from '../data/work.js'
+import { projectCover, WORK_THUMBS } from '../data/workMedia.js'
+import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, projectBody, projectNumber, projectTitle, projectType } from '../data/work.js'
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { useLang } from '../i18n'
 import { uploadSiteImage } from '../lib/adminApi.js'
@@ -18,8 +20,6 @@ import '../styles/project.css'
 // Only Wade edits, so Tiptap and the panel load in edit mode, not for every visitor.
 const Editor = lazy(() => import('./Editor.jsx').then((m) => ({ default: m.Editor })))
 const ProjectEditPanel = lazy(() => import('./work/WorkEditPanel.jsx').then((m) => ({ default: m.ProjectEditPanel })))
-
-const typeOf = (x) => x.type ?? PROJECT_TYPES[x.id] ?? 'web'
 
 /** A project whose page is written in the editor: a title and one rich-text body, set out in the Journal post column. */
 export default function ProjectPage() {
@@ -58,16 +58,14 @@ export default function ProjectPage() {
     )
   }
 
-  const section = PROJECT_SECTIONS.find((s) => s.id === typeOf(item))
+  const section = PROJECT_SECTIONS.find((s) => s.id === projectType(item))
   const setDoc = (next) =>
     cms.updateDraft((d) => {
       d.content[lang] = { ...d.content[lang], [slug]: { doc: next } }
     })
   const upload = async (file) => (await uploadSiteImage(file, admin.getToken())).url
   const saved = <RichText doc={doc} />
-  const cover = item.thumbImage?.url
-  // The card's number on the Projects list: section by section, in saved order.
-  const num = PROJECT_SECTIONS.flatMap((s) => content.items.filter((x) => typeOf(x) === s.id)).findIndex((x) => x.id === slug) + 1
+  const cover = projectCover(item)
   const facts = [
     [t.type, [section[lang]]],
     item.client && [t.client, [item.client]],
@@ -78,35 +76,10 @@ export default function ProjectPage() {
   return (
     <div className="journal-page journal-page--post">
       <main>
+        {cover ? <ProjectHero cover={cover} focus={WORK_THUMBS[slug]?.coverFocus} num={`${t.num} ${projectNumber(content.items, slug)}`} title={title} facts={facts} /> : null}
         <article className={`journal-post project-post${cover ? ' project-post--cover' : ''}`} lang={untranslated ? 'zh-Hant' : undefined}>
           <header className="journal-post__header">
-            {cover ? (
-              <>
-                <div className="project-cover fade-in" aria-hidden>
-                  <img src={cover} alt="" />
-                </div>
-                <div className="project-hero__num fade-in" style={{ '--i': 1 }}>
-                  {t.num} {String(num).padStart(2, '0')}
-                </div>
-                <h1 className="journal-post__title fade-in" style={{ '--i': 2 }}>{title}</h1>
-                <dl className="project-hero__facts fade-in" style={{ '--i': 3 }}>
-                  {facts.map(([label, lines, href]) => (
-                    <div key={label}>
-                      <dt>{label}</dt>
-                      <dd>
-                        {href ? (
-                          <a href={href} target="_blank" rel="noreferrer">
-                            {lines[0]} ↗
-                          </a>
-                        ) : (
-                          lines.map((line) => <span key={line}>{line}</span>)
-                        )}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </>
-            ) : (
+            {cover ? null : (
               <>
                 {/* Wrapped so the fade-in transition does not replace the links' hover transition */}
                 <div className="fade-in">

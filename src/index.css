@@ -89,7 +89,7 @@ figcaption {
   font-size: var(--type-small);
 }
 
-/* Page entrance (Journal, About, Work): the element rises 8px and comes into focus. mountReveal adds
+/* Page entrance (Journal, About, Projects): the element rises 8px and comes into focus. mountReveal adds
    is-visible; --i staggers a group by 80ms. */
 :is(.journal-page, .work-page) .fade-in {
   opacity: 0;
