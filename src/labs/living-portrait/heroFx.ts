@@ -17,46 +17,93 @@ const T_IN = 600
 const T_HOLD = 2000
 const T_OUT = 400
 
-const clamp = (v, a, b) => Math.max(a, Math.min(b, v))
-const snap = (v) => Math.round(v / 8) * 8
-const hash = (s, k) => {
+type Point = [number, number]
+
+interface Box {
+  x: number
+  y: number
+  w: number
+  h: number
+  /** Seed for the per-box noise. */
+  s: number
+  t0: number
+  life: number
+  ascii: boolean
+  tag: string
+}
+/** The hover lock-on box: the same shape without a lifetime. */
+type Frame = Pick<Box, 'x' | 'y' | 'w' | 'h' | 's'>
+interface Spark {
+  x: number
+  y: number
+  to: Point | null
+  dir: Point | null
+  trail: Point[]
+  v: number
+  a: number
+}
+interface Ember { x: number; y: number; vx: number; vy: number; life: number; fade: number }
+/** Bounding box of the second picture's outline, in screen space. */
+interface Bounds { x: number; y: number; r: number; b: number }
+
+export interface HeroFxElements {
+  root: HTMLElement
+  bg: HTMLImageElement
+  /** The figure on a transparent background; its alpha is the hover range. */
+  cut: HTMLImageElement
+  /** The second picture. */
+  alt: HTMLImageElement
+  canvas: HTMLCanvasElement
+}
+
+const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v))
+const snap = (v: number) => Math.round(v / 8) * 8
+const hash = (s: number, k: number) => {
   const v = Math.sin(s + k * 12.9898) * 43758.5453
   return v - Math.floor(v)
 }
-const small = (im) => {
+const small = (im: HTMLImageElement) => {
   const c = document.createElement('canvas')
   c.width = SW
   c.height = SH
   const x = c.getContext('2d')
+  if (!x) return new Uint8ClampedArray(SW * SH * 4)
   x.drawImage(im, 0, 0, SW, SH)
   return x.getImageData(0, 0, SW, SH).data
 }
 
-/**
- * @param {{ root: HTMLElement, bg: HTMLImageElement, cut: HTMLImageElement, alt: HTMLImageElement, canvas: HTMLCanvasElement }} els
- *   cut = the figure on a transparent background (its alpha is the hover range). alt = the second picture.
- * @returns {() => void} cleanup
- */
-export function mountHeroFx({ root, bg, cut, alt, canvas }) {
-  const ctx = canvas.getContext('2d')
+export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () => void {
+  const maybeCtx = canvas.getContext('2d')
+  if (!maybeCtx) return () => {}
+  const ctx: CanvasRenderingContext2D = maybeCtx
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
-  let W, H, ox, oy, dw, dh, mk, ad, sb
-  let ptr = null
-  let boxes = []
-  let edge = []
-  let flow = []
-  let embers = []
+  let W = 0
+  let H = 0
+  let ox = 0
+  let oy = 0
+  let dw = 0
+  let dh = 0
+  // Alpha and colour of the two pictures at SW x SH; null until they have decoded.
+  let mk: Uint8ClampedArray | null = null
+  let ad = new Uint8ClampedArray(0)
+  let sb: Bounds = { x: 0, y: 0, r: 0, b: 0 }
+  let ptr: { x: number; y: number } | null = null
+  let boxes: Box[] = []
+  let edge: Point[] = []
+  let flow: Spark[] = []
+  let embers: Ember[] = []
   let running = false
   let userMoved = false
   let lastSpawn = 0
   let cap = 4
   let swap = 0
   let dead = false
-  let sweepTimer, resizeTimer
+  let sweepTimer: ReturnType<typeof setTimeout> | undefined
+  let resizeTimer: ReturnType<typeof setTimeout> | undefined
 
-  const idx = (x, y) =>
+  const idx = (x: number, y: number) =>
     (clamp(Math.floor(((y - oy) / dh) * SH), 0, SH - 1) * SW + clamp(Math.floor(((x - ox) / dw) * SW), 0, SW - 1)) * 4
-  const onSubject = (x, y) => mk[idx(x, y) + 3] > 128
+  const onSubject = (x: number, y: number) => (mk?.[idx(x, y) + 3] ?? 0) > 128
 
   function layout() {
     // The canvas fills the stage, which livingPortrait.css keeps inside --page-max.
@@ -85,7 +132,7 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
   // Outline points of the second picture, in screen space. Sparks run along them.
   function buildEdge() {
     edge = []
-    const A = (x, y) => ad[(y * SW + x) * 4 + 3] > 128
+    const A = (x: number, y: number) => ad[(y * SW + x) * 4 + 3] > 128
     for (let y = 1; y < SH - 1; y++)
       for (let x = 1; x < SW - 1; x++)
         if (A(x, y) && !(A(x - 1, y) && A(x + 1, y) && A(x, y - 1) && A(x, y + 1)))
@@ -96,14 +143,14 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
   }
 
   // Boxes appear only while the pointer is on the figure. A box may stick out past the figure's edge.
-  function spawn(now) {
-    if (swap || now - lastSpawn < 85 || boxes.length >= cap || !onSubject(ptr.x, ptr.y)) return
+  function spawn(now: number, at: { x: number; y: number }) {
+    if (swap || now - lastSpawn < 85 || boxes.length >= cap || !onSubject(at.x, at.y)) return
     lastSpawn = now
-    cap = 4 + (Math.random() < 0.5)
+    cap = 4 + Number(Math.random() < 0.5)
     const w = snap(32 + Math.random() * 112)
     const h = snap(24 + Math.random() * 80)
-    const cx = ptr.x + (Math.random() - 0.5) * 230
-    const cy = ptr.y + (Math.random() - 0.5) * 200
+    const cx = at.x + (Math.random() - 0.5) * 230
+    const cy = at.y + (Math.random() - 0.5) * 200
     boxes.push({
       x: snap(cx - w / 2),
       y: snap(cy - h / 2),
@@ -117,7 +164,7 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
     })
   }
 
-  function ascii(b, tick) {
+  function ascii(b: Frame, tick: number) {
     ctx.font = FONT
     ctx.textBaseline = 'top'
     for (let y = b.y; y < b.y + b.h - 2; y += CHH)
@@ -138,7 +185,7 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
   }
 
   // The box is a window onto the second picture.
-  const picture = (b) =>
+  const picture = (b: Frame) =>
     ctx.drawImage(
       alt,
       ((b.x - ox) / dw) * alt.naturalWidth,
@@ -151,7 +198,7 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
       b.h,
     )
 
-  function frameBox(b, label, color) {
+  function frameBox(b: Frame, label: string, color: string) {
     ctx.strokeStyle = color
     ctx.lineWidth = 1
     ctx.strokeRect(b.x + 0.5, b.y + 0.5, b.w - 1, b.h - 1)
@@ -165,8 +212,8 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
   }
 
   // Glitch around one box: colour-split ghost frames, stray bars, noise pixels, a shifted slice.
-  function glitch(b, tick) {
-    const h = (k) => hash(b.s + k * 3.7, tick)
+  function glitch(b: Frame, tick: number) {
+    const h = (k: number) => hash(b.s + k * 3.7, tick)
     const dpr = canvas.width / W
     if (h(1) < 0.3) {
       const d = 2 + h(2) * 5
@@ -202,12 +249,12 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
 
   // Sparks: a few slow particles flow along the outline, leave trails, and now and then spit embers.
   const pick = () => edge[Math.floor(Math.random() * edge.length)]
-  const particle = () => {
-    const p = pick()
+  const particle = (): Spark => {
+    const p = pick() ?? [0, 0]
     return { x: p[0], y: p[1], to: null, dir: null, trail: [], v: 0.45 + Math.random() * 0.6, a: 0.6 + Math.random() * 0.4 }
   }
-  function nextStop(q) {
-    let best = null
+  function nextStop(q: Spark): Point | null {
+    let best: Point | null = null
     let seen = 0
     for (const e of edge) {
       const dx = e[0] - q.x
@@ -218,7 +265,7 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
     }
     return best
   }
-  function sparks(k) {
+  function sparks(k: number) {
     while (flow.length < 24) flow.push(particle())
     ctx.save()
     ctx.globalCompositeOperation = 'lighter'
@@ -285,8 +332,8 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
   }
 
   // Glitch over the whole figure: shifted strips of both pictures, neon bars, noise pixels.
-  function bigGlitch(tick, g) {
-    const h = (k) => hash(k * 5.3 + 91, tick)
+  function bigGlitch(tick: number, g: number) {
+    const h = (k: number) => hash(k * 5.3 + 91, tick)
     const bh = sb.b - sb.y
     const bw = sb.r - sb.x
     for (let k = 0, n = 5 + g * 14; k < n; k++) {
@@ -309,37 +356,37 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
       }
   }
 
-  function swapFrame(now, tick) {
+  function swapFrame(now: number, tick: number) {
     const t = now - swap
     if (t > T_IN + T_HOLD + T_OUT) {
       swap = 0
       flow = []
       embers = []
-      alt.style.opacity = 0
+      alt.style.opacity = '0'
       return
     }
     if (reduce) {
-      alt.style.opacity = t < T_IN + T_HOLD ? 1 : 0
+      alt.style.opacity = t < T_IN + T_HOLD ? '1' : '0'
       return
     }
     if (t < T_IN) {
       const k = t / T_IN
-      alt.style.opacity = hash(3, tick) < k ? k : 0
+      alt.style.opacity = hash(3, tick) < k ? String(k) : '0'
       bigGlitch(tick, 1 - k * 0.4)
       sparks(k * 0.6)
     } else if (t < T_IN + T_HOLD) {
-      alt.style.opacity = 1
+      alt.style.opacity = '1'
       if (hash(5, tick) < 0.12) bigGlitch(tick, 0.25)
       sparks(1)
     } else {
       const k = (t - T_IN - T_HOLD) / T_OUT
-      alt.style.opacity = hash(3, tick) < k ? 0 : 1 - k
+      alt.style.opacity = hash(3, tick) < k ? '0' : String(1 - k)
       bigGlitch(tick, 0.5 + k * 0.5)
       sparks(1 - k)
     }
   }
 
-  function frame(now) {
+  function frame(now: number) {
     if (dead) return
     ctx.clearRect(0, 0, W, H)
     const tick = Math.floor(now / 80)
@@ -362,7 +409,7 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
     }
     ctx.globalAlpha = 1
     if (ptr && !swap && onSubject(ptr.x, ptr.y)) {
-      const b = { x: snap(ptr.x - 48), y: snap(ptr.y - 48), w: 96, h: 96, s: 7 }
+      const b: Frame = { x: snap(ptr.x - 48), y: snap(ptr.y - 48), w: 96, h: 96, s: 7 }
       picture(b)
       frameBox(b, `LOCK X ${String(ptr.x | 0).padStart(4, '0')} Y ${String(ptr.y | 0).padStart(4, '0')}`, '#E4B57B')
       if (!reduce) glitch(b, tick)
@@ -377,17 +424,17 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
       requestAnimationFrame(frame)
     }
   }
-  const move = (x, y) => {
+  const move = (x: number, y: number) => {
     ptr = { x, y }
-    spawn(performance.now())
+    spawn(performance.now(), ptr)
     kick()
   }
-  const local = (e) => {
+  const local = (e: PointerEvent | MouseEvent): Point => {
     const r = canvas.getBoundingClientRect()
     return [e.clientX - r.left, e.clientY - r.top]
   }
 
-  const onMove = (e) => {
+  const onMove = (e: PointerEvent) => {
     if (!mk) return
     userMoved = true
     move(...local(e))
@@ -395,7 +442,7 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
   const onLeave = () => {
     ptr = null
   }
-  const onDouble = (e) => {
+  const onDouble = (e: MouseEvent) => {
     if (!mk || swap || !onSubject(...local(e))) return
     swap = performance.now()
     boxes = [] // no hover boxes while the second picture shows
@@ -408,13 +455,13 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }) {
 
   // One slow pass over the figure shows the effect before the visitor moves.
   function sweep() {
-    const pts = [[0.36, 0.6], [0.5, 0.22], [0.56, 0.3], [0.62, 0.46], [0.52, 0.7]].map(([u, v]) => [
+    const pts = ([[0.36, 0.6], [0.5, 0.22], [0.56, 0.3], [0.62, 0.46], [0.52, 0.7]] as Point[]).map(([u, v]): Point => [
       clamp(ox + u * dw, 24, W - 24),
       oy + v * dh,
     ])
     const T = 3800
     const t0 = performance.now()
-    const step = (now) => {
+    const step = (now: number) => {
       if (userMoved || dead) return
       const k = Math.max(0, (now - t0) / T) // a frame's timestamp can be a little before t0
       if (k >= 1) {

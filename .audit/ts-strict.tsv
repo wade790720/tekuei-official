@@ -24,3 +24,5 @@ ts	phase	decision	why	evidence	result
 2026-11-27T15:33:15Z	A-bug	儲存進行中離開編輯模式時，saveDraft 的 updater 會對 null 呼叫 copyDraft 而當掉；加判斷	strict 型別指出 cur 可能是 null；hook 沒有測試環境，所以沒有先寫測試	dd057df src/hooks/useCmsSection.ts	fixed-untested
 2026-11-27T15:33:15Z	A-verify	用假的 /api（scripts/fakeAdminApi.js）登入 About 編輯模式、打字、Ctrl+S，送出的 PUT 只有 aboutPage 且含修改	確認 useCmsSection 的型別化儲存路徑；沒有寫到正式資料	window.__api: PUT /api/data keys=[aboutPage]	pass
 2026-11-27T15:35:23Z	phaseB	先把剩下 118 個檔一次改名並 commit（typecheck 暫時紅），再讓子代理各自在獨立 worktree 修型別；第一波：UI 基本元件、Editor、labs、functions+scripts；第二波：頁面與子資料夾、Component Library	多個代理同時跑改名 codemod 會互相改到對方檔案；先統一改名，每個代理只碰自己的檔案，合併不衝突；基本元件先有型別，頁面才拿得到正確的 props	16071fd	test 124 pass, build ok, typecheck red
+2026-11-27T15:41:08Z	B	fallScene 畫面外停止 rAF	原本畫布在畫面外（例如 iframe 捲出視窗）仍持續重繪，違反 DESIGN.md；改用 IntersectionObserver 暫停與恢復，減少動態效果時維持單張靜止畫面	src/labs/falling-figure/fallScene.ts	完成
+2026-11-27T15:41:08Z	B	Canvas 2D context 用執行期檢查	getContext 回傳 null 時不再拋錯：效果直接略過並回傳空的 cleanup，shatterImage 仍呼叫 onPlay 讓頁尾文字顯示	src/labs/shatter-footer/shatterImage.ts	完成

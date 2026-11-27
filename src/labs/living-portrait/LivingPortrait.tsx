@@ -7,20 +7,25 @@ import { mountHeroFx } from './heroFx.ts'
 
 /**
  * Full-screen portrait with a big name between the picture and the cut-out figure.
- * Hover on the figure shows tracking boxes, double-click glitches (heroFx.js).
- * @param {{ name: string, label: string }} props  label = the section's accessible name
+ * Hover on the figure shows tracking boxes, double-click glitches (heroFx.ts).
  */
-export function LivingPortrait({ name, label }) {
-  const root = useRef(null)
-  const bg = useRef(null)
-  const cut = useRef(null)
-  const alt = useRef(null)
-  const canvas = useRef(null)
+interface LivingPortraitProps {
+  name: string
+  /** The section's accessible name. */
+  label: string
+}
 
-  useEffect(
-    () => mountHeroFx({ root: root.current, bg: bg.current, cut: cut.current, alt: alt.current, canvas: canvas.current }),
-    [],
-  )
+export function LivingPortrait({ name, label }: LivingPortraitProps) {
+  const root = useRef<HTMLElement>(null)
+  const bg = useRef<HTMLImageElement>(null)
+  const cut = useRef<HTMLImageElement>(null)
+  const alt = useRef<HTMLImageElement>(null)
+  const canvas = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    if (!root.current || !bg.current || !cut.current || !alt.current || !canvas.current) return
+    return mountHeroFx({ root: root.current, bg: bg.current, cut: cut.current, alt: alt.current, canvas: canvas.current })
+  }, [])
 
   return (
     <section className="living-portrait" ref={root} aria-label={label}>

@@ -8,15 +8,15 @@ const SAMPLE_W = 420 // the figure picture is read at this width
 const WAVE_SECONDS = 1.6
 const NEAR_BLACK = '#0B0B0D'
 
-const subFont = (s) => `700 ${s}px ui-monospace, "Cascadia Mono", Consolas, "Noto Sans TC", monospace`
-const titleFont = (s) => `400 ${s}px "Instrument Serif", "Noto Serif TC", "Source Han Serif TC", serif`
+const subFont = (s: number) => `700 ${s}px ui-monospace, "Cascadia Mono", Consolas, "Noto Sans TC", monospace`
+const titleFont = (s: number) => `400 ${s}px "Instrument Serif", "Noto Serif TC", "Source Han Serif TC", serif`
 
 // Smooth noise in 0..1, three layers. It shapes the impact dust into tall clouds.
-const hash2 = (x, y) => {
+const hash2 = (x: number, y: number) => {
   const v = Math.sin(x * 127.1 + y * 311.7) * 43758.5453
   return v - Math.floor(v)
 }
-const noise = (x, y) => {
+const noise = (x: number, y: number) => {
   const xi = Math.floor(x)
   const yi = Math.floor(y)
   const u = x - xi
@@ -25,33 +25,85 @@ const noise = (x, y) => {
   const b = v * v * (3 - 2 * v)
   return (hash2(xi, yi) * (1 - a) + hash2(xi + 1, yi) * a) * (1 - b) + (hash2(xi, yi + 1) * (1 - a) + hash2(xi + 1, yi + 1) * a) * b
 }
-const fbm = (x, y) => noise(x, y) * 0.55 + noise(x * 2.1, y * 2.1) * 0.3 + noise(x * 4.3, y * 4.3) * 0.15
+const fbm = (x: number, y: number) => noise(x, y) * 0.55 + noise(x * 2.1, y * 2.1) * 0.3 + noise(x * 4.3, y * 4.3) * 0.15
 
-/**
- * @param {{
- *   canvas: HTMLCanvasElement,    fixed, covers the viewport
- *   figure: HTMLImageElement,     cutout of the falling figure (transparent background)
- *   sections: HTMLElement[],      one per act; the slab meets the figure when the section's top reaches it
- *   acts: { sub: string, title: string, side: number }[],   text carved on each slab; side shifts it by that share of the width
- *   progressDot?: HTMLElement,    its `top` is set to the scroll progress in percent
- *   onAct?: (index: number) => void,   index of the last slab the figure went through, or -1
- * }} options
- * @returns {{ destroy: () => void, setSound: (on: boolean) => void }}
- */
-export function mountFallScene({ canvas, figure, sections, acts, progressDot, onAct }) {
-  const ctx = canvas.getContext('2d')
+type Point = [number, number]
+
+export interface FallAct {
+  /** Small line carved on the slab. */
+  sub: string
+  /** Large line carved on the slab. */
+  title: string
+  /** Shifts the slab sideways by this share of the width. */
+  side: number
+}
+
+export interface FallSceneOptions {
+  /** Fixed, covers the viewport. */
+  canvas: HTMLCanvasElement
+  /** Cutout of the falling figure (transparent background). */
+  figure: HTMLImageElement
+  /** One per act; the slab meets the figure when the section's top reaches it. */
+  sections: HTMLElement[]
+  acts: FallAct[]
+  /** Its `top` is set to the scroll progress in percent. */
+  progressDot?: HTMLElement | null
+  /** Index of the last slab the figure went through, or -1. */
+  onAct?: (index: number) => void
+}
+
+export interface FallScene {
+  destroy: () => void
+  setSound: (on: boolean) => void
+}
+
+interface Chunk {
+  poly: Point[]
+  mx: number
+  my: number
+  dx: number
+  dy: number
+  rot: number
+  dist: number
+}
+interface Wall extends FallAct {
+  top: number
+  w: number
+  h: number
+  chunks: Chunk[]
+  hit: boolean
+  subSize: number
+  titleSize: number
+}
+interface Streak { x: number; y: number; len: number; speed: number; a: number }
+interface Dust { x: number; y: number; seed: number; a: number; rise: number; size: number; col: string }
+interface CloudPoint { x: number; y: number; seed: number; a: number; r: number; g: number; b: number; size: number }
+interface Particle { bx: number; by: number; seed: number; edge: number; size: number; col: string }
+interface Chip { x: number; y: number; vx: number; vy: number; size: number; rot: number; spin: number; alpha: number }
+interface Spark { x: number; y: number; vx: number; vy: number; life: number; fade: number }
+
+export function mountFallScene({ canvas, figure, sections, acts, progressDot, onAct }: FallSceneOptions): FallScene {
+  const maybeCtx = canvas.getContext('2d')
+  if (!maybeCtx) return { setSound() {}, destroy() {} }
+  const ctx: CanvasRenderingContext2D = maybeCtx
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
   const touch = matchMedia('(pointer: coarse)').matches || innerWidth <= 768
-  let W, H, cx, cy, bx, by, S
+  let W = 0
+  let H = 0
+  let cx = 0
+  let cy = 0
+  let bx = 0
+  let by = 0
+  let S = 0
   let fill = 0.88 // how much of the picture square the figure covers; measured in sample()
   let nx = 0
-  let parts = []
-  let sparks = []
-  let streaks = []
-  let walls = []
-  let chips = []
-  let dust = []
-  let cloud = []
+  let parts: Particle[] = []
+  let sparks: Spark[] = []
+  let streaks: Streak[] = []
+  let walls: Wall[] = []
+  let chips: Chip[] = []
+  let dust: Dust[] = []
+  let cloud: CloudPoint[] = []
   let vel = 0
   let lastY = scrollY
   let shake = 0
@@ -59,6 +111,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
   let shown = -2
   let raf = 0
   let dead = false
+  let visible = true
 
   // Slow, weighted scrolling: low lerp, calmer wheel.
   const lenis = reduce
@@ -95,7 +148,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     cy = by
     S = square * fill
     // Slipstream: 42 lines, each 30 to 115px long, rising 2.2 to 6.7px a frame even when the page is still.
-    streaks = Array.from({ length: 42 }, () => ({
+    streaks = Array.from({ length: 42 }, (): Streak => ({
       x: Math.random() * W,
       y: Math.random() * H,
       len: 30 + Math.random() * 85,
@@ -116,31 +169,32 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     const cw = w / cols
     const ch = h / rows
     const maxText = w - 70
-    const fit = (font, size, text, spacing) => {
+    const fit = (font: (size: number) => string, size: number, text: string, spacing: number) => {
       ctx.font = font(size)
       const m = ctx.measureText(text).width + text.length * size * spacing
       return m > maxText ? Math.floor((size * maxText) / m) : size
     }
-    walls = sections.map((section, n) => {
-      const P = []
+    walls = sections.flatMap((section, n): Wall[] => {
+      const act = acts[n]
+      if (!act) return []
+      const P: Point[] = []
       for (let r = 0; r <= rows; r++)
         for (let c = 0; c <= cols; c++)
           P.push([
             -w / 2 + c * cw + (c === 0 || c === cols ? 0 : (Math.random() - 0.5) * cw * 0.45),
             -h / 2 + r * ch + (r === 0 || r === rows ? 0 : (Math.random() - 0.5) * ch * 0.45),
           ])
-      const chunks = []
+      const chunks: Chunk[] = []
       for (let r = 0; r < rows; r++)
         for (let c = 0; c < cols; c++) {
           const k = r * (cols + 1) + c
-          const poly = [P[k], P[k + 1], P[k + cols + 2], P[k + cols + 1]]
-          const mx = (poly[0][0] + poly[1][0] + poly[2][0] + poly[3][0]) / 4
-          const my = (poly[0][1] + poly[1][1] + poly[2][1] + poly[3][1]) / 4
+          const poly = [P[k], P[k + 1], P[k + cols + 2], P[k + cols + 1]].filter((q): q is Point => q !== undefined)
+          const mx = poly.reduce((sum, q) => sum + q[0], 0) / 4
+          const my = poly.reduce((sum, q) => sum + q[1], 0) / 4
           const d = Math.hypot(mx, my) || 1
           chunks.push({ poly, mx, my, dx: mx / d, dy: my / d, rot: (Math.random() - 0.5) * 0.6, dist: 80 + Math.random() * 120 })
         }
-      const act = acts[n]
-      return {
+      return [{
         ...act,
         top: section.offsetTop,
         w,
@@ -149,14 +203,14 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
         hit: false,
         subSize: Math.max(8, fit(subFont, Math.round(Math.min(12, Math.max(9, w * 0.014))), act.sub, 0.3)),
         titleSize: Math.max(14, fit(titleFont, Math.round(Math.min(42, Math.max(20, w * 0.046))), act.title, 0.03)),
-      }
+      }]
     })
   }
 
   // Background, at rest: a few faint points that drift up slowly. They wrap around at the top.
   // Background, on impact: a hidden field of cloud-shaped dust. It shows only while a wave is crossing the screen.
   function buildBackground() {
-    dust = Array.from({ length: Math.round((W * H) / 1700) }, () => {
+    dust = Array.from({ length: Math.round((W * H) / 1700) }, (): Dust => {
       const a = 0.1 + Math.random() * 0.3
       return {
         x: Math.random() * W,
@@ -200,10 +254,11 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     c.width = SAMPLE_W
     c.height = SH
     const x = c.getContext('2d')
+    if (!x) return
     x.drawImage(figure, 0, 0, SAMPLE_W, SH)
     const d = x.getImageData(0, 0, SAMPLE_W, SH).data
-    const A = (px, py) => (px < 0 || py < 0 || px >= SAMPLE_W || py >= SH ? 0 : d[(py * SAMPLE_W + px) * 4 + 3])
-    const pool = []
+    const A = (px: number, py: number) => (px < 0 || py < 0 || px >= SAMPLE_W || py >= SH ? 0 : d[(py * SAMPLE_W + px) * 4 + 3])
+    const pool: number[] = []
     let x0 = SAMPLE_W
     let x1 = 0
     let y0 = SH
@@ -221,7 +276,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     const mx = (x0 + x1) / 2
     const my = (y0 + y1) / 2
     fill = span / SAMPLE_W
-    const q = (v) => Math.min(255, Math.round(v / 12) * 12) // fewer distinct colours, so drawing changes style less often
+    const q = (v: number) => Math.min(255, Math.round(v / 12) * 12) // fewer distinct colours, so drawing changes style less often
     const count = W < 900 ? 9000 : 20000
     parts = []
     for (let n = 0; n < count; n++) {
@@ -242,7 +297,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
   }
 
   // The carved face of a slab: stone, an inset frame, a small line and a large line.
-  function slabFace(wall) {
+  function slabFace(wall: Wall) {
     const g = ctx.createLinearGradient(-wall.w / 2, -wall.h / 2, wall.w / 2, wall.h / 2)
     g.addColorStop(0, '#1c1f26')
     g.addColorStop(0.5, '#15171d')
@@ -268,13 +323,13 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     ctx.shadowBlur = 0
     ctx.letterSpacing = '0px'
   }
-  const tracePoly = (poly) => {
+  const tracePoly = (poly: Point[]) => {
     ctx.beginPath()
-    poly.forEach((p, i) => ctx[i ? 'lineTo' : 'moveTo'](p[0], p[1]))
+    poly.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])))
     ctx.closePath()
   }
 
-  function drawWalls(now) {
+  function drawWalls(now: number) {
     let passed = -1
     walls.forEach((wall, n) => {
       const sy = wall.top + by - scrollY // the slab is level with the figure when its act begins
@@ -348,7 +403,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     }
   }
 
-  function frame(now) {
+  function frame(now: number) {
     if (dead) return
     if (lenis) lenis.raf(now)
     const t = now / 1000
@@ -363,11 +418,11 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     const waveAmp = wave < 0 || wave > WAVE_SECONDS ? 0 : 0.35 * (1 - wave / WAVE_SECONDS)
     const reach = wave * Math.max(W, H) * 0.9
     // Strength of the wave at a point: a 70px band at distance `reach` from the figure.
-    const ringAt = (x, y) => {
+    const ringAt = (x: number, y: number) => {
       const band = (Math.hypot(x - cx, y - cy) - reach) / 70
       return Math.exp(-band * band) * waveAmp
     }
-    const pushOut = (x, y, ring) => {
+    const pushOut = (x: number, y: number, ring: number): Point => {
       const dx = x - cx
       const dy = y - cy
       const od = Math.hypot(dx, dy) + 0.0001
@@ -451,7 +506,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     // The figure bobs a little and leans toward the pointer. The wave also lights the body as it leaves.
     cx = bx + (touch ? 0 : nx * 18)
     cy = by + (touch ? 0 : Math.sin(t * 1.5) * 6)
-    const lit = []
+    const lit: number[] = []
     const ang = Math.sin(t * 0.35) * 0.05
     const ca = Math.cos(ang)
     const sa = Math.sin(ang)
@@ -502,10 +557,20 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
       const max = document.documentElement.scrollHeight - innerHeight
       progressDot.style.top = `calc(${max > 0 ? (scrollY / max) * 100 : 0}% - 3px)`
     }
-    if (!reduce) raf = requestAnimationFrame(frame) // with reduced motion: one still frame
+    // With reduced motion: one still frame. Off screen the loop stops until the observer restarts it.
+    raf = !reduce && visible ? requestAnimationFrame(frame) : 0
   }
 
-  const onMouseMove = (e) => {
+  const observer = new IntersectionObserver((entries) => {
+    visible = entries.some((e) => e.isIntersecting)
+    if (reduce || dead) return
+    if (!visible) {
+      cancelAnimationFrame(raf)
+      raf = 0
+    } else if (!raf) raf = requestAnimationFrame(frame)
+  })
+
+  const onMouseMove = (e: MouseEvent) => {
     nx = (e.clientX / W) * 2 - 1
   }
   const onMouseLeave = () => {
@@ -526,6 +591,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     addEventListener('resize', onResize)
     addEventListener('mousemove', onMouseMove, { passive: true })
     document.documentElement.addEventListener('mouseleave', onMouseLeave)
+    observer.observe(canvas)
     raf = requestAnimationFrame(frame)
   })
 
@@ -537,6 +603,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     destroy() {
       dead = true
       cancelAnimationFrame(raf)
+      observer.disconnect()
       lenis?.destroy()
       crack.pause()
       removeEventListener('resize', onResize)
