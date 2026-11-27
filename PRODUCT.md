@@ -51,8 +51,8 @@ Wade 寫了十年程式，也做了兩年策展，辦過十場以上的展覽。
 
 ## Evidence on Hand
 
-- 三個真實案例：Matsu Biennial（馬祖國際藝術島）、MONOLAB（墨雨互動設計）、Lustre Yellow（花蜜水晶花工藝）。資料在 `src/data/work.js` 和 `src/data/cases/`。
-- Journal 的文章都在 R2，程式碼裡沒有預設文章。最早當佔位的四篇假文章只留在測試資料（`scripts/fixtures/journal.mjs`）。
+- 三個真實案例：Matsu Biennial（馬祖國際藝術島）、MONOLAB（墨雨互動設計）、Lustre Yellow（花蜜水晶花工藝）。資料在 `src/data/work.ts` 和 `src/data/cases/`。
+- Journal 的文章都在 R2，程式碼裡沒有預設文章。最早當佔位的四篇假文章只留在測試資料（`scripts/fixtures/journal.ts`）。
 - 沒有：案例的新格式圖片、新定位的文章、Wade 的照片、Email 和 IG 帳號。這些不可以捏造成真實資料。
 
 ## Product Principles
