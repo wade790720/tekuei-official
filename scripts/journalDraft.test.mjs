@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import { it } from 'node:test'
-import { cloneJournal, copyJournalDraft, differsOnlyIn, publishedJournal, readableJournal } from '../src/data/journal.js'
+import { cloneJournal, copyJournalDraft, differsOnlyIn, publishedJournal, readableJournal } from '../src/data/journal.ts'
 import { sampleJournal } from './fixtures/journal.mjs'
-import { postPage, siteJournal, sitemapXml, llmsTxt } from '../src/lib/seo.js'
+import { postPage, siteJournal, sitemapXml, llmsTxt } from '../src/lib/seo.ts'
 
 it('copyJournalDraft: edits on the copy leave the saved journal alone, bodies are shared', () => {
   const saved = cloneJournal(sampleJournal())

@@ -1,9 +1,17 @@
 import { ADMIN_SESSION_KEY, CMS_LABELS, TRANSLATE_LABELS } from '../data/admin.js'
-import { compressImage } from './compressImage.js'
-import { batchTexts } from './docTranslate.js'
+import { compressImage } from './compressImage.ts'
+import { batchTexts } from './docTranslate.ts'
 import { parseSiteData } from './siteData.ts'
+import type { ParsedSiteData, SiteData } from './siteData.ts'
 
-export function apiPath(path) {
+// What the API answers, read field by field: the body is whatever the server or a proxy sent.
+const obj = (v: unknown): v is object => typeof v === 'object' && v !== null
+const errorOf = (v: unknown) => (obj(v) && 'error' in v && typeof v.error === 'string' ? v.error : '')
+const etagOf = (v: unknown) => (obj(v) && 'etag' in v && typeof v.etag === 'string' ? v.etag : null)
+const textsOf = (v: unknown) => (obj(v) && 'texts' in v && Array.isArray(v.texts) && v.texts.every((t) => typeof t === 'string') ? v.texts : null)
+const urlOf = (v: unknown) => (obj(v) && 'url' in v && typeof v.url === 'string' ? v.url : null)
+
+export function apiPath(path: string): string {
   const base = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '')
   return path.startsWith('/') ? `${base}${path}` : `${base}/${path}`
 }
@@ -12,14 +20,14 @@ export function apiPath(path) {
  * production 預設走同網域 /api（Pages Functions + R2）。
  * 開發預設用 bundled data.json，除非 VITE_USE_REMOTE=true。
  */
-export function isRemoteSync() {
+export function isRemoteSync(): boolean {
   const v = import.meta.env.VITE_USE_REMOTE
   if (v === 'false') return false
   if (v === 'true') return true
   return import.meta.env.PROD
 }
 
-export function getAdminToken() {
+export function getAdminToken(): string {
   try {
     if (typeof window !== 'undefined') {
       const ss = sessionStorage.getItem(ADMIN_SESSION_KEY)
@@ -34,21 +42,22 @@ export function getAdminToken() {
   return ''
 }
 
-function authHeader(token) {
+function authHeader(token: string): Record<string, string> {
   if (!token) return {}
   return { Authorization: `Bearer ${token}` }
 }
 
 // The server lets one admin request through at a time: of several that arrive together, only one is
-// checked and the others are refused as "too many attempts" (src/lib/adminAuth.js). So they take turns here.
-let lastAdminRequest = Promise.resolve()
-function inTurn(send) {
-  lastAdminRequest = lastAdminRequest.then(send, send)
-  return lastAdminRequest
+// checked and the others are refused as "too many attempts" (src/lib/adminAuth.ts). So they take turns here.
+let lastAdminRequest: Promise<unknown> = Promise.resolve()
+function inTurn(send: () => Promise<Response>): Promise<Response> {
+  const next = lastAdminRequest.then(send, send)
+  lastAdminRequest = next
+  return next
 }
-const adminFetch = (path, init) => inTurn(() => fetch(apiPath(path), init))
+const adminFetch = (path: string, init: RequestInit) => inTurn(() => fetch(apiPath(path), init))
 
-export async function loginAdmin(password) {
+export async function loginAdmin(password: string): Promise<{ token: string }> {
   const trimmed = password.trim()
   const res = await adminFetch('/api/admin/verify', {
     method: 'POST',
@@ -62,10 +71,11 @@ export async function loginAdmin(password) {
 
 // One download per page load: Journal, Work and the case pages all read the same data.json.
 // Callers treat the result as read only. A save or a failed load clears it.
-let siteDataRequest = null
+export type SiteDataResponse = ParsedSiteData & { etag: string | null }
+let siteDataRequest: Promise<SiteDataResponse | null> | null = null
 
-/** @returns {Promise<import('./siteData.ts').ParsedSiteData & { etag: string | null } | null>} null when the bucket is empty */
-export function fetchSiteData() {
+/** @returns null when the bucket is empty */
+export function fetchSiteData(): Promise<SiteDataResponse | null> {
   siteDataRequest ??= requestSiteData().catch((err) => {
     siteDataRequest = null
     throw err
@@ -73,7 +83,7 @@ export function fetchSiteData() {
   return siteDataRequest
 }
 
-async function requestSiteData() {
+async function requestSiteData(): Promise<SiteDataResponse | null> {
   const res = await fetch(apiPath('/api/data'), {
     headers: { Accept: 'application/json' },
   })
@@ -88,19 +98,23 @@ async function requestSiteData() {
 // Journal, Projects and About each remember the version of data.json they loaded. A save by one replaces
 // that version, so the others are told: a section still on the replaced version moves to the new one.
 // A section on any other version stays there, and its next save is refused, as it should be.
-const versionListeners = new Set()
+type VersionListener = (from: string | null, to: string | null) => void
+const versionListeners = new Set<VersionListener>()
 
-/** @param {(from: string | null, to: string | null) => void} fn  @returns {() => void} stop listening */
-export function onSiteVersion(fn) {
+/** @returns stop listening */
+export function onSiteVersion(fn: VersionListener): () => void {
   versionListeners.add(fn)
-  return () => versionListeners.delete(fn)
+  return () => {
+    versionListeners.delete(fn)
+  }
 }
 
 /**
- * @param {string | null} etag  the version this editor loaded; the server refuses the save (409) if it changed since
- * @returns {Promise<{ ok: true, etag: string }>}  etag of the saved version
+ * @param patch  whole sections; the others in R2 are kept
+ * @param etag  the version this editor loaded; the server refuses the save (409) if it changed since
+ * @returns etag of the saved version
  */
-export async function saveSitePatch(patch, token, etag) {
+export async function saveSitePatch(patch: SiteData, token: string, etag: string | null): Promise<{ etag: string | null }> {
   const res = await adminFetch('/api/data', {
     method: 'PUT',
     headers: {
@@ -110,25 +124,26 @@ export async function saveSitePatch(patch, token, etag) {
     },
     body: JSON.stringify(patch),
   })
-  const data = await res.json().catch(() => ({}))
+  const data: unknown = await res.json().catch(() => ({}))
   if (!res.ok) {
-    throw new Error(res.status === 409 ? CMS_LABELS.stale : data.error || CMS_LABELS.saveFailed)
+    throw new Error(res.status === 409 ? CMS_LABELS.stale : errorOf(data) || CMS_LABELS.saveFailed)
   }
   siteDataRequest = null // pages opened after this save read the new version
-  for (const fn of versionListeners) fn(etag ?? null, data.etag ?? null)
-  return data
+  for (const fn of versionListeners) fn(etag ?? null, etagOf(data))
+  return { etag: etagOf(data) }
 }
 
 /**
  * Sent in batches: Cloudflare drops a request that gets no response within 100 seconds.
- * @param {string[]} texts
- * @param {string} token
- * @param {{ signal?: AbortSignal, onProgress?: (done: number, total: number) => void }} [opts]
- * @returns {Promise<string[]>} in the same order
+ * @returns in the same order
  */
-export async function translateTexts(texts, token, { signal, onProgress } = {}) {
+export async function translateTexts(
+  texts: string[],
+  token: string,
+  { signal, onProgress }: { signal?: AbortSignal; onProgress?: (done: number, total: number) => void } = {},
+): Promise<string[]> {
   const batches = batchTexts(texts)
-  const out = []
+  const out: string[] = []
   onProgress?.(0, batches.length)
   for (const [i, batch] of batches.entries()) {
     const res = await adminFetch('/api/translate', {
@@ -137,16 +152,17 @@ export async function translateTexts(texts, token, { signal, onProgress } = {}) 
       body: JSON.stringify({ texts: batch }),
       signal,
     })
-    const data = await res.json().catch(() => ({}))
-    if (!res.ok) throw new Error(data.error || TRANSLATE_LABELS.failed)
-    out.push(...data.texts)
+    const data: unknown = await res.json().catch(() => ({}))
+    const translated = textsOf(data)
+    if (!res.ok || !translated) throw new Error(errorOf(data) || TRANSLATE_LABELS.failed)
+    out.push(...translated)
     onProgress?.(i + 1, batches.length)
   }
   return out
 }
 
 /** Stores an image and returns `{ url }`. The API takes 1MB at most, so the image is shrunk here, for every caller. */
-export async function uploadSiteImage(file, token) {
+export async function uploadSiteImage(file: File, token: string): Promise<{ url: string }> {
   const form = new FormData()
   form.append('file', await compressImage(file))
   const res = await adminFetch('/api/upload', {
@@ -154,9 +170,10 @@ export async function uploadSiteImage(file, token) {
     headers: authHeader(token),
     body: form,
   })
-  const data = await res.json().catch(() => ({}))
-  if (!res.ok) {
-    throw new Error(data.error || '上傳失敗')
+  const data: unknown = await res.json().catch(() => ({}))
+  const url = urlOf(data)
+  if (!res.ok || !url) {
+    throw new Error(errorOf(data) || '上傳失敗')
   }
-  return data
+  return { url }
 }

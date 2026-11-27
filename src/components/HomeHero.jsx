@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import '../styles/homeHero.css'
 import { HOME_HERO } from '../data/homepage.js'
-import { mountGrainHaze } from '../lib/grainHaze.js'
-import { mountKoiPond } from '../lib/koiPond.js'
+import { mountGrainHaze } from '../lib/grainHaze.ts'
+import { mountKoiPond } from '../lib/koiPond.ts'
 import { useLang } from '../i18n'
 
 const two = (n) => String(n).padStart(2, '0')
 
-/** First screen: koi swim behind the words. A click on the water drops food (koiPond.js). */
+/** First screen: koi swim behind the words. A click on the water drops food (koiPond.ts). */
 function KoiHero({ hero }) {
   const root = useRef(null)
   const canvas = useRef(null)

@@ -6,9 +6,9 @@ import { FeaturedPhotos } from './FeaturedPhotos.jsx'
 import { Gallery } from './Gallery.jsx'
 import { ScrollStack } from './ScrollStack.jsx'
 import { VideoPlayer } from './VideoPlayer.jsx'
-import { safeHref } from '../lib/richText.js'
+import { safeHref } from '../lib/richText.ts'
 
-// Renders a post body (Tiptap JSON, see src/lib/richText.js) as the article markup.
+// Renders a post body (Tiptap JSON, see src/lib/richText.ts) as the article markup.
 // Each top-level node fades in on its own, as the old blocks did.
 
 function wrapMark(mark, child, key) {

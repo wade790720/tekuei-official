@@ -1,6 +1,6 @@
 // In-app browsers (LINE, Instagram) can block the Clipboard API; execCommand still works in most of them.
-/** @returns {Promise<boolean>} false when both ways failed */
-export async function writeClipboard(text) {
+/** @returns false when both ways failed */
+export async function writeClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text)
     return true

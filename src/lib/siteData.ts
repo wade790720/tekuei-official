@@ -30,6 +30,7 @@ export interface LegacyBlock {
 export type Body = { doc: Doc } | { blocks: LegacyBlock[] }
 
 export interface ImageRef {
+  alt?: string
   url: string
 }
 
@@ -42,15 +43,15 @@ export interface JournalPost {
   titleEn: string
   excerpt: string
   draft?: boolean
-  /** Date of the last save that changed this post (journal.js stampUpdated). */
+  /** Date of the last save that changed this post (journal.ts stampUpdated). */
   updated?: string
   /** Before tags: one category. The parser copies it into `tags`. */
   category?: string
 }
 
 /** Posts are listed once per language, in the same order. */
-export interface JournalData {
-  posts: Localized<JournalPost[]>
+export interface JournalData<P extends JournalPost = JournalPost> {
+  posts: Localized<P[]>
   content: Localized<Record<string, Body>>
 }
 
@@ -121,7 +122,7 @@ type Json = Record<string, unknown>
 const isRecord = (v: unknown): v is Json => typeof v === 'object' && v !== null && !Array.isArray(v)
 const isString = (v: unknown): v is string => typeof v === 'string'
 const isStrings = (v: unknown): v is string[] => Array.isArray(v) && v.every(isString)
-const isImage = (v: unknown): v is ImageRef => isRecord(v) && isString(v.url)
+const isImage = (v: unknown): v is ImageRef => isRecord(v) && isString(v.url) && fieldsOk(v, { alt: 'string' })
 
 const CHECKS = {
   string: isString,

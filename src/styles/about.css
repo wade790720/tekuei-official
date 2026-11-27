@@ -1,7 +1,7 @@
 /* Layout only. The body reuses the Journal post styles (journal.css). */
 
 /* The same ground as the home pond: a lighter middle fading to the page colour, and the grain haze
-   (grainHaze.js) over it. It stays put while the page scrolls; z-index -1 keeps it under the text. */
+   (grainHaze.ts) over it. It stays put while the page scrolls; z-index -1 keeps it under the text. */
 .about-backdrop {
   position: fixed;
   inset: 0;

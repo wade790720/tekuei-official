@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useEffectEvent, useState } from 'react'
 import { siteDefaults } from '../data/siteDefaults.ts'
-import { fetchSiteData, isRemoteSync, onSiteVersion, saveSitePatch } from '../lib/adminApi.js'
+import { fetchSiteData, isRemoteSync, onSiteVersion, saveSitePatch } from '../lib/adminApi.ts'
 import { CMS_LABELS } from '../data/admin.js'
 
 /**

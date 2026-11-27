@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { tokenMs } from '../lib/tokenMs.js'
+import { tokenMs } from '../lib/tokenMs.ts'
 import '../styles/tooltip.css'
 
 // Warm tooltips (after React Bits "Warm Tooltip"): the first one waits, then while the group is "warm"

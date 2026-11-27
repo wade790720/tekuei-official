@@ -1,6 +1,6 @@
-import { adminGate, json } from '../../src/lib/adminAuth.js'
+import { adminGate, json } from '../../src/lib/adminAuth.ts'
 import { TRANSLATE_LABELS as T } from '../../src/data/admin.js'
-import { BATCH_TEXTS as MAX_TEXTS } from '../../src/lib/docTranslate.js'
+import { BATCH_TEXTS as MAX_TEXTS } from '../../src/lib/docTranslate.ts'
 
 const MODEL = '@cf/qwen/qwen3.8-27b'
 const MAX_CHARS = 20000

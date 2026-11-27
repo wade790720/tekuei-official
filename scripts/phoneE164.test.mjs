@@ -4,7 +4,7 @@ import {
   digitsToE164,
   isValidE164,
   validateCheckinPhone,
-} from '../src/lib/phoneE164.js'
+} from '../src/lib/phoneE164.ts'
 
 /**
  * input = react-phone-input-2 風格（國碼 + 本地號碼，可能含 trunk 0）

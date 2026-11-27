@@ -1,4 +1,4 @@
-import { adminGate, json } from '../../../src/lib/adminAuth.js'
+import { adminGate, json } from '../../../src/lib/adminAuth.ts'
 
 export async function onRequestPost({ request, env }) {
   const denied = await adminGate(request, env)

@@ -1,4 +1,4 @@
-import { adminGate, json } from '../../src/lib/adminAuth.js'
+import { adminGate, json } from '../../src/lib/adminAuth.ts'
 
 const DATA = 'data.json'
 

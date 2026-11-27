@@ -1,7 +1,7 @@
 // The Typography page of the library, laid out like the Radix Themes typography docs:
 // base components, formatting, the type scale, weights, families, then the measured spec.
 import { useState } from 'react'
-import { blocksToDoc } from '../../lib/richText.js'
+import { blocksToDoc } from '../../lib/richText.ts'
 import { RichText } from '../RichText.jsx'
 import { DocSection } from './doc/DocSection.jsx'
 import { DocTable } from './doc/DocTable.jsx'

@@ -20,28 +20,29 @@ const WORD = /[A-Za-z_$][\w$-]*/y
 const SPACE = /\s+/y
 const ARROW = /=>/y
 
-function match(re, src, at) {
+function match(re: RegExp, src: string, at: number) {
   re.lastIndex = at
   const m = re.exec(src)
   return m ? m[0] : null
 }
 
-function nextChar(src, at) {
+function nextChar(src: string, at: number) {
   SPACE.lastIndex = at
   const m = SPACE.exec(src)
   return src[m ? at + m[0].length : at]
 }
 
-/**
- * @param {string} src
- * @param {string} [lang]
- * @returns {{ type: 'comment'|'string'|'number'|'keyword'|'fn'|'prop'|'punct'|'plain', text: string }[]}
- *   Joining every `text` gives back `src` exactly.
- */
-export function tokenize(src, lang = 'ts') {
+export type TokenType = 'comment' | 'string' | 'number' | 'keyword' | 'fn' | 'prop' | 'punct' | 'plain'
+export interface Token {
+  type: TokenType
+  text: string
+}
+
+/** Joining every `text` gives back `src` exactly. */
+export function tokenize(src: string, lang = 'ts'): Token[] {
   if (lang === 'text') return src ? [{ type: 'plain', text: src }] : []
-  const out = []
-  const push = (type, text) => {
+  const out: Token[] = []
+  const push = (type: TokenType, text: string) => {
     const last = out[out.length - 1]
     if (last && last.type === type) last.text += text
     else out.push({ type, text })

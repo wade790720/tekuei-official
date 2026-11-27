@@ -1,4 +1,4 @@
-import { adminGate, json } from '../../src/lib/adminAuth.js'
+import { adminGate, json } from '../../src/lib/adminAuth.ts'
 
 const EXT = new Map([
   ['image/jpeg', 'jpg'],

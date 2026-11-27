@@ -3,9 +3,9 @@ import { Button } from '../Button.jsx'
 import { useAdmin } from '../../context/admin.js'
 import { TRANSLATE_LABELS as T } from '../../data/admin.js'
 import { useLang } from '../../i18n'
-import { translateTexts } from '../../lib/adminApi.js'
-import { docSlots } from '../../lib/docTranslate.js'
-import { hasBody } from '../../lib/richText.js'
+import { translateTexts } from '../../lib/adminApi.ts'
+import { docSlots } from '../../lib/docTranslate.ts'
+import { hasBody } from '../../lib/richText.ts'
 
 const DONE_MS = 5000 // how long the "translated" note stays
 

@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
-import { JOURNAL_META } from '../src/data/journal.js'
+import { JOURNAL_META } from '../src/data/journal.ts'
 import { sampleJournal } from './fixtures/journal.mjs'
-import { docHtml, injectPage, journalIndexPage, llmsTxt, postPage, serveCase, servePage, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.js'
+import { docHtml, injectPage, journalIndexPage, llmsTxt, postPage, serveCase, servePage, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.ts'
 import { fakeR2 } from './fakeR2.mjs'
 
 const journal = sampleJournal()
@@ -70,7 +70,7 @@ describe('postPage', () => {
 describe('site files', () => {
   it('is an empty journal when R2 has none: no post is bundled with the site', () => {
     assert.deepEqual(siteJournal(null).posts.zh, [])
-    const remote = { posts: { zh: [] }, content: { zh: {} } }
+    const remote = { posts: { zh: [], en: [] }, content: { zh: {}, en: {} } }
     assert.equal(siteJournal({ journal: remote }), remote)
   })
 
@@ -127,7 +127,7 @@ describe('servePage', () => {
 
 describe('post tags', () => {
   it('reads tags, falls back to the old category, and counts them', async () => {
-    const { postTags, tagCounts, parseTags } = await import('../src/data/journal.js')
+    const { postTags, tagCounts, parseTags } = await import('../src/data/journal.ts')
     assert.deepEqual(postTags({ tags: ['AI'] }), ['AI'])
     assert.deepEqual(postTags({ category: 'NOTE' }), ['NOTE'])
     assert.deepEqual(postTags({ tags: [], category: 'NOTE' }), [])
@@ -141,7 +141,7 @@ describe('post tags', () => {
 })
 
 it('a project written in the editor gets its own page, and a draft or outside link does not', async () => {
-  const { projectPage, siteCases } = await import('../src/lib/seo.js')
+  const { projectPage, siteCases } = await import('../src/lib/seo.ts')
   const doc = { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: '展覽的說明' }] }] }
   const work = {
     items: [
@@ -209,7 +209,7 @@ describe('dateModified', () => {
   })
 
   it('stampUpdated marks only the posts a save changes, in both languages', async () => {
-    const { stampUpdated, today } = await import('../src/data/journal.js')
+    const { stampUpdated, today } = await import('../src/data/journal.ts')
     const saved = structuredClone(journal)
     const next = structuredClone(journal)
     const [a, b] = next.posts.zh
@@ -244,7 +244,7 @@ describe('pages written in code', () => {
   })
 
   it('lists every project page on /projects', async () => {
-    const { projectsIndexPage } = await import('../src/lib/seo.js')
+    const { projectsIndexPage } = await import('../src/lib/seo.ts')
     const page = projectsIndexPage(siteCases(work), { title: 'TEKUEI · Projects', heading: 'Projects', description: '專案' })
     assert.match(page.html, /href="\/projects\/matsu-biennial"/)
     assert.match(page.html, /href="\/labs\/shatter-footer"/)
@@ -252,7 +252,7 @@ describe('pages written in code', () => {
   })
 
   it('renders About from R2, with the clients', async () => {
-    const { aboutPage } = await import('../src/lib/seo.js')
+    const { aboutPage } = await import('../src/lib/seo.ts')
     const doc = { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: '我是 Wade' }] }] }
     const res = await servePage(ctx('/about', { journal, aboutPage: { zh: { doc } } }), (_, data) => aboutPage(data))
     const html = await res.text()

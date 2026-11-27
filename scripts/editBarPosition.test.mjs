@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { clampOffset, parseOffset } from '../src/lib/editBarPosition.js'
+import { clampOffset, parseOffset } from '../src/lib/editBarPosition.ts'
 
 const box = { left: 1100, top: 840, width: 300, height: 40 }
 const viewport = { width: 1440, height: 900 }

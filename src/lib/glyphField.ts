@@ -6,6 +6,17 @@ const WIDTH = 1200
 const HEIGHT = 400
 const ROW_H = 16
 const ROWS = HEIGHT / ROW_H
+interface Column {
+  head: number
+  speed: number
+  maxRow: number
+  brightness: number
+  chars: string[]
+  alphas: number[]
+  floors: number[]
+  glows: number[]
+}
+
 const GLYPHS = 'AISDPEL01<>=+*-#$'
 const STEP_MS = 90
 const HEAD_ALPHA = 0.8
@@ -14,14 +25,15 @@ const GLOW_DECAY = 0.82
 const REACH = 44 // pointer radius in px
 
 const glyph = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
-const fill = (make) => Array.from({ length: ROWS }, make)
+const fill = <T>(make: () => T): T[] => Array.from({ length: ROWS }, make)
 
 /**
  * @param {HTMLCanvasElement} canvas  CSS size must be 1200 x 400
  * @returns {() => void} cleanup
  */
-export function mountGlyphField(canvas) {
+export function mountGlyphField(canvas: HTMLCanvasElement): () => void {
   const ctx = canvas.getContext('2d')
+  if (!ctx) return () => {}
   const dpr = Math.min(window.devicePixelRatio || 1, 2)
   canvas.width = WIDTH * dpr
   canvas.height = HEIGHT * dpr
@@ -37,7 +49,7 @@ export function mountGlyphField(canvas) {
 
   // A drop falls down its column to maxRow, then starts again above the top.
   // Most restarts keep the column's depth and brightness, so columns hold their character.
-  const restart = (col, first = false) => {
+  const restart = (col: Column, first = false) => {
     col.head = first ? Math.random() * ROWS * 2 : -Math.random() * ROWS * 1.5
     col.speed = 0.25 + Math.random() * 0.75
     if (first || Math.random() < 0.2) {
@@ -46,7 +58,11 @@ export function mountGlyphField(canvas) {
     }
   }
   const columns = Array.from({ length: cols }, () => {
-    const col = {
+    const col: Column = {
+      head: 0,
+      speed: 0,
+      maxRow: 0,
+      brightness: 0,
       chars: fill(glyph),
       alphas: fill(() => 0),
       floors: fill(() => 0.04 + Math.random() * 0.08), // glyphs a drop has passed never go fully dark
@@ -70,7 +86,7 @@ export function mountGlyphField(canvas) {
     }
   }
 
-  function draw() {
+  const draw = () => {
     ctx.clearRect(0, 0, WIDTH, HEIGHT)
     ctx.font = font
     ctx.textBaseline = 'top'
@@ -107,7 +123,7 @@ export function mountGlyphField(canvas) {
   let raf = 0
   let last = 0
   let onScreen = true
-  const loop = (now) => {
+  const loop = (now: number) => {
     raf = requestAnimationFrame(loop)
     if (now - last < STEP_MS) return
     last = now
@@ -122,7 +138,7 @@ export function mountGlyphField(canvas) {
 
   // Glyphs within REACH of the pointer light up at once, then fade with GLOW_DECAY.
   let redraw = 0 // the pending redraw frame
-  const onMove = (e) => {
+  const onMove = (e: PointerEvent) => {
     if (!onScreen) return // the header has scrolled away: skip the layout read
     const rect = canvas.getBoundingClientRect()
     const x = e.clientX - rect.left

@@ -6,7 +6,7 @@
 // position: fixed (CSS Filter Effects spec). A Canvas 2D overlay adds gold light on the crests.
 // Everything is removed, and requestAnimationFrame stops, once the surface is still.
 
-import { cssRgb } from './cssRgb.js'
+import { cssRgb } from './cssRgb.ts'
 
 const STEP_MS = 1000 / 360 // fixed rate, whatever the screen's refresh rate
 const WAVE_SPEED = Math.SQRT1_2 // cells per step: the speed of this grid's wave equation
@@ -30,23 +30,31 @@ const FADE_MS = 300 // bend and light fade to zero over the last part, so the en
 const SVG_NS = 'http://www.w3.org/2000/svg'
 const FILTER_ID = 'water-ripple-filter'
 
-let sim = null
+interface Sim {
+  drop(px: number, py: number, onSwap?: () => void): void
+}
+
+let sim: Sim | null = null
 
 /**
  * @param {number} x viewport x of the drop
  * @param {number} y viewport y of the drop
  * @param {() => void} [onSwap] runs once while the waves are strongest; at once with reduced motion
  */
-export function playWaterRipple(x, y, onSwap) {
+export function playWaterRipple(x: number, y: number, onSwap?: () => void): void {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     onSwap?.()
     return
   }
   if (!sim) sim = createSim()
+  if (!sim) {
+    onSwap?.()
+    return
+  }
   sim.drop(x, y, onSwap)
 }
 
-function createSim() {
+function createSim(): Sim | null {
   // Size the cell so the wave front reaches the far corner in REACH_MS on any screen.
   // clientWidth leaves out the scrollbar: it is not page content, so it must not be sampled either.
   const vw = document.documentElement.clientWidth
@@ -66,7 +74,7 @@ function createSim() {
       damp[j * gw + i] = DAMPING * (1 - SPONGE_LOSS * out * out)
     }
   }
-  const swaps = [] // [time, callback]
+  const swaps: Array<[number, () => void]> = [] // [time, callback]
 
   const light = document.createElement('canvas')
   light.width = w
@@ -75,12 +83,20 @@ function createSim() {
   light.className = 'water-ripple'
   document.body.append(light)
   const lightCtx = light.getContext('2d')
+  if (!lightCtx) {
+    light.remove()
+    return null
+  }
   const lightImg = lightCtx.createImageData(w, h)
 
   const map = document.createElement('canvas')
   map.width = w
   map.height = h
   const mapCtx = map.getContext('2d')
+  if (!mapCtx) {
+    light.remove()
+    return null
+  }
   const mapImg = mapCtx.createImageData(w, h)
 
   const { svg, filter, image, displace } = createFilter()
@@ -118,7 +134,7 @@ function createSim() {
     return energy
   }
 
-  function draw(scrollLeft, scrollTop) {
+  const draw = (scrollLeft: number, scrollTop: number) => {
     const l = lightImg.data
     const m = mapImg.data
     for (let j = 0; j < h; j++) {
@@ -150,8 +166,8 @@ function createSim() {
       lastScroll = scroll
       const box = { x: scrollLeft, y: scrollTop, width: vw, height: vh }
       for (const [k, v] of Object.entries(box)) {
-        filter.setAttribute(k, v)
-        image.setAttribute(k, v)
+        filter.setAttribute(k, String(v))
+        image.setAttribute(k, String(v))
       }
     }
     // Encoding the map as a PNG is the costly part, so it happens every other frame; the light still moves every frame.
@@ -168,7 +184,7 @@ function createSim() {
     for (const [, fn] of swaps.splice(0)) fn() // never lose a language switch
   }
 
-  function frame(now) {
+  function frame(now: number) {
     // Read the scroll position before this frame writes any style, so the read does not force a layout.
     const scrollLeft = scrollX
     const scrollTop = scrollY
@@ -194,7 +210,7 @@ function createSim() {
   }
 
   return {
-    drop(px, py, onSwap) {
+    drop(px: number, py: number, onSwap?: () => void) {
       const ci = Math.round(px / cell) + 1 + SPONGE
       const cj = Math.round(py / cell) + 1 + SPONGE
       for (let j = -DROP_R; j <= DROP_R; j++) {

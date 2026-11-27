@@ -4,8 +4,8 @@
 
 const SELECTOR = '.fade-in'
 
-export function mountReveal(root = document.body) {
-  const shown = new WeakSet()
+export function mountReveal(root: Node = document.body): () => void {
+  const shown = new WeakSet<Node>()
 
   const io = new IntersectionObserver(
     (entries) => {
@@ -19,7 +19,7 @@ export function mountReveal(root = document.body) {
     { threshold: 0.15 },
   )
 
-  const watch = (node) => {
+  const watch = (node: Node) => {
     if (!(node instanceof Element)) return
     if (node.matches(SELECTOR)) io.observe(node)
     node.querySelectorAll(SELECTOR).forEach((el) => io.observe(el))
@@ -32,6 +32,7 @@ export function mountReveal(root = document.body) {
       const el = r.target
       if (r.type === 'childList') r.addedNodes.forEach(watch)
       // check first: classList.add always writes the attribute, which would loop
+      else if (!(el instanceof Element)) continue
       else if (shown.has(el)) {
         if (!el.classList.contains('is-visible')) el.classList.add('is-visible')
       } else if (el.matches(SELECTOR)) io.observe(el)

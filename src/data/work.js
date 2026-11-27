@@ -1,5 +1,5 @@
 import siteDefaults from './data.json'
-import { localizeWork as localizeIn, projectBody, projectHref, projectLink, projectTitle, publishedWork, withCodeProjects } from '../lib/projectHref.js'
+import { localizeWork as localizeIn, projectBody, projectHref, projectLink, projectTitle, publishedWork, withCodeProjects } from '../lib/projectHref.ts'
 
 export { projectBody, projectHref, projectLink, projectTitle, publishedWork }
 

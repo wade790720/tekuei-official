@@ -116,7 +116,7 @@
   overflow: hidden;
 }
 
-/* glyphField.js draws here: a fixed 1200 x 400 field at the top centre, faded at the bottom and the sides. */
+/* glyphField.ts draws here: a fixed 1200 x 400 field at the top centre, faded at the bottom and the sides. */
 .journal-header__glyphs {
   position: absolute;
   top: 0;

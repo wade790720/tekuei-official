@@ -7,11 +7,13 @@
 // horizontalRule, hardBreak, text.
 // Marks: bold, italic, underline, strike, code, link (attrs.href).
 
-const text = (t) => (t ? [{ type: 'text', text: t }] : [])
+import type { Body, Doc, LegacyBlock } from './siteData.ts'
 
-/** @param {any[]} blocks old block list */
-export function blocksToDoc(blocks = []) {
-  const content = blocks.map((b) => {
+const text = (t: string | undefined): Doc[] => (t ? [{ type: 'text', text: t }] : [])
+
+/** @param blocks old block list */
+export function blocksToDoc(blocks: LegacyBlock[] = []): Doc {
+  const content = blocks.map((b): Doc => {
     switch (b.type) {
       case 'lead':
         return { type: 'lead', content: text(b.text) }
@@ -46,20 +48,18 @@ export function blocksToDoc(blocks = []) {
   return { type: 'doc', content: content.length ? content : [{ type: 'paragraph' }] }
 }
 
-export const emptyDoc = () => ({ type: 'doc', content: [{ type: 'paragraph' }] })
+export const emptyDoc = (): Doc => ({ type: 'doc', content: [{ type: 'paragraph' }] })
 
-/** @param {{ doc?: object, blocks?: any[] } | null | undefined} body one post's stored body */
-export function getDoc(body) {
-  if (body?.doc) return body.doc
-  return blocksToDoc(body?.blocks)
+/** @param body one post's stored body */
+export function getDoc(body: Body | null | undefined): Doc {
+  if (body && 'doc' in body && body.doc) return body.doc
+  return blocksToDoc(body && 'blocks' in body ? body.blocks : undefined)
 }
 
 /**
  * Only http(s), mailto, tel, in-page and same-site links. Anything else (javascript:, data:) is dropped.
- * @param {string | undefined} href
- * @returns {string | null}
  */
-export function safeHref(href) {
+export function safeHref(href: string | null | undefined): string | null {
   const h = String(href ?? '').trim()
   if (!h) return null
   if (/^(https?:|mailto:|tel:)/i.test(h)) return h
@@ -72,10 +72,8 @@ export function safeHref(href) {
 /**
  * The video id of a YouTube watch, share (youtu.be), Shorts, live or embed link. Null for anything else,
  * so a videoCard src that is a file (mp4) plays in the site's own player instead.
- * @param {string | undefined} src
- * @returns {string | null}
  */
-export function youtubeId(src) {
+export function youtubeId(src: string | null | undefined): string | null {
   let url
   try {
     url = new URL(String(src ?? '').trim())
@@ -83,7 +81,7 @@ export function youtubeId(src) {
     return null
   }
   const host = url.hostname.replace(/^(www|m|music)\./, '')
-  let id = null
+  let id: string | null | undefined = null
   if (host === 'youtu.be') id = url.pathname.split('/')[1]
   else if (host === 'youtube.com' || host === 'youtube-nocookie.com') {
     id = url.searchParams.get('v') ?? url.pathname.match(/^\/(?:embed|shorts|live)\/([^/]+)/)?.[1]
@@ -94,13 +92,15 @@ export function youtubeId(src) {
 /**
  * Whether a stored body, or a doc, has anything to show: text, or a picture, video or picture set.
  * The editor starts every translation as one empty paragraph, so "has a key" is not "has a body".
- * @param {{ doc?: object, blocks?: any[] } | object | null | undefined} c
  */
-export const hasBody = (c) =>
-  Boolean(c) && (c.blocks ? c.blocks.length > 0 : /"text":"[^"]|"type":"(imageCard|videoCard|slidesCard)"/.test(JSON.stringify(c.doc ?? c)))
+export function hasBody(c: Body | Doc | null | undefined): boolean {
+  if (!c) return false
+  if ('blocks' in c && c.blocks) return c.blocks.length > 0
+  return /"text":"[^"]|"type":"(imageCard|videoCard|slidesCard)"/.test(JSON.stringify(('doc' in c && c.doc) || c))
+}
 
 /** Plain text of a doc, for word counts and descriptions. */
-export function docText(node) {
+export function docText(node: Doc | null | undefined): string {
   if (!node) return ''
   if (node.type === 'text') return node.text ?? ''
   return (node.content ?? []).map(docText).join(node.type === 'doc' ? '\n' : '')

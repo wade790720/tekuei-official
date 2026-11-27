@@ -12,15 +12,16 @@ const LABEL_GAP = 28 // half the gap a number leaves in its line
 const ROOM = 8.5 // the ruler sits this far above the canvas's bottom edge, so its number is not cut off
 const DRAW_MS = 900
 
-const easeOut = (t) => 1 - (1 - t) ** 3
+const easeOut = (t: number) => 1 - (1 - t) ** 3
 
 /**
  * @param {HTMLCanvasElement} canvas  fills the header; it is decoration, so the page marks it aria-hidden
  * @param {{ block: HTMLElement }} opts  the element whose width and height are measured
  * @returns {() => void} cleanup
  */
-export function mountMeasureLines(canvas, { block }) {
+export function mountMeasureLines(canvas: HTMLCanvasElement, { block }: { block: HTMLElement }): () => void {
   const ctx = canvas.getContext('2d')
+  if (!ctx) return () => {}
   const style = getComputedStyle(canvas)
   const line = style.color
   const accent = style.getPropertyValue('--measure-accent').trim() || line
@@ -28,11 +29,11 @@ export function mountMeasureLines(canvas, { block }) {
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   let progress = still ? 1 : 0
-  let pointerX = null
+  let pointerX: number | null = null
   let raf = 0
   let start = 0
 
-  function draw() {
+  const draw = () => {
     const box = canvas.getBoundingClientRect()
     if (box.bottom < 0) return // scrolled away
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -126,7 +127,7 @@ export function mountMeasureLines(canvas, { block }) {
     }
   }
 
-  function tick(now) {
+  function tick(now: number) {
     start ||= now
     progress = Math.min(1, (now - start) / DRAW_MS)
     draw()
@@ -139,7 +140,7 @@ export function mountMeasureLines(canvas, { block }) {
       draw()
     })
   }
-  const move = (e) => {
+  const move = (e: PointerEvent) => {
     if (e.pointerType === 'touch') return
     pointerX = e.clientX
     redraw()

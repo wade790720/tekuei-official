@@ -1,4 +1,4 @@
-import { sitemapXml, readSiteData, siteCases, siteJournal } from '../src/lib/seo.js'
+import { sitemapXml, readSiteData, siteCases, siteJournal } from '../src/lib/seo.ts'
 import { WORK_ITEMS } from '../src/data/work.js'
 
 export async function onRequestGet({ env }) {
