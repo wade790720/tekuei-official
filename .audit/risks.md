@@ -28,6 +28,9 @@
 | 17 | 低 | `functions/api/data.ts` PUT | 只檢查 body 是物件，沒有用 `parseSiteData` 驗證區段格式 | 回報 |
 | 18 | 低 | `src/lib/seo.ts` `docHtml` | 和 `RichText` 處理的區塊種類一致（`scripts/blockTypes.test.ts` 守住），但 SEO 版不輸出底線、刪除線，外部連結沒有 `target`、`rel` | 回報 |
 | 19 | 低 | `src/lib/adminAuth.ts` | 嘗試次數檔的 `fails` 不是數字時，原本會讓鎖定永遠失效，型別化後改為重設成 0 | 型別轉換的副作用，屬於 admin，請確認 |
+| 20 | 中 | `src/lib/siteData.ts` `parseSiteData` | 解析很嚴格：R2 裡任何一篇文章有一個欄位型別不符（例如 `alt: null`），整個 Journal 會被當成載入失敗，讀者看到空的 Journal，sitemap 也變空。好處是編輯器此時拒絕儲存，不會蓋掉正式資料。目前正式 `data.json` 解析結果 `invalid` 為空 | 刻意的取捨，回報。若想改成只略過壞掉的那篇，要另外處理儲存時不能把它刪掉 |
+| 21 | 低 | Journal 文章頁 | 載入資料的那一瞬間，分頁標題先顯示「Not Found」再換成文章標題。改前就是這樣 | 回報（原本就有） |
+| 22 | 低 | `src/components/Editor.tsx:325`、`:513` | 沒有傳 `upload` 時，圖片卡片上傳改成不做事，原本是丟錯後顯示錯誤文字。實務上一定有傳 `upload` | 回報 |
 
 ## 架構
 

@@ -55,3 +55,5 @@ ts	phase	decision	why	evidence	result
 2026-11-27T16:03:51Z	B-pages	專案的外部連結改經 safeHref	R2 存的 link 原本直接進卡片、ProjectHero 和造訪網站按鈕，javascript: 會變成可點的連結	scripts/projects.test.ts、src/lib/projectHref.ts projectLink、src/data/work.ts projectFacts、src/components/ProjectPage.tsx	測試先紅後綠；不安全的連結改連到專案內頁或不顯示
 2026-11-27T16:03:53Z	B-pages	LIFF 和 Zaraz 只宣告頁面用到的部分	兩者是 script tag 注入的全域，沒有套件型別；CheckinPage 和 HowToCheckinPage 各自 declare global	src/components/CheckinPage.tsx、src/components/HowToCheckinPage.tsx	SDK 載入後沒有 window.liff 時改為 reject，頁面顯示錯誤畫面
 2026-11-27T16:03:53Z	B-pages	history state 的 fromList 用 listDepth 解析	useLocation().state 是外部資料，型別是 unknown	src/components/JournalPostPage.tsx listDepth	行為不變
+2026-11-27T16:14:14Z	review	獨立 review（sonnet）讀完 e4344b5..a57b1e4：沒有嚴重問題，_middleware 與 admin 驗證確認沒有行為變更	實作者不能自己當審查者	agent 回報，a57b1e4	最高一項是中：解析器太嚴，一個欄位不符就讓整段 Journal 變空；已用正式 data.json（只讀）驗證 invalid 為空
+2026-11-27T16:18:53Z	verify	改前（主 checkout，5173）和改後（worktree，5182）同時對 18 個網址、三種寬度抓 DOM 快照比對	同一時間抓同一份正式資料，排除資料變動	scratchpad/snap.js	54 頁中 41 頁完全相同；文章頁只差分享連結裡的 port；/projects 是量測線 canvas 尺寸的時序雜訊（和昨天的基準一致）；Component Library 只差範例程式碼的檔名 .jsx→.tsx
