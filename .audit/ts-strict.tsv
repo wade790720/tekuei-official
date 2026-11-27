@@ -57,3 +57,4 @@ ts	phase	decision	why	evidence	result
 2026-11-27T16:03:53Z	B-pages	history state 的 fromList 用 listDepth 解析	useLocation().state 是外部資料，型別是 unknown	src/components/JournalPostPage.tsx listDepth	行為不變
 2026-11-27T16:14:14Z	review	獨立 review（sonnet）讀完 e4344b5..a57b1e4：沒有嚴重問題，_middleware 與 admin 驗證確認沒有行為變更	實作者不能自己當審查者	agent 回報，a57b1e4	最高一項是中：解析器太嚴，一個欄位不符就讓整段 Journal 變空；已用正式 data.json（只讀）驗證 invalid 為空
 2026-11-27T16:18:53Z	verify	改前（主 checkout，5173）和改後（worktree，5182）同時對 18 個網址、三種寬度抓 DOM 快照比對	同一時間抓同一份正式資料，排除資料變動	scratchpad/snap.js	54 頁中 41 頁完全相同；文章頁只差分享連結裡的 port；/projects 是量測線 canvas 尺寸的時序雜訊（和昨天的基準一致）；Component Library 只差範例程式碼的檔名 .jsx→.tsx
+2026-11-27T16:39:53Z	security	使用者同意後改 admin 驗證：成功只撤回自己那次的計數，不歸零也不算一次猜錯；/api/data PUT 每天第一次儲存前備份 data.json	原建議的『成功不歸零』只改一行會讓自動儲存把 Wade 自己鎖住，所以改成撤回；文章只存在一個檔案，備份比補強驗證更能防住最壞情況	scripts/adminAuth.test.ts, scripts/dataApi.test.ts	test 133 pass

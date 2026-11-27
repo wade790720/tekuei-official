@@ -9,7 +9,7 @@ export const WINDOW_MS = 15 * 60 * 1000
 // The parts of R2Bucket used here, so this file also type-checks in the browser project, which has no workers types.
 interface AttemptsBucket {
   get(key: string): Promise<{ etag: string; json(): Promise<unknown> } | null>
-  put(key: string, value: string, options?: { onlyIf: { etagMatches: string } }): Promise<unknown>
+  put(key: string, value: string, options?: { onlyIf: { etagMatches: string } }): Promise<{ etag: string } | null>
 }
 export interface AdminEnv {
   ADMIN_SECRET?: string
@@ -44,7 +44,10 @@ export async function checkAdmin(request: Request, env: AdminEnv, now = Date.now
   if (!claimed) return 'locked'
 
   const ok = (request.headers.get('Authorization') || '') === `Bearer ${secret}`
-  if (ok) await env.BUCKET.put(KEY, JSON.stringify({ fails: 0, since: now }))
+  // Every save is checked, so a success must neither clear earlier wrong guesses (each save would hand
+  // a guesser a fresh budget) nor count as one (autosave would lock Wade out). It takes back only its own count.
+  // If a guess landed in between, the conditional write fails and this attempt stays counted.
+  if (ok) await env.BUCKET.put(KEY, JSON.stringify(state), { onlyIf: { etagMatches: claimed.etag } })
   return ok ? 'ok' : 'denied'
 }
 

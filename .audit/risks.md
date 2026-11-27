@@ -4,7 +4,7 @@
 
 | # | 嚴重度 | 位置 | 問題 | 處理 |
 |---|---|---|---|---|
-| 1 | 高 | `src/lib/adminAuth.ts:34` | 登入成功會把失敗次數歸零，每次存檔都重新驗證密碼，所以 Wade 每存一次，攻擊者就多 4 次猜測機會。6 位數密碼約 200 到 1000 天可猜中一半 | 只回報（admin）。建議 verify 改發隨機 session token，密碼只在登入時用 |
+| 1 | 高 | `src/lib/adminAuth.ts:34` | 登入成功會把失敗次數歸零，每次存檔都重新驗證密碼，所以 Wade 每存一次，攻擊者就多 4 次猜測機會。6 位數密碼約 200 到 1000 天可猜中一半 | 已修：成功只撤回自己那一次的計數，之前猜錯的次數保留，有測試。現在一天最多猜 480 次，猜中一半的機率約要 1000 天；session token 沒做 |
 | 2 | 中 | `src/lib/adminAuth.ts:21` | 鎖定是全站共用，任何人每 15 分鐘錯 5 次就能讓 Wade 一直被鎖住，已登入的分頁存檔也會 429 | 只回報（admin）。session token 一併解決 |
 | 3 | 中 | `src/App.tsx:131`、`src/hooks/useCmsSection.ts` | 每個頁面（含首頁、報到頁、lab iframe）都下載整份 `data.json`，含全部文章和草稿；自動儲存也整檔重寫 | 回報。屬於架構改動，適合和 React Router framework 模式一起做 |
 | 4 | 中 | `functions/api/data.ts:5` | 草稿全文經 `/api/data` 公開 | 回報。要先有第 1 項的 token 才能只給登入者看 |
@@ -31,6 +31,7 @@
 | 20 | 中 | `src/lib/siteData.ts` `parseSiteData` | 解析很嚴格：R2 裡任何一篇文章有一個欄位型別不符（例如 `alt: null`），整個 Journal 會被當成載入失敗，讀者看到空的 Journal，sitemap 也變空。好處是編輯器此時拒絕儲存，不會蓋掉正式資料。目前正式 `data.json` 解析結果 `invalid` 為空 | 刻意的取捨，回報。若想改成只略過壞掉的那篇，要另外處理儲存時不能把它刪掉 |
 | 21 | 低 | Journal 文章頁 | 載入資料的那一瞬間，分頁標題先顯示「Not Found」再換成文章標題。改前就是這樣 | 回報（原本就有） |
 | 22 | 低 | `src/components/Editor.tsx:325`、`:513` | 沒有傳 `upload` 時，圖片卡片上傳改成不做事，原本是丟錯後顯示錯誤文字。實務上一定有傳 `upload` | 回報 |
+| 23 | 中 | R2 `data.json` | 所有文章只存在這一個檔案，被蓋掉就回不來 | 已修：每天第一次儲存前備份到 `backup/data-<日期>.json`，有測試。備份不會自動清除，一年約幾十 MB |
 
 ## 架構
 

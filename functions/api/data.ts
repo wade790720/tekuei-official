@@ -44,11 +44,18 @@ export async function onRequestPut({ request, env }: ApiContext) {
 
   let existing: object = {}
   if (prev) {
+    const text = await prev.text()
     try {
-      existing = JSON.parse(await prev.text())
+      existing = JSON.parse(text)
     } catch {
       // Carrying on with {} would write back this one section and drop every other one.
       return json({ error: 'data.json is not valid JSON. Nothing was saved.' }, 500)
+    }
+    // Every post lives only in data.json. The first save of each day (UTC) keeps the file it replaces,
+    // so a bad save, or someone who guessed the code, can be rolled back. /api/file serves only images/.
+    const backup = `backup/data-${new Date().toISOString().slice(0, 10)}.json`
+    if (!(await env.BUCKET.head(backup))) {
+      await env.BUCKET.put(backup, text, { httpMetadata: { contentType: 'application/json' } })
     }
   }
 
