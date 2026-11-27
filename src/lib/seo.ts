@@ -5,7 +5,7 @@
 import { getDoc, docText, safeHref, youtubeId } from './richText.ts'
 import { getDefaultJournal, postTags, publishedJournal } from '../data/journal.ts'
 import { ABOUT_CLIENTS, ABOUT_META, getDefaultAbout } from '../data/about.ts'
-import { LAB_BY_ID, labLinks } from '../labs/index.js'
+import { LAB_BY_ID, labLinks } from '../labs/index.ts'
 import { projectBody, projectHref, projectLink, projectTitle } from './projectHref.ts'
 import { parseSiteData } from './siteData.ts'
 import type { Doc, JournalData, SiteData, WorkData, WorkItem } from './siteData.ts'
