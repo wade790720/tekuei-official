@@ -11,6 +11,7 @@ export default async function handleRequest(
   routerContext: EntryContext,
 ) {
   // https://httpwg.org/specs/rfc9110.html#HEAD
+  responseHeaders.set('Content-Type', 'text/html; charset=utf-8')
   if (request.method.toUpperCase() === 'HEAD') {
     return new Response(null, { status: responseStatusCode, headers: responseHeaders })
   }
@@ -28,6 +29,5 @@ export default async function handleRequest(
   // Readers and crawlers get the same complete HTML, so nothing is decided by user agent.
   await body.allReady
 
-  responseHeaders.set('Content-Type', 'text/html')
   return new Response(body, { headers: responseHeaders, status: responseStatusCode })
 }

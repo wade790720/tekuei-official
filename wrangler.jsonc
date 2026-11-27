@@ -9,5 +9,14 @@
   "observability": { "enabled": true },
   "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "tekuei-cms" }],
   // The editor's English translation uses Workers AI, no key needed.
-  "ai": { "binding": "AI" }
+  "ai": { "binding": "AI" },
+  // The integration branch (migrate/rr8) deploys here with --env next, never to the live bucket above.
+  // Bindings are not inherited by an environment, so each one is listed again.
+  "env": {
+    "next": {
+      "name": "tekuei-next",
+      "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "tekuei-cms-next" }],
+      "ai": { "binding": "AI" }
+    }
+  }
 }
