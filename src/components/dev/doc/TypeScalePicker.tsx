@@ -1,8 +1,18 @@
 import { useState } from 'react'
+import type { CSSProperties } from 'react'
 import { Example } from './Example.tsx'
 
+export interface TypeStep {
+  name: string
+  token: string
+  sample: string
+  family?: string
+  tracking?: boolean
+  upper?: boolean
+}
+
 /** CSS for one step, as a developer would write it. Label and Mono also change the font. */
-function stepCss({ token, family, tracking }) {
+function stepCss({ token, family, tracking }: TypeStep) {
   return [
     family && `font-family: var(${family});`,
     `font-size: var(${token});`,
@@ -13,7 +23,7 @@ function stepCss({ token, family, tracking }) {
     .join('\n')
 }
 
-const stepStyle = ({ token, family, tracking, upper }) => ({
+const stepStyle = ({ token, family, tracking, upper }: TypeStep): CSSProperties => ({
   fontFamily: family ? `var(${family})` : undefined,
   fontSize: `var(${token})`,
   lineHeight: `var(${token}-lh)`,
@@ -24,9 +34,8 @@ const stepStyle = ({ token, family, tracking, upper }) => ({
 /**
  * The type scale as a row of "Aa" at every size (Radix Themes style). Picking a step shows a sample
  * at that size with its CSS underneath.
- * @param {{ steps: { name: string, token: string, sample: string, family?: string, tracking?: boolean, upper?: boolean }[], initial?: string }} props
  */
-export function TypeScalePicker({ steps, initial }) {
+export function TypeScalePicker({ steps, initial }: { steps: TypeStep[]; initial?: string }) {
   const [current, setCurrent] = useState(initial ?? steps[0].name)
   const step = steps.find((s) => s.name === current) ?? steps[0]
   return (

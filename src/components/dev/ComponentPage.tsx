@@ -7,11 +7,12 @@ import { DocTable } from './doc/DocTable.tsx'
 import { Example } from './doc/Example.tsx'
 import { RuleList } from './doc/RuleList.tsx'
 import { partId } from './componentToc.ts'
+import type { ApiPart, ComponentEntry } from './libraryTypes.ts'
 
 const PROPS_HEAD = ['Prop', '型別', '預設', '說明']
 
 /** A live demo with its code under it, or just the code when there is nothing to show live. */
-function Showcase({ demo, code }) {
+function Showcase({ demo, code }: { demo?: string; code?: string }) {
   if (demo) {
     return (
       <Example code={code}>
@@ -22,7 +23,7 @@ function Showcase({ demo, code }) {
   return code ? <DocCode code={code} /> : null
 }
 
-function Part({ part }) {
+function Part({ part }: { part: ApiPart }) {
   const table = part.props.length ? <DocTable head={PROPS_HEAD} rows={part.props} code={[0, 1, 2]} /> : null
   if (!part.part) {
     return (
@@ -39,7 +40,7 @@ function Part({ part }) {
   )
 }
 
-export function ComponentPage({ item }) {
+export function ComponentPage({ item }: { item: ComponentEntry }) {
   return (
     <>
       <div className="doc-hero">

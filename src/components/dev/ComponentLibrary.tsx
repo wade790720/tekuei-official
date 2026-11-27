@@ -1,11 +1,12 @@
 // Dev-only page (/dev/component-library): the design system docs, laid out like the Radix Themes docs.
 // Sections: 概覽 (guides), 主題 (tokens), then the component groups. One page per entry.
-// App.jsx mounts it only when import.meta.env.DEV, so the page and its assets stay out of production.
+// App.tsx mounts it only when import.meta.env.DEV, so the page and its assets stay out of production.
 import { useEffect, useState } from 'react'
+import type { ComponentType } from 'react'
 import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ColorPage } from './ColorPage.tsx'
 import { ComponentPage } from './ComponentPage.tsx'
-import { componentToc } from './componentToc.ts'
+import { componentToc, type TocItem } from './componentToc.ts'
 import { GROUPS } from './componentLibrary.data.tsx'
 import {
   BreakpointsPage,
@@ -17,7 +18,8 @@ import {
   Styling,
   ThemeOverview,
 } from './GuidePages.tsx'
-import { GUIDES } from './guides.data.ts'
+import { GUIDES, type GuideId } from './guides.data.ts'
+import type { ComponentEntry } from './libraryTypes.ts'
 import { SpacingPage } from './SpacingPage.tsx'
 import { TypographyDoc } from './TypographyDoc.tsx'
 import '../../styles/work.css'
@@ -28,7 +30,7 @@ import '../../styles/componentLibrary.css'
 const BASE = '/dev/component-library'
 const TOKENS_FILE = 'src/styles/tokens.css'
 
-const TYPOGRAPHY = {
+const TYPOGRAPHY: { name: string; lead: string; toc: TocItem[] } = {
   name: 'Typography',
   lead: '字級、字重、字型和行內格式',
   toc: [
@@ -42,9 +44,33 @@ const TYPOGRAPHY = {
   ],
 }
 
-const guide = (id, Body, file) => ({ id, kind: 'guide', Body, file, ...(id === 'typography' ? TYPOGRAPHY : GUIDES[id]) })
+interface PageBase {
+  id: string
+  name: string
+  lead: string
+  file?: string
+  toc: TocItem[]
+}
 
-const SECTIONS = [
+type LibraryPage =
+  | (PageBase & { kind: 'guide'; Body: ComponentType })
+  | (PageBase & { kind: 'component'; item: ComponentEntry })
+
+interface Section {
+  id: string
+  title: string
+  pages: LibraryPage[]
+}
+
+const guide = (id: GuideId | 'typography', Body: ComponentType, file?: string): LibraryPage => ({
+  id,
+  kind: 'guide',
+  Body,
+  file,
+  ...(id === 'typography' ? TYPOGRAPHY : GUIDES[id]),
+})
+
+const SECTIONS: Section[] = [
   {
     id: 'overview',
     title: '概覽',
@@ -73,7 +99,7 @@ const SECTIONS = [
     title: g.title,
     pages: [...g.items].sort(byName).map((item) => ({
       id: item.id,
-      kind: 'component',
+      kind: 'component' as const,
       name: item.name,
       lead: item.summary,
       file: item.file,
@@ -83,15 +109,17 @@ const SECTIONS = [
   })),
 ]
 
-function byName(a, b) {
+function byName(a: ComponentEntry, b: ComponentEntry) {
   return a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })
 }
 
-const PAGES = SECTIONS.flatMap((section) => section.pages.map((p) => ({ ...p, section })))
-const PAGE_BY_ID = Object.fromEntries(PAGES.map((p) => [p.id, p]))
-const pageHref = (id) => (id === 'introduction' ? BASE : `${BASE}/${id}`)
+type PageWithSection = LibraryPage & { section: Section }
 
-function SideLink({ page, onPick }) {
+const PAGES: PageWithSection[] = SECTIONS.flatMap((section) => section.pages.map((p) => ({ ...p, section })))
+const PAGE_BY_ID: Record<string, PageWithSection | undefined> = Object.fromEntries(PAGES.map((p) => [p.id, p]))
+const pageHref = (id: string) => (id === 'introduction' ? BASE : `${BASE}/${id}`)
+
+function SideLink({ page, onPick }: { page: LibraryPage; onPick: () => void }) {
   return (
     <NavLink
       to={pageHref(page.id)}
@@ -104,7 +132,14 @@ function SideLink({ page, onPick }) {
   )
 }
 
-function Sidebar({ current, open, onToggle, onPick }) {
+interface SidebarProps {
+  current: LibraryPage | undefined
+  open: boolean
+  onToggle: () => void
+  onPick: () => void
+}
+
+function Sidebar({ current, open, onToggle, onPick }: SidebarProps) {
   return (
     <nav className="cl-side" aria-label="元件庫目錄" data-open={open || undefined}>
       <button type="button" className="cl-side__toggle" aria-expanded={open} onClick={onToggle}>
@@ -123,7 +158,7 @@ function Sidebar({ current, open, onToggle, onPick }) {
   )
 }
 
-function PageHeader({ page }) {
+function PageHeader({ page }: { page: PageWithSection }) {
   const intro = page.id === 'introduction'
   return (
     <header className="cl-head">
@@ -139,7 +174,7 @@ function PageHeader({ page }) {
   )
 }
 
-function Pager({ page }) {
+function Pager({ page }: { page: PageWithSection }) {
   const i = PAGES.indexOf(page)
   const [prev, next] = [PAGES[i - 1], PAGES[i + 1]]
   return (
@@ -162,7 +197,7 @@ function Pager({ page }) {
   )
 }
 
-function QuickNav({ toc }) {
+function QuickNav({ toc }: { toc?: TocItem[] }) {
   if (!toc?.length) return null
   return (
     <nav className="cl-quick" aria-label="本頁">
@@ -197,8 +232,6 @@ export default function ComponentLibrary() {
     window.scrollTo(0, 0)
   }, [pageId])
 
-  const Body = page?.Body
-
   return (
     <div className="journal-page cl-page">
       <Sidebar current={page} open={menuOpen} onToggle={() => setMenuOpen((o) => !o)} onPick={() => setMenuOpen(false)} />
@@ -208,7 +241,7 @@ export default function ComponentLibrary() {
           {page ? (
             <>
               <PageHeader page={page} />
-              {page.kind === 'component' ? <ComponentPage item={page.item} /> : <Body />}
+              {page.kind === 'component' ? <ComponentPage item={page.item} /> : <page.Body />}
               <Pager page={page} />
             </>
           ) : (

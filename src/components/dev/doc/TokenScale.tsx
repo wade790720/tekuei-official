@@ -1,8 +1,13 @@
 /**
  * A row of boxes, one per token, each drawn with that token (spacing as size, radius as corner).
- * @param {{ tokens: string[], kind: 'space' | 'radius', label?: (token: string) => string }} props
  */
-export function TokenScale({ tokens, kind, label = (t) => t.replace(/^--(space|radius)-/, '') }) {
+interface TokenScaleProps {
+  tokens: string[]
+  kind: 'space' | 'radius'
+  label?: (token: string) => string
+}
+
+export function TokenScale({ tokens, kind, label = (t) => t.replace(/^--(space|radius)-/, '') }: TokenScaleProps) {
   return (
     <div className={`doc-token-scale doc-token-scale--${kind}`} role="img" aria-label={tokens.join('、')}>
       {tokens.map((t) => (

@@ -11,7 +11,7 @@ import { TypeScalePicker } from './doc/TypeScalePicker.tsx'
 import { rootVar } from './doc/tokens.ts'
 
 // Sizes are rem in tokens.css; the docs show the px a 16px root gives
-const toPx = (v) => v.replace(/(\d*\.?\d+)rem/g, (_, n) => `${+n * 16}px`)
+const toPx = (v: string) => v.replace(/(\d*\.?\d+)rem/g, (_: string, n: string) => `${+n * 16}px`)
 import { TYPE_DOC, TYPE_RULES, TYPE_STEPS } from './foundations.data.ts'
 import { SpecView } from './SpecView.tsx'
 
@@ -27,7 +27,7 @@ const weightCode = weight.rows.map(([, token, use]) => `font-weight: var(${token
 const familyCode = family.rows.map(([use, token]) => `font-family: var(${token}); /* ${use} */`).join('\n')
 
 // Font stacks are long; the first three names say enough.
-const shortStack = (v) =>
+const shortStack = (v: string) =>
   v
     .split(',')
     .slice(0, 3)

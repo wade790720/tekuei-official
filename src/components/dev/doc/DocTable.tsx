@@ -1,9 +1,17 @@
+import type { ReactNode } from 'react'
+
 /**
  * A spec table. Columns listed in `code` show their cells as code chips (tokens, values, prop names).
  * With `rowHeader`, the first cell of each row is a row heading.
- * @param {{ head: string[], rows: import('react').ReactNode[][], code?: number[], rowHeader?: boolean }} props
  */
-export function DocTable({ head, rows, code = [], rowHeader = false }) {
+interface DocTableProps {
+  head: string[]
+  rows: ReactNode[][]
+  code?: number[]
+  rowHeader?: boolean
+}
+
+export function DocTable({ head, rows, code = [], rowHeader = false }: DocTableProps) {
   return (
     <div className="cl-table-wrap">
       <table className="cl-table">

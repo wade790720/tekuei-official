@@ -1,5 +1,5 @@
 // Overview and Theme pages of the library that are mostly prose, code and tables.
-// Copy lives in guides.data.js; values are read live from tokens.css where a table shows them.
+// Copy lives in guides.data.ts; values are read live from tokens.css where a table shows them.
 import { useState } from 'react'
 import { DocCode } from './doc/DocCode.tsx'
 import { DocSection } from './doc/DocSection.tsx'

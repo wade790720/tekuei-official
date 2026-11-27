@@ -4,11 +4,47 @@
 import { useEffect, useRef, useState } from 'react'
 import { SPEC_SAMPLE } from './foundations.data.ts'
 
-const rel = (r, o) => ({ x: r.left - o.left, y: r.top - o.top, w: r.width, h: r.height })
+interface Box {
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
+interface Beam extends Box {
+  value: number
+  x1: number
+  y1: number
+  x2: number
+  y2: number
+  lx: number
+  ly: number
+  anchor: 'left' | 'below' | 'above'
+}
+
+interface Guide {
+  y: number
+  x: number
+  w: number
+  label: string
+}
+
+interface Measured {
+  w: number
+  h: number
+  bands: Beam[]
+  guides: Guide[]
+  select: (Box & { label: string }) | null
+}
+
+type SpecMode = 'spacing' | 'typography'
+type Els = Record<string, HTMLElement>
+
+const rel = (r: DOMRect, o: DOMRect): Box => ({ x: r.left - o.left, y: r.top - o.top, w: r.width, h: r.height })
 
 // A Figma-style measurement: a thin "I" across the gap, with caps at both ends and the value in a pill.
 // Gaps that are wider than tall measure their width; the rest measure their height.
-function beam(b, columnX) {
+function beam(b: Box, columnX: number): Beam {
   const across = b.w < b.h
   const value = Math.round(across ? b.w : b.h)
   if (!across) {
@@ -31,20 +67,20 @@ function beam(b, columnX) {
   }
 }
 
-function build(mode, stage, el) {
+function build(mode: SpecMode, stage: HTMLElement, el: Els): Measured {
   const o = stage.getBoundingClientRect()
-  const box = (k) => rel(el[k].getBoundingClientRect(), o)
-  const text = (k) => {
+  const box = (k: string) => rel(el[k].getBoundingClientRect(), o)
+  const text = (k: string) => {
     const range = document.createRange()
     range.selectNodeContents(el[k])
     return rel(range.getBoundingClientRect(), o)
   }
   const card = box('card')
   const [meta, title, lead, body, b0, b1] = ['meta', 'title', 'lead', 'body', 'b0', 'b1'].map(box)
-  const out = { w: o.width, h: o.height, bands: [], guides: [], select: null }
+  const out: Measured = { w: o.width, h: o.height, bands: [], guides: [], select: null }
 
   if (mode === 'spacing') {
-    const v = (a, b) => ({ x: card.x + (meta.x - card.x), y: a.y + a.h, w: meta.w, h: b.y - (a.y + a.h) })
+    const v = (a: Box, b: Box): Box => ({ x: card.x + (meta.x - card.x), y: a.y + a.h, w: meta.w, h: b.y - (a.y + a.h) })
     out.bands = [
       { x: card.x, y: card.y, w: card.w, h: meta.y - card.y },
       v(meta, title),
@@ -59,6 +95,7 @@ function build(mode, stage, el) {
     const base = box('base').y
     const cs = getComputedStyle(el.title)
     const ctx = document.createElement('canvas').getContext('2d')
+    if (!ctx) return out
     ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`
     const xh = ctx.measureText('x').actualBoundingBoxAscent
     out.guides = [
@@ -70,14 +107,15 @@ function build(mode, stage, el) {
 }
 
 /** The same sample card, annotated for one foundation: 'spacing' | 'typography'. */
-export function SpecView({ mode }) {
-  const stageRef = useRef(null)
-  const [m, setM] = useState(null)
+export function SpecView({ mode }: { mode: SpecMode }) {
+  const stageRef = useRef<HTMLDivElement>(null)
+  const [m, setM] = useState<Measured | null>(null)
 
   useEffect(() => {
     const stage = stageRef.current
+    if (!stage) return
     let alive = true
-    const els = Object.fromEntries([...stage.querySelectorAll('[data-k]')].map((n) => [n.dataset.k, n]))
+    const els = Object.fromEntries([...stage.querySelectorAll<HTMLElement>('[data-k]')].map((n) => [n.dataset.k, n]))
     const run = () => alive && setM(build(mode, stage, els))
     const ro = new ResizeObserver(run)
     ro.observe(stage)
@@ -125,7 +163,7 @@ export function SpecView({ mode }) {
               <svg className="fd-spec__svg" width={m.w} height={m.h}>
                 {m.bands.map((b, i) => {
                   const v = b.x1 === b.x2
-                  const cap = (x, y) =>
+                  const cap = (x: number, y: number) =>
                     v ? <line x1={x - 4} x2={x + 4} y1={y} y2={y} /> : <line x1={x} x2={x} y1={y - 4} y2={y + 4} />
                   return (
                     <g key={i} className="fd-spec__beam">
