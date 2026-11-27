@@ -24,8 +24,8 @@ function fileExists(name) {
 /** Problems in one comment's text. */
 export function slopIn(text) {
   const found = CHECKS.filter(([re]) => re.test(text)).map(([, msg]) => msg)
-  // Capitalised .js names are libraries (Editor.js, Three.js); our components are .jsx.
-  const stale = [...text.matchAll(/\b[\w.-]+\.(?:css|jsx|js|mjs)\b/g)]
+  // Capitalised .js names are libraries (Editor.js, Three.js); our components are .tsx.
+  const stale = [...text.matchAll(/\b[\w.-]+\.(?:css|tsx|ts|mts|jsx|js|mjs)\b/g)]
     .map(([name]) => name)
     .filter((name) => !/^[A-Z]\w*\.js$/.test(name) && !fileExists(name))
   if (stale.length) found.push(`指向不存在的檔案：${stale.join('、')}`)
@@ -111,7 +111,7 @@ async function hook() {
   const file = relative(process.cwd(), path)
   if (file.startsWith('..')) return
   const ext = extname(file)
-  const problems = ext === '.css' ? cssProblems(file) : ['.js', '.jsx', '.mjs'].includes(ext) ? await jsProblems(file) : []
+  const problems = ext === '.css' ? cssProblems(file) : ['.js', '.jsx', '.mjs', '.ts', '.tsx', '.mts'].includes(ext) ? await jsProblems(file) : []
   if (problems.length) {
     console.error(`${problems.join('\n')}\n規則見 AGENTS.md「註解」和 DESIGN.md「Don't」。`)
     process.exit(2)
