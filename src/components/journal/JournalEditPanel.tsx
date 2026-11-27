@@ -11,11 +11,12 @@ import { CMS_LABELS as T } from '../../data/admin.ts'
 import { useCmsEditing } from '../../hooks/useCmsEditing.ts'
 import { useLang } from '../../i18n'
 import { emptyDoc, getDoc } from '../../lib/richText.ts'
+import { LANGS } from '../../lib/siteData.ts'
+import type { Doc, JournalData, JournalPost } from '../../lib/siteData.ts'
 
-const LANGS = ['zh', 'en']
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 // The number shown on the site (01, 02 …) follows the list order.
-const renumber = (d) => {
+const renumber = (d: JournalData) => {
   for (const l of LANGS) d.posts[l]?.forEach((p, i) => (p.num = String(i + 1).padStart(2, '0')))
 }
 
@@ -26,13 +27,14 @@ function useJournalEditing() {
 
 const AUTOSAVE_MS = 3000
 
-export function JournalPostEditPanel({ slug }) {
+export function JournalPostEditPanel({ slug }: { slug: string }) {
   const { lang } = useLang()
   const { admin, cms, ready, panelProps, saveWith } = useJournalEditing()
+  const draft = ready ? cms.draft : null
 
   // A draft saves itself once typing pauses. A published post never does: half an edit would go live.
-  const isDraft = ready && Boolean(cms.draft.posts.zh?.find((p) => p.slug === slug)?.draft)
-  const autosave = isDraft && differsOnlyIn(cms.draft, cms.savedContent, slug)
+  const isDraft = Boolean(draft?.posts.zh?.find((p) => p.slug === slug)?.draft)
+  const autosave = isDraft && draft !== null && differsOnlyIn(draft, cms.savedContent, slug)
   const saveNow = useEffectEvent(() => panelProps.onSave())
   useEffect(() => {
     if (!autosave) return undefined
@@ -40,29 +42,30 @@ export function JournalPostEditPanel({ slug }) {
     return () => clearTimeout(timer)
   }, [autosave, cms.draft])
 
-  if (!ready) return null
+  if (!draft) return null
 
-  const post = cms.draft.posts[lang]?.find((p) => p.slug === slug)
+  const post = draft.posts[lang]?.find((p) => p.slug === slug)
   if (!post) return null
 
-  const zhPost = cms.draft.posts.zh?.find((p) => p.slug === slug)
+  const zhPost = draft.posts.zh?.find((p) => p.slug === slug)
 
   // Title and text belong to one language. Date and tags are shared.
-  const setPost = (key, value) =>
+  const setPost = (key: 'title' | 'titleEn' | 'excerpt', value: string) =>
     cms.updateDraft((d) => {
-      d.posts[lang].find((p) => p.slug === slug)[key] = value
+      const p = d.posts[lang].find((x) => x.slug === slug)
+      if (p) p[key] = value
     })
-  const setShared = (key, value) =>
+  const setShared = <K extends 'tags' | 'date'>(key: K, value: JournalPost[K]) =>
     cms.updateDraft((d) => {
       for (const l of LANGS) {
         const p = d.posts[l]?.find((x) => x.slug === slug)
         if (p) p[key] = value
       }
     })
-  const markDraft = (draft) => (d) => {
+  const markDraft = (asDraft: boolean) => (d: JournalData) => {
     for (const l of LANGS) {
       const p = d.posts[l]?.find((x) => x.slug === slug)
-      if (p) p.draft = draft
+      if (p) p.draft = asDraft
     }
   }
   const actions = isDraft
@@ -82,10 +85,10 @@ export function JournalPostEditPanel({ slug }) {
       {...actions}
       actions={
           <TranslateSection
-            zhDoc={getDoc(cms.draft.content.zh?.[slug])}
-            enDoc={getDoc(cms.draft.content.en?.[slug])}
+            zhDoc={getDoc(draft.content.zh?.[slug])}
+            enDoc={getDoc(draft.content.en?.[slug])}
             fields={{ title: zhPost?.title, excerpt: zhPost?.excerpt }}
-            onDone={({ doc, fields }) => {
+            onDone={({ doc, fields }: { doc: Doc; fields: Record<string, string> }) => {
               cms.updateDraft((d) => {
                 d.content.en = { ...d.content.en, [slug]: { doc } }
                 const en = d.posts.en?.find((p) => p.slug === slug)
@@ -103,7 +106,7 @@ export function JournalPostEditPanel({ slug }) {
         <TextField id="cms-title-en" value={post.titleEn} onChange={(v) => setPost('titleEn', v)} placeholder="English subtitle" />
       </FormRow>
       <FormRow label="標籤" htmlFor="cms-tags" hint="用逗號分開，例如 AI, MARKETING。中英文共用">
-        <TagsInput key={slug} id="cms-tags" tags={postTags(post)} parse={parseTags} onChange={(tags) => setShared('tags', tags)} />
+        <TagsInput key={slug} id="cms-tags" tags={postTags(post)} parse={parseTags} onChange={(tags: string[]) => setShared('tags', tags)} />
       </FormRow>
       <FormRow label="日期" htmlFor="cms-date" hint="格式 2026.11.19，中英文共用">
         <TextField id="cms-date" value={post.date} onChange={(v) => setShared('date', v)} />
@@ -120,7 +123,7 @@ export function JournalListEditPanel() {
   const navigate = useNavigate()
   const { cms, ready, panelProps } = useJournalEditing()
   const [slug, setSlug] = useState('')
-  if (!ready) return null
+  if (!ready || !cms.draft) return null
 
   const posts = cms.draft.posts[lang]
   const slugError = !slug
@@ -132,7 +135,7 @@ export function JournalListEditPanel() {
         : ''
 
   // Order and deletion apply to both languages, so the lists stay in step.
-  const reorder = (from, to) =>
+  const reorder = (from: number, to: number) =>
     cms.updateDraft((d) => {
       for (const l of LANGS) {
         const list = d.posts[l]
@@ -143,7 +146,7 @@ export function JournalListEditPanel() {
       renumber(d)
     })
 
-  const remove = (post) => {
+  const remove = (post: JournalPost) => {
     if (!window.confirm(`刪除「${post.title}」？中英文版本會一起刪除，儲存後才會生效。`)) return
     cms.updateDraft((d) => {
       for (const l of LANGS) {
@@ -197,8 +200,8 @@ export function JournalListEditPanel() {
       </PanelSection>
 
       <PanelSection title="文章">
-        <SortRows items={posts} keyOf={(post) => post.slug} nameOf={(post) => post.title} onMove={reorder}>
-          {(post) => (
+        <SortRows items={posts} keyOf={(post: JournalPost) => post.slug} nameOf={(post: JournalPost) => post.title} onMove={reorder}>
+          {(post: JournalPost) => (
             <>
               <div className="cms-post__num">{post.num}</div>
               <div className="cms-post__body">
