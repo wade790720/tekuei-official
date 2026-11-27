@@ -1,6 +1,7 @@
 import { ADMIN_SESSION_KEY, CMS_LABELS, TRANSLATE_LABELS } from '../data/admin.js'
 import { compressImage } from './compressImage.js'
 import { batchTexts } from './docTranslate.js'
+import { parseSiteData } from './siteData.ts'
 
 export function apiPath(path) {
   const base = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '')
@@ -63,7 +64,7 @@ export async function loginAdmin(password) {
 // Callers treat the result as read only. A save or a failed load clears it.
 let siteDataRequest = null
 
-/** @returns {Promise<{ data: object, etag: string | null } | null>} null when the bucket is empty */
+/** @returns {Promise<import('./siteData.ts').ParsedSiteData & { etag: string | null } | null>} null when the bucket is empty */
 export function fetchSiteData() {
   siteDataRequest ??= requestSiteData().catch((err) => {
     siteDataRequest = null
@@ -81,7 +82,7 @@ async function requestSiteData() {
   if (!res.ok) {
     throw new Error('Failed to fetch site data')
   }
-  return { data: await res.json(), etag: res.headers.get('ETag') }
+  return { ...parseSiteData(await res.json()), etag: res.headers.get('ETag') }
 }
 
 // Journal, Projects and About each remember the version of data.json they loaded. A save by one replaces

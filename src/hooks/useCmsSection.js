@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useEffectEvent, useState } from 'react'
-import { siteDefaults } from '../lib/siteData.js'
+import { siteDefaults } from '../data/siteDefaults.ts'
 import { fetchSiteData, isRemoteSync, onSiteVersion, saveSitePatch } from '../lib/adminApi.js'
 import { CMS_LABELS } from '../data/admin.js'
 
@@ -40,6 +40,8 @@ export function useCmsSection(sectionKey, getDefault, cloneContent, copyDraft = 
       try {
         const remote = await fetchSiteData()
         if (cancelled) return
+        // A section R2 holds in a shape the site cannot read is a failed load: saving would replace it.
+        if (remote?.invalid.includes(sectionKey)) throw new Error(`${sectionKey} in data.json is malformed`)
         if (!remote) fallback()
         else {
           setContent(sectionContent(remote.data))

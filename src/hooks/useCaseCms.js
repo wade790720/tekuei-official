@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { siteDefaults } from '../lib/siteData.js'
+import { siteDefaults } from '../data/siteDefaults.ts'
 import { fetchSiteData, isRemoteSync } from '../lib/adminApi.js'
 import { LOCAL_CASES } from '../data/cases/index.js'
 import { useLang } from '../i18n'

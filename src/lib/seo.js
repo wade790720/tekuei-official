@@ -7,6 +7,7 @@ import { getDefaultJournal, postTags, publishedJournal } from '../data/journal.j
 import { ABOUT_CLIENTS, ABOUT_META, getDefaultAbout } from '../data/about.js'
 import { LAB_BY_ID, labLinks } from '../labs/index.js'
 import { projectBody, projectHref, projectLink, projectTitle } from './projectHref.js'
+import { parseSiteData } from './siteData.ts'
 
 export const SITE_URL = 'https://tekuei.com'
 export const SITE_NAME = 'TEKUEI 德溎'
@@ -29,11 +30,11 @@ export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ESC[c])
 export const jsonLd = (obj) =>
   `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`
 
-/** R2 data.json, or null when the bucket is empty or the JSON is bad. */
+/** R2 data.json, or null when the bucket is empty or the JSON is bad. A malformed section is left out. */
 export async function readSiteData(bucket) {
   try {
     const obj = await bucket?.get('data.json')
-    return obj ? await obj.json() : null
+    return obj ? parseSiteData(await obj.json()).data : null
   } catch {
     return null
   }
