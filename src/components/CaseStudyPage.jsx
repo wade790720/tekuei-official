@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { PROJECT_PAGE_LABELS, projectNumber, publishedWork } from '../data/work.js'
+import { localizeWork, PROJECT_PAGE_LABELS, projectFacts, projectNumber, projectTitle, publishedWork } from '../data/work.js'
 import { projectCover } from '../data/workMedia.js'
 import { useCaseCms } from '../hooks/useCaseCms.js'
 import { useLang } from '../i18n'
@@ -28,8 +28,15 @@ export default function CaseStudyPage() {
   const { hero } = data
   // The card's number on the Projects list; a case that is not on the list keeps its own.
   const listed = projectNumber(publishedWork(work).items, slug)
-  // The cover picture set in the edit panel; the picture stored with the case until one is set there.
-  const cover = projectCover(work.items.find((x) => x.id === slug)) || hero.image?.url
+  // The title, the facts and the cover come from the case's card, as on a project page, so the edit panel changes
+  // both. A case that is no longer on the list falls back to what is stored with it.
+  const item = localizeWork(work, lang).items.find((x) => x.id === slug)
+  const cover = projectCover(item) || hero.image?.url
+  // The card of a case has no site link of its own until one is typed in the panel; the case's stored link fills in.
+  const site = hero.meta.find((m) => m.href)
+  const facts = item
+    ? [...projectFacts(item, lang), ...(item.link || !site ? [] : [[t.link, site.lines, site.href]])]
+    : hero.meta.map((m) => [m.label, m.lines, m.href])
 
   return (
     <div className="journal-page journal-page--post">
@@ -38,9 +45,8 @@ export default function CaseStudyPage() {
           cover={cover}
           background={hero.bg}
           num={listed === '00' ? hero.num : `${t.num} ${listed}`}
-          title={[hero.titleEm, hero.titleRest].filter(Boolean).join(' ')}
-          subtitle={hero.subtitle}
-          facts={hero.meta.map((m) => [m.label, m.lines, m.href])}
+          title={item ? projectTitle(item) : [hero.titleEm, hero.titleRest].filter(Boolean).join(' ')}
+          facts={facts}
         />
         <article className="journal-post project-post project-post--cover">
           <div className="journal-post__body">

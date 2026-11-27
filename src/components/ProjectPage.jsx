@@ -9,7 +9,7 @@ import { ProjectHero } from './work/ProjectHero.jsx'
 import { useAdmin } from '../context/admin.js'
 import { useWork } from '../context/work.js'
 import { projectCover, withProjectVideo, WORK_THUMBS } from '../data/workMedia.js'
-import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, projectBody, projectNumber, projectTitle, projectType } from '../data/work.js'
+import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, projectBody, projectFacts, projectNumber, projectTitle, projectType } from '../data/work.js'
 import { useWorkContent } from '../hooks/useWorkContent.js'
 import { useLang } from '../i18n'
 import { uploadSiteImage } from '../lib/adminApi.js'
@@ -66,17 +66,11 @@ export default function ProjectPage() {
   const upload = async (file) => (await uploadSiteImage(file, admin.getToken())).url
   const saved = <RichText doc={withProjectVideo(doc, slug, lang)} />
   const cover = projectCover(item)
-  const facts = [
-    [t.type, [section[lang]]],
-    item.client && [t.client, [item.client]],
-    item.tags?.length && [t.scope, item.tags],
-    item.link && [t.link, [item.link.replace(/^https?:\/\/(www\.)?/, '').replace(/\/.*$/, '')], item.link],
-  ].filter(Boolean)
 
   return (
     <div className="journal-page journal-page--post">
       <main>
-        {cover ? <ProjectHero cover={cover} focus={WORK_THUMBS[slug]?.coverFocus} num={`${t.num} ${projectNumber(content.items, slug)}`} title={title} facts={facts} /> : null}
+        {cover ? <ProjectHero cover={cover} focus={WORK_THUMBS[slug]?.coverFocus} num={`${t.num} ${projectNumber(content.items, slug)}`} title={title} facts={projectFacts(item, lang)} /> : null}
         <article className={`journal-post project-post${cover ? ' project-post--cover' : ''}`} lang={untranslated ? 'zh-Hant' : undefined}>
           <header className="journal-post__header">
             {cover ? null : (
