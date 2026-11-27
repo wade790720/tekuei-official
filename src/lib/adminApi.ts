@@ -154,7 +154,8 @@ export async function translateTexts(
     })
     const data: unknown = await res.json().catch(() => ({}))
     const translated = textsOf(data)
-    if (!res.ok || !translated) throw new Error(errorOf(data) || TRANSLATE_LABELS.failed)
+    // A short answer would shift every later translation onto the wrong text.
+    if (!res.ok || translated?.length !== batch.length) throw new Error(errorOf(data) || TRANSLATE_LABELS.failed)
     out.push(...translated)
     onProgress?.(i + 1, batches.length)
   }

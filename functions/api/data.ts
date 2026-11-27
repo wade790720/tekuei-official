@@ -1,8 +1,12 @@
 import { adminGate, json } from '../../src/lib/adminAuth.ts'
+import type { ApiContext } from '../env.d.ts'
 
 const DATA = 'data.json'
 
-export async function onRequestGet({ request, env }) {
+// R2's etag without quotes. Cloudflare turns the ETag weak (W/"...") when it compresses the response.
+const bareEtag = (header: string | null) => header?.replace(/^W\/|"/g, '') || undefined
+
+export async function onRequestGet({ request, env }: ApiContext) {
   const obj = await env.BUCKET.get(DATA)
   if (!obj) {
     return json({ error: 'No data yet' }, 404)
@@ -13,16 +17,16 @@ export async function onRequestGet({ request, env }) {
     'Cache-Control': 'private, no-cache',
     ETag: obj.httpEtag, // the editor sends it back as If-Match when it saves
   }
-  if (request.headers.get('If-None-Match') === obj.httpEtag) return new Response(null, { status: 304, headers })
+  if (bareEtag(request.headers.get('If-None-Match')) === obj.etag) return new Response(null, { status: 304, headers })
   return new Response(obj.body, { headers: { 'Content-Type': 'application/json', ...headers } })
 }
 
-export async function onRequestPut({ request, env }) {
+export async function onRequestPut({ request, env }: ApiContext) {
   const denied = await adminGate(request, env)
   if (denied) return denied
 
   const prevRead = env.BUCKET.get(DATA) // starts while the body is read and parsed
-  let body
+  let body: unknown
   try {
     body = JSON.parse(await request.text())
   } catch {
@@ -34,11 +38,11 @@ export async function onRequestPut({ request, env }) {
 
   const prev = await prevRead
   // The editor sends a whole section. If another tab or device saved after this editor loaded,
-  // that section is stale and writing it would drop the other save.
-  const loaded = request.headers.get('If-Match')?.replace(/^W\/|"/g, '')
-  if (loaded && prev?.etag !== loaded) return json({ error: 'Stale', stale: true }, 409)
+  // that section is stale and writing it would drop the other save. A save that names no version is
+  // refused too, unless the bucket is empty: the editor has no ETag only before the first save.
+  if (prev?.etag !== bareEtag(request.headers.get('If-Match'))) return json({ error: 'Stale', stale: true }, 409)
 
-  let existing = {}
+  let existing: object = {}
   if (prev) {
     try {
       existing = JSON.parse(await prev.text())

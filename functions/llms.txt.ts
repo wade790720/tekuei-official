@@ -1,7 +1,8 @@
 import { llmsTxt, readSiteData, siteCases, siteJournal } from '../src/lib/seo.ts'
+import type { Env } from './env.d.ts'
 import { WORK_ITEMS } from '../src/data/work.ts'
 
-export async function onRequestGet({ env }) {
+export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
   const data = await readSiteData(env.BUCKET)
   const body = llmsTxt(siteJournal(data), siteCases(data?.work?.items ?? WORK_ITEMS, data?.work))
   return new Response(body, {

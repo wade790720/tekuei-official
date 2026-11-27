@@ -1,8 +1,10 @@
+import type { Env } from './env.d.ts'
+
 /**
  * 允許本機 Vite（localhost）以 VITE_API_BASE 直連正式 API 時的 CORS。
  * 若使用 vite proxy（/api → Pages），瀏覽器為同網域，通常不會觸發此需求。
  */
-function isLocalDevOrigin(origin) {
+function isLocalDevOrigin(origin: string | null): origin is string {
   if (!origin) return false
   try {
     const u = new URL(origin)
@@ -12,7 +14,7 @@ function isLocalDevOrigin(origin) {
   }
 }
 
-function corsHeaders(origin) {
+function corsHeaders(origin: string) {
   return {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Methods': 'GET, HEAD, PUT, POST, OPTIONS',
@@ -21,7 +23,7 @@ function corsHeaders(origin) {
   }
 }
 
-export async function onRequest(context) {
+export async function onRequest(context: EventContext<Env, string, Record<string, unknown>>) {
   const { request, next } = context
   const origin = request.headers.get('Origin')
   const allow = isLocalDevOrigin(origin)
