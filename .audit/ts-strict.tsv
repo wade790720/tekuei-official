@@ -3,3 +3,23 @@ ts	phase	decision	why	evidence	result
 2026-11-27T15:06:18Z	frame	完成條件：src、functions、scripts 沒有 .js/.jsx/.mjs，tsconfig strict、allowJs false，tsc 零錯誤，lint、build、test 全綠，三種寬度畫面和改前一致，PR 已開	先寫下可以檢查的終點	本列	open
 2026-11-27T15:06:18Z	baseline	在 worktree 跑基準	之後每一步都和這個比	lint ok, test 113 pass, build ok	green
 2026-11-27T15:06:18Z	tooling	加 typescript 6.0.3、@types/react、@types/react-dom、@types/node、@cloudflare/workers-types、typescript-eslint，都是 devDependencies	使用者同意只加型別工具；Node 22.23 內建型別剝除，不需要 tsx	package.json	open
+2026-11-27T15:13:15Z	verify	改前在 port 5181 跑 main 的程式，對 18 個網址在 375/1440/2560 寬度存 DOM 快照雜湊（去掉 style 屬性）	改完後用同一段程式比對，比截圖便宜且能逐頁比	scratchpad/snap.js	54 個基準雜湊
+2026-11-27T15:13:16Z	risk	唯讀風險檢查完成，11 項加架構問題，整理成 .audit/risks.md；第 5、6、8 項這次修，admin 與 CORS 只回報	使用者選擇一般問題直接修、驗證只回報	.audit/risks.md	open
+2026-11-27T15:13:51Z	A-types	型別和解析器放在 src/lib/siteData.ts，內建資料放在 src/data/siteDefaults.ts	AGENTS.md 的邏輯放 src/lib；node 測試不能直接匯入 data.json，所以內建資料另放一檔，並用型別標註在編譯時檢查 data.json	c960448	done
+2026-11-27T15:13:51Z	A-parser	壞掉的區段列在 invalid，從 data 拿掉；useCmsSection 把它當成載入失敗	useCmsSection 載入失敗時顯示預設並拒絕儲存；同樣處理壞區段，就不會用預設蓋掉 R2 的真資料	src/hooks/useCmsSection.js:44	done
+2026-11-27T15:13:51Z	A-parser	解析器保留所有不認得的欄位，只補缺的欄位（tags 從 category 來、缺的文字補空字串、缺的 en 補空清單）	區段是整段存回去，丟掉欄位就等於從 R2 刪掉；補的欄位只會增加，不會遺失資料	scripts/siteData.test.ts; 正式站 data.json 解析後 deepEqual 原檔	done
+2026-11-27T15:13:52Z	A-bug	Journal 沒有 posts.en 時，新增文章會在 d.posts.en.unshift 當掉；解析器補空清單後修好	JournalEditPanel 的 create 對每種語言 unshift	src/components/journal/JournalEditPanel.jsx:162; scripts/siteData.test.ts	fixed
+2026-11-27T15:13:52Z	A-parser	seo.js 的 readSiteData 也走同一個解析器	伺服器端也是邊界；壞區段改用預設，不會把壞資料寫進 HTML	src/lib/seo.js:37	done
+2026-11-27T15:13:53Z	A-types	JSONContent 從 @tiptap/react 匯入，不直接匯入 @tiptap/core	'@tiptap/core 不是直接相依，@tiptap/react 會轉出它	src/lib/siteData.ts:4	done
+2026-11-27T15:28:11Z	A-lib	src/lib 的畫布效果交給一個 sonnet 子代理，同一個工作目錄裡不同檔案；其他檔案自己做	畫布效果不依賴資料型別，可以平行；子代理不做版本控制操作	ce7b715	done
+2026-11-27T15:28:12Z	A-lib	journal.ts 提前到 src/lib 的 commit	seo.ts 的 siteJournal 讀 journal 的型別，JS 推斷出的型別過不了 strict	ce7b715	done
+2026-11-27T15:28:12Z	A-lib	adminAuth 和 seo 用結構型介面描述 R2 和 ASSETS，不用 workers types	這兩檔同時被 app（有 DOM、沒有 workers types）和 functions 檢查；功能不變	src/lib/adminAuth.ts:9; src/lib/seo.ts	done
+2026-11-27T15:28:12Z	A-lib	API 回應逐欄讀取；翻譯回應不是字串陣列時改丟錯誤訊息，上傳回應沒有 url 時也丟錯	原本是 TypeError 或回傳沒有 url 的物件；使用者看到的錯誤變成可讀的	src/lib/adminApi.ts	behaviour-change-minor
+2026-11-27T15:28:13Z	A-lib	seo.test.mjs 的 siteJournal 測試資料補上 en	siteJournal 現在吃解析後的資料，解析器保證有 en	scripts/seo.test.mjs:73	done
+2026-11-27T15:28:13Z	A-lib	註解和 CSS 裡指向舊 .js 檔名的地方改成 .ts；AGENTS/DESIGN/PAGES.md 沒改，留給收尾	no-slop 擋下指向不存在檔案的註解	ce7b715	md-pending
+2026-11-27T15:28:14Z	A-verify	用唯讀的正式資料跑 dev（VITE_USE_REMOTE、proxy 到正式站），看 Journal、文章、Projects、SRE、About	工作目錄沒有 .env.local，本機預設只讀內建資料	port 5183，主控台無錯誤	pass
+2026-11-27T15:33:14Z	A-data	Projects 區段名稱改成以 ProjectType 為鍵的表，PROJECT_SECTIONS 由它產生	projectFacts 原本用 find 再取值，型別上可能是 undefined；用表就不會缺	44d7f0e src/data/work.ts	done
+2026-11-27T15:33:14Z	A-data	案例文字標成 CaseStudy 型別；quote 補 multiline（lustreYellow 有，但沒有程式讀它）	讓三個案例檔在編譯時檢查形狀	44d7f0e	done
+2026-11-27T15:33:15Z	A-hooks	SiteData 拆出 EditableSections 和 SectionKey，useCmsSection 以鍵決定內容型別	不用轉型就能從 data[sectionKey] 讀到正確型別	dd057df src/lib/siteData.ts	done
+2026-11-27T15:33:15Z	A-bug	儲存進行中離開編輯模式時，saveDraft 的 updater 會對 null 呼叫 copyDraft 而當掉；加判斷	strict 型別指出 cur 可能是 null；hook 沒有測試環境，所以沒有先寫測試	dd057df src/hooks/useCmsSection.ts	fixed-untested
+2026-11-27T15:33:15Z	A-verify	用假的 /api（scripts/fakeAdminApi.js）登入 About 編輯模式、打字、Ctrl+S，送出的 PUT 只有 aboutPage 且含修改	確認 useCmsSection 的型別化儲存路徑；沒有寫到正式資料	window.__api: PUT /api/data keys=[aboutPage]	pass
