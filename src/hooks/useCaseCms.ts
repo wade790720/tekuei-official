@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { startTransition, useEffect, useMemo, useState } from 'react'
 import { siteDefaults } from '../data/siteDefaults.ts'
 import { fetchSiteData, isRemoteSync } from '../lib/adminApi.ts'
 import { LOCAL_CASES } from '../data/cases/index.ts'
@@ -33,10 +33,16 @@ export function useCaseCms(slug: string): { content: CaseWithImages | null; load
   useEffect(() => {
     if (!isRemoteSync()) return undefined
     let cancelled = false
+    // A transition, as in useCmsSection: the page may still be hydrating.
+    const done = (next: SiteData) =>
+      !cancelled &&
+      startTransition(() => {
+        setData(next)
+        setLoading(false)
+      })
     fetchSiteData()
-      .then((remote) => !cancelled && setData(remote?.data ?? siteDefaults))
-      .catch(() => !cancelled && setData(siteDefaults))
-      .finally(() => !cancelled && setLoading(false))
+      .then((remote) => done(remote?.data ?? siteDefaults))
+      .catch(() => done(siteDefaults))
     return () => {
       cancelled = true
     }

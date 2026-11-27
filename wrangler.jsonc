@@ -1,0 +1,24 @@
+// The site as one Worker: React Router renders pages, workers/app.ts sends /api/* to functions/api/.
+// Secrets are not here: ADMIN_SECRET comes from .dev.vars locally (see .dev.vars.example).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tekuei-official",
+  "main": "./workers/app.ts",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./build/client" },
+  "observability": { "enabled": true },
+  "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "tekuei-cms" }],
+  // The editor's English translation uses Workers AI, no key needed.
+  "ai": { "binding": "AI" },
+  // The integration branch (migrate/rr8) deploys here, never to the live bucket above. The Cloudflare vite plugin picks
+  // the environment at build time and writes it into build/server/wrangler.json, which wrangler deploy then reads:
+  // run `npm run build:next`, then `npx wrangler deploy`. `wrangler deploy --env next` has no effect on that file.
+  // Bindings are not inherited by an environment, so each one is listed again.
+  "env": {
+    "next": {
+      "name": "tekuei-next",
+      "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "tekuei-cms-next" }],
+      "ai": { "binding": "AI" }
+    }
+  }
+}

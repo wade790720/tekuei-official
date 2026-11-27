@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 /**
  * A grid of cards that each lead to another page ("延伸閱讀").

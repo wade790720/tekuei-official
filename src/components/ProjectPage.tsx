@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router'
 import { Breadcrumbs, BreadcrumbsItem } from './Breadcrumbs.tsx'
 import { Button } from './Button.tsx'
 import { RichText } from './RichText.tsx'
@@ -17,6 +17,7 @@ import { docText, getDoc, hasBody, safeHref } from '../lib/richText.ts'
 import type { Doc } from '../lib/siteData.ts'
 import '../styles/journal.css'
 import '../styles/project.css'
+import { DefaultHead } from './DefaultHead.tsx'
 
 // Only Wade edits, so Tiptap and the panel load in edit mode, not for every visitor.
 const Editor = lazy(() => import('./Editor.tsx').then((m) => ({ default: m.Editor })))
@@ -40,13 +41,13 @@ export default function ProjectPage() {
   const title = item ? projectTitle(item) : ''
 
   // A project that only exists in R2 is missing until the remote data arrives.
-  if (!zh && loading) return <div className="site-loading-bar" />
+  if (!zh && loading) return <><DefaultHead /><div className="site-loading-bar" /></>
 
   // A project with no page of its own (its card links elsewhere) still opens here in edit mode, for its fields.
   if (!item || (!zh && !editing)) {
     return (
       <div className="journal-page journal-page--post">
-        {item ? <title>{`${title} · Projects · TEKUEI`}</title> : <title>Not Found · Projects · TEKUEI</title>}
+        <DefaultHead title={item ? `${title} · Projects · TEKUEI` : 'Not Found · Projects · TEKUEI'} />
         <div className="journal-not-found">
           <div className="journal-not-found__num">—</div>
           <h1>{t.notFound}</h1>

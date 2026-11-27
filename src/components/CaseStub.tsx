@@ -1,7 +1,8 @@
 ﻿import { useMemo } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router'
 import { WORK_ITEMS } from '../data/work.ts'
 import '../styles/work.css'
+import { DefaultHead } from './DefaultHead.tsx'
 
 export default function CaseStub() {
   const { slug } = useParams()
@@ -19,7 +20,7 @@ export default function CaseStub() {
 
   return (
     <div className="work-page">
-      <title>{item ? `TEKUEI · ${title}` : 'TEKUEI · Case'}</title>
+      <DefaultHead title={item ? `TEKUEI · ${title}` : 'TEKUEI · Case'} />
       <main className="case-stub">
         <h1>{item ? `${title}` : `Case · ${slug}`}</h1>
         <p>案例詳情頁面尚未接上，之後由獨立專題頁承接此路由。</p>

@@ -1,6 +1,6 @@
 import { Children, isValidElement } from 'react'
 import type { ComponentType, HTMLAttributes, ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import '../styles/breadcrumbs.css'
 
 export interface BreadcrumbsProps {

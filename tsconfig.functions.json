@@ -1,8 +1,18 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ES2023"],
-    "types": ["@cloudflare/workers-types/2023-07-01"]
+    "lib": [
+      "ES2023"
+    ],
+    "types": [
+      "@cloudflare/workers-types",
+      "vite/client"
+    ]
   },
-  "include": ["functions"]
+  "include": [
+    "functions",
+    "workers",
+    "worker-configuration.d.ts",
+    ".react-router/types/+server-build.d.ts"
+  ]
 }

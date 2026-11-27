@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router'
 import { SidePanel, EyeOffIcon, FormRow, PanelSection, SortRows, TagsInput } from '../SidePanel.tsx'
 import { TextArea } from '../TextArea.tsx'
 import { TextField } from '../TextField.tsx'

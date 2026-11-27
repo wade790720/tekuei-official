@@ -3,7 +3,7 @@
 import { useEffect, useEffectEvent, useRef, useState, useSyncExternalStore } from 'react'
 import type { MouseEvent, ReactNode, Ref } from 'react'
 import { createPortal } from 'react-dom'
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router'
 import { HOME_FOOTER } from '../data/homepage.ts'
 import { NAV_LABELS, SITE_LOGO } from '../data/nav.ts'
 import { useLang } from '../i18n'

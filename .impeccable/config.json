@@ -20,6 +20,12 @@
         ],
         "createdAt": "2026-11-25T17:59:06.686Z",
         "reason": "agent: L706 is a blockquote's left bar, not a card accent. The user asked to match Medium's quote, and 3px was measured from Medium"
+      },
+      {
+        "rule": "overused-font",
+        "value": "instrument serif",
+        "createdAt": "2026-11-27T20:33:48.390Z",
+        "reason": "DESIGN.md 字型表：Instrument Serif 是站上規定的品牌字型（--font-serif）；root.tsx 只是把原本 index.html 的 Google Fonts 連結搬過來"
       }
     ]
   }

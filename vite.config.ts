@@ -1,27 +1,10 @@
-import { fileURLToPath } from 'node:url'
-import { dirname } from 'node:path'
-import { defineConfig, loadEnv } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+import { cloudflare } from '@cloudflare/vite-plugin'
+import { reactRouter } from '@react-router/dev/vite'
 
-const rootDir = dirname(fileURLToPath(import.meta.url))
-
-// https://vite.dev/config/
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, rootDir, '')
-  const proxyTarget = env.VITE_DEV_PROXY_TARGET?.replace(/\/$/, '')
-
-  return {
-    plugins: [react()],
-    server: proxyTarget
-      ? {
-          proxy: {
-            '/api': {
-              target: proxyTarget,
-              changeOrigin: true,
-              secure: true,
-            },
-          },
-        }
-      : {},
-  }
+// /api runs in the local Worker against the simulated R2 in .wrangler/state, never the live site.
+export default defineConfig({
+  plugins: [cloudflare({ viteEnvironment: { name: 'ssr' } }), reactRouter()],
+  // Pre-bundle the dependencies of lazy pages and the editor too, or the first visit to one reloads the page mid-edit.
+  optimizeDeps: { entries: ['src/**/*.tsx'] },
 })

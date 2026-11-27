@@ -17,14 +17,11 @@ export function apiPath(path: string): string {
 }
 
 /**
- * production 預設走同網域 /api（Pages Functions + R2）。
- * 開發預設用 bundled data.json，除非 VITE_USE_REMOTE=true。
+ * 走同網域 /api。開發時它是本機的 Worker 和 .wrangler/state 裡的 R2，不是正式站。
+ * VITE_USE_REMOTE=false 時改用 bundled data.json。
  */
 export function isRemoteSync(): boolean {
-  const v = import.meta.env.VITE_USE_REMOTE
-  if (v === 'false') return false
-  if (v === 'true') return true
-  return import.meta.env.PROD
+  return import.meta.env.VITE_USE_REMOTE !== 'false'
 }
 
 export function getAdminToken(): string {

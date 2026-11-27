@@ -10,7 +10,15 @@ import type { JournalData, JournalPost, SiteData, WorkData, WorkItem } from '../
 const journal = sampleJournal()
 const slug = journal.posts.zh[0].slug
 const work: WorkItem[] = JSON.parse(readFileSync(new URL('../src/data/data.json', import.meta.url), 'utf8')).work.items
-const indexHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf8')
+// The head tags injectPage replaces, as the SPA shell had them; the framework build has no index.html.
+const indexHtml = `<html><head><title>TEKUEI CHU</title>
+<meta name="description" content="default">
+<meta property="og:type" content="website"><meta property="og:url" content="https://tekuei.com/">
+<meta property="og:title" content="TEKUEI"><meta property="og:description" content="default">
+<meta property="og:image" content="https://tekuei.com/og.jpg"><meta property="og:image:width" content="1200">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://tekuei.com/og.jpg"><meta name="twitter:title" content="TEKUEI">
+<meta name="twitter:description" content="default">
+</head><body><div id="root"></div></body></html>`
 
 /** The page of a post the test knows exists. */
 const pageOf = (j: JournalData, s: string) => {

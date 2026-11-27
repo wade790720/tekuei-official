@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useEffectEvent, useState } from 'react'
+import { startTransition, useCallback, useEffect, useEffectEvent, useState } from 'react'
 import { siteDefaults } from '../data/siteDefaults.ts'
 import { fetchSiteData, isRemoteSync, onSiteVersion, saveSitePatch } from '../lib/adminApi.ts'
 import { CMS_LABELS } from '../data/admin.ts'
@@ -62,25 +62,30 @@ export function useCmsSection<K extends SectionKey>(
         }
         return
       }
+      let remote: Awaited<ReturnType<typeof fetchSiteData>> = null
+      let failed = false
       try {
-        const remote = await fetchSiteData()
-        if (cancelled) return
+        remote = await fetchSiteData()
         // A section R2 holds in a shape the site cannot read is a failed load: saving would replace it.
         if (remote?.invalid.includes(sectionKey)) throw new Error(`${sectionKey} in data.json is malformed`)
-        if (!remote) fallback()
+      } catch {
+        failed = true
+      }
+      if (cancelled) return
+      // A transition, so a lazy page still hydrating finishes first instead of being redrawn on the client,
+      // which would leave the server's <title> in the head next to the new one.
+      startTransition(() => {
+        if (failed) {
+          fallback()
+          setLoadFailed(true)
+          setError(CMS_LABELS.loadFailed)
+        } else if (!remote) fallback()
         else {
           setContent(sectionContent(remote.data))
           setEtag(remote.etag)
         }
-      } catch {
-        if (!cancelled) {
-          fallback()
-          setLoadFailed(true)
-          setError(CMS_LABELS.loadFailed)
-        }
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
+        setLoading(false)
+      })
     }
     load()
     return () => {

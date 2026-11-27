@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useSyncExternalStore } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { useWorkContent } from '../hooks/useWorkContent.ts'
 import { labWorkItems } from '../labs/media.ts'
 import { SiteFooter } from './SiteFooter.tsx'

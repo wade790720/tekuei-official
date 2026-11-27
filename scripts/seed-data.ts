@@ -1,4 +1,4 @@
-/** 將 src/data/data.json 上傳至 R2 */
+/** 將 src/data/data.json 放進本機的 R2（.wrangler/state，npm run dev 和 preview 讀的那一個）。不會寫到正式站 */
 
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -12,7 +12,7 @@ const bucket = process.env.R2_BUCKET || 'tekuei-cms'
 readFileSync(dataPath, 'utf8')
 JSON.parse(readFileSync(dataPath, 'utf8'))
 
-console.log(`Uploading data.json to remote R2 bucket ${bucket} ...`)
+console.log(`Writing data.json to the local R2 bucket ${bucket} in .wrangler/state ...`)
 const result = spawnSync(
   'npx',
   [
@@ -23,7 +23,8 @@ const result = spawnSync(
     `${bucket}/data.json`,
     `--file=${dataPath}`,
     '--content-type=application/json',
-    '--remote',
+    '--local',
+    '--persist-to=.wrangler/state',
   ],
   { stdio: 'inherit', shell: true },
 )

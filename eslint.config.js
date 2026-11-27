@@ -7,7 +7,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 import { noSlopPlugin } from './scripts/noSlop.ts'
 
 export default defineConfig([
-  globalIgnores(['dist', '.wrangler']),
+  globalIgnores(['dist', 'build', '.wrangler', '.react-router', 'worker-configuration.d.ts']),
   {
     files: ['**/*.{js,jsx,mjs,ts,tsx,mts}'],
     linterOptions: { noInlineConfig: true },
