@@ -9,7 +9,7 @@ export interface CaseSection {
   title: string
   light?: boolean
   prose?: string[]
-  quote?: { text: string; attr?: string }
+  quote?: { text: string; attr?: string; multiline?: boolean }
 }
 /** A deliverable or a challenge: "name: desc" in the page. */
 export interface CaseNamed {

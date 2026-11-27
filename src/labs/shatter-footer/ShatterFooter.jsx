@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { HOME_FOOTER } from '../../data/homepage.js'
+import { HOME_FOOTER } from '../../data/homepage.ts'
 import { useLang } from '../../i18n'
 import { mountShatterImage } from './shatterImage.js'
 import seaImage from './sea.webp'

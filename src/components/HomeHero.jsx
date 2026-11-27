@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import '../styles/homeHero.css'
-import { HOME_HERO } from '../data/homepage.js'
+import { HOME_HERO } from '../data/homepage.ts'
 import { mountGrainHaze } from '../lib/grainHaze.ts'
 import { mountKoiPond } from '../lib/koiPond.ts'
 import { useLang } from '../i18n'

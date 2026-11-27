@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { siteDefaults } from '../data/siteDefaults.ts'
 import { fetchSiteData, isRemoteSync } from '../lib/adminApi.ts'
-import { LOCAL_CASES } from '../data/cases/index.js'
+import { LOCAL_CASES } from '../data/cases/index.ts'
 import { useLang } from '../i18n'
 
 // Its own file so the case texts load with the case page, not in the main bundle.

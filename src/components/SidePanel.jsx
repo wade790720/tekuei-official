@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useAdmin } from '../context/admin.js'
-import { CMS_LABELS as T, EDIT_BAR_KEY } from '../data/admin.js'
+import { CMS_LABELS as T, EDIT_BAR_KEY } from '../data/admin.ts'
 import { clampOffset, parseOffset } from '../lib/editBarPosition.ts'
 import { Button } from './Button.jsx'
 import { Drawer, DrawerBody, DrawerHeader } from './Drawer.jsx'

@@ -1,7 +1,8 @@
+import type { CaseStudy } from '../../lib/caseDoc.ts'
 const BG = 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 92%, transparent) 0%, color-mix(in srgb, var(--surface-1) 82%, transparent) 45%, rgba(16, 15, 17, 0.72) 100%)'
 const FULL_BG = 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 94%, transparent) 0%, color-mix(in srgb, var(--surface-1) 84%, transparent) 50%, rgba(16, 15, 17, 0.76) 100%)'
 
-const ZH = {
+const ZH: CaseStudy = {
   slug: 'monolab',
   documentTitle: 'TEKUEI · MONOLAB',
   hero: {
@@ -79,7 +80,7 @@ const ZH = {
   },
 }
 
-const EN = {
+const EN: CaseStudy = {
   slug: 'monolab',
   documentTitle: 'TEKUEI · MONOLAB',
   hero: {

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import '../styles/hero.css'
 import '../styles/home.css'
 import { HomeHero } from './HomeHero.jsx'
-import { HOME_META } from '../data/homepage.js'
+import { HOME_META } from '../data/homepage.ts'
 import { useLang } from '../i18n'
 
 export default function SiteHero() {

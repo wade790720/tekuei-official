@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { CARD_LABELS } from '../data/cards.js'
+import { CARD_LABELS } from '../data/cards.ts'
 import { useLang } from '../i18n'
 import { Card } from './Card.jsx'
 import '../styles/cards.css'

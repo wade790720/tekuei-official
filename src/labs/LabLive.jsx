@@ -5,7 +5,7 @@ import CaseStub from '../components/CaseStub.jsx'
 import { FallingFigure } from './falling-figure/FallingFigure.jsx'
 import { LivingPortrait } from './living-portrait/LivingPortrait.jsx'
 import { ShatterFooterStage } from './shatter-footer/ShatterFooter.jsx'
-import { HOME_HERO } from '../data/homepage.js'
+import { HOME_HERO } from '../data/homepage.ts'
 import { useLang } from '../i18n'
 
 /** The bare piece behind each lab page, without the site nav. LabPage shows it in an iframe. */

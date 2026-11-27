@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { CARD_LABELS } from '../data/cards.js'
+import { CARD_LABELS } from '../data/cards.ts'
 import { useLang } from '../i18n'
 import { tokenize } from '../lib/highlight.ts'
 import { writeClipboard } from '../lib/clipboard.ts'

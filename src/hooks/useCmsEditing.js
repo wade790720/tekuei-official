@@ -1,6 +1,6 @@
 import { useDeferredValue, useEffect, useMemo } from 'react'
 import { useAdmin, useAdminSave } from '../context/admin.js'
-import { CMS_LABELS as T } from '../data/admin.js'
+import { CMS_LABELS as T } from '../data/admin.ts'
 
 /**
  * Edit mode glue for one CMS section (the result of useCmsSection): starts the draft when edit mode

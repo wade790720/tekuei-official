@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { SOCIAL_ICONS } from './socialIcons.jsx'
 import { Link, useLocation } from 'react-router-dom'
-import { HOME_FOOTER } from '../data/homepage.js'
+import { HOME_FOOTER } from '../data/homepage.ts'
 import { useLang } from '../i18n'
 import '../styles/siteFooter.css'
 

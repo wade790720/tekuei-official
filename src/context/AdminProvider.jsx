@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ADMIN_SESSION_KEY } from '../data/admin.js'
+import { ADMIN_SESSION_KEY } from '../data/admin.ts'
 import { getAdminToken, loginAdmin } from '../lib/adminApi.ts'
 import { AdminContext } from './admin.js'
 

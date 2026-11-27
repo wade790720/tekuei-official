@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { ADMIN_CODE_LENGTH, CMS_LABELS as T } from '../../data/admin.js'
+import { ADMIN_CODE_LENGTH, CMS_LABELS as T } from '../../data/admin.ts'
 import { OtpInput } from '../OtpInput.jsx'
 import { CheckIcon } from '../SidePanel.jsx'
 import '../../styles/cms.css'
