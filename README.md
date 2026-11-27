@@ -143,14 +143,14 @@ npm test         # node --test（電話格式、程式碼上色、Rich Text、SE
 | GET | `/api/file/*` | 讀取 bucket 裡的檔案 |
 | POST | `/api/admin/verify` | 驗證管理密碼 |
 
-SEO：`functions/journal/` 把文章內文、meta 和 JSON-LD 寫進 HTML。`sitemap.xml.js` 和 `llms.txt.js` 產生 sitemap 和 llms.txt。邏輯在 `src/lib/seo.js`。
+SEO：`functions/journal/` 把文章內文、meta 和 JSON-LD 寫進 HTML。`sitemap.xml.ts` 和 `llms.txt.ts` 產生 sitemap 和 llms.txt。邏輯在 `src/lib/seo.ts`。
 
 ## 專案結構
 
 ```text
 index.html                 Vite 入口，載入 Google Fonts
 src/
-  App.jsx                  路由
+  App.tsx                  路由
   components/              頁面（XxxPage.jsx）和共用元件
   components/<頁面>/       只有那一頁用的元件，例如 journal/、case/、admin/
   components/dev/          Component Library（只在開發模式）
@@ -162,7 +162,7 @@ src/
   styles/                  CSS，一頁一檔；tokens.css 是全站 token
   assets/                  圖片，依頁面分資料夾
 functions/                 Pages Functions：API、Journal SEO、sitemap、llms.txt
-scripts/                   seed-data.mjs 和 node --test 測試
+scripts/                   seed-data.ts 和 node --test 測試
 public/                    原樣複製到 dist/，不要放測試檔
 ```
 
@@ -172,7 +172,7 @@ public/                    原樣複製到 dist/，不要放測試檔
 
 提交變更前：
 
-1. 執行 `npm run lint` 和 `npm run build`，兩者都必須通過。改到 `scripts/` 或 `src/lib/phoneE164.js` 時，也要跑 `npm test`。
+1. 執行 `npm run lint` 和 `npm run build`，兩者都必須通過。改到 `scripts/` 或 `src/lib/phoneE164.ts` 時，也要跑 `npm test`。
 2. 畫面有變時，在瀏覽器看手機 375px、桌面 1440px、寬螢幕 2560px 三種寬度。
 3. 有動畫時，確認「減少動態效果」開啟時畫面正常。
 4. 不要 commit `.env.local`、`.dev.vars` 或任何金鑰。不要直接 push 到 `main`。

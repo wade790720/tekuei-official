@@ -1,4 +1,4 @@
-/* Tooltip (src/components/Tooltip.jsx). It sits below the group: above it, a scroll area (the edit panel) would clip it. */
+/* Tooltip (src/components/Tooltip.tsx). It sits below the group: above it, a scroll area (the edit panel) would clip it. */
 .tooltip {
   position: absolute;
   top: calc(100% + var(--space-2));

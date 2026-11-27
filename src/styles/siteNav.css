@@ -196,7 +196,7 @@
   filter: blur(2px);
 }
 
-/* A Drawer with push is open (Drawer.jsx): the fixed nav stops at the drawer's edge and tightens to fit */
+/* A Drawer with push is open (Drawer.tsx): the fixed nav stops at the drawer's edge and tightens to fit */
 @media (min-width: 1100px) {
   html.has-drawer .site-nav {
     right: var(--drawer-w);

@@ -1,4 +1,4 @@
-/* Card (src/components/Card.jsx) */
+/* Card (src/components/Card.tsx) */
 
 .card {
   --card-ring: 0 0 0 1px var(--line), 0 2px 6px color-mix(in srgb, var(--surface-0) 35%, transparent);

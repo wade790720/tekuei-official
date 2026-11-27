@@ -1,4 +1,4 @@
-/* Accordion (src/components/Accordion.jsx). Laid out after HeroUI's Accordion:
+/* Accordion (src/components/Accordion.tsx). Laid out after HeroUI's Accordion:
    16px trigger padding, a chevron that turns 180deg, a 1px line between items and none after the last. */
 
 .accordion {

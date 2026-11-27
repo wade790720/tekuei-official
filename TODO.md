@@ -9,7 +9,7 @@ TEKUEI 網站的待辦清單
 ### 文案
 
 - [ ] **Journal 列表頁的說明**（Wade）
-  目前是「Wade 當下遇到的事：行銷、AI、技術、實作過程。」位置在 `src/data/journal.js` 的 `JOURNAL_META`。
+  目前是「Wade 當下遇到的事：行銷、AI、技術、實作過程。」位置在 `src/data/journal.ts` 的 `JOURNAL_META`。
 - [ ] **每篇文章的摘要**（Wade）
   每篇手寫一句。SEO 和 llms.txt 會直接用這一句。在編輯面板裡改。
 - [ ] **檢查英文翻譯**（Wade）
@@ -30,7 +30,7 @@ TEKUEI 網站的待辦清單
 ### SEO
 
 - [ ] **把案例頁和 Labs 頁的內容寫進 HTML**（Claude）
-  目前爬蟲拿到的 `#root` 是空的，也沒有 canonical。`serveCase`（`src/lib/seo.js`）只處理轉址和 404。照 `servePage` 的寫法補上標題、description、canonical、內文。
+  目前爬蟲拿到的 `#root` 是空的，也沒有 canonical。`serveCase`（`src/lib/seo.ts`）只處理轉址和 404。照 `servePage` 的寫法補上標題、description、canonical、內文。
 - [ ] **把首頁、`/work`、`/about` 的內容寫進 HTML**（Claude）
   這三頁沒有 Function。`/work` 和 `/about` 的 title、description 都是首頁的。
 - [ ] **決定舊文章要不要下架**（Wade）
