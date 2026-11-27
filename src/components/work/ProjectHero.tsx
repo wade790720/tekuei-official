@@ -1,12 +1,20 @@
+import type { ProjectFact } from '../../data/work.ts'
 import '../../styles/project-hero.css'
+
+interface ProjectHeroProps {
+  cover?: string
+  /** A CSS background for a page with no picture. */
+  background?: string
+  num: string
+  title: string
+  facts: ProjectFact[]
+}
 
 /**
  * The opening screen of a project page: a picture edge to edge, darkening toward the bottom, where the
  * number, the title and a row of facts sit. ProjectPage and CaseStudyPage both open with it.
- * @param {{ cover?: string, background?: string, num: string, title: string, facts: [label: string, lines: string[], href?: string][] }} props
- *   `background` is a CSS background for a page with no picture.
  */
-export function ProjectHero({ cover, background, num, title, facts }) {
+export function ProjectHero({ cover, background, num, title, facts }: ProjectHeroProps) {
   return (
     <header className="project-hero">
       <div className="project-hero__cover fade-in" style={!cover && background ? { background } : undefined} aria-hidden>

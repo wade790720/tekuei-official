@@ -1,6 +1,7 @@
 import { siteDefaults } from './siteDefaults.ts'
 import { localizeWork as localizeIn, projectBody, projectHref, projectLink, projectTitle, publishedWork, withCodeProjects } from '../lib/projectHref.ts'
 import type { CodeProject } from '../lib/projectHref.ts'
+import { safeHref } from '../lib/richText.ts'
 import type { Lang, Localized, ProjectType, WorkData, WorkItem } from '../lib/siteData.ts'
 
 export { projectBody, projectHref, projectLink, projectTitle, publishedWork }
@@ -59,18 +60,19 @@ export const PROJECT_PAGE_LABELS = {
 export type ProjectFact = [label: string, lines: string[], href?: string]
 export function projectFacts(item: WorkItem, lang: Lang): ProjectFact[] {
   const t = PROJECT_PAGE_LABELS[lang]
-  const facts: (ProjectFact | '' | 0 | undefined)[] = [
+  const link = safeHref(item.link)
+  const facts: (ProjectFact | '' | 0 | null | undefined)[] = [
     [t.type, [SECTION_NAMES[projectType(item)][lang]]],
     item.client && [t.client, [item.client]],
     item.tags?.length && [t.scope, item.tags],
-    item.link && [t.link, [item.link.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')], item.link],
+    link && [t.link, [link.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')], link],
   ]
   return facts.filter((f): f is ProjectFact => Array.isArray(f))
 }
 
 // Client work that began as code. It joins the saved list, with a short page, until the list has it, so it is
 // edited in the panel like any other project; the first save writes it to R2. `removed` remembers one Wade deleted.
-// Copy comes from Wade's CV (src/labs/falling-figure/content.js).
+// Copy comes from Wade's CV (src/labs/falling-figure/content.ts).
 const CODE_PROJECTS: CodeProject[] = [
   {
     id: 'sre',

@@ -10,7 +10,17 @@ import {
 import { useLang } from '../i18n'
 import '../styles/howToCheckin.css'
 
-function renderBodyContent(line) {
+type Step = (typeof HOW_TO_CHECKIN_STEPS)['zh'][number]
+type BodyLine = Extract<NonNullable<Step['body']>, unknown[]>[number]
+
+declare global {
+  interface Window {
+    /** Cloudflare Zaraz, injected by the edge when it is turned on for the site. */
+    zaraz?: { track(event: string): void }
+  }
+}
+
+function renderBodyContent(line: BodyLine) {
   if (typeof line === 'string') return line
   return line.map((part, i) =>
     typeof part === 'string' ? (
@@ -23,7 +33,7 @@ function renderBodyContent(line) {
   )
 }
 
-function StepTitle({ title }) {
+function StepTitle({ title }: { title: Step['title'] }) {
   if (Array.isArray(title)) {
     return (
       <h2 className="howto-checkin-step__title">
@@ -39,7 +49,7 @@ function StepTitle({ title }) {
   return <h2 className="howto-checkin-step__title">{title}</h2>
 }
 
-function StepBody({ body }) {
+function StepBody({ body }: { body: Step['body'] }) {
   if (!body) return null
   if (Array.isArray(body)) {
     return body.map((line, i) => (
@@ -51,7 +61,7 @@ function StepBody({ body }) {
   return <p className="howto-checkin-step__body">{body}</p>
 }
 
-function StepMedia({ item }) {
+function StepMedia({ item }: { item: Step }) {
   if (item.images?.length) {
     return (
       <figure className="howto-checkin-step__figures" aria-label="tutorial screenshots">
@@ -131,7 +141,7 @@ export default function HowToCheckinPage() {
               const hasMedia = Boolean(item.images?.length || item.image)
               const layoutClass = [
                 'howto-checkin-step__layout',
-                item.images?.length > 1 ? 'howto-checkin-step__layout--dual' : '',
+                (item.images?.length ?? 0) > 1 ? 'howto-checkin-step__layout--dual' : '',
                 !hasMedia ? 'howto-checkin-step__layout--no-media' : '',
               ]
                 .filter(Boolean)

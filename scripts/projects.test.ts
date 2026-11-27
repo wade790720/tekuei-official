@@ -49,3 +49,8 @@ test('readers never get a draft, and a card links to the page when there is one'
   assert.equal(projectLink(work.items[1], work), 'https://b.example/')
   assert.equal(projectLink(work.items[2], work), '/projects/c')
 })
+
+test('a card whose saved link is javascript: opens the project page, not the script', () => {
+  assert.equal(projectLink({ id: 'x', link: 'javascript:alert(1)' }), '/projects/x')
+  assert.equal(projectLink({ id: 'y', link: 'https://y.example/' }), 'https://y.example/')
+})
