@@ -96,6 +96,5 @@ export const CODE_PROJECT_IDS = CODE_PROJECTS.map((item) => item.id)
 export const cloneWork = (work: WorkData): WorkData => withCodeProjects(work, CODE_PROJECTS)
 
 export const WORK_LABELS = {
-  zh: { loading: '作品載入中', draft: '草稿' },
-  en: { loading: 'Loading work' },
+  zh: { draft: '草稿' },
 }

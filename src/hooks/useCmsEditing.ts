@@ -20,7 +20,7 @@ export function useCmsEditing<C>(cms: CmsSection<C>) {
   // Not `cms` itself: it is a new object on every keystroke.
   const { isEditing, loading, startEditing } = cms
   useEffect(() => {
-    if (admin.editing && !isEditing && !loading) startEditing()
+    if (admin.editing && !isEditing && !loading) void startEditing()
   }, [admin.editing, isEditing, loading, startEditing])
 
   const save = async () => {

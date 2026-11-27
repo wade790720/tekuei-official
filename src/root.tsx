@@ -1,10 +1,20 @@
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
-import { Links, Meta, Outlet, Scripts } from 'react-router'
+import { Links, Meta, Outlet, Scripts, useLocation, useMatches, useNavigationType } from 'react-router'
 import './index.css'
 import './styles/tokens.css'
-import { LangProvider } from './i18n'
-import { PageError } from './App.tsx'
+import { SiteNav } from './components/SiteNav.tsx'
+import { DefaultHead } from './components/DefaultHead.tsx'
+import { AdminProvider } from './context/AdminProvider.tsx'
+import { JournalProvider } from './context/JournalProvider.tsx'
+import { WorkProvider } from './context/WorkProvider.tsx'
+import { PAGE_ERROR } from './data/nav.ts'
+import { LangProvider, useLang } from './i18n'
+import { htmlClassOf } from './lib/htmlClass.ts'
+import type { PageHandle } from './lib/htmlClass.ts'
+import { langOf, samePage, stripLang } from './lib/localePath.ts'
+import { mountReveal } from './lib/reveal.ts'
+import { mountClickSounds } from './lib/uiSound.ts'
 
 // Site-wide defaults for social cards and search. Each page renders its own <title> and description (DefaultHead
 // when it has none), so neither is here.
@@ -35,9 +45,14 @@ const SITE_LD = {
 }
 const SITE_DESCRIPTION = '探索底層邏輯與真相，對未知領域充滿好奇，喜愛技術、行銷與人工智慧。'
 
+// The page scrolls on <html> (index.css); each route module's handle adds its own classes.
+export const handle: PageHandle = { htmlClass: () => 'has-scroll-document' }
+
 export function Layout({ children }: { children: ReactNode }) {
+  const { pathname } = useLocation()
+  // Screen readers and browser translation read <html lang>.
   return (
-    <html lang="zh-Hant">
+    <html lang={langOf(pathname) === 'en' ? 'en' : 'zh-Hant'} className={htmlClassOf(useMatches())}>
       <head>
         <meta charSet="UTF-8" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -89,6 +104,90 @@ function dropServerHeadCopies() {
   }
 }
 
+// Scroll position of each history entry, so back / forward returns to where the reader was.
+const scrollByEntry = new Map<string, number>()
+
+/**
+ * A new page starts at the top. Back and forward (POP) return to the saved position instead. The same page with
+ * a new query (the Journal tag filter) or in the other language (the language button) keeps the scroll.
+ */
+function ScrollClasses() {
+  const { pathname, key } = useLocation()
+  const type = useNavigationType()
+  const entry = useRef(key)
+  const lastPath = useRef<string | null>(null)
+
+  useEffect(() => {
+    window.history.scrollRestoration = 'manual' // the browser would restore before React draws the page
+    const save = () => scrollByEntry.set(entry.current, window.scrollY)
+    window.addEventListener('scroll', save, { passive: true })
+    return () => window.removeEventListener('scroll', save)
+  }, [])
+
+  useLayoutEffect(() => {
+    entry.current = key
+    const newPage = lastPath.current !== null && !samePage(pathname, lastPath.current)
+    if (type === 'POP') window.scrollTo({ top: scrollByEntry.get(key) ?? 0, left: 0, behavior: 'instant' })
+    else if (newPage) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    // A new page (not the first load): move focus to its h1, so a screen reader announces where you are
+    if (newPage) {
+      requestAnimationFrame(() => {
+        const h1 = document.querySelector<HTMLElement>('main h1')
+        if (!h1) return
+        h1.setAttribute('tabindex', '-1')
+        h1.focus({ preventScroll: true })
+      })
+    }
+    lastPath.current = pathname
+  }, [key, pathname, type])
+  return null
+}
+
+function AppNav() {
+  const path = stripLang(useLocation().pathname)
+  // Check-in and the live lab pages are bare: the live pages also run inside the lab page's iframe.
+  if (path === '/checkin' || path.endsWith('/live')) return null
+  const isCase = path.startsWith('/projects/') || path.startsWith('/labs/')
+  return (
+    <SiteNav
+      variant={isCase ? 'case' : 'default'}
+      current={path.startsWith('/journal') ? 'journal' : path.startsWith('/projects') || isCase ? 'projects' : undefined}
+    />
+  )
+}
+
+/** What every page sits in, the error screen included: the providers, the nav, the scroll and the reveal. */
+function Shell({ children }: { children: ReactNode }) {
+  useEffect(() => mountClickSounds(), [])
+  // After hydration, so the server's class on each .fade-in still matches when React reads it.
+  useEffect(() => mountReveal(), [])
+  return (
+    <LangProvider>
+      <AdminProvider>
+        <JournalProvider>
+          <WorkProvider>
+            <ScrollClasses />
+            <AppNav />
+            {children}
+          </WorkProvider>
+        </JournalProvider>
+      </AdminProvider>
+    </LangProvider>
+  )
+}
+
+function PageError() {
+  const { lang } = useLang()
+  const t = PAGE_ERROR[lang]
+  return (
+    <main className="page-error" role="alert">
+      <DefaultHead />
+      <h1>{t.title}</h1>
+      <p>{t.hint}</p>
+    </main>
+  )
+}
+
 export default function Root() {
   useEffect(() => {
     dropServerHeadCopies()
@@ -97,12 +196,17 @@ export default function Root() {
     return () => observer.disconnect()
   }, [])
   return (
-    <LangProvider>
+    <Shell>
       <Outlet />
-    </LangProvider>
+    </Shell>
   )
 }
 
+/** A page that failed to draw, or R2 that could not be read (503). The nav stays, so the reader can leave. */
 export function ErrorBoundary() {
-  return <PageError />
+  return (
+    <Shell>
+      <PageError />
+    </Shell>
+  )
 }

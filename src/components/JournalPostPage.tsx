@@ -8,11 +8,11 @@ import { ShareLinks } from './journal/ShareLinks.tsx'
 import { RichText } from './RichText.tsx'
 import { Breadcrumbs, BreadcrumbsItem } from './Breadcrumbs.tsx'
 import { docText, getDoc } from '../lib/richText.ts'
-import { useJournal } from '../context/journal.ts'
+import { useJournalContent } from '../context/journal.ts'
 import { useAdmin } from '../context/admin.ts'
-import { getAdjacentPosts, getJournalPost, JOURNAL_POST_LABELS, postTags, readableJournal } from '../data/journal.ts'
+import { getAdjacentPosts, getJournalPost, JOURNAL_POST_LABELS, postTags } from '../data/journal.ts'
 import type { ReadableJournal } from '../data/journal.ts'
-import { useLang } from '../i18n'
+import { useLang, useLocalePath } from '../i18n'
 import '../styles/work.css'
 import '../styles/journal.css'
 import { DefaultHead } from './DefaultHead.tsx'
@@ -25,23 +25,21 @@ function listDepth(state: unknown): number {
   return typeof state === 'object' && state !== null && 'fromList' in state && typeof state.fromList === 'number' ? state.fromList : 0
 }
 
-export default function JournalPostPage() {
+/** @param journal  the loader's post and its neighbours, as readers see them; empty for an unknown slug or a draft */
+export default function JournalPostPage({ journal: reader }: { journal: ReadableJournal }) {
   const { slug = '' } = useParams<{ slug: string }>()
   const { lang } = useLang()
+  const localePath = useLocalePath()
   const fromList = listDepth(useLocation().state)
   const t = JOURNAL_POST_LABELS[lang]
-  const { content: stored, loading } = useJournal()
   const { editing } = useAdmin()
   // While editing, the page shows the real English draft, even when it is still empty
-  const journal: ReadableJournal = editing ? stored : readableJournal(stored)
+  const journal = useJournalContent(reader)
   const post = getJournalPost(journal, slug, lang)
   const content = slug ? journal.content[lang]?.[slug] : null
   const { prev, next } = getAdjacentPosts(journal, slug, lang)
 
   const sig = lang === 'zh' ? '— 德 溎 · TEKUEI' : '— W A D E · TEKUEI'
-
-  // A post that only exists in R2 is missing until the remote data arrives.
-  if ((!post || !content) && loading) return <><DefaultHead /><div className="site-loading-bar" /></>
 
   if (!post || !content) {
     return (
@@ -50,7 +48,7 @@ export default function JournalPostPage() {
         <div className="journal-not-found">
           <div className="journal-not-found__num">—</div>
           <h1>{t.notFound}</h1>
-          <Link to="/journal">{t.back}</Link>
+          <Link to={localePath('/journal')}>{t.back}</Link>
         </div>
       </div>
     )
@@ -66,7 +64,7 @@ export default function JournalPostPage() {
           {/* Wrapped so the fade-in transition does not replace the links' hover transition */}
           <div className="fade-in">
             <Breadcrumbs label={t.crumbs} className="journal-post__crumbs">
-              <BreadcrumbsItem href="/">{t.home}</BreadcrumbsItem>
+              <BreadcrumbsItem href={localePath('/')}>{t.home}</BreadcrumbsItem>
               <BreadcrumbsItem as={BackLink}>Journal</BreadcrumbsItem>
               <BreadcrumbsItem>{post.title}</BreadcrumbsItem>
             </Breadcrumbs>
@@ -102,7 +100,7 @@ export default function JournalPostPage() {
           <div className="journal-post__sig">{sig}</div>
           <nav className="journal-post__nav" aria-label="post navigation">
             {prev ? (
-              <Link to={`/journal/${prev.slug}`} state={fromList ? { fromList: fromList + 1 } : undefined} className="journal-post__nav-link journal-post__nav-link--prev">
+              <Link to={localePath(`/journal/${prev.slug}`)} state={fromList ? { fromList: fromList + 1 } : undefined} className="journal-post__nav-link journal-post__nav-link--prev">
                 <span className="journal-post__nav-label">Previous</span>
                 <span className="journal-post__nav-title">{prev.title}</span>
               </Link>
@@ -110,7 +108,7 @@ export default function JournalPostPage() {
               <span />
             )}
             {next ? (
-              <Link to={`/journal/${next.slug}`} state={fromList ? { fromList: fromList + 1 } : undefined} className="journal-post__nav-link journal-post__nav-link--next">
+              <Link to={localePath(`/journal/${next.slug}`)} state={fromList ? { fromList: fromList + 1 } : undefined} className="journal-post__nav-link journal-post__nav-link--next">
                 <span className="journal-post__nav-label">Next</span>
                 <span className="journal-post__nav-title">{next.title}</span>
               </Link>
@@ -142,6 +140,7 @@ export default function JournalPostPage() {
  */
 function BackLink({ className, children }: { className: string; children: ReactNode }) {
   const navigate = useNavigate()
+  const localePath = useLocalePath()
   const fromList = listDepth(useLocation().state)
   const back = (e: MouseEvent<HTMLAnchorElement>) => {
     if (!fromList || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return // keep "open in new tab"
@@ -149,7 +148,7 @@ function BackLink({ className, children }: { className: string; children: ReactN
     navigate(-fromList)
   }
   return (
-    <Link to="/journal" className={className} onClick={back}>
+    <Link to={localePath('/journal')} className={className} onClick={back}>
       {children}
     </Link>
   )

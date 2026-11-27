@@ -1,42 +1,59 @@
 import { startTransition, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
+import { useLocation, useNavigate } from 'react-router'
+import { hasEnglish, langOf, otherLangPath } from '../lib/localePath.ts'
 import type { Lang } from '../lib/siteData.ts'
 import { LangContext } from './langContext.ts'
 
-// Anything but "en" is Chinese. Every text lookup is keyed by this value, so a stale or
-// hand-edited one would blank the whole site, header included.
-// Storage throws when the browser blocks site data; this provider sits outside the page error boundary.
-function savedLang(): Lang {
+// Storage throws when the browser blocks site data; the choice then lasts until reload.
+function savedLang(): Lang | null {
   try {
-    return localStorage.getItem('lang') === 'en' ? 'en' : 'zh'
+    const saved = localStorage.getItem('lang')
+    return saved === 'en' || saved === 'zh' ? saved : null
   } catch {
-    return 'zh'
+    return null
   }
 }
+function saveLang(lang: Lang) {
+  try {
+    localStorage.setItem('lang', lang)
+  } catch {
+    /* see savedLang */
+  }
+}
+
+/**
+ * The language is in the URL: Chinese at the root, English under /en, so the server and the browser agree.
+ * The button goes to the same page in the other language and keeps the scroll. localStorage only remembers what a
+ * reader chose: someone who chose English and then opens a Chinese link is moved to its English URL after the page
+ * loads. A reader who chose Chinese is never moved off an English link, and nothing looks at the browser's language.
+ * The pages with one URL (/checkin, a lab's live page) follow the saved choice after hydration instead.
+ */
 export function LangProvider({ children }: { children: ReactNode }) {
-  // The server has no saved choice, so the page hydrates in Chinese and the saved one follows. As a transition, so
-  // React finishes hydrating the lazy pages first: an urgent update would re-render them on the client and leave the
-  // server's <title> and description behind in the head.
-  const [lang, setLang] = useState<Lang>('zh')
+  const { pathname, search, hash } = useLocation()
+  const navigate = useNavigate()
+  const fromUrl = langOf(pathname)
+  const oneUrl = !hasEnglish(pathname)
+  const [oneUrlLang, setOneUrlLang] = useState<Lang>('zh')
+  const lang = oneUrl ? oneUrlLang : fromUrl
+
+  // Once, after hydration. Not on later navigations: a Chinese link clicked after that is the reader's choice.
   useEffect(() => {
-    if (savedLang() === 'en') startTransition(() => setLang('en'))
-  }, [])
+    const saved = savedLang()
+    if (saved !== 'en') return
+    const english = otherLangPath(window.location.pathname)
+    if (!hasEnglish(window.location.pathname)) startTransition(() => setOneUrlLang('en'))
+    else if (langOf(window.location.pathname) === 'zh' && english) {
+      navigate(english + window.location.search + window.location.hash, { replace: true, preventScrollReset: true })
+    }
+  }, [navigate])
+
   const toggle = () => {
     const next: Lang = lang === 'zh' ? 'en' : 'zh'
-    try {
-      localStorage.setItem('lang', next)
-    } catch {
-      /* the choice lasts until reload */
-    }
-    setLang(next)
+    saveLang(next)
+    const other = otherLangPath(pathname)
+    if (oneUrl || !other) setOneUrlLang(next)
+    else navigate(other + search + hash, { preventScrollReset: true })
   }
-  // Screen readers and browser translation read <html lang>, so it follows the switch
-  useEffect(() => {
-    document.documentElement.lang = lang === 'en' ? 'en' : 'zh-Hant'
-  }, [lang])
-  return (
-    <LangContext value={{ lang, toggle }}>
-      {children}
-    </LangContext>
-  )
+  return <LangContext value={{ lang, toggle }}>{children}</LangContext>
 }

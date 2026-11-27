@@ -18,5 +18,8 @@
   "include": [
     "src",
     ".react-router/types/**/*"
+  ],
+  "exclude": [
+    "src/routes.ts"
   ]
 }

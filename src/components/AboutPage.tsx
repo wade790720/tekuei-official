@@ -9,7 +9,7 @@ import { uploadSiteImage } from '../lib/adminApi.ts'
 import { docText, getDoc, hasBody } from '../lib/richText.ts'
 import { mountGrainHaze } from '../lib/grainHaze.ts'
 import { useLang } from '../i18n'
-import type { Doc } from '../lib/siteData.ts'
+import type { AboutPageData, Doc } from '../lib/siteData.ts'
 import '../styles/journal.css'
 import '../styles/about.css'
 
@@ -38,7 +38,8 @@ const Editor = lazy(() => import('./Editor.tsx').then((m) => ({ default: m.Edito
 const AboutEditPanel = lazy(() => import('./about/AboutEditPanel.tsx').then((m) => ({ default: m.AboutEditPanel })))
 
 /** The About page: one rich-text document per language, set out in the Journal post column. */
-export default function AboutPage() {
+/** @param about  the loader's document */
+export default function AboutPage({ about }: { about: AboutPageData }) {
   const { lang } = useLang()
   const admin = useAdmin()
   const cms = useCmsSection('aboutPage',getDefaultAbout, cloneAbout)
@@ -51,9 +52,10 @@ export default function AboutPage() {
   }, [])
 
   const editing = admin.editing && cms.isEditing
+  const shown = editing ? cms.content : about
   // Like an untranslated post: readers of an empty English page see the Chinese one.
-  const untranslated = !editing && lang === 'en' && !hasBody(cms.content.en)
-  const doc = getDoc(cms.content[untranslated ? 'zh' : lang])
+  const untranslated = !editing && lang === 'en' && !hasBody(shown.en)
+  const doc = getDoc(shown[untranslated ? 'zh' : lang])
 
   const setDoc = (next: Doc) =>
     cms.updateDraft((d) => {
@@ -76,7 +78,7 @@ export default function AboutPage() {
           </header>
           <div className="journal-post__rule" aria-hidden />
           <div className="journal-post__body">
-            {cms.loading ? null : editing ? (
+            {editing ? (
               <Suspense fallback={saved}>
                 {/* The editor stays mounted while previewing, so the cursor and undo history survive. */}
                 <Editor key={`${lang}-${admin.editorKey}`} doc={doc} onChange={setDoc} upload={upload} previewing={admin.previewing} />

@@ -1,23 +1,25 @@
-import { startTransition, useCallback, useEffect, useEffectEvent, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useRevalidator } from 'react-router'
 import { siteDefaults } from '../data/siteDefaults.ts'
-import { fetchSiteData, isRemoteSync, onSiteVersion, saveSitePatch } from '../lib/adminApi.ts'
+import { fetchSiteData, onSiteVersion, saveSitePatch } from '../lib/adminApi.ts'
 import { CMS_LABELS } from '../data/admin.ts'
 import type { Dispatch, SetStateAction } from 'react'
 import type { EditableSections, SectionKey } from '../lib/siteData.ts'
 
 /** One section of data.json as its page and editor use it. */
 export interface CmsSection<C> {
-  /** The draft while editing, else the saved content. */
+  /** The draft while editing, else the last loaded or saved content. Readers' pages use their loader data instead. */
   content: C
   /** Last loaded or saved version; compare with draft for unsaved changes. */
   savedContent: C
   draft: C | null
+  /** Edit mode is reading the section from /api/data. */
   loading: boolean
   saving: boolean
   error: string
   setError: Dispatch<SetStateAction<string>>
   isEditing: boolean
-  startEditing: () => void
+  startEditing: () => Promise<void>
   cancelEditing: () => void
   updateDraft: (updater: (draft: C) => void) => void
   /** `change` edits a copy of the draft just before it is saved, so an action such as publishing is one save. */
@@ -37,7 +39,7 @@ export function useCmsSection<K extends SectionKey>(
   type C = EditableSections[K]
   const [content, setContent] = useState<C>(() => cloneContent(getDefault()))
   const [draft, setDraft] = useState<C | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   // The remote copy failed to load, so the content on screen is the bundled default.
@@ -45,60 +47,35 @@ export function useCmsSection<K extends SectionKey>(
   const [loadFailed, setLoadFailed] = useState(false)
   // Version of data.json this editor loaded or last saved; a save is refused if R2 moved on since.
   const [etag, setEtag] = useState<string | null>(null)
-  // Reads the latest getDefault and cloneContent without reloading when the caller passes new functions.
-  const sectionContent = useEffectEvent((data: Partial<EditableSections>) => cloneContent(data[sectionKey] ?? getDefault()))
-
-  useEffect(() => {
-    let cancelled = false
-    async function load() {
-      setLoading(true)
-      setError('')
-      setLoadFailed(false)
-      const fallback = () => setContent(sectionContent(siteDefaults))
-      if (!isRemoteSync()) {
-        if (!cancelled) {
-          fallback()
-          setLoading(false)
-        }
-        return
-      }
-      let remote: Awaited<ReturnType<typeof fetchSiteData>> = null
-      let failed = false
-      try {
-        remote = await fetchSiteData()
-        // A section R2 holds in a shape the site cannot read is a failed load: saving would replace it.
-        if (remote?.invalid.includes(sectionKey)) throw new Error(`${sectionKey} in data.json is malformed`)
-      } catch {
-        failed = true
-      }
-      if (cancelled) return
-      // A transition, so a lazy page still hydrating finishes first instead of being redrawn on the client,
-      // which would leave the server's <title> in the head next to the new one.
-      startTransition(() => {
-        if (failed) {
-          fallback()
-          setLoadFailed(true)
-          setError(CMS_LABELS.loadFailed)
-        } else if (!remote) fallback()
-        else {
-          setContent(sectionContent(remote.data))
-          setEtag(remote.etag)
-        }
-        setLoading(false)
-      })
-    }
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [sectionKey])
+  const revalidator = useRevalidator()
 
   // Any section's save, this one's included, replaces the version this section loaded.
   useEffect(() => onSiteVersion((from, to) => setEtag((mine) => (mine === from ? to : mine))), [])
 
-  const startEditing = useCallback(() => {
-    setDraft(cloneContent(content))
-  }, [content, cloneContent])
+  // Readers see their page's loader data, which has no drafts. Only edit mode reads the whole section, drafts
+  // included, with the version a save must match.
+  const startEditing = useCallback(async () => {
+    setLoading(true)
+    setError('')
+    setLoadFailed(false)
+    const sectionContent = (data: Partial<EditableSections>) => cloneContent(data[sectionKey] ?? getDefault())
+    let next: C
+    try {
+      const remote = await fetchSiteData()
+      // A section R2 holds in a shape the site cannot read is a failed load: saving would replace it.
+      if (remote?.invalid.includes(sectionKey)) throw new Error(`${sectionKey} in data.json is malformed`)
+      // An empty bucket: the bundled defaults, until the first save creates data.json.
+      next = sectionContent(remote?.data ?? siteDefaults)
+      setEtag(remote?.etag ?? null)
+    } catch {
+      next = sectionContent(siteDefaults)
+      setLoadFailed(true)
+      setError(CMS_LABELS.loadFailed)
+    }
+    setContent(next)
+    setDraft(cloneContent(next))
+    setLoading(false)
+  }, [sectionKey, cloneContent, getDefault])
 
   const cancelEditing = useCallback(() => {
     setDraft(null)
@@ -131,6 +108,8 @@ export function useCmsSection<K extends SectionKey>(
       patch[sectionKey] = next
       await saveSitePatch(patch, token, etag)
       setContent(cloneContent(next))
+      // The pages' loader data is what readers see, and what this page shows again after logout.
+      revalidator.revalidate()
       // Edits made while the request was in flight stay in the draft; replacing it would drop them
       // while the editor still shows them, and the next save would not send them.
       setDraft((cur) => {
@@ -147,7 +126,7 @@ export function useCmsSection<K extends SectionKey>(
     } finally {
       setSaving(false)
     }
-  }, [draft, sectionKey, cloneContent, copyDraft, loadFailed, etag])
+  }, [draft, sectionKey, cloneContent, copyDraft, loadFailed, etag, revalidator])
 
   return {
     content: draft ?? content,

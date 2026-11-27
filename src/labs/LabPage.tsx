@@ -13,7 +13,7 @@ import { writeClipboard } from '../lib/clipboard.ts'
 import { LAB_BY_ID, LAB_LABELS, LABS, labHref, liveHref } from './index.ts'
 import { LAB_THUMBS } from './media.ts'
 import { LAB_PROMPTS } from './prompts.ts'
-import { useLang } from '../i18n'
+import { useLang, useLocalePath } from '../i18n'
 
 /**
  * One lab, laid out like a Framer Marketplace component page: title and actions, a playable preview,
@@ -23,7 +23,8 @@ import { useLang } from '../i18n'
 export default function LabPage() {
   const { slug: id } = useParams()
   const { lang } = useLang()
-  const item = id ? LAB_BY_ID[id] : undefined
+  const localePath = useLocalePath()
+  const item = id && Object.hasOwn(LAB_BY_ID, id) ? LAB_BY_ID[id] : undefined
 
   if (!item) return <CaseStub />
   const text = item[lang]
@@ -37,8 +38,8 @@ export default function LabPage() {
       <main className="lab">
         <header className="lab__head">
           <Breadcrumbs label={labels.crumbs} className="lab__crumbs">
-            <BreadcrumbsItem href="/">{labels.home}</BreadcrumbsItem>
-            <BreadcrumbsItem href="/projects">Projects</BreadcrumbsItem>
+            <BreadcrumbsItem href={localePath('/')}>{labels.home}</BreadcrumbsItem>
+            <BreadcrumbsItem href={localePath('/projects')}>Projects</BreadcrumbsItem>
             <BreadcrumbsItem>{text.title}</BreadcrumbsItem>
           </Breadcrumbs>
           <div className="lab__heading">
@@ -90,7 +91,7 @@ export default function LabPage() {
           <ul className="lab__more-list">
             {others.map((x) => (
               <li key={x.id}>
-                <Link to={labHref(x.id)} className="lab__more-link">
+                <Link to={localePath(labHref(x.id))} className="lab__more-link">
                   <Card className="lab__more-thumb">
                     <img src={LAB_THUMBS[x.id].url} alt="" loading="lazy" />
                   </Card>
