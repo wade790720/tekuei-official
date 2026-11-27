@@ -4,8 +4,9 @@ import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { basename, extname, relative } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import type { Rule } from 'eslint'
 
-const CHECKS = [
+const CHECKS: [RegExp, string][] = [
   [/(──|-{3,}|={3,})\s*\S.*?(──|-{3,}|={3,})/, '區塊橫幅：刪掉，或改成一般註解'],
   [/\b20\d\d-\d\d-\d\d\b/, '日期：決策歷史寫在 commit message'],
   [/eslint-disable|@ts-ignore|@ts-expect-error/, 'lint 抑制：改程式碼讓規則通過'],
@@ -13,8 +14,8 @@ const CHECKS = [
   [/\b(utili[sz]e|leverag|delve|seamless|pivotal|crucial|showcas|testament|tapestry|vibrant|additionally|furthermore)/i, 'AI 用詞：換成簡單的字'],
 ]
 
-let known
-function fileExists(name) {
+let known: Set<string> | undefined
+function fileExists(name: string) {
   known ??= new Set(
     execSync('git ls-files --cached --others --exclude-standard', { encoding: 'utf8' }).split('\n').map((f) => basename(f)),
   )
@@ -22,7 +23,7 @@ function fileExists(name) {
 }
 
 /** Problems in one comment's text. */
-export function slopIn(text) {
+export function slopIn(text: string): string[] {
   const found = CHECKS.filter(([re]) => re.test(text)).map(([, msg]) => msg)
   // Capitalised .js names are libraries (Editor.js, Three.js); our components are .tsx.
   const stale = [...text.matchAll(/\b[\w.-]+\.(?:css|tsx|ts|mts|jsx|js|mjs)\b/g)]
@@ -36,10 +37,10 @@ export const noSlopPlugin = {
   rules: {
     comments: {
       meta: { type: 'problem' },
-      create: (ctx) => ({
+      create: (ctx: Rule.RuleContext) => ({
         Program() {
           for (const c of ctx.sourceCode.getAllComments())
-            for (const message of slopIn(c.value)) ctx.report({ loc: c.loc, message })
+            for (const message of slopIn(c.value)) if (c.loc) ctx.report({ loc: c.loc, message })
         },
       }),
     },
@@ -49,7 +50,13 @@ export const noSlopPlugin = {
 // Design rules a stylesheet can break without anyone noticing (DESIGN.md "Don't"). They were written down
 // and broken anyway, so they are checked here. Spacing in px must be a step of the scale.
 const SCALE = new Set([0, 1, 2, 4, 8, 12, 16, 24, 32, 48, 96])
-const DESIGN = [
+interface Declaration {
+  prop: string
+  value: string
+}
+type Baseline = Record<string, Record<string, number> | undefined>
+
+const DESIGN: [string, (d: Declaration, file: string) => boolean, string][] = [
   ['色碼', (d, file) => !file.endsWith('tokens.css') && /#[0-9a-f]{3,8}\b/i.test(d.value), '色碼：改用 tokens.css 的語意 token'],
   ['字重', (d) => d.prop === 'font-weight' && /^(bold|[5-9]00)$/.test(d.value), '字重：只有 300 和 400'],
   [
@@ -60,7 +67,7 @@ const DESIGN = [
 ]
 
 /** Design-rule breaks in one stylesheet's text: `{ line, rule, msg }` for each declaration that breaks one. */
-export function designIn(css, file = '') {
+export function designIn(css: string, file = '') {
   // Comments become spaces, so a hex in a comment is not a colour and line numbers hold.
   const src = css.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '))
   return [...src.matchAll(/([\w-]+)\s*:\s*([^;{}]+);/g)].flatMap((m) => {
@@ -72,10 +79,10 @@ export function designIn(css, file = '') {
 
 // What was already there when the check arrived, per file and rule. A file may break a rule that many
 // times and no more, so the count can only go down: lower it there when you fix one.
-const BASELINE = JSON.parse(readFileSync(new URL('./designBaseline.json', import.meta.url), 'utf8'))
+const BASELINE: Baseline = JSON.parse(readFileSync(new URL('./designBaseline.json', import.meta.url), 'utf8'))
 
 /** A file's breaks of each rule, when there are more of them than the baseline allows. */
-export function designProblems(file, baseline = BASELINE) {
+export function designProblems(file: string, baseline: Baseline = BASELINE) {
   const key = file.replaceAll('\\', '/')
   const found = designIn(readFileSync(file, 'utf8'), key)
   return [...new Set(found.map((f) => f.rule))].flatMap((rule) => {
@@ -86,7 +93,7 @@ export function designProblems(file, baseline = BASELINE) {
   })
 }
 
-function cssProblems(file) {
+function cssProblems(file: string) {
   const src = readFileSync(file, 'utf8')
   const comments = [...src.matchAll(/\/\*[\s\S]*?\*\//g)].flatMap((m) => {
     const line = src.slice(0, m.index).split('\n').length
@@ -95,7 +102,7 @@ function cssProblems(file) {
   return [...comments, ...designProblems(file)]
 }
 
-async function jsProblems(file) {
+async function jsProblems(file: string) {
   const { ESLint } = await import('eslint')
   const eslint = new ESLint()
   if (await eslint.isPathIgnored(file)) return []
@@ -106,8 +113,8 @@ async function jsProblems(file) {
 async function hook() {
   let input = ''
   for await (const chunk of process.stdin) input += chunk
-  const path = JSON.parse(input).tool_input?.file_path
-  if (!path) return
+  const path: unknown = JSON.parse(input).tool_input?.file_path
+  if (!path || typeof path !== 'string') return
   const file = relative(process.cwd(), path)
   if (file.startsWith('..')) return
   const ext = extname(file)

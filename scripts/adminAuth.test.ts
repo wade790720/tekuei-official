@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { checkAdmin, MAX_FAILS, WINDOW_MS } from '../src/lib/adminAuth.ts'
 import { fakeR2 as fakeBucket } from './fakeR2.ts'
 
-const req = (code) => new Request('https://x/api', { headers: { Authorization: `Bearer ${code}` } })
+const req = (code: string) => new Request('https://x/api', { headers: { Authorization: `Bearer ${code}` } })
 const env = () => ({ ADMIN_SECRET: '123456', BUCKET: fakeBucket() })
 
 test('the right code passes', async () => {

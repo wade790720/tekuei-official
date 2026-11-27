@@ -1,3 +1,5 @@
+import type { JournalData, JournalPost } from '../../src/lib/siteData.ts'
+
 // Four made-up posts, in the shape the site stores a journal. They were the site's first placeholder
 // content; now they only feed the tests.
 const POSTS = {
@@ -213,4 +215,7 @@ const CONTENT = {
 }
 
 /** A fresh copy each call, so a test can change it. */
-export const sampleJournal = () => structuredClone({ posts: POSTS, content: CONTENT })
+export const sampleJournal = (): JournalData => structuredClone({ posts: POSTS, content: CONTENT })
+
+/** A post with only the fields a test cares about; the rest are empty. */
+export const samplePost = (fields: Partial<JournalPost>): JournalPost => ({ slug: '', num: '', tags: [], date: '', title: '', titleEn: '', excerpt: '', ...fields })
