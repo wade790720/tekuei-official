@@ -10,13 +10,21 @@ const UNLOCK_MS = 650 // how long "已解鎖" stays before the gate closes
 /**
  * Full-screen code gate for edit mode: dark, blurred backdrop around a OtpInput.
  * Verifies as soon as the last digit is in.
- * onVerify resolves true when the code is right; a string is the error to show instead of "wrong code".
- * @param {{ open: boolean, onClose: () => void, onVerify: (code: string) => Promise<true | string | false>, onUnlocked: () => void }} props
  */
-export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
-  const input = useRef(null)
+export interface OtpGateProps {
+  open: boolean
+  onClose: () => void
+  /** Resolves true when the code is right; a string is the error to show instead of "wrong code". */
+  onVerify: (code: string) => Promise<true | string | false>
+  onUnlocked: () => void
+}
+
+type GateState = 'idle' | 'verifying' | 'error' | 'unlocked'
+
+export function OtpGate({ open, onClose, onVerify, onUnlocked }: OtpGateProps) {
+  const input = useRef<HTMLInputElement>(null)
   const [code, setCode] = useState('')
-  const [state, setState] = useState('idle') // idle | verifying | error | unlocked
+  const [state, setState] = useState<GateState>('idle')
   const [errorText, setErrorText] = useState(T.wrong)
   const [prevOpen, setPrevOpen] = useState(open)
 
@@ -36,7 +44,7 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
 
   useEffect(() => {
     if (!open) return undefined
-    const onKey = (e) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', onKey)
@@ -45,12 +53,12 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
 
   if (!open) return null
 
-  function change(next) {
+  function change(next: string) {
     setCode(next)
     if (state === 'error') setState('idle')
   }
 
-  async function verify(next) {
+  async function verify(next: string) {
     setState('verifying')
     const ok = await onVerify(next)
     if (ok === true) {
@@ -63,7 +71,7 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }) {
     }
   }
 
-  const status = { verifying: T.verifying, unlocked: T.verified, error: errorText }[state] ?? ''
+  const status = { idle: '', verifying: T.verifying, unlocked: T.verified, error: errorText }[state]
   const busy = state === 'verifying' || state === 'unlocked'
 
   return createPortal(

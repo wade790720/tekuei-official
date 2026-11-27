@@ -36,3 +36,8 @@ ts	phase	decision	why	evidence	result
 2026-11-27T15:49:24Z	B-components	移除 TooltipGroup 的 as prop	沒有呼叫端使用，多型 union 讓 tsc 報 too complex	src/components/Tooltip.tsx	componentLibrary.data.tsx 的 as 那一列要刪
 2026-11-27T15:49:24Z	B-components	Button、Card 用泛型 as，DropdownMenu、MenuItems 對選項值泛型	呼叫端 props 隨 as 的元素型別檢查，選單值可收窄	src/components/Button.tsx	Editor 傳 string 照樣可用
 2026-11-27T15:50:35Z	phaseB	合併 labs、Editor、UI 元件三個分支；接受兩個小行為變化：圖組缺 alt 時輸出空 alt、AccordionItem 放錯位置時丟出清楚的錯誤	兩者只影響原本就錯的情況，空 alt 對讀屏更好	08ce241	Editor、labs、共用元件 tsc 零錯誤；剩 dev 232、頁面與子資料夾約 360
+2026-11-27T15:59:33Z	B-panel	SortRows 改成泛型 SortRows<T>	Editor 已用 (s: Slide) => string 呼叫，泛型讓 keyOf、nameOf、children 跟著 items 推斷	src/components/SidePanel.tsx SortRowsProps	Editor.tsx 無型別錯誤
+2026-11-27T15:59:33Z	B-panel	SortRows 拖到別的清單時改成 onMoveTo?.()	onMoveTo 是選填，原本有 listAt 沒 onMoveTo 時放開會丟例外；現有呼叫端都同時給兩個	src/components/SidePanel.tsx dragEnd	行為只在誤用時不同
+2026-11-27T15:59:34Z	B-panel	SidePanel 的 menu 型別是 PanelMenuAction（MenuChoice 加 icon 必填、onSelect）	直接沿用 DropdownMenu 的 MenuChoice，不另寫一份形狀	src/components/SidePanel.tsx PanelMenuAction	Journal、Work 的 menu 物件相容
+2026-11-27T15:59:35Z	B-panel	AboutEditPanel 在 draft 為 null 時不畫	ready 為真時 draft 理應存在，原本為 null 會直接丟例外，型別要求先檢查	src/components/about/AboutEditPanel.tsx:11	正常流程不變
+2026-11-27T15:59:36Z	B-panel	TranslateSection 的 fields 收 string | undefined	Journal、Work 傳 zhPost?.title、item.client，可能是 undefined，原本就用 v?.trim() 過濾	src/components/admin/TranslateSection.tsx TranslateSectionProps	呼叫端不用改

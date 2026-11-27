@@ -2,11 +2,13 @@ import { SidePanel } from '../SidePanel.tsx'
 import { TranslateSection } from '../admin/TranslateSection.tsx'
 import { useCmsEditing } from '../../hooks/useCmsEditing.ts'
 import { getDoc } from '../../lib/richText.ts'
+import type { CmsSection } from '../../hooks/useCmsSection.ts'
+import type { AboutPageData } from '../../lib/siteData.ts'
 
 /** The About page has no fields: everything is the body, edited on the page, so it gets the toolbar instead of the drawer. */
-export function AboutEditPanel({ cms }) {
+export function AboutEditPanel({ cms }: { cms: CmsSection<AboutPageData> }) {
   const { admin, ready, panelProps } = useCmsEditing(cms)
-  if (!ready) return null
+  if (!ready || !cms.draft) return null
   return (
     <SidePanel
       variant="bar"
