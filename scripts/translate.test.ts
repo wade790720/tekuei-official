@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import { onRequestPost } from '../functions/api/translate.ts'
 import { batchTexts, docSlots } from '../src/lib/docTranslate.ts'
 import { fakeR2 } from './fakeR2.ts'
+import { nodeAt } from './testDoc.ts'
+import type { Env } from '../functions/env.d.ts'
 
 const doc = {
   type: 'doc',
@@ -32,23 +34,23 @@ test('a translation keeps marks, line breaks, images and code, and leaves the so
   const before = structuredClone(doc)
   const { doc: out, slots } = docSlots(doc)
   ;['I write <t1>code</t1><br/>when a &lt; b', 'Waves', 'Second', 'List'].forEach((t, i) => slots[i].set(t))
-  assert.deepEqual(out.content[0].content, [
+  assert.deepEqual(nodeAt(out, 0).content, [
     { type: 'text', text: 'I write ' },
     { type: 'text', text: 'code', marks: [{ type: 'link', attrs: { href: 'https://a.b' } }] },
     { type: 'hardBreak' },
     { type: 'text', text: 'when a < b' },
   ])
-  assert.equal(out.content[1].content[0].text, '// 中文註解')
-  assert.equal(out.content[2].attrs.src, 'x.webp')
-  assert.equal(out.content[2].attrs.alt, 'Waves')
-  assert.equal(out.content[3].attrs.slides[0].caption, 'Second')
+  assert.equal(nodeAt(out, 1, 0).text, '// 中文註解')
+  assert.equal(nodeAt(out, 2).attrs?.src, 'x.webp')
+  assert.equal(nodeAt(out, 2).attrs?.alt, 'Waves')
+  assert.equal(nodeAt(out, 3).attrs?.slides[0].caption, 'Second')
   assert.deepEqual(doc, before)
 })
 
 test('a stray tag from the model never reaches the page', () => {
   const { doc: out, slots } = docSlots(doc)
   slots[0].set('I write <t1>code')
-  assert.equal(out.content[0].content[0].text, 'I write code')
+  assert.equal(nodeAt(out, 0, 0).text, 'I write code')
 })
 
 test('batches keep order and respect the limit', () => {
@@ -58,10 +60,19 @@ test('batches keep order and respect the limit', () => {
   assert.ok(batchTexts(Array(900).fill('短')).every((b) => b.length <= 300))
 })
 
-const env = (replies, extra = {}) => {
-  const calls = []
+type ModelInput = Record<string, unknown>
+const message = (input: ModelInput, i: number): string => {
+  const messages = input.messages
+  assert.ok(Array.isArray(messages))
+  const content: unknown = messages[i]?.content
+  assert.ok(typeof content === 'string')
+  return content
+}
+
+const env = (replies: unknown, extra: Partial<Env> = {}) => {
+  const calls: { model: string; input: ModelInput }[] = []
   const queue = Array.isArray(replies) ? [...replies] : null
-  const run = async (model, input) => {
+  const run = async (model: string, input: ModelInput) => {
     calls.push({ model, input })
     const reply = queue ? queue.shift() : replies
     if (reply instanceof Error) throw reply
@@ -69,7 +80,7 @@ const env = (replies, extra = {}) => {
   }
   return { ADMIN_SECRET: '123456', BUCKET: fakeR2({}), AI: { run }, calls, ...extra }
 }
-const post = (e, body, code = '123456') =>
+const post = (e: Env, body: unknown, code = '123456') =>
   onRequestPost({
     request: new Request('https://x/api/translate', {
       method: 'POST',
@@ -78,7 +89,7 @@ const post = (e, body, code = '123456') =>
     }),
     env: e,
   })
-const answer = (content, finish_reason = 'stop') => ({ choices: [{ finish_reason, message: { content } }] })
+const answer = (content: string, finish_reason = 'stop') => ({ choices: [{ finish_reason, message: { content } }] })
 const pair = '<s1>World</s1>\n<s0>Hello</s0>'
 const texts = ['你好', '世界']
 
@@ -99,7 +110,7 @@ test('translations come back in input order, with low reasoning to save the free
   assert.equal(e.calls.length, 1)
   assert.equal(e.calls[0].model, '@cf/qwen/qwen3.8-27b')
   assert.equal(e.calls[0].input.reasoning_effort, 'low')
-  assert.equal(e.calls[0].input.messages[1].content, '<s0>你好</s0>\n<s1>世界</s1>')
+  assert.equal(message(e.calls[0].input, 1), '<s0>你好</s0>\n<s1>世界</s1>')
 })
 
 test('quotation marks and marks inside a translation survive', async () => {
@@ -112,7 +123,7 @@ test('items the model skipped are asked for again, alone', async () => {
   const res = await post(e, { texts })
   assert.deepEqual(await res.json(), { texts: ['Hello', 'World'] })
   assert.equal(e.calls.length, 2)
-  assert.equal(e.calls[1].input.messages[1].content, '<s1>世界</s1>')
+  assert.equal(message(e.calls[1].input, 1), '<s1>世界</s1>')
 })
 
 test('a reply cut off mid-item keeps the finished items and retries the rest', async () => {
@@ -144,7 +155,7 @@ test('a used-up daily quota says so', async () => {
 test('the prompt fixes his name and the company names, and keeps the brand separate', async () => {
   const e = env(answer('<s0>Hello</s0>'))
   await post(e, { texts: ['你好'] })
-  const system = e.calls[0].input.messages[0].content
+  const system = message(e.calls[0].input, 0)
   for (const rule of ['朱德溎 (his full name): Te-Kuei Chu', '澔學: iSchool', '雲訊科技: Cloras', 'more than ten', 'Never merge']) {
     assert.ok(system.includes(rule), rule)
   }

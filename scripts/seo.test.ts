@@ -2,25 +2,33 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
 import { JOURNAL_META } from '../src/data/journal.ts'
-import { sampleJournal } from './fixtures/journal.ts'
+import { sampleJournal, samplePost } from './fixtures/journal.ts'
 import { docHtml, injectPage, journalIndexPage, llmsTxt, postPage, serveCase, servePage, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.ts'
 import { fakeR2 } from './fakeR2.ts'
+import type { JournalData, JournalPost, SiteData, WorkData, WorkItem } from '../src/lib/siteData.ts'
 
 const journal = sampleJournal()
 const slug = journal.posts.zh[0].slug
-const work = JSON.parse(readFileSync(new URL('../src/data/data.json', import.meta.url), 'utf8')).work.items
+const work: WorkItem[] = JSON.parse(readFileSync(new URL('../src/data/data.json', import.meta.url), 'utf8')).work.items
 const indexHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf8')
+
+/** The page of a post the test knows exists. */
+const pageOf = (j: JournalData, s: string) => {
+  const page = postPage(j, s)
+  assert.ok(page, s)
+  return page
+}
 
 describe('postPage', () => {
   it('renders the post text, meta and BlogPosting JSON-LD into index.html', () => {
-    const page = postPage(journal, slug)
+    const page = pageOf(journal, slug)
     const html = injectPage(indexHtml, page)
     assert.match(html, new RegExp(`<title>${journal.posts.zh[0].title} · Journal · TEKUEI</title>`))
     assert.match(html, /<link rel="canonical" href="https:\/\/tekuei.com\/journal\//)
     assert.match(html, /"@type":"BlogPosting"/)
     assert.match(html, /<div id="root"><article><h1>/)
-    assert.equal(html.match(/property="og:title"/g).length, 1, 'default og:title is replaced, not doubled')
-    assert.equal(html.match(/name="description"/g).length, 1)
+    assert.equal(html.match(/property="og:title"/g)?.length, 1, 'default og:title is replaced, not doubled')
+    assert.equal(html.match(/name="description"/g)?.length, 1)
   })
 
   it('returns null for an unknown slug', () => {
@@ -43,7 +51,7 @@ describe('postPage', () => {
         ],
       },
     }
-    const { html } = postPage(j, slug)
+    const { html } = pageOf(j, slug)
     assert.ok(html.includes('&lt;script&gt;x&lt;/script&gt;'))
     assert.ok(!html.includes('javascript:'))
   })
@@ -51,7 +59,7 @@ describe('postPage', () => {
   it('keeps "</script>" in a title from closing the JSON-LD tag', () => {
     const j = structuredClone(journal)
     j.posts.zh[0].title = '</script><b>'
-    const out = injectPage(indexHtml, postPage(j, slug))
+    const out = injectPage(indexHtml, pageOf(j, slug))
     assert.ok(!out.includes('"</script><b>'))
   })
 
@@ -59,11 +67,11 @@ describe('postPage', () => {
     const j = structuredClone(journal)
     j.posts.zh[0].title = "省下 $100 和 $& 和 $' 的方法"
     j.posts.zh[0].excerpt = '只要 $100 就能開始'
-    const out = injectPage(indexHtml, postPage(j, slug))
+    const out = injectPage(indexHtml, pageOf(j, slug))
     assert.match(out, /<meta\s+name="description"\s+content="只要 \$100 就能開始"/)
     assert.ok(out.includes('<title>省下 $100 和 $&amp; 和 $&#39; 的方法 · Journal · TEKUEI</title>'))
     assert.ok(out.includes(`"headline":"省下 $100 和 $& 和 $' 的方法"`))
-    assert.equal(out.match(/<\/head>/g).length, 1)
+    assert.equal(out.match(/<\/head>/g)?.length, 1)
   })
 })
 
@@ -91,13 +99,13 @@ describe('site files', () => {
 })
 
 describe('servePage', () => {
-  const ctx = (path) => ({
+  const ctx = (path: string) => ({
     request: new Request(`https://tekuei.com${path}`),
     env: { ASSETS: { fetch: async () => new Response(indexHtml) }, BUCKET: fakeR2({ 'data.json': { journal } }) },
   })
 
   it('answers case and lab pages with 200, unknown ones with 404, and moved ones with 301', async () => {
-    const status = async (path) => (await serveCase(ctx(path), work)).status
+    const status = async (path: string) => (await serveCase(ctx(path), work)).status
     assert.equal(await status(siteCases(work)[0].caseHref), 200)
     assert.equal(await status('/labs/living-portrait'), 200)
     assert.equal(await status('/labs/living-portrait/'), 200)
@@ -131,19 +139,19 @@ describe('post tags', () => {
     assert.deepEqual(postTags({ tags: ['AI'] }), ['AI'])
     assert.deepEqual(postTags({ category: 'NOTE' }), ['NOTE'])
     assert.deepEqual(postTags({ tags: [], category: 'NOTE' }), [])
-    assert.deepEqual(tagCounts([{ tags: ['B', 'A'] }, { tags: ['A'] }, { category: 'C' }]), [['A', 2], ['B', 1], ['C', 1]])
+    assert.deepEqual(tagCounts([samplePost({ tags: ['B', 'A'] }), samplePost({ tags: ['A'] }), samplePost({ tags: ['C'] })]), [['A', 2], ['B', 1], ['C', 1]])
     assert.deepEqual(parseTags(' ai, Marketing，ai、 ,'), ['AI', 'MARKETING'])
   })
 
   it('puts tags into the BlogPosting JSON-LD', () => {
-    assert.match(injectPage(indexHtml, postPage(journal, slug)), /"keywords":"PHILOSOPHY"/)
+    assert.match(injectPage(indexHtml, pageOf(journal, slug)), /"keywords":"PHILOSOPHY"/)
   })
 })
 
 it('a project written in the editor gets its own page, and a draft or outside link does not', async () => {
   const { projectPage, siteCases } = await import('../src/lib/seo.ts')
   const doc = { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: '展覽的說明' }] }] }
-  const work = {
+  const work: WorkData = {
     items: [
       { id: 'show', title: '某個展覽', client: '美術館', tags: ['Exhibition'] },
       { id: 'hidden', title: '還沒公開', draft: true },
@@ -154,6 +162,7 @@ it('a project written in the editor gets its own page, and a draft or outside li
     content: { zh: { show: { doc }, hidden: { doc }, both: { doc } } },
   }
   const page = projectPage(work, 'show')
+  assert.ok(page)
   assert.equal(page.url, 'https://tekuei.com/projects/show')
   assert.match(page.html, /<h1>某個展覽<\/h1>.*展覽的說明/)
   assert.equal(projectPage(work, 'hidden'), null, 'a draft has no page')
@@ -166,7 +175,7 @@ it('a project written in the editor gets its own page, and a draft or outside li
 
 describe('docHtml', () => {
   it('writes a picture set name only for the work layout, where the page shows it', () => {
-    const set = (layout) => docHtml({ type: 'slidesCard', attrs: { layout, title: 'Name', text: 'Words', slides: [{ src: 'a.webp', alt: 'A' }] } })
+    const set = (layout: string) => docHtml({ type: 'slidesCard', attrs: { layout, title: 'Name', text: 'Words', slides: [{ src: 'a.webp', alt: 'A' }] } })
     assert.match(set('work'), /<h3>Name<\/h3><p>Words<\/p><figure>/)
     assert.doesNotMatch(set('gallery'), /Name|Words/)
     assert.match(set('gallery'), /<figure>/)
@@ -174,35 +183,35 @@ describe('docHtml', () => {
 })
 
 describe('social image', () => {
-  const withPicture = (src) => {
+  const withPicture = (src: string) => {
     const j = structuredClone(journal)
     j.content.zh[slug] = { doc: { type: 'doc', content: [{ type: 'paragraph' }, { type: 'imageCard', attrs: { src, alt: 'A' } }] } }
     return j
   }
 
   it('keeps the site image for a page without a picture', () => {
-    const html = injectPage(indexHtml, postPage(journal, slug))
+    const html = injectPage(indexHtml, pageOf(journal, slug))
     assert.match(html, /property="og:image" content="https:\/\/tekuei.com\/og.jpg"/)
     assert.match(html, /name="twitter:card" content="summary_large_image"/)
   })
 
   it('uses the first picture of a post, as a full URL, in place of the site image', () => {
-    const page = postPage(withPicture('/api/file/a.webp'), slug)
+    const page = pageOf(withPicture('/api/file/a.webp'), slug)
     assert.equal(page.image, 'https://tekuei.com/api/file/a.webp')
     const html = injectPage(indexHtml, page)
-    assert.equal(html.match(/property="og:image"/g).length, 1)
+    assert.equal(html.match(/property="og:image"/g)?.length, 1)
     assert.doesNotMatch(html, /og:image:width|og.jpg/)
     assert.match(html, /name="twitter:image" content="https:\/\/tekuei.com\/api\/file\/a.webp"/)
   })
 
   it('skips an inline data picture', () => {
-    assert.equal(postPage(withPicture('data:image/png;base64,AAAA'), slug).image, undefined)
+    assert.equal(pageOf(withPicture('data:image/png;base64,AAAA'), slug).image, undefined)
   })
 })
 
 describe('dateModified', () => {
   it('is the date the post was last changed, or its publish date', async () => {
-    const ld = (post) => postPage({ ...journal, posts: { ...journal.posts, zh: [post] } }, slug).ld
+    const ld = (post: JournalPost) => pageOf({ ...journal, posts: { ...journal.posts, zh: [post] } }, slug).ld
     const post = journal.posts.zh[0]
     assert.equal(ld(post).dateModified, ld(post).datePublished)
     assert.equal(ld({ ...post, updated: '2026.12.01' }).dateModified, '2026-12-01')
@@ -227,7 +236,7 @@ describe('dateModified', () => {
 })
 
 describe('pages written in code', () => {
-  const ctx = (path, data = { journal }) => ({
+  const ctx = (path: string, data: SiteData = { journal }) => ({
     request: new Request(`https://tekuei.com${path}`),
     params: {},
     env: { ASSETS: { fetch: async () => new Response(indexHtml) }, BUCKET: fakeR2({ 'data.json': data }) },
@@ -248,6 +257,7 @@ describe('pages written in code', () => {
     const page = projectsIndexPage(siteCases(work), { title: 'TEKUEI · Projects', heading: 'Projects', description: '專案' })
     assert.match(page.html, /href="\/projects\/matsu-biennial"/)
     assert.match(page.html, /href="\/labs\/shatter-footer"/)
+    assert.ok(Array.isArray(page.ld.hasPart))
     assert.equal(page.ld.hasPart.length, siteCases(work).length)
   })
 

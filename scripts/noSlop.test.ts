@@ -21,7 +21,7 @@ test('lets real comments through', () => {
 
 test('a stylesheet that breaks a design rule is caught, and a token or a step of the scale is not', async () => {
   const { designIn } = await import('./noSlop.ts')
-  const rules = (css, file) => designIn(css, file).map((d) => d.rule)
+  const rules = (css: string, file?: string) => designIn(css, file).map((d) => d.rule)
   assert.deepEqual(rules('.a { color: #c99a63; }', 'src/styles/a.css'), ['色碼'])
   assert.deepEqual(rules('.a { font-weight: 700; }'), ['字重'])
   assert.deepEqual(rules('.a { margin: 20px 0; }'), ['間距'])

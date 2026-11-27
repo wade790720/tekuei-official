@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { blocksToDoc, docText, getDoc, hasBody, safeHref, youtubeId } from '../src/lib/richText.ts'
+import { nodeAt } from './testDoc.ts'
 
 describe('youtubeId', () => {
   it('reads share, watch, Shorts and embed links', () => {
@@ -34,21 +35,21 @@ describe('blocksToDoc', () => {
       { type: 'video', src: '/v.mp4', loop: true },
     ])
     assert.deepEqual(
-      doc.content.map((n) => n.type),
+      doc.content?.map((n) => n.type),
       ['lead', 'heading', 'paragraph', 'blockquote', 'codeBlock', 'imageCard', 'videoCard'],
     )
-    assert.equal(doc.content[1].attrs.level, 2)
-    assert.equal(doc.content[3].attrs.cite, 'A')
-    assert.deepEqual(doc.content[4].attrs, { language: 'bash', filename: 'run.sh' })
-    assert.equal(doc.content[5].attrs.frame, true)
-    assert.equal(doc.content[6].attrs.loop, true)
+    assert.equal(nodeAt(doc, 1).attrs?.level, 2)
+    assert.equal(nodeAt(doc, 3).attrs?.cite, 'A')
+    assert.deepEqual(nodeAt(doc, 4).attrs, { language: 'bash', filename: 'run.sh' })
+    assert.equal(nodeAt(doc, 5).attrs?.frame, true)
+    assert.equal(nodeAt(doc, 6).attrs?.loop, true)
     assert.equal(docText(doc), 'L\nH\nP\nQ\nnpm i\n\n')
   })
 
   it('never makes an empty text node and never returns an empty doc', () => {
     const doc = blocksToDoc([{ type: 'p', text: '' }])
-    assert.deepEqual(doc.content[0], { type: 'paragraph', content: [] })
-    assert.equal(blocksToDoc([]).content.length, 1)
+    assert.deepEqual(nodeAt(doc, 0), { type: 'paragraph', content: [] })
+    assert.equal(blocksToDoc([]).content?.length, 1)
   })
 })
 
@@ -56,7 +57,7 @@ describe('getDoc', () => {
   it('prefers a saved doc over old blocks', () => {
     const doc = { type: 'doc', content: [] }
     assert.equal(getDoc({ doc, blocks: [{ type: 'p', text: 'x' }] }), doc)
-    assert.equal(getDoc({ blocks: [{ type: 'p', text: 'x' }] }).content[0].type, 'paragraph')
+    assert.equal(nodeAt(getDoc({ blocks: [{ type: 'p', text: 'x' }] }), 0).type, 'paragraph')
     assert.equal(getDoc(undefined).type, 'doc')
   })
 })

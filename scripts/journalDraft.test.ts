@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict'
 import { it } from 'node:test'
 import { cloneJournal, copyJournalDraft, differsOnlyIn, publishedJournal, readableJournal } from '../src/data/journal.ts'
-import { sampleJournal } from './fixtures/journal.ts'
+import { sampleJournal, samplePost } from './fixtures/journal.ts'
 import { postPage, siteJournal, sitemapXml, llmsTxt } from '../src/lib/seo.ts'
+import { LANGS } from '../src/lib/siteData.ts'
 
 it('copyJournalDraft: edits on the copy leave the saved journal alone, bodies are shared', () => {
   const saved = cloneJournal(sampleJournal())
@@ -11,7 +12,7 @@ it('copyJournalDraft: edits on the copy leave the saved journal alone, bodies ar
   const slug = draft.posts.zh[0].slug
 
   draft.posts.zh[0].title = 'changed'
-  draft.posts.zh.unshift({ slug: 'new' })
+  draft.posts.zh.unshift(samplePost({ slug: 'new' }))
   draft.content.zh[slug] = { doc: { type: 'doc', content: [] } }
   delete draft.content.en?.[slug]
 
@@ -22,15 +23,15 @@ it('copyJournalDraft: edits on the copy leave the saved journal alone, bodies ar
 
 const withDraft = () => {
   const j = cloneJournal(sampleJournal())
-  for (const l of Object.keys(j.posts)) j.posts[l][0] = { ...j.posts[l][0], draft: true }
+  for (const l of LANGS) j.posts[l][0] = { ...j.posts[l][0], draft: true }
   return j
 }
 
 it('a draft is hidden from readers and the rest are renumbered from 01', () => {
   const j = withDraft()
   const slug = j.posts.zh[0].slug
-  for (const lang of ['zh', 'en']) {
-    const posts = readableJournal(j, lang).posts[lang]
+  for (const lang of LANGS) {
+    const posts = readableJournal(j).posts[lang]
     assert.ok(!posts.some((p) => p.slug === slug), lang)
     assert.equal(posts[0].num, '01')
   }
@@ -61,7 +62,7 @@ it('a draft autosaves only when nothing outside it changed', () => {
   assert.equal(differsOnlyIn(edited, saved, slug), true)
 
   const created = cloneJournal(saved)
-  created.posts.zh.unshift({ slug: 'fresh', num: '01', draft: true })
+  created.posts.zh.unshift(samplePost({ slug: 'fresh', num: '01', draft: true }))
   created.posts.zh.forEach((p, i) => (p.num = String(i + 1).padStart(2, '0')))
   assert.equal(differsOnlyIn(created, saved, 'fresh'), true, 'renumbering for a new post does not count')
 

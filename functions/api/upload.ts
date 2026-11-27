@@ -1,4 +1,5 @@
 import { adminGate, json } from '../../src/lib/adminAuth.ts'
+import type { ApiContext } from '../env.d.ts'
 
 const EXT = new Map([
   ['image/jpeg', 'jpg'],
@@ -7,7 +8,7 @@ const EXT = new Map([
 ])
 const MAX_BYTES = 1024 * 1024
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env }: ApiContext) {
   const denied = await adminGate(request, env)
   if (denied) return denied
 
