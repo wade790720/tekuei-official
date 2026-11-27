@@ -8,11 +8,12 @@
     "dev:pages": "npm run build && npx wrangler pages dev dist --compatibility-date=2024-11-01",
     "build": "vite build",
     "deploy": "wrangler pages deploy dist --commit-dirty=true",
-    "lint": "eslint . && node scripts/noSlop.mjs",
+    "lint": "eslint . && node scripts/noSlop.mjs && npm run typecheck",
     "preview": "vite preview",
     "seed": "node scripts/seed-data.mjs",
     "test": "node --test scripts/phoneE164.test.mjs scripts/highlight.test.mjs scripts/richText.test.mjs scripts/seo.test.mjs scripts/adminAuth.test.mjs scripts/dataApi.test.mjs scripts/noSlop.test.mjs scripts/journalDraft.test.mjs scripts/translate.test.mjs scripts/editBarPosition.test.mjs scripts/projects.test.mjs scripts/caseDoc.test.mjs",
-    "test:phone": "node --test scripts/phoneE164.test.mjs"
+    "test:phone": "node --test scripts/phoneE164.test.mjs",
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.functions.json && tsc -p tsconfig.node.json"
   },
   "dependencies": {
     "@tiptap/extension-blockquote": "^3.34.0",
@@ -30,14 +31,18 @@
     "react-router-dom": "^7.14.2"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260702.1",
     "@eslint/js": "^10.0.1",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
+    "@types/node": "^26.6.11",
+    "@types/react": "^19.3.3",
+    "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^4.7.0",
     "eslint": "^10.2.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.74.0",
     "vite": "^6.4.3",
     "wrangler": "^4.14.0"
   }

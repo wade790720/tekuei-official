@@ -1,0 +1,5 @@
+ts	phase	decision	why	evidence	result
+2026-11-27T15:06:17Z	frame	開工前問四個問題：合併方式、相依套件、風險處理、測試範圍	使用者要求開工前先問	AskUserQuestion 回答	開 PR 由使用者合併；只加型別工具；一般問題直接修、CORS 和 admin 驗證只回報；邏輯寫測試、畫面用瀏覽器
+2026-11-27T15:06:18Z	frame	完成條件：src、functions、scripts 沒有 .js/.jsx/.mjs，tsconfig strict、allowJs false，tsc 零錯誤，lint、build、test 全綠，三種寬度畫面和改前一致，PR 已開	先寫下可以檢查的終點	本列	open
+2026-11-27T15:06:18Z	baseline	在 worktree 跑基準	之後每一步都和這個比	lint ok, test 113 pass, build ok	green
+2026-11-27T15:06:18Z	tooling	加 typescript 6.0.3、@types/react、@types/react-dom、@types/node、@cloudflare/workers-types、typescript-eslint，都是 devDependencies	使用者同意只加型別工具；Node 22.23 內建型別剝除，不需要 tsx	package.json	open
