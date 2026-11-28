@@ -3,6 +3,9 @@
 // for a fake answer and leaves reads alone. It lasts until the page reloads: import it again after a reload,
 // and clear sessionStorage when done so no fake login is left behind.
 //
+// /api/data needs the real admin code, which a fake login does not have, so edit mode starts from the bundled
+// defaults, as with an empty bucket. The fake code is never sent: a wrong code counts toward the lock.
+//
 // After it runs, Ctrl+S and any six digits log in. window.__api lists the writes the page tried, with bodies
 // and the answer each got. A save is refused with 409 when its If-Match is missing or not the current version, as the
 // real API does, so a stale editor shows up here too.
@@ -15,16 +18,15 @@ declare global {
 ;(() => {
   const real = window.fetch.bind(window)
   const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
-  let version: string | null = null // the ETag of data.json: the real one until the first fake save
+  let version: string | null = null // the ETag of the last fake save; none before it, as in an empty bucket
   window.__api = []
   window.fetch = async (input: RequestInfo | URL, init: RequestInit = {}) => {
     const url = new URL(input instanceof Request ? input.url : input, location.href)
     const method = (init.method || 'GET').toUpperCase()
     if (!url.pathname.startsWith('/api/')) return real(input, init)
     if (method === 'GET') {
-      const res = await real(input, init)
-      if (url.pathname === '/api/data') version ??= res.headers.get('ETag')
-      return res
+      if (url.pathname === '/api/data') return json({ error: 'No data yet' }, 404)
+      return real(input, init)
     }
     const call = { method, path: url.pathname, body: typeof init.body === 'string' ? init.body : null, status: 200 }
     window.__api.push(call)

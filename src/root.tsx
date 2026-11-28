@@ -5,6 +5,7 @@ import './index.css'
 import './styles/tokens.css'
 import { SiteNav } from './components/SiteNav.tsx'
 import { PageError } from './components/PageError.tsx'
+import { AboutProvider } from './context/AboutProvider.tsx'
 import { AdminProvider } from './context/AdminProvider.tsx'
 import { JournalProvider } from './context/JournalProvider.tsx'
 import { WorkProvider } from './context/WorkProvider.tsx'
@@ -126,9 +127,11 @@ function Shell({ children }: { children: ReactNode }) {
     <AdminProvider>
       <JournalProvider>
         <WorkProvider>
-          <ScrollClasses />
-          <AppNav />
-          {children}
+          <AboutProvider>
+            <ScrollClasses />
+            <AppNav />
+            {children}
+          </AboutProvider>
         </WorkProvider>
       </JournalProvider>
     </AdminProvider>

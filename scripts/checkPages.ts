@@ -1,13 +1,15 @@
 /**
  * Requests every page of the site, in Chinese and in English, from a running server and fails on any 5xx or an
  * unexpected status, Location, Cache-Control, <html lang> or head (one title, a canonical, the hreflang links,
- * og:image, JSON-LD that parses). It requests every address in sitemap.xml and llms.txt, and reads /api/data to
- * check that a published post's title and first paragraph are in its HTML and that no draft shows up anywhere.
+ * og:image, JSON-LD that parses). It requests every address in sitemap.xml and llms.txt, and reads data.json from
+ * /api/data with the admin code to check that a published post's title and first paragraph are in its HTML and that
+ * no draft shows up anywhere. The code is ADMIN_SECRET from the environment, else from .dev.vars, as the server has it.
  * Usage: node scripts/checkPages.ts <base URL> [--r2=broken|missing]
  *   --r2=broken   the local bucket's data.json is not valid JSON: every page that reads R2 answers 503
  *   --r2=missing  the local bucket has no data.json: those pages draw the bundled defaults (200)
  * The list and the expectations live here; a PR that adds or moves a page changes them in the same commit.
  */
+import { readFileSync } from 'node:fs'
 import { publishedJournal, readableJournal } from '../src/data/journal.ts'
 import { docText, getDoc } from '../src/lib/richText.ts'
 import { parseSiteData } from '../src/lib/siteData.ts'
@@ -66,7 +68,8 @@ const PAGES: Expect[] = [
   // Not pages, but served by the same Worker
   { path: '/sitemap.xml', status: 200, html: false, oneUrl: true, r2: true },
   { path: '/llms.txt', status: 200, html: false, oneUrl: true, r2: true },
-  { path: '/api/data', status: 200, html: false, oneUrl: true },
+  // The whole file, drafts included: only with the admin code
+  { path: '/api/data', status: 401, html: false, oneUrl: true },
   { path: '/api/file/images/no-such-file.png', status: 404, html: false, oneUrl: true },
   { path: '/robots.txt', status: 200, html: false, oneUrl: true },
 ]
@@ -96,11 +99,22 @@ if (!base || (r2 && r2 !== 'broken' && r2 !== 'missing')) {
   process.exit(2)
 }
 
+function adminCode(): string {
+  if (process.env.ADMIN_SECRET) return process.env.ADMIN_SECRET
+  try {
+    const code = readFileSync('.dev.vars', 'utf8').match(/^ADMIN_SECRET\s*=\s*"?([^"\s]+)"?/m)?.[1]
+    if (code) return code
+  } catch {
+    /* no .dev.vars: the message below */
+  }
+  console.error('Set ADMIN_SECRET, or run from the repo with .dev.vars: data.json is read with the admin code.')
+  process.exit(2)
+}
+
 const pages = new Map<string, string>()
 async function check(url: Expect): Promise<string[]> {
   let page = url
   if (r2 === 'broken' && url.r2) page = { ...url, status: 503 }
-  if (r2 === 'missing' && url.path.endsWith('/api/data')) page = { ...url, status: 404 }
   if (r2 === 'missing' && url.missing) page = { ...url, status: url.missing }
   const res = await fetch(new URL(page.path, base), { redirect: 'manual' })
   const body = await res.text()
@@ -237,8 +251,9 @@ if (r2 !== 'broken') await readSitemap()
 for (const page of ALL) problems.push(...(await check(page)))
 if (r2 !== 'broken') problems.push(...(await checkListed()))
 if (!r2) {
-  const res = await fetch(new URL('/api/data', base))
-  problems.push(...(await checkContent(parseSiteData(await res.json()).data)))
+  const res = await fetch(new URL('/api/data', base), { headers: { Authorization: `Bearer ${adminCode()}` } })
+  if (!res.ok) problems.push(`/api/data with the admin code: ${res.status}`)
+  else problems.push(...(await checkContent(parseSiteData(await res.json()).data)))
 }
 if (problems.length) {
   console.error(`\n${problems.length} problem(s):\n${problems.join('\n')}`)

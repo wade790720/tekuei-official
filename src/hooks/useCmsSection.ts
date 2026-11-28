@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRevalidator } from 'react-router'
 import { siteDefaults } from '../data/siteDefaults.ts'
-import { fetchSiteData, onSiteVersion, saveSitePatch } from '../lib/adminApi.ts'
+import { fetchSiteData, saveSitePatch, SiteDataError } from '../lib/adminApi.ts'
 import { CMS_LABELS } from '../data/admin.ts'
 import { forgetLangSwitch } from '../lib/langSwitch.ts'
 import type { Dispatch, SetStateAction } from 'react'
@@ -20,7 +20,8 @@ export interface CmsSection<C> {
   error: string
   setError: Dispatch<SetStateAction<string>>
   isEditing: boolean
-  startEditing: () => Promise<void>
+  /** @param token  the admin code: /api/data asks for it */
+  startEditing: (token: string | null) => Promise<void>
   cancelEditing: () => void
   updateDraft: (updater: (draft: C) => void) => void
   /** `change` edits a copy of the draft just before it is saved, so an action such as publishing is one save. */
@@ -43,9 +44,9 @@ export function useCmsSection<K extends SectionKey>(
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  // The remote copy failed to load, so the content on screen is the bundled default.
-  // Saving it would replace the real section in R2, so saving is refused until a reload.
-  const [loadFailed, setLoadFailed] = useState(false)
+  // Why the remote copy failed to load, so the content on screen is the bundled default. Saving it would
+  // replace the real section in R2, so saving is refused until a reload.
+  const [loadFailed, setLoadFailed] = useState('')
   // Version of data.json this editor loaded or last saved; a save is refused if R2 moved on since.
   const [etag, setEtag] = useState<string | null>(null)
   const revalidator = useRevalidator()
@@ -53,36 +54,33 @@ export function useCmsSection<K extends SectionKey>(
   const run = useRef(0)
   useEffect(() => () => void run.current++, [])
 
-  // Any section's save, this one's included, replaces the version this section loaded.
-  useEffect(() => onSiteVersion((from, to) => setEtag((mine) => (mine === from ? to : mine))), [])
-
   // Readers see their page's loader data, which has no drafts. Only edit mode reads the whole section, drafts
   // included, with the version a save must match.
-  const startEditing = useCallback(async () => {
+  const startEditing = useCallback(async (token: string | null) => {
     const mine = ++run.current
     setLoading(true)
     setError('')
-    setLoadFailed(false)
+    setLoadFailed('')
     const sectionContent = (data: Partial<EditableSections>) => cloneContent(data[sectionKey] ?? getDefault())
     let next: C
     let version: string | null = null
-    let failed = false
+    let failed = ''
     try {
-      const remote = await fetchSiteData()
+      const remote = await fetchSiteData(token)
       // A section R2 holds in a shape the site cannot read is a failed load: saving would replace it.
       if (remote?.invalid.includes(sectionKey)) throw new Error(`${sectionKey} in data.json is malformed`)
       // An empty bucket: the bundled defaults, until the first save creates data.json.
       next = sectionContent(remote?.data ?? siteDefaults)
       version = remote?.etag ?? null
-    } catch {
+    } catch (err) {
       next = sectionContent(siteDefaults)
-      failed = true
+      failed = err instanceof SiteDataError ? err.message : CMS_LABELS.loadFailed
     }
     if (mine !== run.current) return
     setEtag(version)
     if (failed) {
-      setLoadFailed(true)
-      setError(CMS_LABELS.loadFailed)
+      setLoadFailed(failed)
+      setError(failed)
     }
     setContent(next)
     setDraft(cloneContent(next))
@@ -112,15 +110,16 @@ export function useCmsSection<K extends SectionKey>(
       change(next)
     }
     if (loadFailed) {
-      setError(CMS_LABELS.loadFailed)
-      throw new Error(CMS_LABELS.loadFailed)
+      setError(loadFailed)
+      throw new Error(loadFailed)
     }
     setSaving(true)
     setError('')
     try {
       const patch: Partial<EditableSections> = {}
       patch[sectionKey] = next
-      await saveSitePatch(patch, token, etag)
+      const saved = await saveSitePatch(patch, token, etag)
+      setEtag(saved.etag)
       setContent(cloneContent(next))
       forgetLangSwitch()
       // The pages' loader data is what readers see, and what this page shows again after logout.
