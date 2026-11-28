@@ -101,11 +101,11 @@ node scripts/checkPages.ts <網址>       # 每一頁的中英文網址：狀態
 | 環境 | 分支 | Worker | R2 bucket |
 | --- | --- | --- | --- |
 | 正式站 tekuei.com | `main` | `tekuei-official` | `tekuei-cms` |
-| 整合測試 | `migrate/rr8` | `tekuei-next` | `tekuei-cms-next` |
+| 測試站 | 任何分支，手動部署 | `tekuei-next` | `tekuei-cms-next` |
 
 `main` 一有變動，Workers Builds 就執行 `npm run build` 和 `npx wrangler deploy`，部署到正式站。舊的 Pages 專案 tekuei-official 已暫停自動部署，只留著回復用，回復方式見 [docs/rr8-cutover.md](docs/rr8-cutover.md)。正式站的管理密碼用 `npx wrangler secret put ADMIN_SECRET --name tekuei-official` 設定。
 
-部署整合測試的 Worker：
+要上線前先在測試站看，從目前的分支部署：
 
 ```sh
 npm run build:next
