@@ -10,6 +10,8 @@
   "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "tekuei-cms" }],
   // The editor's English translation uses Workers AI, no key needed.
   "ai": { "binding": "AI" },
+  // workers/htmlCache.ts keys stored pages by this id, so a deploy never serves HTML that names old asset files.
+  "version_metadata": { "binding": "CF_VERSION_METADATA" },
   // The integration branch (migrate/rr8) deploys here, never to the live bucket above. The Cloudflare vite plugin picks
   // the environment at build time and writes it into build/server/wrangler.json, which wrangler deploy then reads:
   // run `npm run build:next`, then `npx wrangler deploy`. `wrangler deploy --env next` has no effect on that file.
@@ -18,7 +20,8 @@
     "next": {
       "name": "tekuei-next",
       "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "tekuei-cms-next" }],
-      "ai": { "binding": "AI" }
+      "ai": { "binding": "AI" },
+      "version_metadata": { "binding": "CF_VERSION_METADATA" }
     }
   }
 }

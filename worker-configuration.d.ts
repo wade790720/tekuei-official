@@ -3,6 +3,7 @@
 interface __BaseEnv_CloudflareBindings {
 	BUCKET: R2Bucket;
 	AI: Ai;
+	CF_VERSION_METADATA: WorkerVersionMetadata;
 	ADMIN_SECRET: string;
 }
 declare namespace Cloudflare {
