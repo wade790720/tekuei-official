@@ -3,6 +3,7 @@ import { cf } from '../src/lib/cf.server.ts'
 import { servedPath } from '../src/lib/localePath.ts'
 import { onRequest as cors } from '../functions/_middleware.ts'
 import { routeApi } from './api.ts'
+import { cachedPage } from './htmlCache.ts'
 
 const pages = createRequestHandler(() => import('virtual:react-router/server-build'), import.meta.env.MODE)
 
@@ -22,7 +23,8 @@ export default {
         }
         const context = new RouterContextProvider()
         context.set(cf, { env, ctx })
-        return pages(request, context)
+        const deps = { cache: caches.default, bucket: env.BUCKET, deploy: env.CF_VERSION_METADATA.id, waitUntil: (p: Promise<unknown>) => ctx.waitUntil(p) }
+        return cachedPage(request, deps, () => pages(request, context))
       },
     })
   },

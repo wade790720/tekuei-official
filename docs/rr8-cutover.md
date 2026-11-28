@@ -60,7 +60,7 @@ Workers Free 每個請求的 CPU 時間上限是 10 ms。一邊在瀏覽器點�
 npx wrangler tail tekuei-next --format json
 ```
 
-也可以在後台 Workers 的 Observability 看每個請求的 CPU 時間，`wrangler.jsonc` 已經開了 observability。本機量到的是每頁 1.2 到 3.8 ms，如果線上常常超過 10 ms，先停在這一步，和開發者討論用 Cache API 快取 HTML，或升級到 Paid 方案。
+也可以在後台 Workers 的 Observability 看每個請求的 CPU 時間，`wrangler.jsonc` 已經開了 observability。線上重畫一頁要 5 到 60 ms，所以讀者的頁面由 `workers/htmlCache.ts` 存進 Cache API：同一頁第二次以後約 1 ms，回應帶 `x-page-cache: hit`。每個資料中心的第一次、404 和轉址仍會超過 10 ms，這是預期的。如果有快取的頁面也常常超過 10 ms，先停在這一步，和開發者討論升級到 Paid 方案。
 
 ## 5. 停掉 Pages 的自動部署
 
