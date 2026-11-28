@@ -1,6 +1,7 @@
 import { ADMIN_SESSION_KEY, CMS_LABELS, TRANSLATE_LABELS } from '../data/admin.ts'
 import { compressImage } from './compressImage.ts'
 import { batchTexts } from './docTranslate.ts'
+import { readStored } from './safeStorage.ts'
 import { parseSiteData } from './siteData.ts'
 import type { ParsedSiteData, SiteData } from './siteData.ts'
 
@@ -12,14 +13,8 @@ const tokenOf = (v: unknown) => (obj(v) && 'token' in v && typeof v.token === 's
 const urlOf = (v: unknown) => (obj(v) && 'url' in v && typeof v.url === 'string' ? v.url : null)
 
 export function getAdminToken(): string {
-  try {
-    if (typeof window !== 'undefined') {
-      const ss = sessionStorage.getItem(ADMIN_SESSION_KEY)
-      if (ss) return ss
-    }
-  } catch {
-    /* ignore */
-  }
+  const stored = readStored(ADMIN_SESSION_KEY, 'session')
+  if (stored) return stored
   if (import.meta.env.DEV && import.meta.env.VITE_ADMIN_KEY) {
     return import.meta.env.VITE_ADMIN_KEY
   }

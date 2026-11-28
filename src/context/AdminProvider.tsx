@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import type { ReactNode } from 'react'
 import { ADMIN_SESSION_KEY } from '../data/admin.ts'
 import { getAdminToken, loginAdmin } from '../lib/adminApi.ts'
+import { writeStored } from '../lib/safeStorage.ts'
 import { AdminContext } from './admin.ts'
 import type { AdminState } from './admin.ts'
 
@@ -30,7 +31,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (code: string): Promise<true | string> => {
     try {
       const { token: t } = await loginAdmin(code)
-      sessionStorage.setItem(ADMIN_SESSION_KEY, t)
+      writeStored(ADMIN_SESSION_KEY, t, 'session')
       setToken(t)
       return true
     } catch (err) {
@@ -39,7 +40,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const logout = useCallback(() => {
-    sessionStorage.removeItem(ADMIN_SESSION_KEY)
+    writeStored(ADMIN_SESSION_KEY, null, 'session')
     setToken(null)
     setEditing(false)
   }, [setEditing])

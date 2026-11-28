@@ -4,7 +4,6 @@
 
 const IW = 1672
 const IH = 941
-const MAX_W = 1920
 const SW = 418
 const SH = 235
 const CW = 7
@@ -106,7 +105,8 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () 
     W = canvas.clientWidth
     H = canvas.clientHeight
     const narrow = W < 700
-    const s = Math.max(Math.min(W, MAX_W) / IW, H / IH)
+    const pageMax = parseFloat(getComputedStyle(canvas).getPropertyValue('--page-max')) || W
+    const s = Math.max(Math.min(W, pageMax) / IW, H / IH)
     dw = IW * s
     dh = IH * s
     ox = narrow ? clamp(W / 2 - 0.55 * dw, W - dw, 0) : (W - dw) / 2

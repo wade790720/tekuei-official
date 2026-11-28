@@ -159,11 +159,12 @@ const ITEM_SPEC: Spec = {
   en: 'record',
 }
 
+const hasDoc = (v: Json): v is { doc: Doc } => isRecord(v.doc)
+const hasBlocks = (v: Json): v is { blocks: LegacyBlock[] } =>
+  Array.isArray(v.blocks) && v.blocks.every((b) => isRecord(b) && fieldsOk(b, BLOCK_SPEC))
+
 function parseBody(v: unknown): Body | null {
-  if (!isRecord(v)) return null
-  if (isRecord(v.doc)) return v as { doc: Doc }
-  if (Array.isArray(v.blocks) && v.blocks.every((b) => isRecord(b) && fieldsOk(b, BLOCK_SPEC))) return v as { blocks: LegacyBlock[] }
-  return null
+  return isRecord(v) && (hasDoc(v) || hasBlocks(v)) ? v : null
 }
 
 function parseBodies(v: unknown): Record<string, Body> | null {
@@ -204,26 +205,31 @@ function parseJournal(v: unknown): JournalData | null {
 const parseItem = (v: unknown): v is WorkItem =>
   isRecord(v) && isString(v.id) && fieldsOk(v, ITEM_SPEC) && (v.en === undefined || (isRecord(v.en) && fieldsOk(v.en, { client: 'string', title: 'string' })))
 
-function parseWork(v: unknown): WorkData | null {
-  if (!isRecord(v) || !Array.isArray(v.items) || !v.items.every(parseItem)) return null
-  if (!fieldsOk(v, { removed: 'strings', meta: 'record', header: 'record', footer: 'record', content: 'record' })) return null
-  if (isRecord(v.content) && !LANGS.every((l) => isRecord(v.content) && (v.content[l] === undefined || parseBodies(v.content[l])))) return null
-  return v as unknown as WorkData
-}
+const bodiesOk = (content: unknown) =>
+  !isRecord(content) || LANGS.every((l) => content[l] === undefined || parseBodies(content[l]) !== null)
 
-function parseAboutPage(v: unknown): AboutPageData | null {
-  if (!isRecord(v) || !parseBody(v.zh) || !(v.en === undefined || parseBody(v.en))) return null
-  return v as unknown as AboutPageData
-}
+const isWork = (v: unknown): v is WorkData =>
+  isRecord(v) &&
+  Array.isArray(v.items) &&
+  v.items.every(parseItem) &&
+  fieldsOk(v, { removed: 'strings', meta: 'record', header: 'record', footer: 'record', content: 'record' }) &&
+  bodiesOk(v.content)
 
-const caseOk = (v: unknown) =>
+const parseWork = (v: unknown): WorkData | null => (isWork(v) ? v : null)
+
+const isAboutPage = (v: unknown): v is AboutPageData =>
+  isRecord(v) && parseBody(v.zh) !== null && (v.en === undefined || parseBody(v.en) !== null)
+
+const parseAboutPage = (v: unknown): AboutPageData | null => (isAboutPage(v) ? v : null)
+
+const caseOk = (v: unknown): v is CaseAssets =>
   isRecord(v) &&
   (v.hero === undefined || (isRecord(v.hero) && fieldsOk(v.hero, { image: 'image' }))) &&
   (v.media === undefined || (isRecord(v.media) && fieldsOk(v.media, { fullWidthImage: 'image', inlineImage: 'image' })))
 
-function parseCases(v: unknown): Record<string, CaseAssets> | null {
-  return isRecord(v) && Object.values(v).every(caseOk) ? (v as Record<string, CaseAssets>) : null
-}
+const isCases = (v: unknown): v is Record<string, CaseAssets> => isRecord(v) && Object.values(v).every(caseOk)
+
+const parseCases = (v: unknown): Record<string, CaseAssets> | null => (isCases(v) ? v : null)
 
 /**
  * Reads data.json. Throws when it is not a JSON object at all. A section in a shape the site cannot read is

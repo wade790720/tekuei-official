@@ -2,25 +2,15 @@ import { startTransition, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { hasEnglish, langOf, otherLangPath } from '../lib/localePath.ts'
+import { readStored, writeStored } from '../lib/safeStorage.ts'
 import type { Lang } from '../lib/siteData.ts'
 import { LangContext } from './langContext.ts'
 
-// Storage throws when the browser blocks site data; the choice then lasts until reload.
 function savedLang(): Lang | null {
-  try {
-    const saved = localStorage.getItem('lang')
-    return saved === 'en' || saved === 'zh' ? saved : null
-  } catch {
-    return null
-  }
+  const saved = readStored('lang')
+  return saved === 'en' || saved === 'zh' ? saved : null
 }
-function saveLang(lang: Lang) {
-  try {
-    localStorage.setItem('lang', lang)
-  } catch {
-    /* see savedLang */
-  }
-}
+const saveLang = (lang: Lang) => writeStored('lang', lang)
 
 /**
  * The language is in the URL: Chinese at the root, English under /en, so the server and the browser agree.

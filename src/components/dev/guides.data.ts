@@ -207,7 +207,7 @@ npm run dev`,
   padding-inline: calc(var(--page-gutter) + var(--page-pad));
 }`,
       rows: [
-        ['--page-max', '1920px', '內容的最大寬度，heroFx.ts 的 MAX_W 要一樣'],
+        ['--page-max', '1920px', '內容的最大寬度，heroFx.ts 也讀這個值'],
         ['--page-gutter', 'max(0px, (100vw − 1920px) / 2)', '超過 1920px 時兩側多出的寬度，1920px 以下是 0'],
         ['--page-pad', 'clamp(20px, 4vw, 68px)', '內容和螢幕邊緣的距離'],
       ],

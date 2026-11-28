@@ -162,7 +162,6 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 全寬的圖帶：寬度用 `min(100vw, var(--page-max))`，置中用 `margin`，不要用 `transform`（淡入動畫會覆寫 `transform`）。
 - 會被螢幕邊緣切掉的大圖：寬螢幕上改在內容邊緣切掉，或讓邊緣淡出（例如 `mask-image`）。
 - 例外：案例和專案內頁的開場圖延伸到螢幕左右邊緣（它是一個案例的開場，可以有自己的版型）。壓在上面的文字仍在 1920px 內。
-- `heroFx.ts` 的 `MAX_W` 要和 `--page-max` 一致。
 - 驗收：用 2560px 寬的視窗打開頁面，文字和圖片都要在中間的 1920px 內。
 
 ```css
@@ -299,7 +298,7 @@ useEffect(() => mountXxx(canvas.current), [])
 - 不在 Canvas 裡寫 `var(--xxx)`。Canvas 讀不到 CSS 變數，要用 `getComputedStyle`。
 - 不把 `filter` 掛在 `<html>` 以外的大容器上。它會讓裡面的 `position: fixed` 失效。
 - 置中的字距文字不要忘了補負的 `margin-right`。
-- 不讓內容超出中間的 1920px。改 `--page-max` 時，同時改 `heroFx.ts` 的 `MAX_W`。
+- 不讓內容超出中間的 1920px。
 - 一頁不放兩個招牌效果。
 - 不加回和紙、水墨、紙紋的元素。
 

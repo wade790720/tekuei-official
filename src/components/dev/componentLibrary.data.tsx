@@ -1089,7 +1089,7 @@ export const GROUPS: ComponentGroup[] = [
           },
         ],
         examples: [],
-        notes: ['MAX_W 要和 --page-max 一致。', '更換 Hero 圖時，同時修改 IW、IH 和焦點座標。'],
+        notes: ['更換 Hero 圖時，同時修改 IW、IH 和焦點座標。'],
       },
       {
         id: 'fall-scene',

@@ -5,6 +5,7 @@ import { useAdmin } from '../context/admin.ts'
 import { CMS_LABELS as T, EDIT_BAR_KEY } from '../data/admin.ts'
 import { clampOffset, parseOffset } from '../lib/editBarPosition.ts'
 import type { Offset } from '../lib/editBarPosition.ts'
+import { readStored, writeStored } from '../lib/safeStorage.ts'
 import { Button } from './Button.tsx'
 import { Drawer, DrawerBody, DrawerHeader } from './Drawer.tsx'
 import { DropdownMenu } from './DropdownMenu.tsx'
@@ -239,24 +240,12 @@ function EditBar({ title, error, status, children }: EditBarProps) {
   const place = (next: Offset) => {
     if (bar.current) placeBar(bar.current, offset, next)
   }
-  const remember = () => {
-    try {
-      localStorage.setItem(EDIT_BAR_KEY, JSON.stringify(offset.current))
-    } catch {
-      /* private mode: the position lasts until the page closes */
-    }
-  }
+  const remember = () => writeStored(EDIT_BAR_KEY, JSON.stringify(offset.current))
 
   useLayoutEffect(() => {
     const el = bar.current
     if (!el) return
-    let saved: string | null = null
-    try {
-      saved = localStorage.getItem(EDIT_BAR_KEY)
-    } catch {
-      /* private mode: start from the resting place */
-    }
-    placeBar(el, offset, parseOffset(saved))
+    placeBar(el, offset, parseOffset(readStored(EDIT_BAR_KEY)))
     const again = () => placeBar(el, offset, offset.current)
     const size = new ResizeObserver(again)
     size.observe(el)
