@@ -56,6 +56,17 @@ export const PROJECT_PAGE_LABELS = {
   en: { home: 'Home', crumbs: 'Breadcrumb', back: 'Back to Projects', notFound: 'Project not found', visit: 'Visit site', num: 'Project', type: 'Type', client: 'Client', scope: 'Scope', link: 'Link', noPage: '這個專案沒有內頁，卡片直接連到外部連結。在右邊的面板可以建立內頁。', untranslated: 'This project is only in Chinese for now.' },
 }
 
+/** The site's name alone: a long path does not fit in the fact row. A link that is not a full URL shows as written. */
+export function linkLabel(link: string): string {
+  try {
+    const host = new URL(link).hostname.replace(/^www\./, '')
+    if (host) return host
+  } catch {
+    /* relative, or not a URL at all */
+  }
+  return link.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
+}
+
 /** The row of facts a project's page opens with, read from its card: [label, lines, href?]. Empty ones are left out. */
 export type ProjectFact = [label: string, lines: string[], href?: string]
 export function projectFacts(item: WorkItem, lang: Lang): ProjectFact[] {
@@ -65,7 +76,7 @@ export function projectFacts(item: WorkItem, lang: Lang): ProjectFact[] {
     [t.type, [SECTION_NAMES[projectType(item)][lang]]],
     item.client && [t.client, [item.client]],
     item.tags?.length && [t.scope, item.tags],
-    link && [t.link, [link.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')], link],
+    link && [t.link, [linkLabel(link)], link],
   ]
   return facts.filter((f): f is ProjectFact => Array.isArray(f))
 }

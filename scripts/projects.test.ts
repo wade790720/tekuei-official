@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { localizeWork, projectLink, publishedWork, withCodeProjects } from '../src/lib/projectHref.ts'
+import { linkLabel } from '../src/data/work.ts'
 import type { CodeProject } from '../src/lib/projectHref.ts'
 import type { WorkData } from '../src/lib/siteData.ts'
 import { docOf, nodeAt } from './testDoc.ts'
@@ -57,4 +58,11 @@ test('readers never get a draft, and a card links to the page when there is one'
 test('a card whose saved link is javascript: opens the project page, not the script', () => {
   assert.equal(projectLink({ id: 'x', link: 'javascript:alert(1)' }), '/projects/x')
   assert.equal(projectLink({ id: 'y', link: 'https://y.example/' }), 'https://y.example/')
+})
+
+test('the Link fact shows the site name, and a link that is not a full URL as written', () => {
+  assert.equal(linkLabel('https://www.matsu-biennial.tw/zh/about/'), 'matsu-biennial.tw')
+  assert.equal(linkLabel('https://'), '')
+  assert.equal(linkLabel('mailto:hi@example.com'), 'mailto:hi@example.com')
+  assert.equal(linkLabel('/projects/sre'), '/projects/sre')
 })
