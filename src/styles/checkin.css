@@ -106,7 +106,6 @@
   border: 0.5px solid var(--checkin-border);
   border-radius: 1px;
   padding: var(--space-12) var(--space-8) var(--space-12);
-  overflow: hidden;
 }
 
 .checkin-card form {
@@ -150,6 +149,8 @@
 }
 
 .checkin-phone-field {
+  position: relative;
+  z-index: 2;
   margin-bottom: var(--space-2);
   width: 100%;
   min-width: 0;
@@ -161,6 +162,7 @@
 }
 
 .checkin-phone-container.react-tel-input {
+  container-type: inline-size;
   width: 100%;
   font-family: var(--checkin-fc);
 }
@@ -221,12 +223,12 @@
 }
 
 .checkin-phone-dropdown.country-list {
-  width: min(320px, 85vw);
+  width: 100cqw;
   max-height: 260px;
   margin: var(--space-1) 0 0;
   border: 0.5px solid var(--checkin-border);
   border-radius: 1px;
-  background: color-mix(in srgb, var(--surface-2) 98%, transparent);
+  background: var(--surface-2);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.50);
   font-family: var(--checkin-fc);
   z-index: 20;
@@ -239,13 +241,13 @@
   transition: background-color var(--duration-fast) var(--ease-touch);
 }
 
-.checkin-phone-dropdown .country.highlight {
-  background: var(--accent-a3);
+.checkin-phone-container .country-list.checkin-phone-dropdown .country.highlight {
+  background: var(--ember-whisper);
 }
 
 @media (hover: hover) {
-  .checkin-phone-dropdown .country:hover {
-    background: var(--accent-a3);
+  .checkin-phone-container .country-list.checkin-phone-dropdown .country:hover {
+    background: var(--ember-whisper);
   }
 }
 
@@ -253,20 +255,36 @@
   color: var(--checkin-muted);
 }
 
-.checkin-phone-search {
-  width: calc(100% - 20px) !important;
-  margin: var(--space-3) !important;
-  padding: var(--space-3) var(--space-3) !important;
-  border: 0.5px solid var(--checkin-border) !important;
-  border-radius: 1px !important;
-  font-family: var(--checkin-fc) !important;
-  font-size: var(--type-caption) !important;
-  background: var(--surface-1) !important;
+.checkin-phone-container .country-list .search.checkin-phone-search {
+  padding: var(--space-2);
+  border-bottom: 0.5px solid var(--checkin-border);
+  background: var(--surface-2);
 }
 
-.checkin-phone-search:focus {
-  border-color: var(--ember) !important;
-  outline: none;
+/* 16px: iOS Safari zooms the page into any smaller input */
+.checkin-phone-container .country-list .checkin-phone-search .search-box {
+  width: 100%;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 0.5px solid var(--checkin-border);
+  border-radius: 1px;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font-family: var(--checkin-fc);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.checkin-phone-container .country-list .checkin-phone-search .search-box::placeholder {
+  color: var(--checkin-hint);
+}
+
+.checkin-phone-container .country-list .checkin-phone-search .search-box::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.checkin-phone-container .country-list .checkin-phone-search .search-box:focus {
+  border-color: var(--ember);
 }
 
 .checkin-preview {

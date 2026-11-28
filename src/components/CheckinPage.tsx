@@ -296,7 +296,7 @@ export default function CheckinPage() {
                     })
                   }}
                   enableSearch
-                  disableSearchIcon={false}
+                  disableSearchIcon
                   searchPlaceholder={ui.searchPlaceholder}
                   searchNotFound={ui.searchNotFound}
                   countryCodeEditable={false}
