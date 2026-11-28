@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router'
 import { Breadcrumbs, BreadcrumbsItem } from './Breadcrumbs.tsx'
 import { Button } from './Button.tsx'
 import { RichText } from './RichText.tsx'
@@ -10,47 +10,50 @@ import { useAdmin } from '../context/admin.ts'
 import { useWork } from '../context/work.ts'
 import { projectCover, withProjectVideo } from '../data/workMedia.ts'
 import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, projectBody, projectFacts, projectNumber, projectTitle, projectType } from '../data/work.ts'
+import { projectInEnglish } from '../lib/projectHref.ts'
 import { useWorkContent } from '../hooks/useWorkContent.ts'
-import { useLang } from '../i18n'
+import { useLang, useLocalePath } from '../i18n'
 import { uploadSiteImage } from '../lib/adminApi.ts'
-import { docText, getDoc, hasBody, safeHref } from '../lib/richText.ts'
-import type { Doc } from '../lib/siteData.ts'
+import { docText, getDoc, safeHref } from '../lib/richText.ts'
+import type { Doc, WorkData } from '../lib/siteData.ts'
 import '../styles/journal.css'
 import '../styles/project.css'
+import { DefaultHead } from './DefaultHead.tsx'
+import { PageHead } from './PageHead.tsx'
+import { creativeWorkLd, firstImage, imageUrl, pageUrl } from '../lib/seo.ts'
 
 // Only Wade edits, so Tiptap and the panel load in edit mode, not for every visitor.
 const Editor = lazy(() => import('./Editor.tsx').then((m) => ({ default: m.Editor })))
 const ProjectEditPanel = lazy(() => import('./work/WorkEditPanel.tsx').then((m) => ({ default: m.ProjectEditPanel })))
 
 /** A project whose page is written in the editor: a title and one rich-text body, set out in the Journal post column. */
-export default function ProjectPage() {
+export default function ProjectPage({ work }: { work: WorkData }) {
   const { slug = '' } = useParams<{ slug: string }>()
   const { lang } = useLang()
+  const localePath = useLocalePath()
   const admin = useAdmin()
   const cms = useWork()
-  const { content, loading } = useWorkContent()
+  const { content } = useWorkContent(work)
   const t = PROJECT_PAGE_LABELS[lang]
 
   const item = content.items.find((x) => x.id === slug)
   const editing = admin.editing && cms.isEditing
   const zh = item && projectBody(content, slug, 'zh')
   // Like an untranslated post: readers of an empty English page see the Chinese one.
-  const untranslated = !editing && lang === 'en' && !hasBody(projectBody(content, slug, 'en'))
+  const english = projectInEnglish(content, slug)
+  const untranslated = !editing && lang === 'en' && !english
   const doc = getDoc(untranslated ? zh : item && projectBody(content, slug, lang))
   const title = item ? projectTitle(item) : ''
-
-  // A project that only exists in R2 is missing until the remote data arrives.
-  if (!zh && loading) return <div className="site-loading-bar" />
 
   // A project with no page of its own (its card links elsewhere) still opens here in edit mode, for its fields.
   if (!item || (!zh && !editing)) {
     return (
       <div className="journal-page journal-page--post">
-        {item ? <title>{`${title} · Projects · TEKUEI`}</title> : <title>Not Found · Projects · TEKUEI</title>}
+        <DefaultHead title={item ? `${title} · Projects · TEKUEI` : 'Not Found · Projects · TEKUEI'} />
         <div className="journal-not-found">
           <div className="journal-not-found__num">—</div>
           <h1>{t.notFound}</h1>
-          <Link to="/projects">{t.back}</Link>
+          <Link to={localePath('/projects')}>{t.back}</Link>
         </div>
       </div>
     )
@@ -65,11 +68,19 @@ export default function ProjectPage() {
   const saved = <RichText doc={withProjectVideo(doc, slug, lang)} />
   const cover = projectCover(item)
   const link = safeHref(item.link)
+  const description = docText(doc).slice(0, 120) || item.client
 
   return (
     <div className="journal-page journal-page--post">
-      <title>{`${title} · Projects · TEKUEI`}</title>
-      <meta name="description" content={docText(doc).slice(0, 120) || item.client} />
+      <PageHead
+        title={`${title} · Projects · TEKUEI`}
+        description={description}
+        path={`/projects/${slug}`}
+        type="article"
+        image={imageUrl(cover) ?? firstImage(doc)}
+        ld={creativeWorkLd({ name: title, description, url: pageUrl(`/projects/${slug}`, english ? lang : 'zh'), tags: item.tags }, english ? lang : 'zh')}
+        english={english}
+      />
       <main>
         {cover ? <ProjectHero cover={cover} num={`${t.num} ${projectNumber(content.items, slug)}`} title={title} facts={projectFacts(item, lang)} /> : null}
         <article className={`journal-post project-post${cover ? ' project-post--cover' : ''}`} lang={untranslated ? 'zh-Hant' : undefined}>
@@ -79,8 +90,8 @@ export default function ProjectPage() {
                 {/* Wrapped so the fade-in transition does not replace the links' hover transition */}
                 <div className="fade-in">
                   <Breadcrumbs label={t.crumbs} className="journal-post__crumbs">
-                    <BreadcrumbsItem href="/">{t.home}</BreadcrumbsItem>
-                    <BreadcrumbsItem href="/projects">Projects</BreadcrumbsItem>
+                    <BreadcrumbsItem href={localePath('/')}>{t.home}</BreadcrumbsItem>
+                    <BreadcrumbsItem href={localePath('/projects')}>Projects</BreadcrumbsItem>
                     <BreadcrumbsItem>{title}</BreadcrumbsItem>
                   </Breadcrumbs>
                 </div>
@@ -132,7 +143,7 @@ export default function ProjectPage() {
           </div>
 
           <footer className="journal-post__footer">
-            <Link to="/projects" className="journal-post__back journal-post__back--end">
+            <Link to={localePath('/projects')} className="journal-post__back journal-post__back--end">
               <span className="journal-post__back-line" aria-hidden />
               {t.back}
             </Link>

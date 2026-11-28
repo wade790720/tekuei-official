@@ -1,6 +1,6 @@
 // Scroll reveal for the whole site: any element with class `fade-in` gets `is-visible`
 // once 15% of it is on screen. Offset and timing live in each page's CSS.
-// Same pattern as mountClickSounds: App.tsx mounts it once, components only write the class.
+// Same pattern as mountClickSounds: root.tsx mounts it once, components only write the class.
 
 const SELECTOR = '.fade-in'
 

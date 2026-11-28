@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router'
 import { SidePanel, EyeOffIcon, PublishIcon, FormRow, PanelSection, SortRows, TagsInput } from '../SidePanel.tsx'
 import { TextField } from '../TextField.tsx'
 import { Button } from '../Button.tsx'
@@ -11,7 +11,7 @@ import { projectCover } from '../../data/workMedia.ts'
 import { LABS } from '../../labs/index.ts'
 import { CMS_LABELS as T } from '../../data/admin.ts'
 import { useCmsEditing } from '../../hooks/useCmsEditing.ts'
-import { useLang } from '../../i18n'
+import { useLang, useLocalePath } from '../../i18n'
 import { uploadSiteImage } from '../../lib/adminApi.ts'
 import { emptyDoc, getDoc } from '../../lib/richText.ts'
 import type { Doc, ProjectType, WorkData, WorkItem } from '../../lib/siteData.ts'
@@ -43,6 +43,7 @@ function SectionPicker({ value, onSelect }: { value: ProjectType; onSelect: (val
 
 /** The Projects list: add a project, reorder and delete. A project's own fields are edited on its page. */
 export function WorkListEditPanel() {
+  const localePath = useLocalePath()
   const navigate = useNavigate()
   const { cms, ready, panelProps } = useWorkEditing()
   const [slug, setSlug] = useState('')
@@ -65,7 +66,7 @@ export function WorkListEditPanel() {
       d.content = { zh: { ...d.content?.zh, [slug]: { doc: emptyDoc() } }, en: { ...d.content?.en, [slug]: { doc: emptyDoc() } } }
     })
     setSlug('')
-    navigate(`/projects/${slug}`)
+    navigate(localePath(`/projects/${slug}`))
   }
 
   const remove = (item: WorkItem) => {
@@ -113,7 +114,7 @@ export function WorkListEditPanel() {
             <>
               <div className="cms-post__num">{String(i + 1).padStart(2, '0')}</div>
               <div className="cms-post__body">
-                <Link to={`/projects/${item.id}`} className="cms-post__title">
+                <Link to={localePath(`/projects/${item.id}`)} className="cms-post__title">
                   {projectTitle(item) || '（未命名）'}
                 </Link>
                 <div className="cms-post__meta">

@@ -9,7 +9,7 @@
 
 import type { Body, Doc, LegacyBlock } from './siteData.ts'
 
-/** Every block node a body can hold. RichText (the page) and seo.ts docHtml (the crawler HTML) each render all of them. */
+/** Every block node a body can hold. RichText renders all of them. */
 export const BLOCK_TYPES = [
   'paragraph',
   'lead',

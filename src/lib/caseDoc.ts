@@ -20,7 +20,6 @@ export interface CaseNamed {
 /** One case in one language, as written in src/data/cases. */
 export interface CaseStudy {
   slug: string
-  documentTitle: string
   hero: {
     num: string
     titleEm?: string
@@ -39,7 +38,7 @@ export interface CaseStudy {
   }
   videos?: { src: string; poster?: string; caption?: string }[]
 }
-/** A case with the pictures stored in R2 (useCaseCms). */
+/** A case with the pictures stored in R2 (useCaseContent). */
 export type CaseWithImages = CaseStudy & {
   hero: CaseStudy['hero'] & { image: ImageRef }
   media: CaseStudy['media'] & { fullWidthImage: ImageRef; inlineImage: ImageRef }

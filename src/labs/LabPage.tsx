@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router'
 import './lab.css'
 import { Breadcrumbs, BreadcrumbsItem } from '../components/Breadcrumbs.tsx'
 import { Button } from '../components/Button.tsx'
@@ -13,7 +13,9 @@ import { writeClipboard } from '../lib/clipboard.ts'
 import { LAB_BY_ID, LAB_LABELS, LABS, labHref, liveHref } from './index.ts'
 import { LAB_THUMBS } from './media.ts'
 import { LAB_PROMPTS } from './prompts.ts'
-import { useLang } from '../i18n'
+import { useLang, useLocalePath } from '../i18n'
+import { PageHead } from '../components/PageHead.tsx'
+import { creativeWorkLd, pageUrl } from '../lib/seo.ts'
 
 /**
  * One lab, laid out like a Framer Marketplace component page: title and actions, a playable preview,
@@ -23,7 +25,8 @@ import { useLang } from '../i18n'
 export default function LabPage() {
   const { slug: id } = useParams()
   const { lang } = useLang()
-  const item = id ? LAB_BY_ID[id] : undefined
+  const localePath = useLocalePath()
+  const item = id && Object.hasOwn(LAB_BY_ID, id) ? LAB_BY_ID[id] : undefined
 
   if (!item) return <CaseStub />
   const text = item[lang]
@@ -32,13 +35,18 @@ export default function LabPage() {
 
   return (
     <>
-      <title>{`${text.title} · TEKUEI`}</title>
-      <meta name="description" content={text.summary} />
+      <PageHead
+        title={`${text.title} · Labs · TEKUEI`}
+        description={text.summary}
+        path={labHref(item.id)}
+        type="article"
+        ld={creativeWorkLd({ name: text.title, description: text.summary, url: pageUrl(labHref(item.id), lang), tags: text.tags }, lang)}
+      />
       <main className="lab">
         <header className="lab__head">
           <Breadcrumbs label={labels.crumbs} className="lab__crumbs">
-            <BreadcrumbsItem href="/">{labels.home}</BreadcrumbsItem>
-            <BreadcrumbsItem href="/projects">Projects</BreadcrumbsItem>
+            <BreadcrumbsItem href={localePath('/')}>{labels.home}</BreadcrumbsItem>
+            <BreadcrumbsItem href={localePath('/projects')}>Projects</BreadcrumbsItem>
             <BreadcrumbsItem>{text.title}</BreadcrumbsItem>
           </Breadcrumbs>
           <div className="lab__heading">
@@ -47,7 +55,7 @@ export default function LabPage() {
             <TagList tags={[labels.category, ...text.tags]} variant="outline" />
           </div>
           <div className="lab__actions">
-            <Button as="a" href={liveHref(item.id)} target="_blank" rel="noreferrer" variant="ghost">
+            <Button as="a" href={liveHref(item.id, lang)} target="_blank" rel="noreferrer" variant="ghost">
               {labels.showPreview} <span aria-hidden>↗</span>
             </Button>
             <CopyPromptButton prompt={LAB_PROMPTS[item.id]} labels={labels} />
@@ -55,7 +63,8 @@ export default function LabPage() {
         </header>
 
         <Card className="lab__preview" style={item.previewAspect ? ({ '--lab-aspect': item.previewAspect } as CSSProperties) : undefined}>
-          <iframe src={liveHref(item.id)} title={`${text.title} · ${labels.preview}`} />
+          {/* A new iframe per language: changing the src of the same one would add a history entry, and Back would only rewind the preview. */}
+          <iframe key={lang} src={liveHref(item.id, lang)} title={`${text.title} · ${labels.preview}`} />
         </Card>
 
         <section className="lab__about" aria-labelledby="lab-about-title">
@@ -90,7 +99,7 @@ export default function LabPage() {
           <ul className="lab__more-list">
             {others.map((x) => (
               <li key={x.id}>
-                <Link to={labHref(x.id)} className="lab__more-link">
+                <Link to={localePath(labHref(x.id))} className="lab__more-link">
                   <Card className="lab__more-thumb">
                     <img src={LAB_THUMBS[x.id].url} alt="" loading="lazy" />
                   </Card>

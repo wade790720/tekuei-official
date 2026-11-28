@@ -29,3 +29,7 @@ dist-ssr
 # Impeccable caches and generated files (config.json is tracked)
 .impeccable/*
 !.impeccable/config.json
+
+# React Router typegen and build output
+.react-router/
+build/

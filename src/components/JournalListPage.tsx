@@ -1,14 +1,15 @@
 import { lazy, Suspense, useEffect, useRef } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { Skeleton } from './Skeleton.tsx'
+import { Link, useSearchParams } from 'react-router'
 import { Tag, TagList } from './Tag.tsx'
-import { JOURNAL_FILTER, JOURNAL_HEADER, JOURNAL_META, postTags, readableJournal, tagCounts } from '../data/journal.ts'
-import { useJournal } from '../context/journal.ts'
+import { JOURNAL_FILTER, JOURNAL_HEADER, JOURNAL_META, postTags, tagCounts } from '../data/journal.ts'
+import { useJournalContent } from '../context/journal.ts'
 import { useAdmin } from '../context/admin.ts'
-import { useLang } from '../i18n'
+import { useLang, useLocalePath } from '../i18n'
 import { mountGlyphField } from '../lib/glyphField.ts'
 import { SiteFooter } from './SiteFooter.tsx'
-import type { ReadablePost } from '../data/journal.ts'
+import { PageHead } from './PageHead.tsx'
+import { blogLd } from '../lib/seo.ts'
+import type { ReadableJournal, ReadablePost } from '../data/journal.ts'
 import type { JournalPost } from '../lib/siteData.ts'
 import '../styles/work.css'
 import '../styles/journal.css'
@@ -19,14 +20,14 @@ const JournalListEditPanel = lazy(() => import('./journal/JournalEditPanel.tsx')
 // Tells the post page it was opened from this list, so its back link can return here (JournalPostPage BackLink).
 const FROM_LIST = { fromList: 1 }
 
-export default function JournalListPage() {
+/** @param journal  the loader's published posts, without bodies */
+export default function JournalListPage({ journal }: { journal: ReadableJournal }) {
   const { lang } = useLang()
+  const localePath = useLocalePath()
   const meta = JOURNAL_META[lang]
   const header = JOURNAL_HEADER[lang]
-  const { content, loading } = useJournal()
   const { editing } = useAdmin()
-  // Until R2 answers, content holds the bundled default posts; show placeholders instead of swapping them out.
-  const allPosts: ReadablePost[] = loading ? [] : (editing ? content : readableJournal(content)).posts[lang]
+  const allPosts: ReadablePost[] = useJournalContent(journal).posts[lang]
   // The chosen tag lives in the URL (?tag=AI), so a filtered list can be shared.
   const [params, setParams] = useSearchParams()
   const tag = params.get('tag')?.toUpperCase() ?? null
@@ -42,8 +43,7 @@ export default function JournalListPage() {
 
   return (
     <div className="journal-page">
-      <title>{meta.title}</title>
-      <meta name="description" content={meta.description} />
+      <PageHead title={meta.title} description={meta.description} path="/journal" ld={blogLd(meta, allPosts, lang)} />
       <main>
       <header className="journal-header">
         <canvas className="journal-header__glyphs" ref={glyphs} aria-hidden />
@@ -61,14 +61,13 @@ export default function JournalListPage() {
             </p>
           </div>
           <div className="journal-header__count" aria-hidden>
-            {loading ? '—' : String(posts.length).padStart(2, '0')} Entries
+            {String(posts.length).padStart(2, '0')} Entries
           </div>
         </div>
         <div className="journal-header__slash" aria-hidden />
       </header>
 
       <div className="journal-list">
-        {loading ? <ListSkeleton label={header.loading} /> : null}
         <TagFilter posts={allPosts} tag={tag} onChoose={chooseTag} />
         {latest ? <FeaturedPost post={latest} /> : null}
         {byYear(rest).map(([year, group]) => (
@@ -77,7 +76,7 @@ export default function JournalListPage() {
             <ol className="journal-year__rows">
               {group.map((post) => (
                 <li key={post.slug}>
-                  <Link to={`/journal/${post.slug}`} state={FROM_LIST} className="fade-in journal-row">
+                  <Link to={localePath(`/journal/${post.slug}`)} state={FROM_LIST} className="fade-in journal-row">
                     <span className="journal-row__num">{post.num}</span>
                     <span className="journal-row__title">{post.title}</span>
                     <span className="journal-row__tags">
@@ -131,53 +130,6 @@ function TagFilter({ posts, tag, onChoose }: TagFilterProps) {
   )
 }
 
-/** Placeholders in the shape of the featured card and three rows, using the same grids. */
-function ListSkeleton({ label }: { label: string }) {
-  return (
-    <div className="journal-skeleton" role="status" aria-label={label}>
-      <div className="journal-filter tag-group">
-        {[64, 96, 88, 72].map((w) => (
-          <Skeleton key={w} className="journal-skeleton__pill" style={{ width: w }} />
-        ))}
-      </div>
-      <div className="journal-card">
-        <div className="journal-card__index">
-          <Skeleton className="journal-skeleton__num" />
-        </div>
-        <div className="journal-card__body">
-          <Skeleton className="journal-skeleton__meta" />
-          <Skeleton className="journal-skeleton__title" />
-          <Skeleton className="journal-skeleton__title journal-skeleton__title--short" />
-          <Skeleton className="journal-skeleton__line" />
-          <Skeleton className="journal-skeleton__line journal-skeleton__line--short" />
-        </div>
-      </div>
-      <div className="journal-year">
-        <div className="journal-year__label">
-          <Skeleton className="journal-skeleton__num" />
-        </div>
-        <div className="journal-year__rows">
-          {[70, 55, 62].map((w) => (
-            <div className="journal-row" key={w}>
-              <span className="journal-row__num">
-                <Skeleton className="journal-skeleton__num" />
-              </span>
-              <Skeleton className="journal-skeleton__row-title" style={{ width: `${w}%` }} />
-              <span />
-              <span className="journal-row__date">
-                <Skeleton className="journal-skeleton__num" />
-              </span>
-              <span className="journal-row__min">
-                <Skeleton className="journal-skeleton__num" />
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
 /** Posts in their stored order, grouped by the year of their date: [['2026', [...]], ...]. */
 function byYear<P extends JournalPost>(posts: P[]): [string, P[]][] {
   const groups = new Map<string, P[]>()
@@ -189,8 +141,9 @@ function byYear<P extends JournalPost>(posts: P[]): [string, P[]][] {
 }
 
 function FeaturedPost({ post }: { post: JournalPost }) {
+  const localePath = useLocalePath()
   return (
-    <Link to={`/journal/${post.slug}`} state={FROM_LIST} className="fade-in journal-card">
+    <Link to={localePath(`/journal/${post.slug}`)} state={FROM_LIST} className="fade-in journal-card">
       <div className="journal-card__index">
         <span className="journal-card__num">{post.num}</span>
         <span className="journal-card__line" aria-hidden />

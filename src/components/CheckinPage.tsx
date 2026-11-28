@@ -16,6 +16,8 @@ import { digitsToE164, validateCheckinPhone } from '../lib/phoneE164.ts'
 import type { PhoneCountry } from '../lib/phoneE164.ts'
 import { useLang } from '../i18n'
 import '../styles/checkin.css'
+import { PageHead } from './PageHead.tsx'
+import { HOME_META } from '../data/homepage.ts'
 
 const LIFF_SDK = 'https://static.line-scdn.net/liff/edge/2/sdk.js'
 const LOG = '[checkin]'
@@ -235,7 +237,7 @@ export default function CheckinPage() {
 
   return (
     <div className="checkin-page">
-      <title>{CHECKIN_META[lang].title}</title>
+      <PageHead title={CHECKIN_META[lang].title} description={HOME_META[lang].description} path="/checkin" oneUrl />
       <div
         className={['checkin-wrap', visible ? 'is-visible' : ''].filter(Boolean).join(' ')}
       >

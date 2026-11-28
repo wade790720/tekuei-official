@@ -1,13 +1,16 @@
 import { lazy, Suspense, useEffect, useRef, useSyncExternalStore } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { useWorkContent } from '../hooks/useWorkContent.ts'
 import { labWorkItems } from '../labs/media.ts'
 import { SiteFooter } from './SiteFooter.tsx'
 import { projectCover } from '../data/workMedia.ts'
+import { PageHead } from './PageHead.tsx'
+import { collectionLd } from '../lib/seo.ts'
 import { projectLink, PROJECT_SECTIONS, PROJECTS_PAGE, projectTitle, projectType, WORK_LABELS } from '../data/work.ts'
 import { useAdmin } from '../context/admin.ts'
-import { useLang } from '../i18n'
+import { useLang, useLocalePath } from '../i18n'
 import { mountMeasureLines } from '../lib/measureLines.ts'
+import type { ProjectListData } from '../lib/pageData.ts'
 import type { ProjectType, WorkItem } from '../lib/siteData.ts'
 import '../styles/work.css'
 
@@ -77,9 +80,10 @@ type CardItem = Omit<WorkItem, 'type' | 'caseHref' | 'thumbImage'> & {
 
 function WorkCard({ item, total }: { item: CardItem; total: string }) {
   const reduceMotion = useReduceMotion()
+  const localePath = useLocalePath()
   return (
     <article className="work-card fade-in">
-      <Link className="work-card__link" to={item.caseHref}>
+      <Link className="work-card__link" to={localePath(item.caseHref)}>
         <div className="work-card__media" style={!item.thumbImage?.url ? { background: item.thumbBg } : undefined}>
           {item.thumbImage?.video && !reduceMotion ? (
             <video
@@ -112,8 +116,9 @@ function WorkCard({ item, total }: { item: CardItem; total: string }) {
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
-export default function WorkListPage() {
-  const { content, loading } = useWorkContent()
+/** @param work  the loader's published cards, each already pointing where it goes; the labs are not among them and are always in English */
+export default function WorkListPage({ work }: { work: ProjectListData }) {
+  const { content } = useWorkContent(work)
   const { lang } = useLang()
   const { editing } = useAdmin()
   const measure = useRef<HTMLCanvasElement>(null)
@@ -138,55 +143,55 @@ export default function WorkListPage() {
   })).filter((section) => section.items.length)
   const total = pad(shown)
 
-  // The header is not there until the data is in
   useEffect(() => {
-    if (loading || !measure.current || !block.current) return
+    if (!measure.current || !block.current) return
     return mountMeasureLines(measure.current, { block: block.current })
-  }, [loading])
+  }, [])
 
   return (
     <div className="work-page">
-      <title>{page.title}</title>
-      <meta name="description" content={page.description} />
-      {/* Nothing until the data is in: a loading bar and the footer would flash at the top for a moment */}
-      {loading ? (
-        <div className="work-page-loading" role="status" aria-label={WORK_LABELS[lang].loading} />
-      ) : (
-        <>
-          <header className="work-page-header">
-            <canvas className="work-page-header__measure" ref={measure} aria-hidden />
-            <div className="work-page-header-inner" ref={block}>
-              <div>
-                <div className="pre fade-in">{page.pre}</div>
-                <h1 className="fade-in" style={{ '--i': 1 }}>{page.heading}</h1>
-              </div>
-              <div className="count fade-in" style={{ '--i': 2 }}>
-                {total} {page.countSuffix}
-              </div>
-            </div>
-          </header>
-
-          <div className="work-list">
-            {sections.map((section) => (
-              <section key={section.id} aria-labelledby={`work-section-${section.id}`}>
-                <div className="work-section__head fade-in">
-                  <h2 className="work-section__title" id={`work-section-${section.id}`}>
-                    {section[lang]}
-                  </h2>
-                  <span className="work-section__count">{pad(section.items.length)}</span>
-                </div>
-                <div className="work-grid">
-                  {section.items.map((item) => (
-                    <WorkCard key={item.id} item={item} total={total} />
-                  ))}
-                </div>
-              </section>
-            ))}
+      <PageHead
+        title={page.title}
+        description={page.description}
+        path="/projects"
+        ld={collectionLd(
+          page,
+          all.filter((w) => w.caseHref.startsWith('/')).map((w) => ({ name: projectTitle(w), href: w.caseHref, english: !work.items.some((x) => x.id === w.id) || work.inEnglish.includes(w.id) })),
+          lang,
+        )}
+      />
+      <header className="work-page-header">
+        <canvas className="work-page-header__measure" ref={measure} aria-hidden />
+        <div className="work-page-header-inner" ref={block}>
+          <div>
+            <div className="pre fade-in">{page.pre}</div>
+            <h1 className="fade-in" style={{ '--i': 1 }}>{page.heading}</h1>
           </div>
+          <div className="count fade-in" style={{ '--i': 2 }}>
+            {total} {page.countSuffix}
+          </div>
+        </div>
+      </header>
 
-          <SiteFooter />
-        </>
-      )}
+      <div className="work-list">
+        {sections.map((section) => (
+          <section key={section.id} aria-labelledby={`work-section-${section.id}`}>
+            <div className="work-section__head fade-in">
+              <h2 className="work-section__title" id={`work-section-${section.id}`}>
+                {section[lang]}
+              </h2>
+              <span className="work-section__count">{pad(section.items.length)}</span>
+            </div>
+            <div className="work-grid">
+              {section.items.map((item) => (
+                <WorkCard key={item.id} item={item} total={total} />
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <SiteFooter />
       {editing ? (
         <Suspense fallback={null}>
           <WorkListEditPanel />

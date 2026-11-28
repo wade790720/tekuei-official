@@ -17,6 +17,27 @@ html {
   scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
+/* Every page (root.tsx adds the class on the server): html is the scroll container, so it scrolls and the header can stay fixed */
+html.has-scroll-document {
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100%;
+  height: auto;
+
+  scroll-behavior: auto;
+  scrollbar-gutter: stable;
+}
+
+html.has-scroll-document body, html.has-scroll-document #root {
+  min-height: 100vh;
+  height: auto;
+}
+
+/* hidden would make body a scroll container that never scrolls, and position: sticky would stick to it */
+html.has-scroll-document body {
+  overflow: clip;
+}
+
 html.home-ink {
   background: #0b0b0d;
   -webkit-user-select: none;
@@ -64,7 +85,7 @@ figcaption {
   margin: 0;
 }
 
-/* A page that failed to draw (PageBoundary in App.tsx): two quiet lines in the middle of the screen. */
+/* A page that failed to draw (the ErrorBoundary in root.tsx): two quiet lines in the middle of the screen. */
 .page-error {
   display: grid;
   place-content: center;

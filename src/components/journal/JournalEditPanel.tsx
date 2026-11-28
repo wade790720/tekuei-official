@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router'
 import { SidePanel, EyeOffIcon, FormRow, PanelSection, SortRows, TagsInput } from '../SidePanel.tsx'
 import { TextArea } from '../TextArea.tsx'
 import { TextField } from '../TextField.tsx'
@@ -9,7 +9,7 @@ import { useJournal } from '../../context/journal.ts'
 import { differsOnlyIn, parseTags, postTags, today } from '../../data/journal.ts'
 import { CMS_LABELS as T } from '../../data/admin.ts'
 import { useCmsEditing } from '../../hooks/useCmsEditing.ts'
-import { useLang } from '../../i18n'
+import { useLang, useLocalePath } from '../../i18n'
 import { emptyDoc, getDoc } from '../../lib/richText.ts'
 import { LANGS } from '../../lib/siteData.ts'
 import type { Doc, JournalData, JournalPost } from '../../lib/siteData.ts'
@@ -120,6 +120,7 @@ export function JournalPostEditPanel({ slug }: { slug: string }) {
 
 export function JournalListEditPanel() {
   const { lang } = useLang()
+  const localePath = useLocalePath()
   const navigate = useNavigate()
   const { cms, ready, panelProps } = useJournalEditing()
   const [slug, setSlug] = useState('')
@@ -176,7 +177,7 @@ export function JournalListEditPanel() {
       renumber(d)
     })
     setSlug('')
-    navigate(`/journal/${slug}`)
+    navigate(localePath(`/journal/${slug}`))
   }
 
   return (
@@ -205,7 +206,7 @@ export function JournalListEditPanel() {
             <>
               <div className="cms-post__num">{post.num}</div>
               <div className="cms-post__body">
-                <Link to={`/journal/${post.slug}`} className="cms-post__title">
+                <Link to={localePath(`/journal/${post.slug}`)} className="cms-post__title">
                   {post.title || '（未命名）'}
                 </Link>
                 <div className="cms-post__meta">

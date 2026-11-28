@@ -1,9 +1,9 @@
 // Dev-only page (/dev/component-library): the design system docs, laid out like the Radix Themes docs.
 // Sections: 概覽 (guides), 主題 (tokens), then the component groups. One page per entry.
-// App.tsx mounts it only when import.meta.env.DEV, so the page and its assets stay out of production.
+// src/routes.ts adds its route only in development, so the page and its assets stay out of production.
 import { useEffect, useState } from 'react'
 import type { ComponentType } from 'react'
-import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router'
 import { ColorPage } from './ColorPage.tsx'
 import { ComponentPage } from './ComponentPage.tsx'
 import { componentToc, type TocItem } from './componentToc.ts'

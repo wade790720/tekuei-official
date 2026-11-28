@@ -1,29 +1,38 @@
 import { useMemo } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router'
 import { PROJECT_PAGE_LABELS, projectFacts, projectNumber, projectTitle } from '../data/work.ts'
 import type { ProjectFact } from '../data/work.ts'
 import { projectCover } from '../data/workMedia.ts'
-import { useCaseCms } from '../hooks/useCaseCms.ts'
+import { useCaseContent } from '../hooks/useCaseContent.ts'
 import { useWorkContent } from '../hooks/useWorkContent.ts'
-import { useLang } from '../i18n'
+import { useLang, useLocalePath } from '../i18n'
+import type { CaseAssets, WorkData } from '../lib/siteData.ts'
 import { caseDoc } from '../lib/caseDoc.ts'
 import { RichText } from './RichText.tsx'
 import { SiteFooter } from './SiteFooter.tsx'
 import { ProjectHero } from './work/ProjectHero.tsx'
 import '../styles/journal.css'
 import '../styles/project.css'
+import { DefaultHead } from './DefaultHead.tsx'
+import { PageHead } from './PageHead.tsx'
+import { creativeWorkLd, imageUrl, pageUrl } from '../lib/seo.ts'
 
 /** One of the first three cases. Its text is in code; the page is laid out as a project page (ProjectPage). */
-export default function CaseStudyPage() {
+/**
+ * @param work  the loader's cards, for this case's number, title and facts
+ * @param assets  the pictures stored in R2 for this case
+ */
+export default function CaseStudyPage({ work, assets }: { work: WorkData; assets: CaseAssets | undefined }) {
   const { slug = '' } = useParams<{ slug: string }>()
   const { lang } = useLang()
-  const { content: data, loading } = useCaseCms(slug)
-  // The list the edit panel changes, so an edit there shows here before it is saved
-  const { items } = useWorkContent().content
+  const localePath = useLocalePath()
+  const data = useCaseContent(slug, assets)
+  // In edit mode, the list the edit panel changes, so an edit there shows here before it is saved
+  const { items } = useWorkContent(work).content
   const doc = useMemo(() => (data ? caseDoc(data, lang) : null), [data, lang])
   const t = PROJECT_PAGE_LABELS[lang]
 
-  if (loading || !data || !doc) return <div className="site-loading-bar" />
+  if (!data || !doc) return <DefaultHead />
 
   const { hero } = data
   // The card's number on the Projects list; a case that is not on the list keeps its own.
@@ -38,16 +47,25 @@ export default function CaseStudyPage() {
     ? [...projectFacts(item, lang), ...(item.link || !site ? [] : [[t.link, site.lines, site.href] satisfies ProjectFact])]
     : hero.meta.map((m): ProjectFact => [m.label, m.lines, m.href])
 
+  const title = item ? projectTitle(item) : [hero.titleEm, hero.titleRest].filter(Boolean).join(' ')
+  const description = item ? (item.descriptionLines ?? []).join('') || item.client : undefined
+
   return (
     <div className="journal-page journal-page--post">
-      <title>{data.documentTitle}</title>
-      {item ? <meta name="description" content={(item.descriptionLines ?? []).join('') || item.client} /> : null}
+      <PageHead
+        title={`${title} · Projects · TEKUEI`}
+        description={description}
+        path={`/projects/${slug}`}
+        type="article"
+        image={imageUrl(cover)}
+        ld={creativeWorkLd({ name: title, description, url: pageUrl(`/projects/${slug}`, lang), tags: item?.tags }, lang)}
+      />
       <main>
         <ProjectHero
           cover={cover}
           background={hero.bg}
           num={listed === '00' ? hero.num : `${t.num} ${listed}`}
-          title={item ? projectTitle(item) : [hero.titleEm, hero.titleRest].filter(Boolean).join(' ')}
+          title={title}
           facts={facts}
         />
         <article className="journal-post project-post project-post--cover">
@@ -55,7 +73,7 @@ export default function CaseStudyPage() {
             <RichText doc={doc} />
           </div>
           <footer className="journal-post__footer">
-            <Link to="/projects" className="journal-post__back journal-post__back--end">
+            <Link to={localePath('/projects')} className="journal-post__back journal-post__back--end">
               <span className="journal-post__back-line" aria-hidden />
               {t.back}
             </Link>

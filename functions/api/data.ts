@@ -6,13 +6,26 @@ const DATA = 'data.json'
 // R2's etag without quotes. Cloudflare turns the ETag weak (W/"...") when it compresses the response.
 const bareEtag = (header: string | null) => header?.replace(/^W\/|"/g, '') || undefined
 
+// A refusal (401, 429) must not be kept by a browser or a proxy: the next try with the code has to reach the server.
+const noStore = (res: Response) => {
+  res.headers.set('Cache-Control', 'no-store')
+  return res
+}
+
+/** The whole file, drafts included: only the editor reads it. Readers' pages get their own part from a loader. */
 export async function onRequestGet({ request, env }: ApiContext) {
+  // A request with no code at all is no guess: refused without counting, so a crawler or an old link that
+  // still asks for this file cannot use up the wrong-guess budget and lock Wade out.
+  if (!request.headers.has('Authorization')) return noStore(json({ error: 'Unauthorized' }, 401))
+  const denied = await adminGate(request, env)
+  if (denied) return noStore(denied)
+
   const obj = await env.BUCKET.get(DATA)
   if (!obj) {
     return json({ error: 'No data yet' }, 404)
   }
   // no-cache, not no-store: the browser keeps its copy but asks every time, and an unchanged file is
-  // answered with 304 and no body. Every page of the site reads this file, and it holds every post.
+  // answered with 304 and no body.
   const headers = {
     'Cache-Control': 'private, no-cache',
     ETag: obj.httpEtag, // the editor sends it back as If-Match when it saves

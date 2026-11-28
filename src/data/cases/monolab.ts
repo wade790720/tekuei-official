@@ -4,7 +4,6 @@ const FULL_BG = 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 94%
 
 const ZH: CaseStudy = {
   slug: 'monolab',
-  documentTitle: 'TEKUEI · MONOLAB',
   hero: {
     num: 'CASE 02',
     titleRest: 'MONOLAB',
@@ -82,7 +81,6 @@ const ZH: CaseStudy = {
 
 const EN: CaseStudy = {
   slug: 'monolab',
-  documentTitle: 'TEKUEI · MONOLAB',
   hero: {
     num: 'CASE 02',
     titleRest: 'MONOLAB',

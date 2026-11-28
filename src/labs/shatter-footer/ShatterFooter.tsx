@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { HOME_FOOTER } from '../../data/homepage.ts'
-import { useLang } from '../../i18n'
+import { useLang, useLocalePath } from '../../i18n'
 import { mountShatterImage } from './shatterImage.ts'
 import seaImage from './sea.webp'
 import './shatterFooter.css'
@@ -26,12 +26,13 @@ interface FooterLinkProps {
 }
 
 function FooterLink({ href, i, children }: FooterLinkProps) {
+  const localePath = useLocalePath()
   const props = { className: 'shatter-footer__link', style: stagger(i) }
   // An entry without an address is listed as plain text.
   if (!href) return <span {...props}>{children}</span>
   // Site routes go through the router; files such as /sitemap.xml need a real page load.
   return href.startsWith('/') && !/\.\w+$/.test(href) ? (
-    <Link to={href} {...props}>
+    <Link to={localePath(href)} {...props}>
       {children}
     </Link>
   ) : (
@@ -43,6 +44,7 @@ function FooterLink({ href, i, children }: FooterLinkProps) {
 
 function ShatterFooter() {
   const { lang } = useLang()
+  const localePath = useLocalePath()
   const footer = HOME_FOOTER[lang]
   const root = useRef<HTMLElement>(null)
   const sea = useRef<HTMLCanvasElement>(null)
@@ -72,7 +74,7 @@ function ShatterFooter() {
       </div>
       <div className="shatter-footer__cols">
         <div className="shatter-footer__col">
-          <Link to="/" className="shatter-footer__brand shatter-footer__r" style={stagger(0)}>
+          <Link to={localePath('/')} className="shatter-footer__brand shatter-footer__r" style={stagger(0)}>
             T E K U E I
           </Link>
           <div className="shatter-footer__sub shatter-footer__r" style={stagger(1)}>
