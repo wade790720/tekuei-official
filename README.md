@@ -100,10 +100,10 @@ node scripts/checkPages.ts <網址>       # 每一頁的中英文網址：狀態
 
 | 環境 | 分支 | Worker | R2 bucket |
 | --- | --- | --- | --- |
-| 正式站 tekuei.com | `main` | 目前仍是 Pages 專案 tekuei-official | `tekuei-cms` |
+| 正式站 tekuei.com | `main` | `tekuei-official` | `tekuei-cms` |
 | 整合測試 | `migrate/rr8` | `tekuei-next` | `tekuei-cms-next` |
 
-正式站還沒切換到 Worker，切換步驟和回復方式見 [docs/rr8-cutover.md](docs/rr8-cutover.md)。在那之前不要把 `migrate/rr8` 合併到 `main`：`main` 一有變動，Pages 就會自動部署。
+`main` 一有變動，Workers Builds 就執行 `npm run build` 和 `npx wrangler deploy`，部署到正式站。舊的 Pages 專案 tekuei-official 已暫停自動部署，只留著回復用，回復方式見 [docs/rr8-cutover.md](docs/rr8-cutover.md)。正式站的管理密碼用 `npx wrangler secret put ADMIN_SECRET --name tekuei-official` 設定。
 
 部署整合測試的 Worker：
 
