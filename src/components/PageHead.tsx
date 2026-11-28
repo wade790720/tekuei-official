@@ -1,5 +1,5 @@
 import { useLang } from '../i18n'
-import { headLinks, ldJson } from '../lib/seo.ts'
+import { headLinks, ldJson, siteLd } from '../lib/seo.ts'
 import { SITE_URL } from '../lib/siteUrl.ts'
 
 const DEFAULT_IMAGE = `${SITE_URL}/og.jpg`
@@ -13,7 +13,7 @@ export interface PageHeadProps {
   type?: 'website' | 'article' | 'profile'
   /** A full URL; the site's preview image (public/og.jpg) when there is none. */
   image?: string
-  /** The page's own JSON-LD. The site's WebSite and Person are in the root layout. */
+  /** The page's own JSON-LD. The site's WebSite and Person are added here, in the language the page shows. */
   ld?: object
   /**
    * The page has an English version of its own (postInEnglish, projectInEnglish, aboutInEnglish: the sitemap's
@@ -22,16 +22,21 @@ export interface PageHeadProps {
   english?: boolean
   /** /checkin and a lab's live page: one URL for both languages. */
   oneUrl?: boolean
+  /** Kept out of search results: a lab's live page, whose own page is /labs/<id>. */
+  noindex?: boolean
 }
 
 /** A page's head as search engines and link previews read it. The server draws it; React keeps it in <head>. */
-export function PageHead({ title, description, path, type = 'website', image, ld, english = true, oneUrl = false }: PageHeadProps) {
+export function PageHead({ title, description, path, type = 'website', image, ld, english = true, oneUrl = false, noindex = false }: PageHeadProps) {
   const { lang } = useLang()
+  // An untranslated English page shows the Chinese text: its JSON-LD says so.
+  const shown = oneUrl || english ? lang : 'zh'
   const links = oneUrl ? { canonical: `${SITE_URL}${path}`, alternates: [], locale: headLinks(path, lang, true).locale } : headLinks(path, lang, english)
   return (
     <>
       <title>{title}</title>
       {description ? <meta name="description" content={description} /> : null}
+      {noindex ? <meta name="robots" content="noindex" /> : null}
       <link rel="canonical" href={links.canonical} />
       {links.alternates.map(([hrefLang, href]) => (
         <link key={hrefLang} rel="alternate" hrefLang={hrefLang} href={href} />
@@ -49,6 +54,7 @@ export function PageHead({ title, description, path, type = 'website', image, ld
       <meta name="twitter:title" content={title} />
       {description ? <meta name="twitter:description" content={description} /> : null}
       <meta name="twitter:image" content={image ?? DEFAULT_IMAGE} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(siteLd(shown)) }} />
       {ld ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(ld) }} /> : null}
     </>
   )

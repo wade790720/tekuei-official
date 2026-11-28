@@ -14,11 +14,10 @@ import { htmlClassOf } from './lib/htmlClass.ts'
 import type { PageHandle } from './lib/htmlClass.ts'
 import { samePage, stripLang } from './lib/localePath.ts'
 import { mountReveal } from './lib/reveal.ts'
-import { ldJson, siteLd } from './lib/seo.ts'
 import { mountClickSounds } from './lib/uiSound.ts'
 
 // The site-wide part of the head: each page draws its own title, description, canonical, social tags and
-// JSON-LD (PageHead), so none of those is here.
+// JSON-LD (PageHead), the site's WebSite and Person included, so none of those is here.
 // Without JS nothing adds is-visible, so the entrance would leave the page blank.
 const NO_SCRIPT = '<style>.fade-in{opacity:1!important;transform:none!important;filter:none!important}</style>'
 
@@ -46,7 +45,6 @@ function Document({ children }: { children: ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta property="og:site_name" content="TEKUEI 德溎" />
         <meta name="twitter:card" content="summary_large_image" />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(siteLd(lang)) }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link

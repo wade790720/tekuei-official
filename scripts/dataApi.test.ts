@@ -155,6 +155,7 @@ test('reading data.json needs the code: drafts are in it', async () => {
   const e = env()
   const res = await get(e, undefined, null)
   assert.equal(res.status, 401)
+  assert.equal(res.headers.get('Cache-Control'), 'no-store')
   assert.doesNotMatch(await res.text(), /matsu/)
   // No code at all is no guess: a crawler or an old link cannot lock the site.
   assert.equal(fails(e), 0)
@@ -169,5 +170,8 @@ test('a wrong code for reading counts as a wrong guess, and the lock covers read
   assert.doesNotMatch(await res.text(), /matsu/)
   assert.equal(fails(e), 1)
   for (let i = 2; i <= 5; i++) await get(e, undefined, wrong(i))
-  assert.equal((await get(e)).status, 429, 'locked: even the right code reads nothing for a while')
+  const locked = await get(e)
+  assert.equal(locked.status, 429, 'locked: even the right code reads nothing for a while')
+  assert.equal(locked.headers.get('Cache-Control'), 'no-store')
+  assert.equal(res.headers.get('Cache-Control'), 'no-store')
 })

@@ -156,7 +156,8 @@ export function creativeWorkLd(page: { name: string; description: string | undef
   }
 }
 
-export function collectionLd(meta: { title: string; description: string }, cases: { name: string; href: string }[], lang: Lang) {
+/** @param cases  `english` false (projectInEnglish): listed at its Chinese URL, which is its canonical */
+export function collectionLd(meta: { title: string; description: string }, cases: { name: string; href: string; english: boolean }[], lang: Lang) {
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
@@ -165,7 +166,7 @@ export function collectionLd(meta: { title: string; description: string }, cases
     url: pageUrl('/projects', lang),
     inLanguage: IN_LANGUAGE[lang],
     author: PERSON,
-    hasPart: cases.map((w) => ({ '@type': 'CreativeWork', name: w.name, url: pageUrl(w.href, lang) })),
+    hasPart: cases.map((w) => ({ '@type': 'CreativeWork', name: w.name, url: pageUrl(w.href, w.english ? lang : 'zh') })),
   }
 }
 

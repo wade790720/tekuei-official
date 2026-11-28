@@ -1,7 +1,7 @@
 import { aboutInEnglish } from '../data/about.ts'
 import { readSite } from '../lib/cf.server.ts'
 import { aboutPage, readerWork } from '../lib/pageData.ts'
-import { localizeWork } from '../lib/projectHref.ts'
+import { localizeWork } from '../data/work.ts'
 import { llmsTxt, siteCases, siteJournal } from '../lib/seo.ts'
 import type { Route } from './+types/llms'
 
