@@ -11,19 +11,6 @@ const etagOf = (v: unknown) => (obj(v) && 'etag' in v && typeof v.etag === 'stri
 const textsOf = (v: unknown) => (obj(v) && 'texts' in v && Array.isArray(v.texts) && v.texts.every((t) => typeof t === 'string') ? v.texts : null)
 const urlOf = (v: unknown) => (obj(v) && 'url' in v && typeof v.url === 'string' ? v.url : null)
 
-export function apiPath(path: string): string {
-  const base = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '')
-  return path.startsWith('/') ? `${base}${path}` : `${base}/${path}`
-}
-
-/**
- * 走同網域 /api。開發時它是本機的 Worker 和 .wrangler/state 裡的 R2，不是正式站。
- * VITE_USE_REMOTE=false 時改用 bundled data.json。
- */
-export function isRemoteSync(): boolean {
-  return import.meta.env.VITE_USE_REMOTE !== 'false'
-}
-
 export function getAdminToken(): string {
   try {
     if (typeof window !== 'undefined') {
@@ -52,7 +39,8 @@ function inTurn(send: () => Promise<Response>): Promise<Response> {
   lastAdminRequest = next
   return next
 }
-const adminFetch = (path: string, init: RequestInit) => inTurn(() => fetch(apiPath(path), init))
+// Same origin: the Worker that serves the pages. Locally that is the dev server and the R2 in .wrangler/state.
+const adminFetch = (path: string, init: RequestInit) => inTurn(() => fetch(path, init))
 
 export async function loginAdmin(password: string): Promise<{ token: string }> {
   const trimmed = password.trim()

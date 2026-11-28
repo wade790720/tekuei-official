@@ -3,13 +3,14 @@
  * unexpected status, Location, Cache-Control, <html lang> or head (one title, a canonical, the hreflang links,
  * og:image, JSON-LD that parses). It requests every address in sitemap.xml and llms.txt, and reads data.json from
  * /api/data with the admin code to check that a published post's title and first paragraph are in its HTML and that
- * no draft shows up anywhere. The code is ADMIN_SECRET from the environment, else from .dev.vars, as the server has it.
+ * no draft shows up anywhere. The code (ADMIN_SECRET, else .dev.vars) is sent only to a server on this machine; against
+ * any other host those two checks are skipped, since a code that does not match there counts toward the lock.
  * Usage: node scripts/checkPages.ts <base URL> [--r2=broken|missing]
  *   --r2=broken   the local bucket's data.json is not valid JSON: every page that reads R2 answers 503
  *   --r2=missing  the local bucket has no data.json: those pages draw the bundled defaults (200)
  * The list and the expectations live here; a PR that adds or moves a page changes them in the same commit.
  */
-import { readFileSync } from 'node:fs'
+import { localAdminCode } from './localAdminCode.ts'
 import { publishedJournal, readableJournal } from '../src/data/journal.ts'
 import { docText, getDoc } from '../src/lib/richText.ts'
 import { parseSiteData } from '../src/lib/siteData.ts'
@@ -96,18 +97,6 @@ const [base, ...flags] = process.argv.slice(2)
 const r2 = flags.find((f) => f.startsWith('--r2='))?.slice(5)
 if (!base || (r2 && r2 !== 'broken' && r2 !== 'missing')) {
   console.error('Usage: node scripts/checkPages.ts <base URL> [--r2=broken|missing]')
-  process.exit(2)
-}
-
-function adminCode(): string {
-  if (process.env.ADMIN_SECRET) return process.env.ADMIN_SECRET
-  try {
-    const code = readFileSync('.dev.vars', 'utf8').match(/^ADMIN_SECRET\s*=\s*"?([^"\s]+)"?/m)?.[1]
-    if (code) return code
-  } catch {
-    /* no .dev.vars: the message below */
-  }
-  console.error('Set ADMIN_SECRET, or run from the repo with .dev.vars: data.json is read with the admin code.')
   process.exit(2)
 }
 
@@ -250,8 +239,10 @@ const problems: string[] = []
 if (r2 !== 'broken') await readSitemap()
 for (const page of ALL) problems.push(...(await check(page)))
 if (r2 !== 'broken') problems.push(...(await checkListed()))
-if (!r2) {
-  const res = await fetch(new URL('/api/data', base), { headers: { Authorization: `Bearer ${adminCode()}` } })
+const code = localAdminCode(base)
+if (!r2 && !code) console.log('\nPost body and drafts not checked: the admin code is sent only to localhost, 127.0.0.1 or [::1], and only when ADMIN_SECRET or .dev.vars has one.')
+if (!r2 && code) {
+  const res = await fetch(new URL('/api/data', base), { headers: { Authorization: `Bearer ${code}` } })
   if (!res.ok) problems.push(`/api/data with the admin code: ${res.status}`)
   else problems.push(...(await checkContent(parseSiteData(await res.json()).data)))
 }

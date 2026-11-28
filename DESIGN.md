@@ -147,7 +147,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 例外：導覽連結（頁首導覽列、語言按鈕、頁尾的連結）用 Instrument Serif，字級 `--type-nav`（13–15px）。頁首和頁尾的連結要一樣。這是刻意的，不要改成 `--font-label`。
 - CSS 一律寫 `font-family: var(--font-serif)` 或 `var(--font-label)`。頁面自己的字型變數（例如 `--j-fd`）都指向它們。不要另外寫字型名稱。
 - Canvas 不能用 CSS 變數。字型和顏色從 canvas 元素的 `getComputedStyle` 讀（參考 `glyphField.ts`）。讀不到時，直接寫 `"Instrument Serif", "Noto Serif TC", "Source Han Serif TC", serif`。
-- 三種字型都由 `index.html` 從 Google Fonts 載入。
+- 三種字型都由 `src/root.tsx` 的 head 從 Google Fonts 載入。
 - 斜體只對英文有效。中文的 `font-style: italic` 會變成瀏覽器合成的斜體。
 
 ## 版面
@@ -208,7 +208,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 - 會打開和關閉的選單和 Drawer 用 `transition`，不用 keyframes。進場寫在 `@starting-style`，退場寫在 `[data-closing]`。這樣動到一半改變方向時，會從目前的位置接著動。Tooltip 例外，維持 keyframes：它只淡出 90ms，而 transitions-agent 會把它滑動用的 300ms 誤判成打開的時長。
 - 依狀態切換的圖示（複製 → 打勾、播放 → 暫停）用 `icon-swap`：兩個圖示放在同一格，隱藏的那個加 `data-off`，用 opacity、`scale(0.25)`、`blur(4px)` 交叉淡入淡出，時長 `--duration-fast`。transition 在第一次渲染時不會播放，所以頁面剛載入時不會動。
 - `Button` 按下時縮成 `scale(0.96)`，不要小於 0.95。
-- 進場淡入：在元素加上 `fade-in` class。`src/lib/reveal.ts` 的 `mountReveal` 在 App.tsx 掛一次，元素露出 15% 時加上 `is-visible`，只觸發一次。不要為淡入包元件。
+- 進場淡入：在元素加上 `fade-in` class。`src/lib/reveal.ts` 的 `mountReveal` 在 `src/root.tsx` 掛一次，元素露出 15% 時加上 `is-visible`，只觸發一次。不要為淡入包元件。
 - 位移只用 `opacity` 和 `transform`。Journal、About、Projects 共用同一個進場（`src/index.css`）：位移 8px，加上 `blur(8px)` 到清楚，`--duration-reveal`，一組元素用 `--i` 依序間隔 80ms。首頁另外是 20px（`home.css`）。
 - 每個效果都要支援 `prefers-reduced-motion`：直接顯示最終畫面。
 - 效果停下後，停止 `requestAnimationFrame`。畫面外不要繼續算。
@@ -229,7 +229,7 @@ Token 都在 `src/styles/tokens.css`。底層是兩組 12 階色階：`--gray-1�
 | `src/labs/falling-figure/fallScene.ts` | About | 粒子人形往下掉，穿過刻字石板 |
 | `src/labs/shatter-footer/shatterImage.ts` | Labs 的 Shatter Footer | 版畫圖由碎片從左到右組合，然後靜止 |
 
-另有一個小互動：`src/lib/waterRipple.ts`。按下語言按鈕時，水波從點擊處擴散，整頁文字跟著扭曲，1 秒內結束，語言在 0.3 秒時切換（`playWaterRipple(x, y, onSwap)`，動完自己移除）。扭曲用 SVG 濾鏡，掛在 `<html>` 上，因為只有根元素的 filter 不會改變 `position: fixed`。
+另有一個小互動：`src/lib/waterRipple.ts`。按下語言按鈕時，水波從點擊處擴散，整頁文字跟著扭曲，1 秒內結束，語言在 0.3 秒時切換（`playWaterRipple(x, y, onSwap)`，動完自己移除）。切換是換到另一個語言的網址（`/journal` 和 `/en/journal`），但算同一頁：不捲回最上面，焦點不移動，也不重新讀資料，所以字在水波最強時就換好。扭曲用 SVG 濾鏡，掛在 `<html>` 上，因為只有根元素的 filter 不會改變 `position: fixed`。
 
 新效果照同樣的方式寫：`mountXxx(canvas, opts)`，回傳 cleanup。檔案開頭用一兩行說明效果和數字的來源。
 
@@ -254,7 +254,7 @@ useEffect(() => mountXxx(canvas.current), [])
 
 - 點擊連結和按鈕時有短音效（`src/lib/uiSound.ts`），用 Web Audio 即時合成，沒有音檔。參數來自 recent.design。
 - 預設開，沒有開關。減少動態效果開啟時不出聲。
-- `App.tsx` 在 document 掛一個點擊監聽，新元件不用另外接。預設：選單項目 `select`、儲存 `press`、連結 `pressGhost`、其他按鈕 `pressSoft`。
+- `src/root.tsx` 在 document 掛一個點擊監聽，新元件不用另外接。預設：選單項目 `select`、儲存 `press`、連結 `pressGhost`、其他按鈕 `pressSoft`。
 - 要換音效或靜音，在元素上寫 `data-sound="<名稱>"` 或 `data-sound="off"`。
 - 會連續點很多次的控制項不出聲。目前是 `Tag` 篩選按鈕。全部音效在 Component Library 的 playSound 頁可以試聽。
 
@@ -266,7 +266,7 @@ useEffect(() => mountXxx(canvas.current), [])
 - 聚焦框用 `--ember`（7.76:1）。`--ember-line` 只有 1.69:1，不可用在聚焦框。聚焦框和元件邊界至少 3:1。
 - 狀態不能只靠顏色。例如選取的標籤，除了金色框線，還要有填滿的底色。
 - `<html lang>` 跟著語言切換：中文 `zh-Hant`，英文 `en`。一段文字的語言和頁面不同時，在那一段加 `lang`。
-- 每頁的主要內容包在一個 `<main>` 裡。換頁後，焦點移到新頁面的 `<h1>`（`App.tsx` 的 `ScrollClasses`）。
+- 每頁的主要內容包在一個 `<main>` 裡。換頁後，焦點移到新頁面的 `<h1>`（`src/root.tsx` 的 `ScrollClasses`）。
 - 蓋住整頁的浮層（手機選單）打開時，`#root` 加上 `inert`，Tab 不會跑到被蓋住的頁面。浮層要 portal 到 `<body>`。
 - 頁首是固定的，`html` 設 `scroll-padding-top: var(--space-24)`，焦點和錨點不會停在頁首底下。
 - 只用 `box-shadow` 畫邊緣的元件，在 `@media (forced-colors: active)` 裡補一條 `CanvasText` 邊框。
