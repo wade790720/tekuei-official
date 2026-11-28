@@ -106,7 +106,7 @@ const UI = {
     errorTitle: 'Unable to Open Check-In',
     errorBody: ['Please close this window', 'and tap the link from the LINE message again.', '', 'If the issue persists,', 'please contact support.'],
     devBadge: 'Local dev mode (LIFF bypassed)',
-    dryRunNote: 'Dry-run: Worker not called — check Console',
+    dryRunNote: 'Dry-run: the Worker was not called. Check the console.',
   },
 }
 

@@ -4,41 +4,24 @@ TEKUEI 網站的待辦清單
 做完一項，就把 `[ ]` 改成 `[x]`，或直接刪掉那一行。
 「誰做」：**Wade** 表示要你決定或操作，**Claude** 表示可以交給 AI 做。
 
-## 一、現在就可以做
+## 內容
 
-### 文案
-
-- [ ] **Journal 列表頁的說明**（Wade）
-  目前是「Wade 當下遇到的事：行銷、AI、技術、實作過程。」位置在 `src/data/journal.ts` 的 `JOURNAL_META`。
-- [ ] **每篇文章的摘要**（Wade）
-  每篇手寫一句。SEO 和 llms.txt 會直接用這一句。在編輯面板裡改。
 - [ ] **檢查英文翻譯**（Wade）
-  首頁的 title 和 description、About 的 description，英文是 AI 翻的。
-
-## 二、有資料之後才能做
-
-- [ ] **聯絡方式**（Wade 提供，Claude 放上去）
-  需要 Email、IG、LINE 的帳號。沒有之前，不放假資料。
-- [ ] **分享圖 og:image**（Wade 提供圖，或請 Claude 先做佔位圖）
-  1200 × 630。沒有這張圖時，在 Threads、LINE 分享連結不會出現圖片。
+  首頁的 title、description 和 Hero 的文字，英文是 AI 翻的。位置在 `src/data/homepage.ts`。
+- [ ] **案例頁的內文**（Wade）
+  Matsu Biennial 和 MONOLAB 的中文內文還有「（內容待補）」，位置在 `src/data/cases/`。
 - [ ] **案例的新格式圖片**（Wade）
   案例改成以圖片為主的短格式時需要：封面、一組大圖。
-- [ ] **Wade 的照片**（Wade，選填）
+- [ ] **YouTube 頻道網址**（Wade 提供，Claude 放上去）
+  頁尾的 YouTube 圖示目前沒有連結，位置在 `src/data/homepage.ts` 的 `CONTACT`。
+- [ ] **FAQ 和 Privacy policy 頁面**（Wade 決定要不要做）
+  Shatter Footer 的 Resources 欄先顯示成文字，沒有連結。
 
-## 三、網站完成、上線之後
+## SEO
 
-### SEO
-
-- [ ] **把案例頁和 Labs 頁的內容寫進 HTML**（Claude）
-  目前爬蟲拿到的 `#root` 是空的，也沒有 canonical。`serveCase`（`src/lib/seo.ts`）只處理轉址和 404。照 `servePage` 的寫法補上標題、description、canonical、內文。
-- [ ] **把首頁、`/work`、`/about` 的內容寫進 HTML**（Claude）
-  這三頁沒有 Function。`/work` 和 `/about` 的 title、description 都是首頁的。
-- [ ] **決定舊文章要不要下架**（Wade）
-  「留白的建築」「水墨與黑白」「新東方主義」「死神美學的啟示」可能是舊定位的文章，在 R2 裡，`llms.txt` 和 sitemap 都會列出。
 - [ ] **Google Search Console**（Wade）
   驗證網域，提交 `https://tekuei.com/sitemap.xml`。
 - [ ] **Bing Webmaster Tools**（Wade，選填）
   可以從 Search Console 直接匯入。
 - [ ] **檢查分享預覽**（Wade）
   把首頁和一篇文章的連結貼到 Threads、LINE、IG，看標題、說明、圖片是否正確。
-

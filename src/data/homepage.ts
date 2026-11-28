@@ -4,7 +4,7 @@ export const HOME_META = {
     description: '探索底層邏輯與真相，對未知領域充滿好奇，喜愛技術、行銷與人工智慧。',
   },
   en: {
-    title: 'TEKUEI — Follow Your Heart and Create',
+    title: 'TEKUEI - Follow Your Heart and Create',
     description: 'Exploring first principles and the truth beneath things. Curious about the unknown. I love technology, marketing and AI.',
   },
 }

@@ -136,7 +136,7 @@ export const HOW_TO_CHECKIN_PERKS = {
     {
       num: '2',
       title: 'SMS Reminder',
-      body: 'A text reminder will be sent before the event — keep an eye on your phone',
+      body: 'A text reminder will be sent before the event, so keep an eye on your phone',
     },
     {
       num: '3',
