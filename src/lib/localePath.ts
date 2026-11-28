@@ -33,12 +33,14 @@ export const otherLangPath = (pathname: string): string | null =>
   hasEnglish(pathname) ? localePath(stripLang(pathname), langOf(pathname) === 'en' ? 'zh' : 'en') : null
 
 // React Router matches paths ignoring case, so /EN/Journal would be a second copy of /en/journal. Slugs keep their case.
-const FIXED = new Set(['en', 'about', 'journal', 'projects', 'labs', 'live', 'how-to-checkin', 'checkin', 'work', 'cases'])
+const FIXED = new Set(['en', 'about', 'journal', 'projects', 'labs', 'live', 'how-to-checkin', 'checkin', 'work', 'cases', 'sitemap.xml', 'llms.txt'])
+// The segment after one of these is a slug, even when it happens to be one of the words above.
+const BEFORE_SLUG = new Set(['journal', 'projects', 'labs', 'cases'])
 
 /** The path a page is served at: no trailing slash, and the site's own words in lower case. */
-export const servedPath = (pathname: string): string =>
-  pathname
-    .replace(/(.)\/+$/, '$1')
-    .split('/')
-    .map((seg) => (FIXED.has(seg.toLowerCase()) ? seg.toLowerCase() : seg))
+export const servedPath = (pathname: string): string => {
+  const segments = pathname.replace(/(.)\/+$/, '$1').split('/')
+  return segments
+    .map((seg, i) => (FIXED.has(seg.toLowerCase()) && !BEFORE_SLUG.has(segments[i - 1]?.toLowerCase()) ? seg.toLowerCase() : seg))
     .join('/')
+}

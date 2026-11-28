@@ -135,9 +135,22 @@ const attr = (tag: string, name: string) => decode(tag.match(new RegExp(`\\s${na
 const tagsOf = (head: string, pattern: RegExp) => [...head.matchAll(pattern)].map((m) => m[0])
 
 /**
- * The head a search engine reads: a canonical (the page itself, or the Chinese page for an English page that still
- * shows the Chinese text), hreflang for both languages and x-default unless the page has one URL, og:image, a
- * description, and JSON-LD that parses.
+ * Which Chinese pages have an English version, as sitemap.xml says: the head must say the same. A page missing from
+ * the sitemap (the check-in guide, a 404) is taken to have one.
+ */
+const englishBySitemap = new Map<string, boolean>()
+async function readSitemap() {
+  const xml = await (await fetch(new URL('/sitemap.xml', base))).text()
+  for (const [, url] of xml.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+    const loc = url.match(/<loc>([^<]+)<\/loc>/)?.[1]
+    if (loc && !loc.startsWith(`${SITE}/en`)) englishBySitemap.set(loc, /hreflang="en"/.test(url))
+  }
+}
+
+/**
+ * The head a search engine reads: a canonical (the page itself, or the Chinese page when the page has no English
+ * version of its own), hreflang for both languages and x-default (no English one without an English version) unless
+ * the page has one URL, og:image, a description, and JSON-LD that parses.
  */
 function headProblems(page: Expect, html: string): string[] {
   const problems: string[] = []
@@ -149,8 +162,9 @@ function headProblems(page: Expect, html: string): string[] {
   const alternates = new Map(tagsOf(head, /<link[^>]*rel="alternate"[^>]*>/g).map((t) => [attr(t, 'hreflang'), attr(t, 'href')]))
   if (canonicals.length !== 1) problems.push(`${page.path}: ${canonicals.length} canonical links, expected 1`)
   const canonical = canonicals[0]
-  const chineseOnly = path.startsWith('/en') && canonical === zh
-  if (canonical !== self && !chineseOnly) problems.push(`${page.path}: canonical ${canonical}, expected ${self}`)
+  const chineseOnly = !page.oneUrl && englishBySitemap.get(zh) === false
+  const want = page.oneUrl ? self : chineseOnly ? zh : self
+  if (canonical !== want) problems.push(`${page.path}: canonical ${canonical}, expected ${want}`)
   if (page.oneUrl) {
     if (alternates.size) problems.push(`${page.path}: hreflang on a page with one URL`)
   } else {
@@ -219,6 +233,7 @@ async function checkContent(site: SiteData): Promise<string[]> {
 }
 
 const problems: string[] = []
+if (r2 !== 'broken') await readSitemap()
 for (const page of ALL) problems.push(...(await check(page)))
 if (r2 !== 'broken') problems.push(...(await checkListed()))
 if (!r2) {

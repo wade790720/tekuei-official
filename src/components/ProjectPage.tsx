@@ -10,10 +10,11 @@ import { useAdmin } from '../context/admin.ts'
 import { useWork } from '../context/work.ts'
 import { projectCover, withProjectVideo } from '../data/workMedia.ts'
 import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, projectBody, projectFacts, projectNumber, projectTitle, projectType } from '../data/work.ts'
+import { projectInEnglish } from '../lib/projectHref.ts'
 import { useWorkContent } from '../hooks/useWorkContent.ts'
 import { useLang, useLocalePath } from '../i18n'
 import { uploadSiteImage } from '../lib/adminApi.ts'
-import { docText, getDoc, hasBody, safeHref } from '../lib/richText.ts'
+import { docText, getDoc, safeHref } from '../lib/richText.ts'
 import type { Doc, WorkData } from '../lib/siteData.ts'
 import '../styles/journal.css'
 import '../styles/project.css'
@@ -39,7 +40,8 @@ export default function ProjectPage({ work }: { work: WorkData }) {
   const editing = admin.editing && cms.isEditing
   const zh = item && projectBody(content, slug, 'zh')
   // Like an untranslated post: readers of an empty English page see the Chinese one.
-  const untranslated = !editing && lang === 'en' && !hasBody(projectBody(content, slug, 'en'))
+  const english = projectInEnglish(content, slug)
+  const untranslated = !editing && lang === 'en' && !english
   const doc = getDoc(untranslated ? zh : item && projectBody(content, slug, lang))
   const title = item ? projectTitle(item) : ''
 
@@ -76,8 +78,8 @@ export default function ProjectPage({ work }: { work: WorkData }) {
         path={`/projects/${slug}`}
         type="article"
         image={imageUrl(cover) ?? firstImage(doc)}
-        ld={creativeWorkLd({ name: title, description, url: pageUrl(`/projects/${slug}`, untranslated ? 'zh' : lang), tags: item.tags }, untranslated ? 'zh' : lang)}
-        chineseOnly={untranslated}
+        ld={creativeWorkLd({ name: title, description, url: pageUrl(`/projects/${slug}`, english ? lang : 'zh'), tags: item.tags }, english ? lang : 'zh')}
+        english={english}
       />
       <main>
         {cover ? <ProjectHero cover={cover} num={`${t.num} ${projectNumber(content.items, slug)}`} title={title} facts={projectFacts(item, lang)} /> : null}

@@ -59,7 +59,7 @@ export default function JournalPostPage({ journal: reader }: { journal: Readable
 
   return (
     <div className="journal-page journal-page--post">
-      <PostHead post={post} content={content} slug={slug} />
+      <PostHead post={post} content={content} slug={slug} english={!journal.posts.en.find((p) => p.slug === slug)?.untranslated} />
       <main>
       <article className="journal-post" lang={post.untranslated ? 'zh-Hant' : undefined}>
         <header className="journal-post__header">
@@ -140,12 +140,15 @@ export default function JournalPostPage({ journal: reader }: { journal: Readable
  * returns with its tag filter and scroll position. `fromList` counts the posts read since the list
  * (previous / next add one). Opened from anywhere else, it is a plain link to /journal.
  */
-/** An untranslated English post is the Chinese one: it points search engines there. */
-function PostHead({ post, content, slug }: { post: ReadablePost; content: Body; slug: string }) {
+/**
+ * @param english  postInEnglish, read from the English list (an untranslated post is marked there), so the Chinese page
+ *   knows too
+ */
+function PostHead({ post, content, slug, english }: { post: ReadablePost; content: Body; slug: string; english: boolean }) {
   const { lang } = useLang()
   const doc = getDoc(content)
   const image = firstImage(doc)
-  const shown = post.untranslated ? 'zh' : lang
+  const shown = english ? lang : 'zh'
   return (
     <PageHead
       title={`${post.title} · Journal · TEKUEI`}
@@ -154,7 +157,7 @@ function PostHead({ post, content, slug }: { post: ReadablePost; content: Body; 
       type="article"
       image={image}
       ld={postLd(post, shown, pageUrl(`/journal/${slug}`, shown), image)}
-      chineseOnly={post.untranslated}
+      english={english}
     />
   )
 }

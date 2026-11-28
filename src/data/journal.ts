@@ -101,10 +101,13 @@ export function readableJournal(journal: JournalData): ReadableJournal {
 
 const readableCache = new WeakMap<JournalData, ReadableJournal>()
 
+/** The post has an English version of its own. Without one its English URL shows the Chinese text. */
+export const postInEnglish = (journal: JournalData, slug: string): boolean => hasBody(journal.content.en[slug])
+
 function toReadable(journal: JournalData): ReadableJournal {
   const zh = new Map(journal.posts.zh.map((z) => [z.slug, z]))
   const en: ReadablePost[] = journal.posts.en.map((p) =>
-    hasBody(journal.content.en[p.slug]) ? p : { ...(zh.get(p.slug) ?? p), untranslated: true },
+    postInEnglish(journal, p.slug) ? p : { ...(zh.get(p.slug) ?? p), untranslated: true },
   )
   const fallback: Record<string, Body> = {}
   for (const p of en) {

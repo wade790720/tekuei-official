@@ -2,7 +2,8 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
 import { sampleJournal, samplePost } from './fixtures/journal.ts'
-import { blogLd, collectionLd, firstImage, ldJson, llmsTxt, pageUrl, postLd, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.ts'
+import { postInEnglish } from '../src/data/journal.ts'
+import { blogLd, collectionLd, firstImage, headLinks, ldJson, llmsTxt, pageUrl, postLd, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.ts'
 import type { Doc, JournalData, WorkData, WorkItem } from '../src/lib/siteData.ts'
 
 // Whole pages (head, body, status) are checked against a running server by the page check script.
@@ -27,6 +28,42 @@ describe('addresses', () => {
   })
 })
 
+describe('head links', () => {
+  const hreflangs = (links: ReturnType<typeof headLinks>) => links.alternates.map(([l]) => l).join(' ')
+
+  it('an untranslated page names no English version from either URL, and both point at the Chinese one', () => {
+    const j = halfTranslated()
+    const english = postInEnglish(j, slug)
+    assert.equal(english, false)
+    for (const lang of ['zh', 'en'] as const) {
+      const links = headLinks(`/journal/${slug}`, lang, english)
+      assert.equal(hreflangs(links), 'zh-Hant x-default', lang)
+      assert.equal(links.canonical, `https://tekuei.com/journal/${slug}`, lang)
+      assert.equal(links.locale, 'zh_TW')
+      assert.equal(links.localeAlternate, undefined)
+    }
+  })
+
+  it('once translated, both URLs name both languages and each is its own canonical', () => {
+    const other = journal.posts.zh[1].slug
+    const english = postInEnglish(halfTranslated(), other)
+    assert.equal(english, true)
+    const zh = headLinks(`/journal/${other}`, 'zh', english)
+    const en = headLinks(`/journal/${other}`, 'en', english)
+    assert.equal(hreflangs(zh), 'zh-Hant en x-default')
+    assert.equal(hreflangs(en), 'zh-Hant en x-default')
+    assert.equal(zh.canonical, `https://tekuei.com/journal/${other}`)
+    assert.equal(en.canonical, `https://tekuei.com/en/journal/${other}`)
+    assert.equal(en.localeAlternate, 'zh_TW')
+  })
+
+  it('the sitemap follows the same rule', () => {
+    const xml = sitemapXml(halfTranslated(), [], true)
+    assert.doesNotMatch(xml, new RegExp(`hreflang="en" href="https://tekuei.com/en/journal/${slug}"`))
+    assert.match(xml, new RegExp(`hreflang="en" href="https://tekuei.com/en/journal/${journal.posts.zh[1].slug}"`))
+  })
+})
+
 describe('JSON-LD', () => {
   it('keeps "</script>" in a title from closing the script tag', () => {
     const text = ldJson(postLd(samplePost({ title: '</script><script>alert(1)</script>' }), 'zh', pageUrl('/journal/x', 'zh'), undefined))
@@ -48,6 +85,8 @@ describe('JSON-LD', () => {
     const blog = blogLd({ title: 'Journal', description: 'd' }, journal.posts.en, 'en')
     assert.equal(blog.blogPost.length, journal.posts.en.length)
     assert.match(blog.blogPost[0].url, /^https:\/\/tekuei.com\/en\/journal\//)
+    const untranslated = blogLd({ title: 'Journal', description: 'd' }, [{ ...journal.posts.en[0], untranslated: true }], 'en')
+    assert.equal(untranslated.blogPost[0].url, `https://tekuei.com/journal/${journal.posts.en[0].slug}`, 'an untranslated post is listed at its Chinese URL')
     const cases = siteCases(work)
     const page = collectionLd({ title: 'Projects', description: 'd' }, cases.map((w) => ({ name: w.title ?? w.id, href: w.caseHref })), 'zh')
     assert.equal(page.hasPart.length, cases.length)

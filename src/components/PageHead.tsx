@@ -1,9 +1,8 @@
 import { useLang } from '../i18n'
-import { ldJson, pageUrl } from '../lib/seo.ts'
+import { headLinks, ldJson } from '../lib/seo.ts'
 import { SITE_URL } from '../lib/siteUrl.ts'
 
 const DEFAULT_IMAGE = `${SITE_URL}/og.jpg`
-const OG_LOCALE = { zh: 'zh_TW', en: 'en_US' }
 
 export interface PageHeadProps {
   title: string
@@ -17,35 +16,32 @@ export interface PageHeadProps {
   /** The page's own JSON-LD. The site's WebSite and Person are in the root layout. */
   ld?: object
   /**
-   * The English page still shows the Chinese text: it points search engines at the Chinese URL and names no
-   * English version, so the two are not taken for duplicates.
+   * The page has an English version of its own (postInEnglish, projectInEnglish, aboutInEnglish: the sitemap's
+   * rule). Without one, both of its URLs point search engines at the Chinese page.
    */
-  chineseOnly?: boolean
+  english?: boolean
   /** /checkin and a lab's live page: one URL for both languages. */
   oneUrl?: boolean
 }
 
 /** A page's head as search engines and link previews read it. The server draws it; React keeps it in <head>. */
-export function PageHead({ title, description, path, type = 'website', image, ld, chineseOnly = false, oneUrl = false }: PageHeadProps) {
+export function PageHead({ title, description, path, type = 'website', image, ld, english = true, oneUrl = false }: PageHeadProps) {
   const { lang } = useLang()
-  const zh = pageUrl(path, 'zh')
-  const en = pageUrl(path, 'en')
-  const canonical = oneUrl ? `${SITE_URL}${path}` : lang === 'en' && !chineseOnly ? en : zh
-  const hasEnglish = !oneUrl && !chineseOnly
+  const links = oneUrl ? { canonical: `${SITE_URL}${path}`, alternates: [], locale: headLinks(path, lang, true).locale } : headLinks(path, lang, english)
   return (
     <>
       <title>{title}</title>
       {description ? <meta name="description" content={description} /> : null}
-      <link rel="canonical" href={canonical} />
-      {oneUrl ? null : <link rel="alternate" hrefLang="zh-Hant" href={zh} />}
-      {hasEnglish ? <link rel="alternate" hrefLang="en" href={en} /> : null}
-      {oneUrl ? null : <link rel="alternate" hrefLang="x-default" href={zh} />}
+      <link rel="canonical" href={links.canonical} />
+      {links.alternates.map(([hrefLang, href]) => (
+        <link key={hrefLang} rel="alternate" hrefLang={hrefLang} href={href} />
+      ))}
       <meta property="og:type" content={type} />
-      <meta property="og:url" content={canonical} />
+      <meta property="og:url" content={links.canonical} />
       <meta property="og:title" content={title} />
       {description ? <meta property="og:description" content={description} /> : null}
-      <meta property="og:locale" content={OG_LOCALE[chineseOnly ? 'zh' : lang]} />
-      {hasEnglish ? <meta property="og:locale:alternate" content={OG_LOCALE[lang === 'zh' ? 'en' : 'zh']} /> : null}
+      <meta property="og:locale" content={links.locale} />
+      {'localeAlternate' in links && links.localeAlternate ? <meta property="og:locale:alternate" content={links.localeAlternate} /> : null}
       <meta property="og:image" content={image ?? DEFAULT_IMAGE} />
       {/* The sizes of og.jpg; a page's own picture has others. */}
       {image ? null : <meta property="og:image:width" content="1200" />}

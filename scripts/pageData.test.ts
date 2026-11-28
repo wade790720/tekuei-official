@@ -137,4 +137,7 @@ it("servedPath: no trailing slash, the site's own words in lower case, slugs as 
   assert.equal(servedPath('/PROJECTS/Matsu-Biennial'), '/projects/Matsu-Biennial')
   assert.equal(servedPath('/labs/living-portrait/LIVE'), '/labs/living-portrait/live')
   assert.equal(servedPath('/journal/respect-the-effort'), '/journal/respect-the-effort')
+  assert.equal(servedPath('/en/journal/About'), '/en/journal/About', 'a slug that is one of the words keeps its case')
+  assert.equal(servedPath('/Sitemap.xml'), '/sitemap.xml')
+  assert.equal(servedPath('/LLMS.TXT'), '/llms.txt')
 })

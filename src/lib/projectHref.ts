@@ -1,4 +1,4 @@
-import { safeHref } from './richText.ts'
+import { hasBody, safeHref } from './richText.ts'
 import type { Body, Lang, Localized, WorkData, WorkItem } from './siteData.ts'
 
 // Case pages moved from /cases/<slug> to /projects/<slug>. R2 and data.json still store the old links.
@@ -12,6 +12,10 @@ export const projectTitle = (item: Pick<WorkItem, 'titleEmWord' | 'title'>): str
 
 /** A project's page body in one language, or null: the first three cases have pages written in code instead. */
 export const projectBody = (work: WorkData | undefined, id: string, lang: Lang): Body | null => work?.content?.[lang]?.[id] ?? null
+
+/** The project has an English version of its own: a case written in code always does, a page written in the editor once its English body is. */
+export const projectInEnglish = (work: WorkData | undefined, id: string): boolean =>
+  !projectBody(work, id, 'zh') || hasBody(projectBody(work, id, 'en'))
 
 /**
  * Where a project's card goes: its own page when it has one, written in code or in the editor.

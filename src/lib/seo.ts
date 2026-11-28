@@ -1,11 +1,10 @@
 // What search engines and AI readers get besides the page itself: JSON-LD, the preview image, sitemap.xml and
 // llms.txt. The pages draw their head with these (PageHead); the resource routes call the last two.
 
-import { hasBody } from './richText.ts'
-import { getDefaultJournal, postTags, publishedJournal } from '../data/journal.ts'
+import { getDefaultJournal, postInEnglish, postTags, publishedJournal } from '../data/journal.ts'
 import { labLinks } from '../labs/index.ts'
 import { localePath } from './localePath.ts'
-import { projectBody, projectLink, projectTitle } from './projectHref.ts'
+import { projectInEnglish, projectLink, projectTitle } from './projectHref.ts'
 import { SITE_URL } from './siteUrl.ts'
 import type { Doc, JournalData, JournalPost, Lang, SiteData, WorkData, WorkItem } from './siteData.ts'
 
@@ -37,6 +36,35 @@ const IN_LANGUAGE: Record<Lang, string> = { zh: 'zh-Hant', en: 'en' }
 export const pageUrl = (path: string, lang: Lang): string => {
   const p = localePath(path, lang)
   return p === '/' ? `${SITE_URL}/` : `${SITE_URL}${p}`
+}
+
+export interface HeadLinks {
+  canonical: string
+  /** hreflang and URL */
+  alternates: [string, string][]
+  /** og:locale, and og:locale:alternate when the page has the other language */
+  locale: string
+  localeAlternate?: string
+}
+
+const OG_LOCALE: Record<Lang, string> = { zh: 'zh_TW', en: 'en_US' }
+
+/**
+ * The links that tie a page's two languages together. A page with no English version of its own (its English URL
+ * shows the Chinese text) has one page as far as search engines go: both URLs name the Chinese one as canonical and
+ * neither names an English version, as the sitemap does.
+ * @param english  postInEnglish, projectInEnglish or aboutInEnglish; the same rule the sitemap uses
+ */
+export function headLinks(path: string, lang: Lang, english: boolean): HeadLinks {
+  const zh = pageUrl(path, 'zh')
+  if (!english) return { canonical: zh, alternates: [['zh-Hant', zh], ['x-default', zh]], locale: OG_LOCALE.zh }
+  const en = pageUrl(path, 'en')
+  return {
+    canonical: lang === 'en' ? en : zh,
+    alternates: [['zh-Hant', zh], ['en', en], ['x-default', zh]],
+    locale: OG_LOCALE[lang],
+    localeAlternate: OG_LOCALE[lang === 'zh' ? 'en' : 'zh'],
+  }
 }
 
 /** WebSite and Person, on every page. */
@@ -100,7 +128,8 @@ export function postLd(post: JournalPost, lang: Lang, url: string, image: string
   }
 }
 
-export function blogLd(meta: { title: string; description: string }, posts: JournalPost[], lang: Lang) {
+/** @param posts  as readers see them: an untranslated English post is listed at its Chinese URL */
+export function blogLd(meta: { title: string; description: string }, posts: (JournalPost & { untranslated?: boolean })[], lang: Lang) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Blog',
@@ -109,7 +138,7 @@ export function blogLd(meta: { title: string; description: string }, posts: Jour
     url: pageUrl('/journal', lang),
     inLanguage: IN_LANGUAGE[lang],
     author: PERSON,
-    blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.title, url: pageUrl(`/journal/${p.slug}`, lang), datePublished: isoDate(p.date) })),
+    blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.title, url: pageUrl(`/journal/${p.slug}`, p.untranslated ? 'zh' : lang), datePublished: isoDate(p.date) })),
   }
 }
 
@@ -155,11 +184,7 @@ export const profileLd = (lang: Lang) => ({
 export const siteCases = (workItems: WorkItem[], work?: WorkData, lang: Lang = 'zh'): CaseLink[] => [
   ...workItems
     .filter((w) => !w.draft)
-    .map((w) => {
-      const written = projectBody(work, w.id, 'zh')
-      // A case written in code has both languages; a project written in the editor needs its English body.
-      return { ...w, caseHref: projectLink(w, work), english: !written || hasBody(projectBody(work, w.id, 'en')) }
-    })
+    .map((w) => ({ ...w, caseHref: projectLink(w, work), english: projectInEnglish(work, w.id) }))
     // A card that only links to another site has no page here
     .filter((w) => w.caseHref.startsWith('/')),
   ...labLinks(lang).map((l) => ({ ...l, english: true })),
@@ -182,7 +207,7 @@ export function sitemapXml(journal: JournalData, cases: CaseLink[], aboutEnglish
     { path: '/journal', english: true },
     { path: '/projects', english: true },
     { path: '/about', english: aboutEnglish },
-    ...journal.posts.zh.map((p) => ({ path: `/journal/${p.slug}`, lastmod: isoDate(p.updated || p.date), english: hasBody(journal.content.en[p.slug]) })),
+    ...journal.posts.zh.map((p) => ({ path: `/journal/${p.slug}`, lastmod: isoDate(p.updated || p.date), english: postInEnglish(journal, p.slug) })),
     ...cases.map((w) => ({ path: w.caseHref, english: w.english })),
   ]
   const urls = pages.flatMap((page) => {
@@ -206,7 +231,7 @@ export function sitemapXml(journal: JournalData, cases: CaseLink[], aboutEnglish
  * @param enCases  siteCases in English
  */
 export function llmsTxt(journal: JournalData, cases: CaseLink[], enCases: CaseLink[], aboutEnglish: boolean): string {
-  const english = journal.posts.en.filter((p) => hasBody(journal.content.en[p.slug]))
+  const english = journal.posts.en.filter((p) => postInEnglish(journal, p.slug))
   return [
     `# ${SITE_NAME}`,
     '',
