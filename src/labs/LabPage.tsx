@@ -48,7 +48,7 @@ export default function LabPage() {
             <TagList tags={[labels.category, ...text.tags]} variant="outline" />
           </div>
           <div className="lab__actions">
-            <Button as="a" href={liveHref(item.id)} target="_blank" rel="noreferrer" variant="ghost">
+            <Button as="a" href={liveHref(item.id, lang)} target="_blank" rel="noreferrer" variant="ghost">
               {labels.showPreview} <span aria-hidden>↗</span>
             </Button>
             <CopyPromptButton prompt={LAB_PROMPTS[item.id]} labels={labels} />
@@ -56,7 +56,7 @@ export default function LabPage() {
         </header>
 
         <Card className="lab__preview" style={item.previewAspect ? ({ '--lab-aspect': item.previewAspect } as CSSProperties) : undefined}>
-          <iframe src={liveHref(item.id)} title={`${text.title} · ${labels.preview}`} />
+          <iframe src={liveHref(item.id, lang)} title={`${text.title} · ${labels.preview}`} />
         </Card>
 
         <section className="lab__about" aria-labelledby="lab-about-title">

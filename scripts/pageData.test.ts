@@ -113,6 +113,8 @@ it('localePath: English under /en, one-URL pages and outside links unchanged', (
   assert.equal(localePath('mailto:a@b.c', 'en'), 'mailto:a@b.c')
   assert.equal(localePath('https://example.com/x', 'en'), 'https://example.com/x')
   assert.equal(localePath('//example.com/x', 'en'), '//example.com/x')
+  assert.equal(localePath('/en//evil.com', 'zh'), '/evil.com')
+  assert.equal(localePath('/en//evil.com', 'en'), '/en/evil.com')
 
   assert.equal(langOf('/en'), 'en')
   assert.equal(langOf('/enough'), 'zh')

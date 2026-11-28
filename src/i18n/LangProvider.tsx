@@ -27,14 +27,17 @@ function saveLang(lang: Lang) {
  * The button goes to the same page in the other language and keeps the scroll. localStorage only remembers what a
  * reader chose: someone who chose English and then opens a Chinese link is moved to its English URL after the page
  * loads. A reader who chose Chinese is never moved off an English link, and nothing looks at the browser's language.
- * The pages with one URL (/checkin, a lab's live page) follow the saved choice after hydration instead.
+ * The pages with one URL (/checkin, a lab's live page) take ?lang=en (the English lab page's preview and its full
+ * screen link), else follow the saved choice after hydration.
  */
 export function LangProvider({ children }: { children: ReactNode }) {
   const { pathname, search, hash } = useLocation()
   const navigate = useNavigate()
   const fromUrl = langOf(pathname)
   const oneUrl = !hasEnglish(pathname)
-  const [oneUrlLang, setOneUrlLang] = useState<Lang>('zh')
+  const param = new URLSearchParams(search).get('lang')
+  const fromParam: Lang | null = param === 'en' || param === 'zh' ? param : null
+  const [oneUrlLang, setOneUrlLang] = useState<Lang>(fromParam ?? 'zh')
   const lang = oneUrl ? oneUrlLang : fromUrl
 
   // Once, after hydration. Not on later navigations: a Chinese link clicked after that is the reader's choice.
@@ -42,7 +45,9 @@ export function LangProvider({ children }: { children: ReactNode }) {
     const saved = savedLang()
     if (saved !== 'en') return
     const english = otherLangPath(window.location.pathname)
-    if (!hasEnglish(window.location.pathname)) startTransition(() => setOneUrlLang('en'))
+    if (!hasEnglish(window.location.pathname)) {
+      if (!new URLSearchParams(window.location.search).has('lang')) startTransition(() => setOneUrlLang('en'))
+    }
     else if (langOf(window.location.pathname) === 'zh' && english) {
       navigate(english + window.location.search + window.location.hash, { replace: true, preventScrollReset: true })
     }

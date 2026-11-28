@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRevalidator } from 'react-router'
 import { siteDefaults } from '../data/siteDefaults.ts'
 import { fetchSiteData, onSiteVersion, saveSitePatch } from '../lib/adminApi.ts'
 import { CMS_LABELS } from '../data/admin.ts'
+import { forgetLangSwitch } from '../lib/langSwitch.ts'
 import type { Dispatch, SetStateAction } from 'react'
 import type { EditableSections, SectionKey } from '../lib/siteData.ts'
 
@@ -48,6 +49,9 @@ export function useCmsSection<K extends SectionKey>(
   // Version of data.json this editor loaded or last saved; a save is refused if R2 moved on since.
   const [etag, setEtag] = useState<string | null>(null)
   const revalidator = useRevalidator()
+  // Each start of edit mode; leaving edit mode or unmounting moves it on, so a late /api/data is dropped.
+  const run = useRef(0)
+  useEffect(() => () => void run.current++, [])
 
   // Any section's save, this one's included, replaces the version this section loaded.
   useEffect(() => onSiteVersion((from, to) => setEtag((mine) => (mine === from ? to : mine))), [])
@@ -55,20 +59,28 @@ export function useCmsSection<K extends SectionKey>(
   // Readers see their page's loader data, which has no drafts. Only edit mode reads the whole section, drafts
   // included, with the version a save must match.
   const startEditing = useCallback(async () => {
+    const mine = ++run.current
     setLoading(true)
     setError('')
     setLoadFailed(false)
     const sectionContent = (data: Partial<EditableSections>) => cloneContent(data[sectionKey] ?? getDefault())
     let next: C
+    let version: string | null = null
+    let failed = false
     try {
       const remote = await fetchSiteData()
       // A section R2 holds in a shape the site cannot read is a failed load: saving would replace it.
       if (remote?.invalid.includes(sectionKey)) throw new Error(`${sectionKey} in data.json is malformed`)
       // An empty bucket: the bundled defaults, until the first save creates data.json.
       next = sectionContent(remote?.data ?? siteDefaults)
-      setEtag(remote?.etag ?? null)
+      version = remote?.etag ?? null
     } catch {
       next = sectionContent(siteDefaults)
+      failed = true
+    }
+    if (mine !== run.current) return
+    setEtag(version)
+    if (failed) {
       setLoadFailed(true)
       setError(CMS_LABELS.loadFailed)
     }
@@ -78,6 +90,8 @@ export function useCmsSection<K extends SectionKey>(
   }, [sectionKey, cloneContent, getDefault])
 
   const cancelEditing = useCallback(() => {
+    run.current++
+    setLoading(false)
     setDraft(null)
   }, [])
 
@@ -108,6 +122,7 @@ export function useCmsSection<K extends SectionKey>(
       patch[sectionKey] = next
       await saveSitePatch(patch, token, etag)
       setContent(cloneContent(next))
+      forgetLangSwitch()
       // The pages' loader data is what readers see, and what this page shows again after logout.
       revalidator.revalidate()
       // Edits made while the request was in flight stay in the draft; replacing it would drop them

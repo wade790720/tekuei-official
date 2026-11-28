@@ -1,4 +1,4 @@
-import { type RouteConfig, index, prefix, route } from '@react-router/dev/routes'
+import { type RouteConfig, index, layout, prefix, route } from '@react-router/dev/routes'
 
 // The same pages twice: Chinese at the root, English under /en. Route ids must differ.
 const pages = (p: '' | 'en-') => [
@@ -14,13 +14,16 @@ const pages = (p: '' | 'en-') => [
   route('cases/:slug', 'routes/moved-case.ts', { id: `${p}moved-case` }),
 ]
 
+// Under one layout route: its ErrorBoundary replaces a failed page below the root's providers.
 export default [
-  ...pages(''),
-  ...prefix('en', pages('en-')),
-  // One URL each: the lab page's iframe, and the LIFF URL registered with LINE.
-  route('labs/:slug/live', 'routes/lab-live.tsx'),
-  route('checkin', 'routes/checkin.tsx'),
-  // workers/api.ts answers /sitemap.xml and /llms.txt before React Router.
-  ...(process.env.NODE_ENV === 'development' ? [route('dev/component-library/:page?', 'routes/dev-library.tsx')] : []),
-  route('*', 'routes/not-found.tsx'),
+  layout('routes/page.tsx', [
+    ...pages(''),
+    ...prefix('en', pages('en-')),
+    // One URL each: the lab page's iframe, and the LIFF URL registered with LINE.
+    route('labs/:slug/live', 'routes/lab-live.tsx'),
+    route('checkin', 'routes/checkin.tsx'),
+    // workers/api.ts answers /sitemap.xml and /llms.txt before React Router.
+    ...(process.env.NODE_ENV === 'development' ? [route('dev/component-library/:page?', 'routes/dev-library.tsx')] : []),
+    route('*', 'routes/not-found.tsx'),
+  ]),
 ] satisfies RouteConfig

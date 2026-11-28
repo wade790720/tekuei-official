@@ -4,15 +4,14 @@ import { Links, Meta, Outlet, Scripts, useLocation, useMatches, useNavigationTyp
 import './index.css'
 import './styles/tokens.css'
 import { SiteNav } from './components/SiteNav.tsx'
-import { DefaultHead } from './components/DefaultHead.tsx'
+import { PageError } from './components/PageError.tsx'
 import { AdminProvider } from './context/AdminProvider.tsx'
 import { JournalProvider } from './context/JournalProvider.tsx'
 import { WorkProvider } from './context/WorkProvider.tsx'
-import { PAGE_ERROR } from './data/nav.ts'
 import { LangProvider, useLang } from './i18n'
 import { htmlClassOf } from './lib/htmlClass.ts'
 import type { PageHandle } from './lib/htmlClass.ts'
-import { langOf, samePage, stripLang } from './lib/localePath.ts'
+import { samePage, stripLang } from './lib/localePath.ts'
 import { mountReveal } from './lib/reveal.ts'
 import { mountClickSounds } from './lib/uiSound.ts'
 
@@ -49,10 +48,18 @@ const SITE_DESCRIPTION = '探索底層邏輯與真相，對未知領域充滿好
 export const handle: PageHandle = { htmlClass: () => 'has-scroll-document' }
 
 export function Layout({ children }: { children: ReactNode }) {
-  const { pathname } = useLocation()
+  return (
+    <LangProvider>
+      <Document>{children}</Document>
+    </LangProvider>
+  )
+}
+
+function Document({ children }: { children: ReactNode }) {
+  const { lang } = useLang()
   // Screen readers and browser translation read <html lang>.
   return (
-    <html lang={langOf(pathname) === 'en' ? 'en' : 'zh-Hant'} className={htmlClassOf(useMatches())}>
+    <html lang={lang === 'en' ? 'en' : 'zh-Hant'} className={htmlClassOf(useMatches())}>
       <head>
         <meta charSet="UTF-8" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -162,29 +169,15 @@ function Shell({ children }: { children: ReactNode }) {
   // After hydration, so the server's class on each .fade-in still matches when React reads it.
   useEffect(() => mountReveal(), [])
   return (
-    <LangProvider>
-      <AdminProvider>
-        <JournalProvider>
-          <WorkProvider>
-            <ScrollClasses />
-            <AppNav />
-            {children}
-          </WorkProvider>
-        </JournalProvider>
-      </AdminProvider>
-    </LangProvider>
-  )
-}
-
-function PageError() {
-  const { lang } = useLang()
-  const t = PAGE_ERROR[lang]
-  return (
-    <main className="page-error" role="alert">
-      <DefaultHead />
-      <h1>{t.title}</h1>
-      <p>{t.hint}</p>
-    </main>
+    <AdminProvider>
+      <JournalProvider>
+        <WorkProvider>
+          <ScrollClasses />
+          <AppNav />
+          {children}
+        </WorkProvider>
+      </JournalProvider>
+    </AdminProvider>
   )
 }
 
@@ -202,11 +195,7 @@ export default function Root() {
   )
 }
 
-/** A page that failed to draw, or R2 that could not be read (503). The nav stays, so the reader can leave. */
+/** The shell itself failed. A page's own failure is caught below it (routes/page.tsx), so edit mode survives that. */
 export function ErrorBoundary() {
-  return (
-    <Shell>
-      <PageError />
-    </Shell>
-  )
+  return <PageError />
 }

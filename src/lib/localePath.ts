@@ -19,7 +19,8 @@ export const hasEnglish = (pathname: string): boolean => !ONE_URL.test(stripLang
  */
 export function localePath(path: string, lang: Lang): string {
   if (!path.startsWith('/') || path.startsWith('//')) return path
-  const plain = stripLang(path)
+  // "/en//x" would leave "//x", which a browser reads as another host.
+  const plain = stripLang(path).replace(/^\/+/, '/')
   if (lang === 'zh' || !hasEnglish(plain)) return plain
   return plain === '/' ? '/en' : plain.startsWith('/?') || plain.startsWith('/#') ? `/en${plain.slice(1)}` : `/en${plain}`
 }

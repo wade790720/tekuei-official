@@ -67,7 +67,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['src/routes/**/*.{ts,tsx}', 'src/**/*.server.ts', 'workers/**/*.ts'],
+    files: ['src/routes/**/*.{ts,tsx}', 'src/**/*.server.ts', 'src/lib/pageData.ts', 'workers/**/*.ts', 'functions/**/*.ts'],
     rules: {
       'no-restricted-imports': ['error', { patterns: [{ group: ['**/adminApi', '**/adminApi.ts'], message: 'adminApi.ts is browser-only; read R2 with readSite (src/lib/cf.server.ts).' }] }],
     },
