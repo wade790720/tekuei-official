@@ -1,6 +1,6 @@
 // Run `await import('/scripts/fakeAdminApi.ts')` in the browser console on the local dev site BEFORE logging in.
-// Local dev proxies /api to the live site, so a test save would write real data. This swaps every write
-// for a fake answer and leaves reads alone. It lasts until the page reloads: import it again after a reload,
+// Local dev writes only to the R2 in .wrangler/state; this is for an editor test that writes nothing at all, not
+// even there. It swaps every write for a fake answer and leaves reads alone. It lasts until the page reloads: import it again after a reload,
 // and clear sessionStorage when done so no fake login is left behind.
 //
 // /api/data needs the real admin code, which a fake login does not have, so edit mode starts from the bundled
