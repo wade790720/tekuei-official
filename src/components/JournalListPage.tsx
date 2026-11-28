@@ -14,10 +14,8 @@ import type { JournalPost } from '../lib/siteData.ts'
 import '../styles/work.css'
 import '../styles/journal.css'
 
-// Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.
 const JournalListEditPanel = lazy(() => import('./journal/JournalEditPanel.tsx').then((m) => ({ default: m.JournalListEditPanel })))
 
-// Tells the post page it was opened from this list, so its back link can return here (JournalPostPage BackLink).
 const FROM_LIST = { fromList: 1 }
 
 /** @param journal  the loader's published posts, without bodies */
@@ -28,7 +26,6 @@ export default function JournalListPage({ journal }: { journal: ReadableJournal 
   const header = JOURNAL_HEADER[lang]
   const { editing } = useAdmin()
   const allPosts: ReadablePost[] = useJournalContent(journal).posts[lang]
-  // The chosen tag lives in the URL (?tag=AI), so a filtered list can be shared.
   const [params, setParams] = useSearchParams()
   const tag = params.get('tag')?.toUpperCase() ?? null
   const posts = tag ? allPosts.filter((p) => postTags(p).includes(tag)) : allPosts
@@ -104,7 +101,6 @@ export default function JournalListPage({ journal }: { journal: ReadableJournal 
   )
 }
 
-/** One row of tag pills over the list, each with its post count. Hidden when there is nothing to choose between. */
 interface TagFilterProps {
   posts: JournalPost[]
   tag: string | null
@@ -130,7 +126,6 @@ function TagFilter({ posts, tag, onChoose }: TagFilterProps) {
   )
 }
 
-/** Posts in their stored order, grouped by the year of their date: [['2026', [...]], ...]. */
 function byYear<P extends JournalPost>(posts: P[]): [string, P[]][] {
   const groups = new Map<string, P[]>()
   for (const p of posts) {

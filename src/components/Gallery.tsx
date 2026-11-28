@@ -35,7 +35,7 @@ export function Gallery({ photos, limit }: GalleryProps) {
   }
 
   if (!photos.length) return null
-  const shown: Slide | undefined = photos[at] // at is -1 while the dialog is closed
+  const shown: Slide | undefined = photos[at]
   const onPage = limit && photos.length > limit ? photos.slice(0, limit) : photos
 
   return (

@@ -1,6 +1,3 @@
-// Labs: interactive pieces listed under Work, after the client cases. They live in code, not in R2: each one has a page at labHref and runs full screen at liveHref.
-// Text only, so Pages Functions (sitemap, llms.txt) can import it; thumbnails are in media.ts.
-
 import type { Lang } from '../lib/siteData.ts'
 
 export type LabId = 'living-portrait' | 'falling-figure' | 'shatter-footer'
@@ -83,7 +80,6 @@ export const LABS: Lab[] = [
   {
     id: 'shatter-footer',
     year: '2026',
-    // Taller than the default 16:10: in a shorter frame the sea has to shrink to fit under the links.
     previewAspect: '4 / 3',
     zh: {
       title: 'Shatter Footer',

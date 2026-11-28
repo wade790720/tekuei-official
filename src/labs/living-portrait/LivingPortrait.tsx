@@ -31,7 +31,6 @@ export function LivingPortrait({ name, label }: LivingPortraitProps) {
     <section className="living-portrait" ref={root} aria-label={label}>
       {/* Only this lab uses Anton, so it loads here instead of on every page. React hoists it into <head>. */}
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap" precedence="default" />
-      {/* Layers, bottom to top: full picture, name, cut-out figure. */}
       <div className="living-portrait__stage">
         <img ref={bg} src={bgSrc} alt="" />
         <h1 className="living-portrait__name">{name}</h1>

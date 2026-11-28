@@ -44,7 +44,6 @@
   list-style: none;
 }
 
-/* Same type as the header links (DESIGN.md). The padding is the hit area; the underline sits inside it. */
 .site-footer__links a {
   display: flex;
   align-items: center;
@@ -119,14 +118,12 @@ span.site-footer__icon {
   color: var(--text-tertiary);
 }
 
-/* Brand left, links centred on the page, icons right */
 @media (min-width: 769px) {
   .site-footer__inner {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
   }
 
-  /* Two staggered rows (4 over 3): each icon spans two half-columns, the second row starts half an icon in */
   .site-footer__social {
     display: grid;
     grid-template-columns: repeat(calc(var(--social-top) * 2), 22px);

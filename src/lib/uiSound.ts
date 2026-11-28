@@ -119,7 +119,6 @@ function audio(): AudioContext {
   return ctx
 }
 
-// One second of noise per colour, reused. Pink is Paul Kellet's filter on white noise.
 function noise(ac: BaseAudioContext, color: string): AudioBuffer {
   const key = `${color}@${ac.sampleRate}`
   const cached = noiseCache.get(key)
@@ -151,7 +150,6 @@ function playLayer(ac: AudioContext, { source, filter, envelope, delay = 0, gain
   const { attack = 0, decay, sustain = 0, release = 0 } = envelope
   const length = attack + decay + release
 
-  // Envelope: rise to the peak, then fall exponentially (a third of the decay is one time constant).
   const amp = ac.createGain()
   amp.gain.setValueAtTime(SILENT, t)
   if (attack > 0) amp.gain.linearRampToValueAtTime(gain, t + attack)

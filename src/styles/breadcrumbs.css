@@ -1,11 +1,7 @@
-/* Breadcrumbs (src/components/Breadcrumbs.tsx). Sizes from HeroUI's Breadcrumbs:
-   14px text on a 20px line, 6px between items, 4px between a link and its chevron, 12px chevron,
-   underline on hover. The current page is gold, as everywhere else on the site. */
-
 .breadcrumbs__list {
   display: flex;
   align-items: center;
-  gap: calc(var(--space-3) / 2); /* 6px, HeroUI's gap-1.5 */
+  gap: calc(var(--space-3) / 2);
   min-width: 0;
   margin: 0;
   padding: 0;
@@ -20,7 +16,6 @@
   min-width: 0;
 }
 
-/* The current page gives way first when the row is too narrow */
 .breadcrumbs__item:last-child {
   flex-shrink: 1;
 }
@@ -30,7 +25,6 @@
   font-family: var(--font-label);
   font-size: var(--type-small);
   line-height: 20px;
-  /* 44px hit area: overflow is hidden for the ellipsis, so padding grows the box and the margin keeps the layout */
   margin-block: calc(var(--space-3) * -1);
   padding-block: var(--space-3);
   letter-spacing: 0;

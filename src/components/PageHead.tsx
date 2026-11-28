@@ -29,7 +29,6 @@ export interface PageHeadProps {
 /** A page's head as search engines and link previews read it. The server draws it; React keeps it in <head>. */
 export function PageHead({ title, description, path, type = 'website', image, ld, english = true, oneUrl = false, noindex = false }: PageHeadProps) {
   const { lang } = useLang()
-  // An untranslated English page shows the Chinese text: its JSON-LD says so.
   const shown = oneUrl || english ? lang : 'zh'
   const links = oneUrl ? { canonical: `${SITE_URL}${path}`, alternates: [], locale: headLinks(path, lang, true).locale } : headLinks(path, lang, english)
   return (
@@ -48,7 +47,6 @@ export function PageHead({ title, description, path, type = 'website', image, ld
       <meta property="og:locale" content={links.locale} />
       {'localeAlternate' in links && links.localeAlternate ? <meta property="og:locale:alternate" content={links.localeAlternate} /> : null}
       <meta property="og:image" content={image ?? DEFAULT_IMAGE} />
-      {/* The sizes of og.jpg; a page's own picture has others. */}
       {image ? null : <meta property="og:image:width" content="1200" />}
       {image ? null : <meta property="og:image:height" content="630" />}
       <meta name="twitter:title" content={title} />

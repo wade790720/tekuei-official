@@ -1,14 +1,3 @@
-// Component pages of /dev/component-library. Dev-only, Chinese only (internal page, not site copy).
-// Page model, as in the Radix Themes docs:
-//   summary   one sentence: what the component does
-//   hero      the first example: a live demo (key in demos.tsx) and/or its code
-//   api       API Reference, one entry per part (a component made of parts lists each part)
-//   examples  one entry per prop or variant worth showing
-//   keyboard  key → action, for interactive components
-//   notes     behavior and accessibility facts that props do not show
-// Components are listed alphabetically. Write as reference docs:
-// what the component does, no design history, no outside sites.
-
 import type { ComponentGroup } from './libraryTypes.ts'
 
 export const GROUPS: ComponentGroup[] = [

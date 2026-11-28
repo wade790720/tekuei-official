@@ -40,7 +40,6 @@ export const JOURNAL_POST_LABELS = {
 export type ReadablePost = JournalPost & { untranslated?: boolean }
 export type ReadableJournal = JournalData<ReadablePost>
 
-/** The same change in every language; any other key is kept as it is. */
 const eachLang = <T, U>(o: Localized<T>, f: (v: T) => U): Localized<U> => ({ ...o, zh: f(o.zh), en: f(o.en) })
 
 /** A post's tags. Posts saved before tags existed have one `category`, which becomes the only tag. */
@@ -56,7 +55,6 @@ export function tagCounts(posts: JournalPost[]): [string, number][] {
 /** Edit-panel text to tags: split on commas (also ，、), trim, uppercase, drop blanks and repeats. */
 export const parseTags = (text: string): string[] => [...new Set(text.split(/[,，、]/).map((t) => t.trim().toUpperCase()).filter(Boolean))]
 
-// No bundled posts: every post is written on the site and lives in R2. Until R2 answers, the journal is empty.
 export const getDefaultJournal = (): JournalData => ({ posts: { zh: [], en: [] }, content: { zh: {}, en: {} } })
 export const cloneJournal = (j: JournalData): JournalData => structuredClone(j)
 
@@ -93,7 +91,6 @@ export function publishedJournal(journal: JournalData): JournalData {
  * Both languages come from one result, so callers may pass a language and it is ignored.
  */
 export function readableJournal(journal: JournalData): ReadableJournal {
-  // Journal data is replaced, never mutated, so one result per object is safe. Pages call this on every render.
   let readable = readableCache.get(journal)
   if (!readable) readableCache.set(journal, (readable = toReadable(publishedJournal(journal))))
   return readable
@@ -135,7 +132,6 @@ export function getAdjacentPosts<P extends JournalPost>(journal: JournalData<P>,
   }
 }
 
-// Local date, not toISOString (UTC): in Taipei that would be yesterday until 08:00.
 export const today = (d = new Date()): string =>
   [d.getFullYear(), d.getMonth() + 1, d.getDate()].map((n) => String(n).padStart(2, '0')).join('.')
 

@@ -1,5 +1,3 @@
-// The site's top navigation and its parts: SiteNavLinks (shared by the bar and the phone menu),
-// NavToggle (the phone menu button) and NavOverlay (the full-screen phone menu).
 import { useEffect, useEffectEvent, useRef, useState, useSyncExternalStore } from 'react'
 import type { MouseEvent, ReactNode, Ref } from 'react'
 import { createPortal } from 'react-dom'
@@ -12,8 +10,6 @@ import { tokenMs } from '../lib/tokenMs.ts'
 import '../styles/siteNav.css'
 import '../styles/navOverlay.css'
 
-// No page has a contact section, so Contact opens a new email. The address is the same in both languages.
-// With no email in the list, Contact goes to About.
 const CONTACT_HREF = HOME_FOOTER.zh.contact.find((link) => link.href?.startsWith('mailto:'))?.href ?? '/about'
 
 function subscribeScroll(onChange: () => void) {
@@ -40,10 +36,8 @@ export function SiteNav({ current, variant = 'default' }: SiteNavProps) {
     // Keyboard presses have no pointer position (detail 0): start from the button's centre.
     const r = e.currentTarget.getBoundingClientRect()
     const fromPointer = e.detail > 0
-    // The language changes while the waves are strongest, so the new text seems to arrive with them.
     playWaterRipple(fromPointer ? e.clientX : r.left + r.width / 2, fromPointer ? e.clientY : r.top + r.height / 2, toggle)
   }
-  // The toggle unmounts while the menu is open; give it focus back once the menu has gone.
   const onMenuExited = () => toggleRef.current?.focus()
 
   const scrolled = useSyncExternalStore(subscribeScroll, () => window.scrollY > 80, () => false)
@@ -184,7 +178,6 @@ function OverlayClose({ ref, onClose, label }: { ref: Ref<HTMLButtonElement>; on
   )
 }
 
-// How long the overlay stays mounted after it starts to close (the closing transitions in navOverlay.css).
 function overlayDuration() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : tokenMs('--duration-base')
 }
@@ -204,7 +197,6 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }: N
   const exited = useRef(onExited)
   const [active, setActive] = useState(false)
   const [closing, setClosing] = useState(false)
-  // React to `open` changing during render, not in an effect (no extra render pass).
   const [prevOpen, setPrevOpen] = useState(open)
   if (open !== prevOpen) {
     setPrevOpen(open)
@@ -215,7 +207,6 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }: N
       setClosing(overlayDuration() > 0)
     }
   }
-  // Stays in the DOM while the closing animation runs.
   const mounted = open || closing
   const wasMounted = useRef(mounted)
 
@@ -223,18 +214,15 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }: N
     exited.current = onExited
   })
 
-  // Fires after the closing animation, once .site-nav is visible again and can take focus.
   useEffect(() => {
     if (wasMounted.current && !mounted) exited.current?.()
     wasMounted.current = mounted
   }, [mounted])
 
-  // The toggle that opened the menu is gone now; move focus into the dialog.
   useEffect(() => {
     if (active) closeBtn.current?.focus()
   }, [active])
 
-  // Two frames after mounting, add is-active so the opening transitions run from the closed state.
   useEffect(() => {
     if (!open) return undefined
     let inner = 0
@@ -247,14 +235,12 @@ function NavOverlay({ open, onClose, onExited, children, id = 'nav-overlay' }: N
     }
   }, [open])
 
-  // Unmount when the closing transitions end.
   useEffect(() => {
     if (!closing) return undefined
     const timer = window.setTimeout(() => setClosing(false), overlayDuration())
     return () => window.clearTimeout(timer)
   }, [closing])
 
-  // An event, so a new onClose from each SiteNav render does not toggle inert and the listener again.
   const onKey = useEffectEvent((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose()
   })

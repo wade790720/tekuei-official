@@ -25,7 +25,7 @@ export function CodeBlock({ code, lang = 'ts', filename }: CodeBlockProps) {
   useEffect(() => () => clearTimeout(timer.current), [])
 
   async function copy() {
-    if (!(await writeClipboard(code))) return // both ways failed: keep the button as it was
+    if (!(await writeClipboard(code))) return
     setCopied(true)
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setCopied(false), 1600)

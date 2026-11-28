@@ -17,10 +17,8 @@ export interface MarqueeProps {
  */
 export function Marquee({ items, reverse = false, speed = 14, label }: MarqueeProps) {
   const root = useRef<HTMLDivElement>(null)
-  // A short list is repeated inside each copy, so one copy is never narrower than the row.
   const [repeat, setRepeat] = useState(1)
 
-  // The duration follows the copy's width, so every row moves at the same speed.
   useLayoutEffect(() => {
     const el = root.current
     const track = el?.firstElementChild

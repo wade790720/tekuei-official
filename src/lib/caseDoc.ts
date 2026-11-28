@@ -1,6 +1,3 @@
-// The first three cases keep their text in code (src/data/cases), in sections. This turns one into the same
-// document a project page written in the editor has, so both are shown by the same page layout.
-
 import type { Doc, ImageRef, Lang } from './siteData.ts'
 
 export interface CaseSection {

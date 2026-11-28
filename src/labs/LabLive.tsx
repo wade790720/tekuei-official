@@ -14,7 +14,6 @@ export default function LabLive() {
   const { slug } = useParams()
   const { lang } = useLang()
 
-  // An unknown lab: the stub renders its own title.
   const lab = slug && Object.hasOwn(LAB_BY_ID, slug) ? LAB_BY_ID[slug]?.[lang] : undefined
   return (
     <>

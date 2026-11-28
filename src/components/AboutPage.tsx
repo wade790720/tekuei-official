@@ -15,10 +15,8 @@ import type { AboutPageData, Doc } from '../lib/siteData.ts'
 import '../styles/journal.css'
 import '../styles/about.css'
 
-// Only Wade edits, so Tiptap, the panel and cms.css load in edit mode, not for every visitor.
 const LOGOS = import.meta.glob<string>('../assets/about/clients/*', { eager: true, import: 'default' })
 
-/** A client in the marquee: its logo in the text colour (the file is used as a mask), or its name. */
 interface ClientProps {
   name: string
   logo?: string
@@ -55,7 +53,6 @@ export default function AboutPage({ about }: { about: AboutPageData }) {
 
   const editing = admin.editing && cms.isEditing
   const shown = editing ? cms.content : about
-  // Like an untranslated post: readers of an empty English page see the Chinese one.
   const untranslated = !editing && lang === 'en' && !aboutInEnglish(shown)
   const doc = getDoc(shown[untranslated ? 'zh' : lang])
 
@@ -89,7 +86,6 @@ export default function AboutPage({ about }: { about: AboutPageData }) {
           <div className="journal-post__body">
             {editing ? (
               <Suspense fallback={saved}>
-                {/* The editor stays mounted while previewing, so the cursor and undo history survive. */}
                 <Editor key={`${lang}-${admin.editorKey}`} doc={doc} onChange={setDoc} upload={upload} previewing={admin.previewing} />
                 {admin.previewing ? saved : null}
               </Suspense>

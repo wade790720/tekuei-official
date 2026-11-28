@@ -20,7 +20,6 @@ export interface DrawerProps {
  * Portalled to <body>: page roots such as .journal-page set z-index and would trap it under the nav.
  */
 export function Drawer({ open, label, push = false, className = '', children }: DrawerProps) {
-  // html.has-drawer pads the body (drawer.css) and stops the fixed nav at the drawer (siteNav.css).
   useLayoutEffect(() => {
     if (!open || !push) return undefined
     const root = document.documentElement

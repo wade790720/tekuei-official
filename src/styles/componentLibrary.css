@@ -1,16 +1,10 @@
-/* Dev-only component library page (/dev/component-library). Imported only by ComponentLibrary.tsx.
-   Layout after Radix Themes docs: a fixed sidebar, one page per entry, and a "本頁" nav on the right.
-   Both navs are position: fixed, because html/body set overflow-x: hidden and that breaks sticky. */
-
 .cl-page {
-  --cl-top: 72px; /* below the fixed site nav */
+  --cl-top: 72px;
   --cl-side-w: 232px;
   --cl-quick-w: 168px;
   --cl-edge: calc(var(--page-gutter) + var(--page-pad));
   font-family: var(--font-serif);
 }
-
-/* Sidebar: stays in place; scrolls on its own when it is taller than the screen */
 
 .cl-side {
   position: fixed;
@@ -27,7 +21,6 @@
   scrollbar-color: var(--line-strong) transparent;
 }
 
-/* The fold-out button only shows on narrow screens */
 .cl-side__toggle {
   display: none;
 }
@@ -68,7 +61,6 @@
   }
 }
 
-/* Current page: the one place gold marks where you are */
 .cl-side__link.active {
   color: var(--ember);
   background: var(--ember-whisper);
@@ -86,7 +78,6 @@
   min-width: 0;
 }
 
-/* Fixed nav covers the top of the page; anchors land below it */
 .cl-main [id] {
   scroll-margin-top: calc(var(--cl-top) + var(--space-6));
 }
@@ -268,7 +259,6 @@
   }
 }
 
-/* No room for the right nav: drop it and give the page the width */
 @media (max-width: 1280px) {
   .cl-quick {
     display: none;
@@ -279,7 +269,6 @@
   }
 }
 
-/* Live demo area */
 .cl-stage {
   position: relative;
   margin: var(--space-6) 0 var(--space-12);
@@ -345,7 +334,6 @@
   color: var(--text-secondary);
 }
 
-/* playWaterRipple demo: the whole box is the button. */
 .cl-ripple {
   width: 100%;
   border: none;
@@ -365,7 +353,6 @@
   align-items: center;
 }
 
-/* Card, Tooltip and field demos */
 .cl-card {
   display: grid;
   place-items: center;
@@ -458,8 +445,6 @@
   color: var(--text-tertiary);
 }
 
-/* Section headings on every page (h2); the "本頁" nav lists them */
-
 .cl-table-wrap {
   overflow-x: auto;
   border-radius: var(--radius-md);
@@ -522,7 +507,6 @@
 
 
 @media (max-width: 900px) {
-  /* Phones and tablets: the sidebar sits above the page instead of beside it */
   .cl-side {
     position: static;
     width: auto;
@@ -602,7 +586,6 @@
     padding: var(--space-12) var(--space-4) var(--space-4);
   }
 
-  /* Keep the description column readable; the table scrolls inside its frame */
   .cl-table {
     min-width: 560px;
   }
@@ -618,7 +601,6 @@
   }
 }
 
-/* Editor demo: Input (Editor) and Output (RichText) side by side, filling the example card */
 .cl-editor {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -675,15 +657,12 @@
   padding: var(--space-6);
 }
 
-/* Input pane: room for the "+" and "⠿" gutter (two 24px buttons + 12px gap) left of the text.
-   Phones show the "+" inside the empty line instead (cms.css), so they keep the normal padding. */
 @media (hover: hover) and (min-width: 769px) {
   .cl-editor__pane:first-child .cl-editor__body {
     padding-left: calc(var(--space-12) + var(--space-6));
   }
 }
 
-/* Output pane: the reader's page background, so the result looks as it will on the site */
 .cl-editor__pane:last-child .cl-editor__body {
   background: var(--surface-0);
 }
@@ -802,7 +781,6 @@
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--annotate) 60%, transparent);
 }
 
-/* Annotated spec view: a real card with a measured overlay */
 .fd-spec {
   margin: 0 0 var(--space-12);
 }
@@ -907,7 +885,6 @@
   overflow: visible;
 }
 
-/* The "I": one line across the gap and a short cap at each end */
 .fd-spec__beam line {
   stroke: var(--annotate);
   stroke-width: 1;
@@ -978,8 +955,6 @@
 }
 
 
-/* Doc parts (src/components/dev/doc/): section, example, scale picker */
-
 .doc-section {
   margin-top: var(--space-12);
 }
@@ -1005,7 +980,6 @@
   margin-top: var(--space-4);
 }
 
-/* Sub-sections (h3): an API part, an example, a step */
 .doc-section--3 {
   margin-top: var(--space-12);
 }
@@ -1040,7 +1014,6 @@
   white-space: nowrap;
 }
 
-/* Example: the live preview with its code joined underneath (Radix Themes style) */
 .doc-example {
   margin: 0;
   border-radius: var(--radius-lg);
@@ -1059,7 +1032,6 @@
 }
 
 
-/* Article text inside a preview: drop the outer margins the post body adds */
 .doc-prose > :first-child > :first-child,
 .doc-prose > :first-child {
   margin-top: 0;
@@ -1069,7 +1041,6 @@
   margin-bottom: 0;
 }
 
-/* Type scale: one "Aa" per step, on a shared baseline */
 .doc-scale {
   display: flex;
   align-items: flex-end;
@@ -1126,7 +1097,6 @@
   color: var(--text-primary);
 }
 
-/* Weight and family specimens */
 .doc-weights,
 .doc-families {
   display: flex;
@@ -1152,7 +1122,6 @@
   }
 }
 
-/* Code on its own, or joined under an Example preview */
 .doc-code {
   margin: 0;
   padding: var(--space-4) var(--space-6);
@@ -1198,7 +1167,6 @@
   color: var(--text-primary);
 }
 
-/* LinkCards: "延伸閱讀" */
 .doc-links {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -1235,7 +1203,6 @@
   color: var(--text-secondary);
 }
 
-/* ColorScale: 12 solid steps, 12 alpha steps over a checkerboard, numbers, the job of each range */
 .doc-scale-color {
   display: grid;
   gap: var(--space-1);
@@ -1281,7 +1248,6 @@
   color: var(--text-secondary);
 }
 
-/* TokenScale: one box per token */
 .doc-token-scale {
   display: flex;
   align-items: flex-end;
@@ -1320,7 +1286,6 @@
   color: var(--text-tertiary);
 }
 
-/* Semantic token cell: chip + name */
 .doc-swatch {
   display: inline-flex;
   align-items: center;
@@ -1336,7 +1301,6 @@
   box-shadow: inset 0 0 0 1px var(--line-strong);
 }
 
-/* Backgrounds: three nested layers */
 .doc-surfaces__layer {
   padding: var(--space-4);
   border-radius: var(--radius-lg);
@@ -1354,7 +1318,6 @@
   color: var(--text-secondary);
 }
 
-/* Hover and focus states, shown side by side */
 .doc-focus {
   display: flex;
   flex-wrap: wrap;
@@ -1379,7 +1342,6 @@
   color: var(--text-primary);
 }
 
-/* Easing: a dot crossing its track */
 .doc-easing {
   position: relative;
   display: block;
@@ -1443,10 +1405,6 @@
   }
 }
 
-/* HeroUI's preview area, for demos copied from HeroUI (Skeleton, ScrollShadow):
-   content centred both ways on the page background, 32px padding, at least 340px tall,
-   14px corners, inside an 8px frame. The negative margin turns the preview's 24px padding into that frame.
-   The page background also matters for Skeleton: its block is translucent, so a lighter backdrop halves the shimmer. */
 .cl-stage {
   display: flex;
   align-items: center;
@@ -1530,8 +1488,6 @@
   }
 }
 
-/* ScrollShadow demo: HeroUI's Usage example. 384px wide, at most 240px tall, 16px padding,
-   ten paragraphs 16px apart in 16px text on a 28px line. */
 .cl-ss-usage {
   width: 100%;
   max-width: 384px;

@@ -12,7 +12,6 @@ interface Methods {
   POST?: Handler
 }
 
-// The Pages Functions file routes, written out: the handlers are unchanged and still take { request, env }.
 const API: Record<string, Methods> = {
   '/api/data': { GET: data.onRequestGet, PUT: data.onRequestPut },
   '/api/upload': { POST: upload.onRequestPost },
@@ -28,6 +27,5 @@ export function routeApi(request: Request, env: Env): Promise<Response> | undefi
   if (!methods) return undefined
   const method = request.method === 'HEAD' ? 'GET' : request.method
   const handler = method === 'GET' || method === 'PUT' || method === 'POST' ? methods[method] : undefined
-  // A method the handler file does not export. Pages served the SPA shell (200) here; 405 says what happened.
   return handler ? handler({ request, env }) : Promise.resolve(new Response(null, { status: 405 }))
 }

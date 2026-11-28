@@ -1,5 +1,3 @@
-/* OtpInput (src/components/OtpInput.tsx) */
-
 .otp-input {
   position: relative;
   display: inline-grid;
@@ -9,7 +7,7 @@
   display: flex;
   gap: var(--space-2);
   padding: var(--space-2);
-  border-radius: var(--radius-lg); /* concentric: slot 4px plus 8px padding */
+  border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--surface-1) 80%, transparent);
   box-shadow: 0 0 0 1px var(--line);
 }
@@ -26,7 +24,6 @@
     background-color var(--duration-fast) var(--ease-touch);
 }
 
-/* A dot, never the character */
 .otp-input__slot[data-filled]::after {
   content: '';
   position: absolute;
@@ -40,7 +37,6 @@
   animation: otp-input-pop var(--duration-fast) var(--ease-touch);
 }
 
-/* The box that takes the next character, while the field has focus */
 .otp-input:focus-within .otp-input__slot[data-current] {
   box-shadow: inset 0 0 0 1.5px var(--ember);
 }
@@ -65,7 +61,6 @@
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 60%, transparent);
 }
 
-/* Covers the boxes so a click anywhere on them focuses the real input */
 .otp-input__field {
   position: absolute;
   inset: 0;

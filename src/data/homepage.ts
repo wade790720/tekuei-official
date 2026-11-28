@@ -14,7 +14,6 @@ export const HOME_HERO = {
     ariaLabel: '首頁主視覺',
     name: 'WADE',
     fullName: 'WADE CHU',
-    // One entry per line on screen. Wade set the Chinese line breaks.
     motto: [
       '1990 年',
       '出生於台灣新竹',
@@ -25,7 +24,6 @@ export const HOME_HERO = {
     ],
     koiLabel: 'KOI',
     foodLabel: 'FOOD',
-    // English in both languages, on purpose: a small joke in the corner, like the counters beside it.
     hint: 'poke the water, the koi are hungry',
     lead: '一個人的工作室 安靜的創作',
     body: '喜愛 滑雪、開發程式、寫寫文章，然後好好的睡一覺',
@@ -54,10 +52,9 @@ export const HOME_HERO = {
   },
 }
 
-// The same in both languages. The order is Wade's.
 const CONTACT = [
   { label: 'X', href: 'https://x.com/tekueichu' },
-  { label: 'YouTube' }, // no channel link yet: shown as plain text until Wade gives the address
+  { label: 'YouTube' },
   { label: 'Facebook', href: 'https://www.facebook.com/tekuei.xx' },
   { label: 'Instagram', href: 'https://www.instagram.com/tekuei.xx' },
   { label: 'GitHub', href: 'https://github.com/wade790720' },
@@ -65,7 +62,6 @@ const CONTACT = [
   { label: 'tekuei.xx@gmail.com', href: 'mailto:tekuei.xx@gmail.com' },
 ]
 
-// Resources in the Shatter Footer lab. FAQ and Privacy policy have no page yet, so they are plain text.
 const RESOURCES = [
   { label: 'Support', href: 'mailto:tekuei.xx@gmail.com' },
   { label: 'FAQ' },

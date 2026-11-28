@@ -1,6 +1,3 @@
-// Brand foundations shown at the top of /dev/component-library: colour, type, spacing.
-// Values live in src/styles/tokens.css; this file only says what each token is for.
-
 import type { TypeStep } from './doc/TypeScalePicker.tsx'
 import type { Doc, LegacyBlock } from '../../lib/siteData.ts'
 
@@ -67,7 +64,6 @@ export const COLOR_GROUPS: ColorGroup[] = [
   },
 ]
 
-// The type scale, smallest last. `family` and `tracking` mark the steps that change font or letter spacing.
 export const TYPE_STEPS: (TypeStep & { use: string })[] = [
   { name: 'Display', token: '--type-display', use: '每頁最多一個：Journal、About 的大標', sample: 'Journal', tracking: true },
   { name: 'H1', token: '--type-h1', use: '文章標題', sample: '留白的建築' },
@@ -94,7 +90,6 @@ export const TYPE_STEPS: (TypeStep & { use: string })[] = [
   { name: 'Mono', token: '--type-mono', use: '程式碼、快速鍵', sample: 'const x = 1 · ⌘S', family: '--font-mono' },
 ]
 
-// Copy for the Typography page, one entry per section.
 export const TYPE_DOC: {
   base: { lead: string; blocks: LegacyBlock[] }
   formatting: { lead: string; doc: Doc; code: string }
@@ -185,7 +180,6 @@ export const SPACE_RULES = [
   '圓角：按鈕和輸入框 4px、選單和工具列 8px、卡片 12px、膠囊 999px',
 ]
 
-// Sample card for the annotated spec views. Demo copy only, not a real post.
 export const SPEC_SAMPLE = {
   section: 'Journal',
   meta: '2026.11.19 · 6 min',

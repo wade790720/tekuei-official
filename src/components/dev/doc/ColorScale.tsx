@@ -1,4 +1,3 @@
-// What each step range is for, shared by every 12-step scale.
 const ROLES: [number, number, string][] = [
   [1, 2, '背景'],
   [3, 5, '互動元件'],

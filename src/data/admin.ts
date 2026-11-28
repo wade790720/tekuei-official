@@ -1,10 +1,8 @@
 export const ADMIN_SESSION_KEY = 'tekuei_admin_session'
 export const EDIT_BAR_KEY = 'tekuei_edit_bar'
 
-// The edit-mode code is ADMIN_SECRET (Cloudflare Pages env). It must be this many digits.
 export const ADMIN_CODE_LENGTH = 6
 
-// Edit mode is for Wade only, so these labels are Chinese only.
 export const CMS_LABELS = {
   gatePre: 'EDIT MODE',
   gateTitle: '輸入密碼',

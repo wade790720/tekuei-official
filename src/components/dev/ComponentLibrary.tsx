@@ -1,6 +1,3 @@
-// Dev-only page (/dev/component-library): the design system docs, laid out like the Radix Themes docs.
-// Sections: 概覽 (guides), 主題 (tokens), then the component groups. One page per entry.
-// src/routes.ts adds its route only in development, so the page and its assets stay out of production.
 import { useEffect, useState } from 'react'
 import type { ComponentType } from 'react'
 import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router'
@@ -216,8 +213,7 @@ export default function ComponentLibrary() {
   const { hash } = useLocation()
   const navigate = useNavigate()
   const page = PAGE_BY_ID[pageId ?? 'introduction']
-  const [menuOpen, setMenuOpen] = useState(false) // narrow screens only: the sidebar folds into a button
-  // Old links pointed at #anchors on one long page; send them to the matching page.
+  const [menuOpen, setMenuOpen] = useState(false)
   const legacy = !pageId && PAGE_BY_ID[hash.slice(1)] ? hash.slice(1) : null
 
   useEffect(() => {

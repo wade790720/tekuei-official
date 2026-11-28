@@ -4,8 +4,8 @@
 
 const IW = 1672
 const IH = 941
-const MAX_W = 1920 // keep in step with --page-max in tokens.css
-const SW = 418 // images are read at this small size for hit tests and ASCII colour
+const MAX_W = 1920
+const SW = 418
 const SH = 235
 const CW = 7
 const CHH = 10
@@ -31,7 +31,6 @@ interface Box {
   ascii: boolean
   tag: string
 }
-/** The hover lock-on box: the same shape without a lifetime. */
 type Frame = Pick<Box, 'x' | 'y' | 'w' | 'h' | 's'>
 interface Spark {
   x: number
@@ -43,7 +42,6 @@ interface Spark {
   a: number
 }
 interface Ember { x: number; y: number; vx: number; vy: number; life: number; fade: number }
-/** Bounding box of the second picture's outline, in screen space. */
 interface Bounds { x: number; y: number; r: number; b: number }
 
 export interface HeroFxElements {
@@ -83,7 +81,6 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () 
   let oy = 0
   let dw = 0
   let dh = 0
-  // Alpha and colour of the two pictures at SW x SH; null until they have decoded.
   let mk: Uint8ClampedArray | null = null
   let ad = new Uint8ClampedArray(0)
   let sb: Bounds = { x: 0, y: 0, r: 0, b: 0 }
@@ -106,11 +103,9 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () 
   const onSubject = (x: number, y: number) => (mk?.[idx(x, y) + 3] ?? 0) > 128
 
   function layout() {
-    // The canvas fills the stage, which livingPortrait.css keeps inside --page-max.
     W = canvas.clientWidth
     H = canvas.clientHeight
     const narrow = W < 700
-    // The picture covers the full-screen banner.
     const s = Math.max(Math.min(W, MAX_W) / IW, H / IH)
     dw = IW * s
     dh = IH * s
@@ -129,7 +124,6 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () 
     buildEdge()
   }
 
-  // Outline points of the second picture, in screen space. Sparks run along them.
   function buildEdge() {
     edge = []
     const A = (x: number, y: number) => ad[(y * SW + x) * 4 + 3] > 128
@@ -142,7 +136,6 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () 
     sb = { x: Math.max(0, Math.min(...xs)), y: Math.max(0, Math.min(...ys)), r: Math.min(W, Math.max(...xs)), b: H }
   }
 
-  // Boxes appear only while the pointer is on the figure. A box may stick out past the figure's edge.
   function spawn(now: number, at: { x: number; y: number }) {
     if (swap || now - lastSpawn < 85 || boxes.length >= cap || !onSubject(at.x, at.y)) return
     lastSpawn = now
@@ -184,7 +177,6 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () 
       }
   }
 
-  // The box is a window onto the second picture.
   const picture = (b: Frame) =>
     ctx.drawImage(
       alt,
@@ -211,7 +203,6 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () 
     ctx.fillText(label, b.x + 4, b.y - 2)
   }
 
-  // Glitch around one box: colour-split ghost frames, stray bars, noise pixels, a shifted slice.
   function glitch(b: Frame, tick: number) {
     const h = (k: number) => hash(b.s + k * 3.7, tick)
     const dpr = canvas.width / W
@@ -247,7 +238,6 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () 
     }
   }
 
-  // Sparks: a few slow particles flow along the outline, leave trails, and now and then spit embers.
   const pick = () => edge[Math.floor(Math.random() * edge.length)]
   const particle = (): Spark => {
     const p = pick() ?? [0, 0]
@@ -331,7 +321,6 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () 
     ctx.restore()
   }
 
-  // Glitch over the whole figure: shifted strips of both pictures, neon bars, noise pixels.
   function bigGlitch(tick: number, g: number) {
     const h = (k: number) => hash(k * 5.3 + 91, tick)
     const bh = sb.b - sb.y
@@ -445,7 +434,7 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () 
   const onDouble = (e: MouseEvent) => {
     if (!mk || swap || !onSubject(...local(e))) return
     swap = performance.now()
-    boxes = [] // no hover boxes while the second picture shows
+    boxes = []
     kick()
   }
   const onResize = () => {
@@ -453,7 +442,6 @@ export function mountHeroFx({ root, bg, cut, alt, canvas }: HeroFxElements): () 
     resizeTimer = setTimeout(() => mk && layout(), 120)
   }
 
-  // One slow pass over the figure shows the effect before the visitor moves.
   function sweep() {
     const pts = ([[0.36, 0.6], [0.5, 0.22], [0.56, 0.3], [0.62, 0.46], [0.52, 0.7]] as Point[]).map(([u, v]): Point => [
       clamp(ox + u * dw, 24, W - 24),

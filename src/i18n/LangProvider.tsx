@@ -40,7 +40,6 @@ export function LangProvider({ children }: { children: ReactNode }) {
   const [oneUrlLang, setOneUrlLang] = useState<Lang>(fromParam ?? 'zh')
   const lang = oneUrl ? oneUrlLang : fromUrl
 
-  // Once, after hydration. Not on later navigations: a Chinese link clicked after that is the reader's choice.
   useEffect(() => {
     const saved = savedLang()
     if (saved !== 'en') return

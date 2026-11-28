@@ -1,5 +1,3 @@
-// Comment patterns AI keeps writing, and the design rules a stylesheet keeps breaking. Runs as an ESLint rule for JS, as a CLI for CSS,
-// and as a Claude Code PostToolUse hook (`--hook`) so the edit fails the moment it is written.
 import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { basename, extname, relative } from 'node:path'
@@ -25,7 +23,6 @@ function fileExists(name: string) {
 /** Problems in one comment's text. */
 export function slopIn(text: string): string[] {
   const found = CHECKS.filter(([re]) => re.test(text)).map(([, msg]) => msg)
-  // Capitalised .js names are libraries (Editor.js, Three.js); our components are .tsx.
   const stale = [...text.matchAll(/\b[\w.-]+\.(?:css|tsx|ts|mts|jsx|js|mjs)\b/g)]
     .map(([name]) => name)
     .filter((name) => !/^[A-Z]\w*\.js$/.test(name) && !fileExists(name))
@@ -47,8 +44,6 @@ export const noSlopPlugin = {
   },
 }
 
-// Design rules a stylesheet can break without anyone noticing (DESIGN.md "Don't"). They were written down
-// and broken anyway, so they are checked here. Spacing in px must be a step of the scale.
 const SCALE = new Set([0, 1, 2, 4, 8, 12, 16, 24, 32, 48, 96])
 interface Declaration {
   prop: string
@@ -68,7 +63,6 @@ const DESIGN: [string, (d: Declaration, file: string) => boolean, string][] = [
 
 /** Design-rule breaks in one stylesheet's text: `{ line, rule, msg }` for each declaration that breaks one. */
 export function designIn(css: string, file = '') {
-  // Comments become spaces, so a hex in a comment is not a colour and line numbers hold.
   const src = css.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '))
   return [...src.matchAll(/([\w-]+)\s*:\s*([^;{}]+);/g)].flatMap((m) => {
     const d = { prop: m[1], value: m[2].trim() }
@@ -77,8 +71,6 @@ export function designIn(css: string, file = '') {
   })
 }
 
-// What was already there when the check arrived, per file and rule. A file may break a rule that many
-// times and no more, so the count can only go down: lower it there when you fix one.
 const BASELINE: Baseline = JSON.parse(readFileSync(new URL('./designBaseline.json', import.meta.url), 'utf8'))
 
 /** A file's breaks of each rule, when there are more of them than the baseline allows. */

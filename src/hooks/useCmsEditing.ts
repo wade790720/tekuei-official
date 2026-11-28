@@ -9,15 +9,11 @@ import type { CmsSection } from './useCmsSection.ts'
  */
 export function useCmsEditing<C>(cms: CmsSection<C>) {
   const admin = useAdmin()
-  // The saved side changes only on load and save, so it is not serialised again on every keystroke.
   const saved = useMemo(() => JSON.stringify(cms.savedContent), [cms.savedContent])
   const isDirty = (draft: C | null) => Boolean(draft) && JSON.stringify(draft) !== saved
-  // The panel's indicator can lag a keystroke: the whole section is compared when the browser is idle.
-  // Save and leave check the current draft instead, so Ctrl+S right after typing still saves.
   const deferredDraft = useDeferredValue(cms.draft)
   const dirty = useMemo(() => Boolean(deferredDraft) && JSON.stringify(deferredDraft) !== saved, [deferredDraft, saved])
 
-  // Not `cms` itself: it is a new object on every keystroke.
   const { isEditing, loading, startEditing } = cms
   const { editing, getToken } = admin
   useEffect(() => {
@@ -32,7 +28,6 @@ export function useCmsEditing<C>(cms: CmsSection<C>) {
       /* cms.error holds the message */
     }
   }
-  // Saves even with nothing else changed, after `change` edits the draft (publish, unpublish).
   const saveWith = async (change: (draft: C) => void) => {
     if (cms.saving) return
     try {

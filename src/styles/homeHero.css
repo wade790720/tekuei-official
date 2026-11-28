@@ -1,5 +1,3 @@
-/* Home: the koi pond. It is the whole page. */
-
 .home-koi {
   position: relative;
   display: flex;
@@ -9,7 +7,6 @@
   min-height: 560px;
   padding: var(--space-24) calc(var(--page-gutter) + var(--page-pad)) var(--space-12);
   overflow: hidden;
-  /* Not flat black: the middle of the pond is a shade lighter, the edges meet the page colour. */
   background: radial-gradient(90% 80% at 50% 45%, var(--surface-1), var(--surface-0));
   color: var(--text-primary);
   /* A tap drops food; no double-tap zoom on the water. */
@@ -19,7 +16,6 @@
   -webkit-user-select: none;
 }
 
-/* Both canvases fill the pond and end at the content edge. grainHaze.ts draws the light under the koi. */
 .home-koi__haze,
 .home-koi__pond {
   position: absolute;
@@ -29,7 +25,6 @@
   color: var(--text-primary);
 }
 
-/* koiPond.ts draws here and reads the font and these three colours. */
 .home-koi__pond {
   font-family: var(--font-label);
   --koi-mark: var(--ember);
@@ -53,13 +48,11 @@
   align-items: flex-end;
 }
 
-/* Top left: the motto, small. */
 .home-koi__motto {
   font-family: var(--font-serif);
   font-size: var(--type-nav);
   line-height: var(--type-small-lh);
   color: var(--text-secondary);
-  /* The line breaks are set in the data, like the introduction on p5aholic.me. */
   white-space: nowrap;
 }
 
@@ -67,8 +60,6 @@
   display: block;
 }
 
-/* Top right, set against the right edge: one larger line in the accent colour, then a small line
-   with a few marked words. Small text here is in the serif at the nav size, like the header links. */
 .home-koi__intro {
   max-width: 420px;
   font-family: var(--font-serif);
@@ -109,7 +100,6 @@
   color: var(--text-tertiary);
 }
 
-/* Bottom right: the name, large. The size follows the Koi Pond hero on motionsites.ai (about 11% of the width). */
 .home-koi h1 {
   font-family: var(--font-serif);
   font-size: clamp(56px, 11vw, 200px);
@@ -119,7 +109,6 @@
   white-space: nowrap;
 }
 
-/* Wider than the cap: the pond's and the haze's side edges fade into the background (as on About). */
 @media (min-width: 1921px) {
   .home-koi__haze,
   .home-koi__pond {
@@ -144,8 +133,6 @@
   }
 }
 
-/* Phones show only the pond, the name and the line under it. The motto, the introduction and the
-   counts come back from tablet width (768px). */
 @media (max-width: 767px) {
   .home-koi {
     justify-content: flex-end;
@@ -166,7 +153,6 @@
   }
 }
 
-/* The pond stands still, so a click does nothing. */
 @media (prefers-reduced-motion: reduce) {
   .home-koi__hint {
     display: none;

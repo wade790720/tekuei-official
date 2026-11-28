@@ -18,7 +18,6 @@ const get = (e: TestEnv, ifNoneMatch?: string, code: string | null = SECRET) =>
     }),
     env: e,
   })
-/** Wrong guesses counted so far, as src/lib/adminAuth.ts keeps them. */
 const fails = (e: TestEnv) => {
   try {
     return Number(e.BUCKET.read('admin/attempts.json').fails)
@@ -86,8 +85,8 @@ test('a wrong code cannot save', async () => {
 
 test('a save from an editor that loaded an older version is refused', async () => {
   const e = env()
-  const loaded = await etagOf(e) // laptop opens the editor
-  await put(e, { journal: { posts: ['from phone'] } }, { etag: loaded }) // phone saves first
+  const loaded = await etagOf(e)
+  await put(e, { journal: { posts: ['from phone'] } }, { etag: loaded })
   const res = await put(e, { journal: { posts: ['from laptop'] } }, { etag: loaded })
   assert.equal(res.status, 409)
   assert.deepEqual(e.BUCKET.read('data.json').journal, { posts: ['from phone'] })
@@ -157,7 +156,6 @@ test('reading data.json needs the code: drafts are in it', async () => {
   assert.equal(res.status, 401)
   assert.equal(res.headers.get('Cache-Control'), 'no-store')
   assert.doesNotMatch(await res.text(), /matsu/)
-  // No code at all is no guess: a crawler or an old link cannot lock the site.
   assert.equal(fails(e), 0)
   assert.equal((await get(e)).status, 200)
   assert.equal(fails(e), 0, 'the right code takes back its own count')

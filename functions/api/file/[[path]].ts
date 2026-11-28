@@ -8,8 +8,6 @@ export async function onRequestGet({ request, env }: ApiContext) {
   } catch {
     return new Response('Bad key', { status: 400 }) // a broken % escape
   }
-  // Only uploaded images are public (functions/api/upload.ts writes them under images/).
-  // The bucket also holds data.json and the admin attempt counter.
   if (!key.startsWith('images/') || key.includes('..')) {
     return new Response('Not found', { status: 404 })
   }

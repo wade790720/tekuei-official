@@ -1,6 +1,3 @@
-// What search engines and AI readers get besides the page itself: JSON-LD, the preview image, sitemap.xml and
-// llms.txt. The pages draw their head with these (PageHead); the resource routes call the last two.
-
 import { getDefaultJournal, postInEnglish, postTags, publishedJournal } from '../data/journal.ts'
 import { labLinks } from '../labs/index.ts'
 import { localePath } from './localePath.ts'
@@ -263,7 +260,6 @@ export function llmsTxt(journal: JournalData, cases: CaseLink[], enCases: CaseLi
   ].join('\n')
 }
 
-// Old links that are already in search indexes: the two labs went to /labs/, every other case to /projects/.
 export const MOVED: Record<string, string> = {
   '/cases/living-portrait': '/labs/living-portrait',
   '/cases/falling-figure': '/labs/falling-figure',

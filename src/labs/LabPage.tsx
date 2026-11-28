@@ -116,7 +116,6 @@ export default function LabPage() {
   )
 }
 
-/** Copies the lab's prompt; the copy icon turns into a check for a moment, like the CodeBlock copy button. */
 interface CopyPromptButtonProps {
   prompt: string
   labels: { copyPrompt: string; copied: string }

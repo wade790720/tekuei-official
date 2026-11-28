@@ -1,7 +1,3 @@
-// Small syntax highlighter for code cards in journal posts.
-// It knows C-like languages (JS, TS, JSX, CSS, JSON) and shell-style # comments.
-// shortcut: one generic grammar, no language-specific rules; upgrade to Shiki when posts need exact highlighting.
-
 const KEYWORDS = new Set(
   (
     'const let var function return if else for while do switch case break continue new class extends ' +
@@ -57,7 +53,6 @@ export function tokenize(src: string, lang = 'ts'): Token[] {
     else if ((t = match(NUMBER, src, i))) push('number', t)
     else if ((t = match(WORD, src, i))) {
       const after = nextChar(src, i + t.length)
-      // "-" is allowed inside words for CSS; give it back when it ends the word (a - b)
       if (t.endsWith('-')) t = t.replace(/-+$/, '')
       if (KEYWORDS.has(t)) push('keyword', t)
       else if (after === '(') push('fn', t)

@@ -39,7 +39,6 @@ export function digitsToE164(value: string | null | undefined, country: PhoneCou
     return parsedPlus.format('E.164')
   }
 
-  // fallback：手動去掉國碼後的開頭 0（各國 trunk prefix 習性）
   if (dial && digits.startsWith(dial)) {
     const national = digits.slice(dial.length).replace(/^0+/, '')
     if (national) return `+${dial}${national}`

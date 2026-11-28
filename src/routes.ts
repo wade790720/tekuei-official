@@ -14,7 +14,6 @@ const pages = (p: '' | 'en-') => [
   route('cases/:slug', 'routes/moved-case.ts', { id: `${p}moved-case` }),
 ]
 
-// Under one layout route: its ErrorBoundary replaces a failed page below the root's providers.
 export default [
   layout('routes/page.tsx', [
     ...pages(''),

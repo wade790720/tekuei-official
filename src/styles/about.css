@@ -1,7 +1,3 @@
-/* Layout only. The body reuses the Journal post styles (journal.css). */
-
-/* The same ground as the home pond: a lighter middle fading to the page colour, and the grain haze
-   (grainHaze.ts) over it. It stays put while the page scrolls; z-index -1 keeps it under the text. */
 .about-backdrop {
   position: fixed;
   inset: 0;
@@ -44,8 +40,6 @@
   gap: var(--space-8);
 }
 
-/* The logo file is a mask over the text colour, so every logo is one colour. The image inside, invisible,
-   gives the box its size and the logo its accessible name. */
 .about-clients__logo {
   display: block;
   background: currentColor;
@@ -61,7 +55,6 @@
   opacity: 0;
 }
 
-/* Keeps the footer icons clear of the edit toolbar */
 .is-cms-editing .about-page {
   padding-bottom: var(--space-24);
 }

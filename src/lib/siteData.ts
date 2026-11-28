@@ -1,6 +1,3 @@
-// The shape of R2 data.json and the one place it is checked. Everything past parseSiteData trusts these types.
-// Sections are saved whole, so the parser keeps every field it does not know about: dropping one would delete
-// it from R2 on the next save.
 import type { JSONContent } from '@tiptap/react'
 
 export type Lang = 'zh' | 'en'
@@ -138,7 +135,6 @@ const CHECKS = {
   record: isRecord,
 }
 type Spec = Record<string, keyof typeof CHECKS>
-/** Each field in `spec` is either absent or of its kind. */
 const fieldsOk = (o: Json, spec: Spec) => Object.entries(spec).every(([k, kind]) => o[k] === undefined || CHECKS[kind](o[k]))
 
 const POST_TEXT = ['num', 'date', 'title', 'titleEn', 'excerpt'] as const
@@ -163,7 +159,6 @@ const ITEM_SPEC: Spec = {
   en: 'record',
 }
 
-// The casts below follow a check of every field the type names.
 function parseBody(v: unknown): Body | null {
   if (!isRecord(v)) return null
   if (isRecord(v.doc)) return v as { doc: Doc }

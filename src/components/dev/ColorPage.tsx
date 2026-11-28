@@ -1,5 +1,3 @@
-// Color page: the two 12-step scales, alpha colours, the semantic layer with live contrast,
-// backgrounds, hover and focus, then the measured spec view.
 import { useState } from 'react'
 import { DocCode } from './doc/DocCode.tsx'
 import { ColorScale } from './doc/ColorScale.tsx'
@@ -12,7 +10,6 @@ import { GUIDES } from './guides.data.ts'
 
 const g = GUIDES.color
 
-// Token lists grouped by what each step is for, as the scale tokens are meant to be used.
 const scaleCode = (name: string) => `/* 背景 */
 var(--${name}-1);  var(--${name}-2);
 
@@ -31,7 +28,6 @@ var(--${name}-11); var(--${name}-12);
 /* 透明版本：在每一階前面加 a */
 var(--${name}-a1) … var(--${name}-a12);`
 
-// Which scale step each semantic token points at (mirrors tokens.css; computed styles only give the final value).
 const POINTS_AT: Record<string, string> = {
   '--surface-0': '--gray-1',
   '--surface-1': '--gray-3',

@@ -1,7 +1,3 @@
-// The About page. Its body lives in R2 data.json under `aboutPage` ({ zh: { doc }, en: { doc } }) and is
-// edited in place like a Journal post. This file is only the default before R2 has one.
-// Not `about`: that key still holds the old About copy, and a save would replace it.
-// Facts come from Wade's CV (src/labs/falling-figure/content.ts). Lines in 【】 are placeholders.
 import { hasBody } from '../lib/richText.ts'
 import type { AboutPageData, Doc } from '../lib/siteData.ts'
 
@@ -10,12 +6,8 @@ export const ABOUT_META = {
   en: { title: 'About', documentTitle: 'About · TEKUEI', clients: 'Worked with' },
 }
 
-// Two rows for the two marquees. Source: Wade's CV. Neighbours alternate between wide wordmarks, compact
-// marks and Chinese lettering, so no stretch of the moving row is much heavier than the next.
 // `logo` is a file in src/assets/about/clients/, found online (Wikimedia Commons, Simple Icons, the
 // organisation's own site or Facebook page, or an exhibition page); without one the name is shown.
-// A client with no `en` name is left out of the English page unless it has a logo. `height` (px) evens out
-// logos that look small at the default 32px, such as round or square marks.
 export const ABOUT_CLIENTS = [
   [
     { zh: 'LG', en: 'LG', logo: 'lg.svg', height: 40 },

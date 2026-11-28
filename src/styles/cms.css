@@ -1,5 +1,3 @@
-/* Edit mode: the code gate (OtpGate) and the edit panel (SidePanel, built on Drawer). Wade only. */
-
 :root {
   --cms-ring: 0 0 0 1px var(--line);
 }
@@ -60,10 +58,6 @@
   height: 60px;
 }
 
-/* The slot that takes the next digit, while the input has focus */
-
-/* Covers the slots so a click anywhere on them focuses the real input */
-
 .cms-gate__pill {
   display: inline-flex;
   align-items: center;
@@ -82,7 +76,6 @@
   color: var(--ember-soft);
 }
 
-/* Spinner shared by the gate pill and the save button */
 .cms-spin {
   width: 14px;
   height: 14px;
@@ -107,11 +100,6 @@
   color: var(--text-tertiary);
 }
 
-/* Panel
-   Modelled on the Framer CMS sheet: one label | value row per field, hairline dividers,
-   values that look like plain text until you type, and no focus frames. */
-
-/* The same light and line as the toolbar's (cms-bar__status), in a row of its own */
 .cms-panel__status {
   padding: var(--space-2) var(--space-6);
   border-bottom: 0.5px solid var(--gray-a3);
@@ -122,7 +110,6 @@
   white-space: normal;
 }
 
-/* The drawer's buttons: the same set as the toolbar's. TooltipGroup places the tooltip under it */
 .cms-actions {
   position: relative;
   display: flex;
@@ -131,7 +118,6 @@
   gap: var(--space-1);
 }
 
-/* A note from an action (translate): a small card under the buttons, where the toolbar has a row for it */
 .cms-actions .cms-bar__note {
   position: absolute;
   top: calc(100% + var(--space-2));
@@ -186,7 +172,6 @@
   min-width: 0;
 }
 
-/* Hints stay out of the way until the field is in use */
 .cms-row__hint {
   max-height: 0;
   overflow: hidden;
@@ -234,7 +219,6 @@
     color var(--duration-fast) var(--ease-touch);
 }
 
-/* 40px hit area around the 26px button (desktop panel) */
 .cms-icon::before {
   content: '';
   position: absolute;
@@ -259,7 +243,6 @@
   }
 }
 
-/* Save button: idle → saving → saved, each label blurs in (transitions.dev "Text states swap") */
 .cms-save__stack {
   display: inline-grid;
   justify-items: center;
@@ -274,7 +257,6 @@
   opacity: 0;
   filter: blur(4px);
   transform: translateY(4px);
-  /* Transitions, so a state that changes mid-swap turns back from where it is; visibility flips at the end */
   transition:
     opacity var(--duration-base) var(--ease-touch),
     filter var(--duration-base) var(--ease-touch),
@@ -289,7 +271,6 @@
   transform: none;
 }
 
-/* The check and pencil also grow and shrink, like every state icon (icon-swap in tokens.css) */
 .cms-save__label > svg {
   transform: scale(0.25);
   transition: transform var(--duration-fast) var(--ease-touch);
@@ -303,7 +284,6 @@
   animation: none;
 }
 
-/* A failed save shakes the button once, like a wrong code in the gate */
 .cms-save[data-state='error'] {
   animation: shake-damped var(--duration-shake) linear;
 }
@@ -315,9 +295,8 @@
   border-top-color: currentColor;
 }
 
-/* The "已儲存" flash; the button is disabled then, so override the grey disabled text */
 .cms-save[data-state='saved'],
-.btn.cms-save[data-state='saved'] /* outranks .btn:disabled in button.css */ {
+.btn.cms-save[data-state='saved']  {
   color: var(--ember-soft);
 }
 
@@ -334,14 +313,12 @@
   color: var(--text-secondary);
 }
 
-/* Journal list: drag a row by its handle (⠿) to reorder */
 .cms-post {
   grid-template-columns: 20px 24px minmax(0, 1fr) auto;
   gap: var(--space-3);
   align-items: center;
 }
 
-/* A row of SortRows, whatever it holds */
 .cms-sort__row {
   position: relative;
   transition: opacity var(--duration-fast) var(--ease-touch);
@@ -351,7 +328,6 @@
   opacity: 0.35;
 }
 
-/* Drop line above or below the row the dragged post will land on */
 .cms-sort__row[data-drop]::after {
   content: '';
   position: absolute;
@@ -369,7 +345,6 @@
   bottom: -1px;
 }
 
-/* A list with no rows, when a row from another list is over it */
 .cms-sort[data-drop] {
   box-shadow: 0 0 0 1px var(--ember);
 }
@@ -447,9 +422,6 @@
   color: var(--text-tertiary);
 }
 
-/* Rich-text editor (Editor): no box; the toolbar is a few small pill groups */
-
-/* The formatting bubble over selected text: one rounded bar of icon buttons, with warm tooltips (Editor) */
 .cms-ed-bar {
   position: absolute;
   z-index: 3;
@@ -461,7 +433,7 @@
   background: var(--surface-2);
   box-shadow: var(--cms-ring);
   white-space: nowrap;
-  translate: 0 calc(-100% - var(--space-2)); /* top/left is the selection's first line */
+  translate: 0 calc(-100% - var(--space-2));
 }
 
 .cms-ed-sep {
@@ -475,7 +447,6 @@
   position: relative;
 }
 
-/* The editor sits in the article, so the text takes the article's own styles (journal.css). */
 .cms-ed-content {
   min-height: 240px;
   outline: none;
@@ -567,7 +538,6 @@
   cursor: grab;
 }
 
-/* The card's controls, at the right of its head. Filled at rest, so they read as controls and not as text. */
 .cms-ed-card__tools {
   display: flex;
   align-items: center;
@@ -579,8 +549,6 @@
   background: var(--gray-a3);
 }
 
-/* The card's name: an icon, the name in the primary text colour, and a count in a quiet pill.
-   Not gold: gold is for the current page, focus and hover. */
 .cms-ed-card__title {
   display: flex;
   align-items: center;
@@ -638,7 +606,6 @@
   color: var(--text-secondary);
 }
 
-/* Block gutter: "+" and "⠿" to the left of the line under the pointer (Editor) */
 .cms-ed {
   position: relative;
 }
@@ -664,7 +631,7 @@
   z-index: 2;
   display: flex;
   align-items: center;
-  translate: calc(-100% - var(--space-3)) 0; /* left is the block's left edge */
+  translate: calc(-100% - var(--space-3)) 0;
 }
 
 /* Each button sits in a DropdownMenu wrapper; flex drops the wrapper's line box, which pushed it down */
@@ -674,16 +641,14 @@
 
 .cms-ed-gutter .btn--icon {
   width: 24px;
-  height: 24px; /* HANDLE in Editor.tsx */
+  height: 24px;
   color: var(--text-tertiary);
 }
 
 .cms-ed-gutter .cms-ed-gutter__grip {
-  cursor: grab; /* outranks .btn's pointer */
+  cursor: grab;
 }
 
-/* No pointer to hover with, and no room beside the text on a phone:
-   the "+" shows only on the empty line under the cursor, inside the line itself. */
 @media (hover: none), (max-width: 768px) {
   .cms-ed-gutter {
     display: none;
@@ -699,7 +664,6 @@
   }
 }
 
-/* Image card in the editor: the real ImageCard, with its tools over the top right corner */
 .cms-ed-image {
   position: relative;
 }
@@ -777,7 +741,6 @@
   text-align: center;
 }
 
-/* Typed in place inside the figcaption, so it takes the caption's own type */
 .cms-ed-caption {
   width: 100%;
   padding: 0;
@@ -824,13 +787,11 @@
   color: var(--text-tertiary);
 }
 
-/* The ⋯ menu sits near the drawer's right edge, so it opens leftward. A picker in a form row opens under its button. */
 .cms-panel .cms-actions .dropdown-menu__list {
   right: 0;
   left: auto;
 }
 
-/* Toolbar: the panel's actions for a page with no fields */
 .cms-bar {
   position: fixed;
   right: var(--space-6);
@@ -863,7 +824,6 @@
   cursor: grabbing;
 }
 
-/* Every control is the same 32px square. ::before reaches the 40px hit area, and half the gap sideways */
 :is(.cms-bar, .cms-actions) .btn {
   position: relative;
   justify-content: center;
@@ -905,7 +865,6 @@
   color: var(--success);
 }
 
-/* Not the menu's rows: a focused row is the highlighted one, as in any menu, and an outline would read as a selection */
 .cms-bar button:not(.dropdown-menu__item):focus-visible {
   outline: 1px solid var(--ember);
   outline-offset: 1px;
@@ -993,7 +952,6 @@
   color: var(--danger);
 }
 
-/* key={state} remounts it, so each change of state pops once and restarts the ping */
 .cms-bar__light {
   position: relative;
   width: 6px;
@@ -1019,7 +977,6 @@
   background: var(--line-strong);
 }
 
-/* Takes no width of its own, so a long message wraps inside the bar instead of stretching it */
 .cms-bar__note {
   order: -1;
   width: 0;
@@ -1035,7 +992,6 @@
   color: var(--text-secondary);
 }
 
-/* Collapsed: a dock button at the bottom right brings the panel back */
 .cms-dock {
   position: fixed;
   right: var(--space-6);
@@ -1071,7 +1027,6 @@
   background: var(--ember-soft);
 }
 
-/* Screen-reader only: announces save states while the panel is collapsed */
 .cms-dock__status {
   position: fixed;
   width: 1px;
@@ -1081,7 +1036,6 @@
   white-space: nowrap;
 }
 
-/* Buttons keep a keyboard focus ring; text fields and the editor show only the caret */
 .cms-panel button:not(.dropdown-menu__item):focus-visible,
 .cms-panel select:focus-visible,
 .cms-panel a:focus-visible,
@@ -1129,7 +1083,6 @@
     bottom: var(--space-2);
   }
 
-  /* 36px tall on a phone; ::before reaches 44px */
   .cms-bar .btn {
     width: 40px;
     height: 36px;
@@ -1219,7 +1172,6 @@
   }
 }
 
-/* Carousel card in the editor: one row per slide */
 .cms-ed-slide {
   display: grid;
   grid-template-columns: 20px 72px minmax(0, 1fr);
@@ -1244,12 +1196,10 @@
   min-width: 0;
 }
 
-/* The handle is as tall as the thumbnail beside it, so its dots sit at the thumbnail's middle */
 .cms-ed-slide > .cms-drag {
   height: 48px;
 }
 
-/* As wide as the rows above it, so its edges line up with them */
 .cms-ed-slide__add {
   justify-content: center;
   margin-top: var(--space-1);
@@ -1257,7 +1207,6 @@
 }
 
 
-/* The paragraph-style trigger: current style and a chevron */
 .cms-ed-style {
   display: inline-flex;
   align-items: center;
@@ -1289,7 +1238,6 @@
 }
 
 
-/* The current thumbnail beside its upload button */
 .cms-thumb {
   width: 64px;
   height: 40px;

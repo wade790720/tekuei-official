@@ -5,33 +5,24 @@ import { getAdminToken, loginAdmin } from '../lib/adminApi.ts'
 import { AdminContext } from './admin.ts'
 import type { AdminState } from './admin.ts'
 
-// Only Wade opens the code gate, so it and cms.css load on first use, not for every visitor.
 const OtpGate = lazy(() => import('../components/admin/OtpGate.tsx').then((m) => ({ default: m.OtpGate })))
 
-// Ctrl+S (Windows) or ⌘+S (Mac):
-//   not logged in -> the code gate
-//   logged in     -> edit mode
-//   editing       -> save (the page registers its save with useAdminSave)
 const isSaveKey = (e: KeyboardEvent) =>
   (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && !e.isComposing && (e.code === 'KeyS' || e.key === 's')
 
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => getAdminToken() || null)
   const [gateOpen, setGateOpen] = useState(false)
-  // Stays mounted after the first opening, so its closing animation can play.
   const [gateLoaded, setGateLoaded] = useState(false)
   if (gateOpen && !gateLoaded) setGateLoaded(true)
   const [editing, setEditingState] = useState(false)
-  // The panel opens with edit mode and stays as Wade leaves it (collapsed or not) across pages.
   const [panelOpen, setPanelOpen] = useState(true)
-  // Edit mode can show the page as readers see it; the panel holds the switch, the page reads it.
   const [previewing, setPreviewing] = useState(false)
   const setEditing = useCallback((on: boolean) => {
     setEditingState(on)
     setPreviewing(false)
     if (on) setPanelOpen(true)
   }, [])
-  // The editor reads its doc once on mount. A new value remounts it after the doc was replaced from outside.
   const [editorKey, setEditorKey] = useState(0)
   const reloadEditor = useCallback(() => setEditorKey((k) => k + 1), [])
   const save = useRef<(() => void) | null>(null)

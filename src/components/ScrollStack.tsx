@@ -42,14 +42,12 @@ export function ScrollStack({ children, className, rail = true }: ScrollStackPro
       const stick = origin + parseFloat(getComputedStyle(items[0]).top)
       const step = items[0].offsetHeight + parseFloat(getComputedStyle(items[1]).marginTop)
       const tops = items.map((el) => el.getBoundingClientRect().top)
-      // A card's depth is how many later cards have arrived over it, the arriving one counted in part.
       let depth = 0
       for (let i = items.length - 1; i > 0; i--) {
         items[i].style.setProperty('--depth', depth.toFixed(3))
         depth += Math.min(1, Math.max(0, 1 - (tops[i] - stick) / step))
       }
       items[0].style.setProperty('--depth', depth.toFixed(3))
-      // The first card's depth is how far the whole stack has come. The rail appears as that card settles.
       if (!progress) return
       progress.style.setProperty('--progress', (depth / (items.length - 1)).toFixed(3))
       progress.style.setProperty('--shown', Math.min(1, Math.max(0, 1 - (tops[0] - stick) / 96)).toFixed(3))

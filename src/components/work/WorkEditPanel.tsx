@@ -17,7 +17,6 @@ import { emptyDoc, getDoc } from '../../lib/richText.ts'
 import type { Doc, ProjectType, WorkData, WorkItem } from '../../lib/siteData.ts'
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
-// Ids a new project cannot take: a project that began in code keeps its id even after it is deleted, and each lab has a card.
 const TAKEN = new Set([...CODE_PROJECT_IDS, ...LABS.map((lab) => lab.id)])
 const SECTION_ITEMS = PROJECT_SECTIONS.map((s) => ({ value: s.id, label: s.zh }))
 const sectionOf = projectType
@@ -73,7 +72,6 @@ export function WorkListEditPanel() {
     if (!window.confirm(`刪除「${projectTitle(item)}」？內頁的中英文內容會一起刪除，儲存後才會生效。`)) return
     cms.updateDraft((d) => {
       d.items = d.items.filter((x) => x.id !== item.id)
-      // Or the next load would add it back
       if (CODE_PROJECT_IDS.includes(item.id)) d.removed = [...(d.removed ?? []), item.id]
       delete d.content?.zh?.[item.id]
       delete d.content?.en?.[item.id]
@@ -134,7 +132,6 @@ export function WorkListEditPanel() {
   )
 }
 
-/** One project: the card's fields, and for a project with an editable page, publishing and translation. */
 interface ProjectEditPanelProps {
   id: string
   /** The page is written in code (the first three cases): only the card's fields are edited. */
@@ -158,14 +155,12 @@ export function ProjectEditPanel({ id, coded = false }: ProjectEditPanelProps) {
       const x = d.items.find((y) => y.id === id)
       if (x) change(x)
     })
-  // Title and client belong to one language. The rest is shared.
   const text = lang === 'en' ? { title: item.en?.title ?? '', client: item.en?.client ?? '' } : { title: projectTitle(item), client: item.client }
   const setText = (key: 'title' | 'client', value: string) =>
     set((x) => {
       if (lang === 'en') x.en = { ...x.en, [key]: value }
       else {
         x[key] = value
-        // The first three cases store the title in two halves; an edited title is one string.
         if (key === 'title') x.titleEmWord = ''
       }
     })
@@ -195,7 +190,6 @@ export function ProjectEditPanel({ id, coded = false }: ProjectEditPanelProps) {
     const x = d.items.find((y) => y.id === id)
     if (x) x.draft = asDraft
   }
-  // Saving never changes whether the project is public. Publishing and unpublishing are their own actions in the menu.
   const actions = item.draft
     ? {
         saveLabel: T.saveDraft,

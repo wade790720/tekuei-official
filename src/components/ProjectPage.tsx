@@ -22,7 +22,6 @@ import { DefaultHead } from './DefaultHead.tsx'
 import { PageHead } from './PageHead.tsx'
 import { creativeWorkLd, firstImage, imageUrl, pageUrl } from '../lib/seo.ts'
 
-// Only Wade edits, so Tiptap and the panel load in edit mode, not for every visitor.
 const Editor = lazy(() => import('./Editor.tsx').then((m) => ({ default: m.Editor })))
 const ProjectEditPanel = lazy(() => import('./work/WorkEditPanel.tsx').then((m) => ({ default: m.ProjectEditPanel })))
 
@@ -39,13 +38,11 @@ export default function ProjectPage({ work }: { work: WorkData }) {
   const item = content.items.find((x) => x.id === slug)
   const editing = admin.editing && cms.isEditing
   const zh = item && projectBody(content, slug, 'zh')
-  // Like an untranslated post: readers of an empty English page see the Chinese one.
   const english = projectInEnglish(content, slug)
   const untranslated = !editing && lang === 'en' && !english
   const doc = getDoc(untranslated ? zh : item && projectBody(content, slug, lang))
   const title = item ? projectTitle(item) : ''
 
-  // A project with no page of its own (its card links elsewhere) still opens here in edit mode, for its fields.
   if (!item || (!zh && !editing)) {
     return (
       <div className="journal-page journal-page--post">
@@ -87,7 +84,6 @@ export default function ProjectPage({ work }: { work: WorkData }) {
           <header className="journal-post__header">
             {cover ? null : (
               <>
-                {/* Wrapped so the fade-in transition does not replace the links' hover transition */}
                 <div className="fade-in">
                   <Breadcrumbs label={t.crumbs} className="journal-post__crumbs">
                     <BreadcrumbsItem href={localePath('/')}>{t.home}</BreadcrumbsItem>
@@ -133,7 +129,6 @@ export default function ProjectPage({ work }: { work: WorkData }) {
               <p className="journal-post__notice">{t.noPage}</p>
             ) : editing ? (
               <Suspense fallback={saved}>
-                {/* The editor stays mounted while previewing, so the cursor and undo history survive. */}
                 <Editor key={`${slug}-${lang}-${admin.editorKey}`} doc={doc} onChange={setDoc} upload={upload} previewing={admin.previewing} />
                 {admin.previewing ? saved : null}
               </Suspense>

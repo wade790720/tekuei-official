@@ -18,7 +18,6 @@ export default function CaseRouter({ page }: { page: ProjectPageData }) {
   return (
     <>
       <CaseStudyPage work={page.work} assets={page.assets} />
-      {/* The page is code, but its card on the Projects list is edited here */}
       {editing ? (
         <Suspense fallback={null}>
           <ProjectEditPanel id={slug} coded />

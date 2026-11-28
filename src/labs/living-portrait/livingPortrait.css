@@ -1,9 +1,6 @@
-/* LivingPortrait: full-screen picture, a big name, the cut-out figure in front. */
-
 .living-portrait {
   position: relative;
   background: var(--surface-0);
-  /* Fills the viewport (or the iframe on a lab page). heroFx.ts scales the picture to cover it. */
   height: 100svh;
   overflow: hidden;
   touch-action: pan-y;
@@ -13,12 +10,10 @@
 
 .living-portrait__stage {
   position: absolute;
-  /* Wider than --page-max: the picture ends at the content edge. */
   inset: 0 var(--page-gutter);
   overflow: hidden;
 }
 
-/* Sits between the full picture and the cut-out figure, so the figure stands in front of it. */
 .living-portrait__name {
   position: absolute;
   left: 50%;
@@ -38,7 +33,6 @@
   position: absolute;
 }
 
-/* heroFx.ts positions the images. They stay hidden until it has. */
 .living-portrait__stage img {
   max-width: none;
   opacity: 0;
@@ -66,7 +60,6 @@
     linear-gradient(0deg, var(--surface-0) 0%, transparent 16%);
 }
 
-/* Wider than the cap: the picture stays put, its side edges fade into the background. */
 @media (min-width: 1921px) {
   .living-portrait__scrim {
     left: var(--page-gutter);

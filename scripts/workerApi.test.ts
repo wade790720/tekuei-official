@@ -4,7 +4,6 @@ import { routeApi } from '../workers/api.ts'
 import { fakeR2 } from './fakeR2.ts'
 import { testCodes } from './testCodes.ts'
 
-// workers/app.ts sends these URLs to functions/; each case answers in a way only its own handler does.
 const { right: SECRET } = testCodes()
 const env = () => ({
   ADMIN_SECRET: SECRET,

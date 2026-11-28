@@ -1,4 +1,3 @@
-/* Tooltip (src/components/Tooltip.tsx). It sits below the group: above it, a scroll area (the edit panel) would clip it. */
 .tooltip {
   position: absolute;
   top: calc(100% + var(--space-2));
@@ -20,12 +19,10 @@
   animation: tooltip-in var(--duration-fast) var(--ease-touch);
 }
 
-/* Hidden: a short fade before it unmounts */
 .tooltip[data-closing] {
   animation: tooltip-out var(--duration-exit) var(--ease-touch) forwards;
 }
 
-/* Moving between buttons while warm: the tooltip slides instead of popping */
 .tooltip[data-travel] {
   animation: none;
   transition: transform var(--duration-base) var(--ease-touch);

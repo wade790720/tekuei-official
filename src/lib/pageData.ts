@@ -6,9 +6,6 @@ import { projectBody, projectInEnglish, projectLink, publishedWork } from './pro
 import { LANGS } from './siteData.ts'
 import type { AboutPageData, Body, CaseAssets, Lang, SiteData, WorkData } from './siteData.ts'
 
-// What each page's loader sends: only what the page draws, in both languages, with no drafts. The pages show it
-// as it is; only Wade's editor reads the whole section (with drafts) from /api/data.
-
 const eachLang = <T>(f: (lang: Lang) => T): Record<Lang, T> => ({ zh: f('zh'), en: f('en') })
 
 /** The Journal list: every published post's card, no bodies. */
@@ -75,7 +72,6 @@ export interface ProjectPageData {
 export function projectPage(site: SiteData, slug: string, isCase: boolean): ProjectPageData {
   const work = readerWork(site)
   if (isCase) return { work: { items: work.items }, assets: site.cases?.[slug], found: true }
-  // work.content still holds the drafts' bodies: only a published project's body leaves here.
   const found = work.items.some((x) => x.id === slug) && Boolean(projectBody(work, slug, 'zh'))
   const content = eachLang((lang): Record<string, Body> => {
     const body = found && projectBody(work, slug, lang)

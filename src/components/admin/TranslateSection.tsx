@@ -9,7 +9,7 @@ import { hasBody } from '../../lib/richText.ts'
 import type { Doc } from '../../lib/siteData.ts'
 import type { Slot } from '../../lib/docTranslate.ts'
 
-const DONE_MS = 5000 // how long the "translated" note stays
+const DONE_MS = 5000
 
 /**
  * The translate button of an edit panel: fills the English draft from the Chinese one. Nothing is saved:
@@ -33,7 +33,6 @@ export function TranslateSection({ zhDoc, enDoc, fields = {}, onDone }: Translat
 
   useEffect(() => () => abort.current?.abort(), [])
 
-  // The "done" note leaves by itself; an error stays until the next try.
   useEffect(() => {
     if (!status.done) return undefined
     const id = setTimeout(() => setStatus({ error: '', done: false }), DONE_MS)

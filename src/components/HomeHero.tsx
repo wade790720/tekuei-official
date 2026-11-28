@@ -8,7 +8,6 @@ import type { Lang } from '../lib/siteData.ts'
 
 const two = (n: number) => String(n).padStart(2, '0')
 
-/** First screen: koi swim behind the words. A click on the water drops food (koiPond.ts). */
 function KoiHero({ hero }: { hero: (typeof HOME_HERO)[Lang] }) {
   const root = useRef<HTMLElement>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
@@ -19,7 +18,6 @@ function KoiHero({ hero }: { hero: (typeof HOME_HERO)[Lang] }) {
     if (!canvas.current || !root.current) return
     return mountKoiPond(canvas.current, {
       surface: root.current,
-      // Every block of words on the pond, and the parts of the site header above it.
       avoid: [
         ...root.current.querySelectorAll<HTMLElement>('.home-koi__motto, .home-koi__intro, .home-koi__foot > *'),
         ...document.querySelectorAll<HTMLElement>('.site-nav > *'),
@@ -30,7 +28,6 @@ function KoiHero({ hero }: { hero: (typeof HOME_HERO)[Lang] }) {
 
   useEffect(() => (haze.current ? mountGrainHaze(haze.current) : undefined), [])
 
-  // The counter re-renders the hero whenever a koi eats, so the text is split once per language.
   const bodyParts = useMemo(() => hero.body.split(new RegExp(`(${hero.keywords.join('|')})`)), [hero])
 
   return (

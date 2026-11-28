@@ -23,7 +23,6 @@ export function FallingFigure() {
   const [current, setCurrent] = useState(-1)
   const [sound, setSound] = useState(true)
 
-  // The scene reads the act sections from the DOM, so it is rebuilt when the language changes.
   useEffect(() => {
     if (!canvas.current || !figure.current || !main.current) return
     const mounted = mountFallScene({
@@ -57,7 +56,6 @@ export function FallingFigure() {
       </div>
 
       <div className={`about-fall__caption${shownAct ? ' is-on' : ''}`}>
-        {/* key: a new act starts closed */}
         {shownAct ? <ActCaption key={shownAct.sub} act={shownAct} intro={intro} /> : null}
       </div>
 
@@ -121,10 +119,6 @@ export function FallingFigure() {
   )
 }
 
-/**
- * Corner caption for the act the figure is in: org / role, a few points, and an arrow that opens the full details.
- * The summary is aria-hidden: screen readers read the act sections in <main>. The arrow and details stay reachable.
- */
 interface ActCaptionProps {
   act: AboutFallAct
   intro: { more: string; less: string }

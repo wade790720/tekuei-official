@@ -1,7 +1,6 @@
 import { hasBody, safeHref } from './richText.ts'
 import type { Body, Lang, Localized, WorkData, WorkItem } from './siteData.ts'
 
-// Case pages moved from /cases/<slug> to /projects/<slug>. R2 and data.json still store the old links.
 export function projectHref(href: string): string
 export function projectHref(href: string | undefined): string | undefined
 export function projectHref(href: string | undefined) {
@@ -28,7 +27,6 @@ export function projectLink(item: WorkItem, work?: WorkData): string {
   return safeHref(projectHref(item.caseHref)) ?? `/projects/${item.id}`
 }
 
-/** The English fields written in the edit panel, without the empty ones. */
 function ownEnglish(item: WorkItem): Partial<WorkItem> {
   const own: Partial<WorkItem> = {}
   if (item.en?.client) own.client = item.en.client
@@ -47,7 +45,6 @@ export function localizeWork(work: WorkData, lang: Lang, bundledEn: Record<strin
     ...work,
     items: work.items.map((item) => {
       const own = ownEnglish(item)
-      // An English title of its own replaces both halves of the bundled one
       return { ...item, ...bundledEn[item.id], ...own, ...(own.title ? { titleEmWord: '' } : {}) }
     }),
   }

@@ -3,11 +3,11 @@
 // Brightness becomes alpha (black = transparent), so the sea sits on any dark background.
 
 const STEP = 2
-const SWEEP = 1.9 // s, time for the reveal edge to cross the width
-const FLY = 0.9 // s, mean flight time of one fragment
-const FADE = 0.35 // s, crossfade from fragments to the full image
-const DARK = 75 // r+g+b below this counts as background: no fragment, and cut to black
-const SLOT = 0.05 // s; fragments are grouped by start time, so a frame skips the groups that have not started
+const SWEEP = 1.9
+const FLY = 0.9
+const FADE = 0.35
+const DARK = 75
+const SLOT = 0.05
 
 interface Fragment {
   x: number
@@ -40,7 +40,7 @@ const pack = (r: number, g: number, b: number, a: number) => ((a << 24) | (b << 
 export function mountShatterImage(canvas: HTMLCanvasElement, { src, crop, onPlay }: ShatterImageOptions): () => void {
   const maybeCtx = canvas.getContext('2d')
   if (!maybeCtx) {
-    onPlay?.() // no 2D context: still show the footer text
+    onPlay?.()
     return () => {}
   }
   const ctx: CanvasRenderingContext2D = maybeCtx
@@ -57,7 +57,7 @@ export function mountShatterImage(canvas: HTMLCanvasElement, { src, crop, onPlay
   let raf = 0
   let start = 0
   let played = false
-  let pausedAt = 0 // when the canvas left the screen mid-animation
+  let pausedAt = 0
   let disposed = false
 
   function build() {
@@ -65,8 +65,6 @@ export function mountShatterImage(canvas: HTMLCanvasElement, { src, crop, onPlay
     W = canvas.width = Math.round(canvas.clientWidth * dpr)
     H = canvas.height = Math.round(canvas.clientHeight * dpr)
 
-    // Draw the crop once. Near-black becomes transparent (it hides the source's own background);
-    // the rest keeps its look on black: alpha = brightest channel, colour divided by it.
     final = document.createElement('canvas')
     final.width = W
     final.height = H
@@ -90,20 +88,20 @@ export function mountShatterImage(canvas: HTMLCanvasElement, { src, crop, onPlay
 
     const R = rng(42)
     slots = []
-    last = 0 // when the slowest fragment lands
+    last = 0
     for (let y = 0; y < H; y += STEP)
       for (let x = 0; x < W; x += STEP) {
         const i = (y * W + x) * 4
         if (px[i + 3] === 0) continue
-        const ragged = Math.sin(y * 0.045) * 0.05 + Math.sin(y * 0.13 + 2) * 0.03 // jagged reveal edge
+        const ragged = Math.sin(y * 0.045) * 0.05 + Math.sin(y * 0.13 + 2) * 0.03
         const p: Fragment = {
           x,
           y,
-          rgb: pack(px[i], px[i + 1], px[i + 2], 0), // alpha is added per frame
+          rgb: pack(px[i], px[i + 1], px[i + 2], 0),
           alpha: px[i + 3],
           sx: x + (60 + R() * 260) * dpr,
           sy: y + (R() - 0.5) * 160 * dpr,
-          d: Math.max(0, (x / W + ragged) * SWEEP + (R() - 0.5) * 0.35), // stray fragments run ahead
+          d: Math.max(0, (x / W + ragged) * SWEEP + (R() - 0.5) * 0.35),
           dur: FLY * (0.6 + R() * 0.6),
         }
         ;(slots[Math.floor(p.d / SLOT)] ??= []).push(p)
@@ -154,7 +152,6 @@ export function mountShatterImage(canvas: HTMLCanvasElement, { src, crop, onPlay
     raf = requestAnimationFrame(frame)
   }
 
-  // Starts the first time the canvas is 35% on screen. Off screen mid-animation it pauses, then resumes where it was.
   const io = new IntersectionObserver(
     (entries) => {
       const e = entries[0]
@@ -180,7 +177,7 @@ export function mountShatterImage(canvas: HTMLCanvasElement, { src, crop, onPlay
     rt = setTimeout(() => {
       build()
       if (played && !raf) {
-        pausedAt = 0 // a resize while paused skips to the end
+        pausedAt = 0
         showFinal()
       }
     }, 200)
@@ -194,7 +191,7 @@ export function mountShatterImage(canvas: HTMLCanvasElement, { src, crop, onPlay
       io.observe(canvas)
       window.addEventListener('resize', onResize)
     })
-    .catch(() => onPlay?.()) // image failed: still show the footer text
+    .catch(() => onPlay?.())
 
   return () => {
     disposed = true

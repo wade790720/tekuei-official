@@ -32,7 +32,6 @@ const validTexts = (t: unknown): t is string[] =>
   t.every((x) => typeof x === 'string') &&
   t.reduce((sum, x) => sum + x.length, 0) <= MAX_CHARS
 
-// The request body and the model's reply are untyped JSON, read one field at a time.
 const field = (v: unknown, key: string): unknown => (typeof v === 'object' && v !== null ? (v as Record<string, unknown>)[key] : undefined)
 
 // Tags instead of JSON: an English quotation mark inside a translation would break a JSON reply.

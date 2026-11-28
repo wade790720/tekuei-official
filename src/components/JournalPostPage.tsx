@@ -20,10 +20,8 @@ import { DefaultHead } from './DefaultHead.tsx'
 import { PageHead } from './PageHead.tsx'
 import { firstImage, pageUrl, postLd } from '../lib/seo.ts'
 
-// Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.
 const JournalPostEditPanel = lazy(() => import('./journal/JournalEditPanel.tsx').then((m) => ({ default: m.JournalPostEditPanel })))
 
-/** How many posts were read since the list, from the history entry's state (0: not opened from the list). */
 function listDepth(state: unknown): number {
   return typeof state === 'object' && state !== null && 'fromList' in state && typeof state.fromList === 'number' ? state.fromList : 0
 }
@@ -39,7 +37,6 @@ export default function JournalPostPage({ journal: reader, english }: { journal:
   const fromList = listDepth(useLocation().state)
   const t = JOURNAL_POST_LABELS[lang]
   const { editing } = useAdmin()
-  // While editing, the page shows the real English draft, even when it is still empty
   const journal = useJournalContent(reader)
   const post = getJournalPost(journal, slug, lang)
   const content = slug ? journal.content[lang]?.[slug] : null
@@ -66,7 +63,6 @@ export default function JournalPostPage({ journal: reader, english }: { journal:
       <main>
       <article className="journal-post" lang={post.untranslated ? 'zh-Hant' : undefined}>
         <header className="journal-post__header">
-          {/* Wrapped so the fade-in transition does not replace the links' hover transition */}
           <div className="fade-in">
             <Breadcrumbs label={t.crumbs} className="journal-post__crumbs">
               <BreadcrumbsItem href={localePath('/')}>{t.home}</BreadcrumbsItem>
@@ -82,7 +78,6 @@ export default function JournalPostPage({ journal: reader, english }: { journal:
           <div className="journal-post__num fade-in" style={{ '--i': 2 }}>{post.num}</div>
           <h1 className="journal-post__title fade-in" style={{ '--i': 3 }}>{post.title}</h1>
           <div className="journal-post__title-en fade-in" style={{ '--i': 4 }}>{post.titleEn}</div>
-          {/* Wrapped so the fade-in transition does not replace the buttons' own */}
           <div className="fade-in" style={{ '--i': 5 }}>
             <ShareLinks />
           </div>
@@ -138,12 +133,6 @@ export default function JournalPostPage({ journal: reader, english }: { journal:
   )
 }
 
-/**
- * Back to the Journal list. Opened from the list, it steps back through history instead, so the list
- * returns with its tag filter and scroll position. `fromList` counts the posts read since the list
- * (previous / next add one). Opened from anywhere else, it is a plain link to /journal.
- */
-/** @param english  postInEnglish: without an English version both URLs point search engines at the Chinese page */
 function PostHead({ post, content, slug, english }: { post: ReadablePost; content: Body; slug: string; english: boolean }) {
   const { lang } = useLang()
   const doc = getDoc(content)

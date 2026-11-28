@@ -1,5 +1,3 @@
-/* Button (src/components/Button.tsx) */
-
 .btn {
   display: inline-flex;
   align-items: center;
@@ -13,10 +11,10 @@
   font-size: var(--type-caption);
   color: var(--gray-1);
   white-space: nowrap;
-  text-decoration: none; /* as="a" is still a button to look at */
+  text-decoration: none;
   flex-shrink: 0;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent; /* the press scale is the feedback */
+  -webkit-tap-highlight-color: transparent;
   transition:
     opacity var(--duration-fast) var(--ease-touch),
     background-color var(--duration-fast) var(--ease-touch),
@@ -24,7 +22,6 @@
     transform var(--duration-fast) var(--ease-touch);
 }
 
-/* Disabled, e.g. save with nothing to save: the button sits back instead of glowing */
 .btn:disabled {
   background: var(--surface-2);
   color: var(--text-faint);
@@ -47,7 +44,6 @@
   }
 }
 
-/* One glyph in a 32px square: editor toolbars and the block gutter */
 .btn--icon {
   justify-content: center;
   width: 32px;
@@ -73,7 +69,6 @@
   }
 }
 
-/* A round icon button on a picture or video: a dark glass disc keeps it readable on any image */
 .btn--overlay {
   justify-content: center;
   width: 32px;
@@ -101,7 +96,6 @@
   color: var(--text-primary);
 }
 
-/* Press: a small shrink gives the click a physical feel (0.96, never below 0.95) */
 .btn:active:not(:disabled) {
   transform: scale(0.96);
 }

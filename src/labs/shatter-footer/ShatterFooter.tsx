@@ -16,7 +16,6 @@ export function ShatterFooterStage() {
   )
 }
 
-// The stagger index the stylesheet reads as var(--i).
 const stagger = (i: number) => ({ '--i': i }) as CSSProperties
 
 interface FooterLinkProps {
@@ -28,9 +27,7 @@ interface FooterLinkProps {
 function FooterLink({ href, i, children }: FooterLinkProps) {
   const localePath = useLocalePath()
   const props = { className: 'shatter-footer__link', style: stagger(i) }
-  // An entry without an address is listed as plain text.
   if (!href) return <span {...props}>{children}</span>
-  // Site routes go through the router; files such as /sitemap.xml need a real page load.
   return href.startsWith('/') && !/\.\w+$/.test(href) ? (
     <Link to={localePath(href)} {...props}>
       {children}
@@ -53,7 +50,7 @@ function ShatterFooter() {
     if (!sea.current) return
     return mountShatterImage(sea.current, {
         src: seaImage,
-        crop: [0, 583, 1920, 705], // the bottom strip of the 1920 × 1288 image, in the canvas's 1280:470 ratio
+        crop: [0, 583, 1920, 705],
         onPlay: () => root.current?.classList.add('is-in'),
       })
   }, [])

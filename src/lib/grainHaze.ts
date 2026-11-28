@@ -3,12 +3,11 @@
 // itself twice, raised to the 6th power, sampled with a fixed random offset per pixel, inside a soft mask.
 // The shader is written for this site. Her grain and blur textures are replaced by a hash and a formula.
 // The colour comes from CSS `color`.
-
 import { cssRgb } from './cssRgb.ts'
 
 const P5_CONTRAST = 0.45 // her lightest grey (0.5) over her background (0.05)
 const SHARE = 0.375 // ours is 35 to 40% as strong as hers
-const FRAME_MS = 100 // the field drifts too slowly to need more than ten frames a second
+const FRAME_MS = 100
 const MAX_DPR = 1.5
 
 const VERTEX = `
@@ -101,7 +100,7 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
  */
 export function mountGrainHaze(canvas: HTMLCanvasElement): () => void {
   const gl = canvas.getContext('webgl', { antialias: false })
-  if (!gl) return () => {} // no WebGL: the page keeps its plain background
+  if (!gl) return () => {}
 
   const program = gl.createProgram()
   const vertex = compile(gl, gl.VERTEX_SHADER, VERTEX)
@@ -113,7 +112,6 @@ export function mountGrainHaze(canvas: HTMLCanvasElement): () => void {
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return () => {}
   gl.useProgram(program)
 
-  // One triangle that covers the canvas.
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer())
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW)
   const corner = gl.getAttribLocation(program, 'corner')

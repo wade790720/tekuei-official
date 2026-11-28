@@ -9,13 +9,11 @@ export { projectBody, projectHref, projectLink, projectTitle, publishedWork }
 export const DEFAULT_WORK = siteDefaults.work
 export const WORK_ITEMS = siteDefaults.work.items.map((item) => ({ ...item, caseHref: projectHref(item.caseHref) }))
 
-// The list's title and labels live here, not in R2, so the page can be renamed without touching saved data.
 export const PROJECTS_PAGE = {
   zh: { title: 'TEKUEI · Projects', pre: 'PROJECTS · 專案', heading: 'Projects', countSuffix: 'Projects', description: 'Wade 做過的網站、展覽和個人項目' },
   en: { title: 'TEKUEI · Projects', pre: 'PROJECTS', heading: 'Projects', countSuffix: 'Projects', description: 'Websites, exhibitions and side projects by Wade' },
 }
 
-// The list is shown in these sections, in this order. A section with no project is left out.
 const SECTION_NAMES: Record<ProjectType, Localized<string>> = {
   web: { zh: '網站', en: 'Websites' },
   exhibition: { zh: '展覽', en: 'Exhibitions' },
@@ -33,7 +31,6 @@ export const projectType = (item: WorkItem): ProjectType => item.type ?? PROJECT
 export const projectNumber = (items: WorkItem[], id: string): string =>
   String(PROJECT_SECTIONS.flatMap((s) => items.filter((x) => projectType(x) === s.id)).findIndex((x) => x.id === id) + 1).padStart(2, '0')
 
-// Which section a client project is in, by id: the R2 items carry no type. Labs are always in `side`.
 export const PROJECT_TYPES: Record<string, ProjectType> = {
   'matsu-biennial': 'web',
   monolab: 'web',
@@ -81,9 +78,6 @@ export function projectFacts(item: WorkItem, lang: Lang): ProjectFact[] {
   return facts.filter((f): f is ProjectFact => Array.isArray(f))
 }
 
-// Client work that began as code. It joins the saved list, with a short page, until the list has it, so it is
-// edited in the panel like any other project; the first save writes it to R2. `removed` remembers one Wade deleted.
-// Copy comes from Wade's CV (src/labs/falling-figure/content.ts).
 const CODE_PROJECTS: CodeProject[] = [
   {
     id: 'sre',
@@ -95,7 +89,6 @@ const CODE_PROJECTS: CodeProject[] = [
     thumbBg: 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, transparent) 0%, color-mix(in srgb, var(--surface-1) 88%, transparent) 45%, rgba(16, 15, 17, 0.8) 100%)',
     thumbImage: { url: '' },
     en: { client: 'SRE · Synera Renewable Energy', title: 'SRE' },
-    // The page it starts with. Not a field of the project: it goes to work.content.
     page: {
       zh: '開發風睿能源的官方網站，負責技術、架構決策與整合。',
       en: 'The official site for Synera Renewable Energy: technology, architecture and delivery.',

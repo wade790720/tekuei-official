@@ -57,7 +57,6 @@ export function DropdownMenu<V extends string = string>({
   const focusItem = (i: number) =>
     list.current?.querySelectorAll<HTMLElement>('[role^=menuitem]')[(i + choices.length) % choices.length]?.focus()
 
-  // Opening moves focus into the list: to the checked item, or the first one.
   const focusChecked = useEffectEvent(() => focusItem(Math.max(0, choices.findIndex((c) => c.value === value))))
   useEffect(() => {
     if (!open) return undefined
@@ -147,7 +146,6 @@ export interface MenuItemsProps<V extends string = string> {
  * where focus stays in the text and `active` marks the row the arrow keys are on.
  */
 export function MenuItems<V extends string = string>({ items, value, active, onPick }: MenuItemsProps<V>) {
-  // A menu with no icons at all (a plain picker) has no icon column; one with some keeps the labels in line.
   const hasIcons = items.some((it) => it !== 'divider' && it.icon)
   return items.map((it, i) =>
     it === 'divider' ? (

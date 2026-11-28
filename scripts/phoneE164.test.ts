@@ -6,10 +6,6 @@ import {
   validateCheckinPhone,
 } from '../src/lib/phoneE164.ts'
 
-/**
- * input = react-phone-input-2 風格（國碼 + 本地號碼，可能含 trunk 0）
- * expected = 標準 E.164
- */
 const CASES = [
   {
     region: 'asia',
@@ -111,7 +107,6 @@ const CASES = [
   },
 ]
 
-/** 有 trunk 0 習性的國家：含 0 / 不含 0 應得到同一 E.164 */
 const TRUNK_ZERO_PAIRS = [
   {
     name: 'Taiwan 0912…',

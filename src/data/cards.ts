@@ -1,4 +1,3 @@
-// Interface text inside CodeBlock, VideoPlayer, Carousel and Gallery (copy, play, next…).
 export const CARD_LABELS = {
   zh: {
     copy: '複製程式碼',

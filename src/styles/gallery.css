@@ -1,12 +1,7 @@
-/* Gallery. Photos in rows of two, read left to right, with every fifth one across the whole row so the wall
-   has a rhythm. The 16px gap and the 20px corners follow the look of React Bits Pro's Gallery 8 (rewritten, none of its code).
-   A parent can set --gallery-radius. */
-
 .gallery {
   margin: var(--gap-block) 0;
 }
 
-/* Wider than the text column, by as much as the carousel */
 @media (min-width: 900px) {
   .gallery {
     margin-inline: calc(-1 * (var(--space-12) + var(--space-8)));
@@ -82,7 +77,6 @@
   }
 }
 
-/* The large view */
 .gallery__view {
   padding: var(--space-12) var(--space-4);
   width: 100vw;

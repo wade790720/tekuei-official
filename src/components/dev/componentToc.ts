@@ -1,4 +1,3 @@
-// "本頁" headings for a component page, in the order ComponentPage renders them.
 import type { ComponentEntry } from './libraryTypes.ts'
 
 /** [id, label, level?]. Level 3 entries are indented under the h2 before them. */

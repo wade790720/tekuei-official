@@ -46,7 +46,7 @@ test('saving many times does not use up the wrong-guess budget', async () => {
 
 test('guesses sent at the same time: only one is compared', async () => {
   const e = env()
-  await checkAdmin(req(wrong()), e, 0) // creates the counter object
+  await checkAdmin(req(wrong()), e, 0)
   const results = await Promise.all([wrong(2), wrong(3), CODE].map((c) => checkAdmin(req(c), e, 1)))
   assert.equal(results.filter((r) => r !== 'locked').length, 1, `one claimed the attempt: ${results}`)
 })

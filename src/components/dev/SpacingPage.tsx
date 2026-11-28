@@ -1,4 +1,3 @@
-// Spacing page: the scale as rising boxes and a table, the three rhythms, then the measured spec view.
 import { useState } from 'react'
 import { DocCode } from './doc/DocCode.tsx'
 import { DocSection } from './doc/DocSection.tsx'

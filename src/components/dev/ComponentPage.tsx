@@ -1,5 +1,3 @@
-// One component page, laid out like the Radix Themes component docs:
-// hero example, API Reference (one part per sub-heading), Examples, Keyboard, Notes.
 import { Demo } from './demos.tsx'
 import { DocCode } from './doc/DocCode.tsx'
 import { DocSection } from './doc/DocSection.tsx'
@@ -11,7 +9,6 @@ import type { ApiPart, ComponentEntry } from './libraryTypes.ts'
 
 const PROPS_HEAD = ['Prop', '型別', '預設', '說明']
 
-/** A live demo with its code under it, or just the code when there is nothing to show live. */
 function Showcase({ demo, code }: { demo?: string; code?: string }) {
   if (demo) {
     return (

@@ -14,7 +14,6 @@ export default {
       next: () => {
         const api = routeApi(request, env)
         if (api) return api
-        // /en/ and /EN/Journal are the same pages as /en and /en/journal: one URL each.
         const url = new URL(request.url)
         const path = servedPath(url.pathname)
         if (path !== url.pathname) {

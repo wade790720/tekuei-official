@@ -5,7 +5,7 @@ import { OtpInput } from '../OtpInput.tsx'
 import { CheckIcon } from '../SidePanel.tsx'
 import '../../styles/cms.css'
 
-const UNLOCK_MS = 650 // how long "已解鎖" stays before the gate closes
+const UNLOCK_MS = 650
 
 /**
  * Full-screen code gate for edit mode: dark, blurred backdrop around a OtpInput.
@@ -28,7 +28,6 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }: OtpGateProps) {
   const [errorText, setErrorText] = useState(T.wrong)
   const [prevOpen, setPrevOpen] = useState(open)
 
-  // Every opening starts clean.
   if (open !== prevOpen) {
     setPrevOpen(open)
     if (open) {
@@ -37,7 +36,6 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }: OtpGateProps) {
     }
   }
 
-  // Focus on open and again after a wrong code (the field is swapped for a status pill while verifying).
   useEffect(() => {
     if (open && (state === 'idle' || state === 'error')) input.current?.focus()
   }, [open, state])
@@ -87,7 +85,6 @@ export function OtpGate({ open, onClose, onVerify, onUnlocked }: OtpGateProps) {
           {busy ? (
             <div className="cms-gate__pill">
               <span className="icon-swap">
-                {/* The wrapper scales; the spinner keeps its own rotation */}
                 <span data-off={state !== 'verifying' || undefined}>
                   <span className="cms-spin" aria-hidden />
                 </span>

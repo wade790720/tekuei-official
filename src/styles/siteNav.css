@@ -1,5 +1,3 @@
-﻿/* 全站固定導覽：捲動後顯示半透明的深色底 */
-
 .site-nav {
   position: fixed;
   top: 0;
@@ -53,7 +51,6 @@
   text-decoration: none;
 }
 
-/* Logo: the name and a blinking underscore cursor */
 .site-logo {
   display: inline-flex;
   align-items: baseline;
@@ -70,11 +67,10 @@
   width: 8px;
   height: 2px;
   background: currentColor;
-  --blink-ms: 2s; /* 1s on, 1s off */
+  --blink-ms: 2s;
   animation: site-logo-blink var(--blink-ms) steps(1, end) infinite;
 }
 
-/* About 1 s on, 1 s off, with a hard cut, as in the reference */
 @keyframes site-logo-blink {
   50% {
     opacity: 0;
@@ -92,7 +88,6 @@
   gap: var(--space-8);
 }
 
-/* The language button sits in the same row, so it shares the links' type */
 .site-nav__links :is(a, .site-nav__lang) {
   position: relative;
   font-family: var(--font-serif);
@@ -150,7 +145,6 @@
   }
 }
 
-/* Same type as the language button in the bar (DESIGN.md: nav links and the language button use the serif) */
 .site-nav__lang--overlay {
   font-family: var(--font-serif);
   font-size: var(--type-nav);
@@ -173,7 +167,6 @@
 }
 
 
-/* Same page width as the content below. */
 .site-nav {
   padding-left: calc(var(--page-gutter) + var(--page-pad));
   padding-right: calc(var(--page-gutter) + var(--page-pad));
@@ -184,19 +177,16 @@
   right: calc(var(--page-gutter) + var(--page-pad));
 }
 
-/* Water ripple after the language switch (waterRipple.ts). The canvas is a coarse grid, stretched and smoothed. */
 .water-ripple {
   position: fixed;
   inset: 0;
-  z-index: 99; /* under .site-nav (100): the links stay readable while waves pass beneath */
+  z-index: 99;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  /* Hides the grid's fine checker pattern so only the wave rings show. */
   filter: blur(2px);
 }
 
-/* A Drawer with push is open (Drawer.tsx): the fixed nav stops at the drawer's edge and tightens to fit */
 @media (min-width: 1100px) {
   html.has-drawer .site-nav {
     right: var(--drawer-w);

@@ -1,22 +1,11 @@
-/* TEKUEI brand colours. Dark base, ivory text, gold as a small accent.
-   Share: about 70% black and charcoal, 25% ivory text, 5% gold.
-   Brand colours below are the anchors of the gray and accent scales. Stylesheets use the
-   semantic tokens (--surface-*, --text-*, --line, --ember*) and never the anchors or scale steps. */
-
 :root {
-  /* Brand palette */
-  --obsidian: #0b0b0d; /* page background */
-  --charcoal: #181719; /* cards, section background */
-  --charcoal-elevated: #242024; /* raised elements */
-  --ivory: #f4eee7; /* headings, main text */
-  --gold: #c99a63; /* accent */
-  --amber: #e4b57b; /* hover, glow */
+  --obsidian: #0b0b0d;
+  --charcoal: #181719;
+  --charcoal-elevated: #242024;
+  --ivory: #f4eee7;
+  --gold: #c99a63;
+  --amber: #e4b57b;
 
-  /* Color scales
-     Two 12-step scales, each with a solid and an alpha (transparent ivory or gold) variant.
-     Steps by job: 1–2 backgrounds, 3–5 interactive, 6–8 borders, 9–10 solid, 11–12 text.
-     The brand colours are anchors (gray 1, 3, 5, 12; accent 9, 10); the steps between are mixes.
-     The semantic tokens below point at scale steps, so components never use a step directly. */
   --gray-1: var(--obsidian);
   --gray-2: color-mix(in oklab, var(--ivory) 3%, var(--obsidian));
   --gray-3: var(--charcoal);
@@ -69,40 +58,28 @@
   --accent-a11: var(--accent-11);
   --accent-a12: var(--accent-12);
 
-  /* Text or icons placed on a solid accent (step 9) */
   --accent-contrast: var(--gray-1);
 
-  /* Surfaces: page, card, raised, placeholder */
   --surface-0: var(--gray-1);
   --surface-1: var(--gray-3);
   --surface-2: var(--gray-5);
-  --surface-3: var(--gray-6); /* loading placeholders (Skeleton) */
+  --surface-3: var(--gray-6);
 
-  /* Lines. Neutral by default; gold lines (--ember-line) only mark the current page, focus or hover. */
   --line: var(--gray-a6);
-  /* Scrollbar thumb, after HeroUI: ivory at 15% on no track. The page and ScrollShadow use it. */
   --scrollbar-thumb: color-mix(in oklch, var(--gray-12) 15%, transparent);
   --line-strong: var(--gray-a7);
 
-  /* Text hierarchy, ivory at falling strength */
-
-  /* Accent */
   --ember: var(--accent-9);
   --ember-soft: var(--accent-10);
   --ember-line: var(--accent-a7);
   --ember-whisper: var(--accent-a4);
 
-  /* Page width. Content stops growing at --page-max; wider screens extend the sides.
-     heroFx.ts has the same number as MAX_W. */
   --page-max: 1920px;
   --page-gutter: max(0px, (100vw - var(--page-max)) / 2);
   --page-pad: clamp(20px, 4vw, 68px);
-  /* Text-and-list pages (Work, Journal): column width, without --page-pad. */
   --page-column: 1104px;
   --page-column-box: calc(var(--page-column) + 2 * var(--page-pad));
-  /* Reading width: 40 CJK characters at 17px. Journal posts use it for text and cards alike. */
   --page-reading: 680px;
-  /* Opening pictures (case and project pages): tall, with the text on the dark lower part. */
   --hero-height: 88svh;
   --hero-scrim: linear-gradient(
     to bottom,
@@ -112,107 +89,87 @@
     color-mix(in srgb, var(--surface-0) 90%, transparent) 100%
   );
 
-  /* Typeface: Latin in Instrument Serif, CJK in Source Han Serif (思源宋體, Google Fonts name Noto Serif TC).
-     Instrument Serif has no CJK glyphs, so the browser uses the next font for Chinese. index.html loads both. */
   --font-serif: 'Instrument Serif', 'Noto Serif TC', 'Source Han Serif TC', serif;
-  /* Article text. Instrument Serif is a narrow display face; long English reads better in a text face. */
   --font-reading: 'Source Serif 4', 'Noto Serif TC', 'Source Han Serif TC', serif;
-  /* Living Portrait lab only, which loads it itself. Anton has one weight (400). */
   --font-display: 'Anton', 'Arial Narrow', sans-serif;
   --font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, monospace;
-  /* Labels, dates, categories, values: monospace, with the serif for any Chinese in them */
   --font-label: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, 'Noto Serif TC', monospace;
 
   /* Weights. Noto Serif TC is loaded at 300 / 400 and Instrument Serif at 400 only:
      anything above 400 would be a faux bold. Body text is 400; light text on dark needs the weight. */
-  --weight-light: 300; /* large headings only */
+  --weight-light: 300;
   --weight-regular: 400;
 
-  /* Code highlighting (journal code cards). Muted, warm, readable on --surface-1. */
   --code-keyword: var(--gold);
   --code-fn: var(--amber);
   --code-prop: #c9b8a6;
   --code-string: #a9b88f;
   --code-number: #d39b84;
-  --code-comment: rgba(244, 238, 231, 0.5); /* gray-a9 (40%) falls under 4.5:1 on a card */
+  --code-comment: rgba(244, 238, 231, 0.5);
   --code-punct: var(--gray-a10);
   --code-plain: var(--gray-a12);
 
-  /* Foundations. Shown with examples on /dev/component-library (Theme). */
-
-  /* Text tiers: four steps on the gray alpha scale. Faint is for decoration, never for reading. */
-  --text-primary: var(--gray-12); /* headings, the thing to read first */
-  --text-body: var(--gray-a12); /* paragraphs */
-  --text-secondary: var(--gray-a11); /* descriptions, captions */
-  --text-tertiary: var(--gray-a10); /* meta, dates, hints; the dimmest text that still passes 4.5:1 */
-  --text-faint: var(--gray-a9); /* decoration only */
+  --text-primary: var(--gray-12);
+  --text-body: var(--gray-a12);
+  --text-secondary: var(--gray-a11);
+  --text-tertiary: var(--gray-a10);
+  --text-faint: var(--gray-a9);
   --danger: #e8907c;
-  --success: #7fc08f; /* status light: saved */
-  --annotate: #ff6fae; /* dev only: spec annotations in the component library */
+  --success: #7fc08f;
+  --annotate: #ff6fae;
 
-  /* Type scale, in rem so a reader's browser font size still applies (16px root: the comments give px).
-     Hierarchy comes from size and text tier, plus 300 for large headings.
-     Chinese needs more leading than Latin, so body text sits near 1.9.
-     Reading text is 12px or more; Instrument Serif only from 18px (it is a display face),
-     except English post body text at --type-body, which matches the Chinese size (DESIGN.md). */
-  --type-display: clamp(2.75rem, 6vw, 4.5rem); /* 44–72px */ /* one per page: Journal, About headers */
+  --type-display: clamp(2.75rem, 6vw, 4.5rem); /* 44–72px */
   --type-display-lh: 1.05;
   --type-display-ls: -0.02em;
-  --type-h1: 2rem; /* 32px */ /* post title */
+  --type-h1: 2rem; /* 32px */
   --type-h1-lh: 1.35;
-  --type-h2: 1.375rem; /* 22px */ /* section heading in a post */
+  --type-h2: 1.375rem; /* 22px */
   --type-h2-lh: 1.5;
   --type-h3: 1.125rem; /* 18px */
   --type-h3-lh: 1.6;
-  --type-lead: 1.125rem; /* 18px */ /* opening paragraph */
+  --type-lead: 1.125rem; /* 18px */
   --type-lead-lh: 1.9;
-  --type-body: 1.0625rem; /* 17px */ /* reading text */
+  --type-body: 1.0625rem; /* 17px */
   --type-body-lh: 1.9;
-  --type-small: 0.875rem; /* 14px */ /* UI text, secondary copy */
+  --type-small: 0.875rem; /* 14px */
   --type-small-lh: 1.6;
-  --type-caption: 0.8125rem; /* 13px */ /* captions, meta */
+  --type-caption: 0.8125rem; /* 13px */
   --type-caption-lh: 1.5;
-  --type-label: 0.6875rem; /* 11px */ /* labels in --font-label, uppercase */
+  --type-label: 0.6875rem; /* 11px */
   --type-label-lh: 1.3;
   --type-label-ls: 0.1em;
-  --type-nav: clamp(0.8125rem, 1vw, 0.9375rem); /* 13–15px */ /* nav links, header and footer: Instrument Serif below 18px on purpose (DESIGN.md) */
+  --type-nav: clamp(0.8125rem, 1vw, 0.9375rem); /* 13–15px */
   --type-mono: 0.8125rem; /* 13px */
   --type-mono-lh: 1.65;
 
-  /* Spacing: eight steps on a 4px grid (4 8 12 16 24 32 48 96). Space outside a group is always larger than space inside it. */
-  --space-1: 4px; /* inside a component: icon and its text */
-  --space-2: 8px; /* related elements: label and field, buttons in a group */
-  --space-3: 12px; /* left and right padding of buttons and inputs */
-  --space-4: 16px; /* unrelated elements; card padding */
-  --space-6: 24px; /* sub-sections; paragraph to paragraph; a card header to its body */
-  --space-8: 32px; /* blocks inside a section; around figures */
-  --space-12: 48px; /* between groups of blocks; a section title to its content; before a heading in a post */
-  --space-24: 96px; /* between page sections on phones and tablets */
-  /* Between page sections: 96px on phones, up to 128px on desktop. Page rhythm, not a step of the scale. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-24: 96px;
   --section-gap: clamp(var(--space-24), 10vw, 128px);
 
-  /* Vertical gaps inside a page of text, by what the two things are to each other. Pick the role, not the number. */
-  --gap-tight: var(--space-3); /* 12px: one thought, e.g. a paragraph and the next, a title and its subtitle */
-  --gap-group: var(--space-6); /* 24px: parts of one group, e.g. a heading and its text, a title block and its buttons */
-  --gap-block: var(--space-8); /* 32px: one block and another kind of block, e.g. text and a quote, card or divider */
-  --gap-part: var(--space-12); /* 48px: a new part begins, e.g. above a heading, between the breadcrumbs and the title */
+  --gap-tight: var(--space-3);
+  --gap-group: var(--space-6);
+  --gap-block: var(--space-8);
+  --gap-part: var(--space-12);
 
-  /* Corner radius: small controls 8, menus and inputs 12, cards 16, pills full */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-full: 999px;
 
   --ease-touch: cubic-bezier(0.16, 0.08, 0.12, 1);
-  /* Durations: each transition and animation uses one of these. Delays and loop speeds stay literal. */
-  --duration-exit: 90ms; /* menus and tooltips closing */
-  --duration-fast: 150ms; /* small controls: buttons, menu items, inputs */
-  --duration-base: 300ms; /* hover, drawer closing, accordions */
-  --duration-slow: 400ms; /* panels opening, nav, slower hovers */
-  --duration-fade: 600ms; /* fade-in */
-  --duration-reveal: 800ms; /* page entrances and image zoom */
-  --duration-shake: 0.45s; /* shake-damped: OtpInput and the save button */
-  /* Tracking: three values only. Display -0.02em (--type-display-ls), labels 0.1em (--type-label-ls), everything else 0. */
+  --duration-exit: 90ms;
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 400ms;
+  --duration-fade: 600ms;
+  --duration-reveal: 800ms;
+  --duration-shake: 0.45s;
 }
 
 
@@ -223,7 +180,7 @@
   z-index: 9999;
   height: 2px;
   background: var(--ember);
-  --loading-ms: 2.8s; /* slows near the end, so a quick load never shows a full bar */
+  --loading-ms: 2.8s;
   animation: site-loading-progress var(--loading-ms) cubic-bezier(0.1, 0, 0.25, 1) forwards;
 }
 
@@ -235,9 +192,6 @@
   100% { width: 89%; }
 }
 
-/* Icon swap: two state icons share one cell and cross-fade (jakub.kr "Animate icons contextually").
-   The hidden one, marked data-off, is shrunk, blurred and transparent. Transitions skip the first render,
-   so nothing moves on page load, and a quick second click turns back from where it is. */
 .icon-swap {
   display: inline-grid;
   place-items: center;
@@ -264,8 +218,6 @@
   }
 }
 
-/* Damped error shake: each swing is smaller, like a head shake that settles (transitions.dev "Error state shake").
-   Used by OtpInput and the edit panel's save button; run it with `var(--duration-shake) linear`. */
 @keyframes shake-damped {
   15% { transform: translateX(-8px); }
   35% { transform: translateX(6px); }
@@ -273,7 +225,6 @@
   75% { transform: translateX(2px); }
 }
 
-/* On a phone the text on an opening picture stacks taller, so the dark part starts higher. */
 @media (max-width: 768px) {
   :root {
     --hero-scrim: linear-gradient(

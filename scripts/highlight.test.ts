@@ -2,7 +2,6 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { tokenize } from '../src/lib/highlight.ts'
 
-// Spaces join the neighbouring plain token, so compare trimmed text.
 const types = (src: string, lang?: string) =>
   tokenize(src, lang)
     .filter((t) => t.text.trim())

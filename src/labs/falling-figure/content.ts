@@ -1,7 +1,3 @@
-// About page content. The page tells it backwards: the figure starts at today and falls into the past.
-// Source: Wade's CV. Each act has text for the slab (sub, title) and for the corner caption (role, lines).
-// `side` shifts the slab left or right by that share of the screen width.
-
 import type { Lang } from '../../lib/siteData.ts'
 
 export interface AboutFallAct {
@@ -42,9 +38,6 @@ export const ABOUT_FALL_INTRO = {
   },
 }
 
-// Written oldest first, as on the CV. The page shows them newest first (see the export below).
-// Source: Wade's CV (Notion). On the slab: sub and title. In the corner caption: org (or title), role,
-// 3–5 short points, and the full details behind the arrow.
 const CHRONOLOGICAL: Record<Lang, AboutFallAct[]> = {
   zh: [
     {

@@ -4,7 +4,6 @@ import { projectHref } from '../lib/projectHref.ts'
 import { MOVED } from '../lib/seo.ts'
 import type { Route } from './+types/moved-case'
 
-// Case pages were /cases/<slug>: two of them are labs now, the rest are projects.
 export const loader = ({ request, params }: Route.LoaderArgs) => {
   const path = `/cases/${params.slug}`
   throw redirect(localePath(MOVED[path] ?? projectHref(path), langOf(new URL(request.url).pathname)), 301)

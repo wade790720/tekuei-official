@@ -1,8 +1,3 @@
-/* Shatter Footer: the Journal's old footer, with an engraved sea that assembles from fragments (shatterImage.ts). */
-
-/* The live page: the footer fills one screen, the way a reader reaches it. The sea shrinks to fit
-   under the links, so the whole piece shows in the lab page's preview frame too. A short frame (a phone
-   preview) keeps 40% of its height for the sea and scrolls instead of hiding it. */
 .shatter-footer-stage {
   display: flex;
   flex-direction: column;
@@ -24,12 +19,10 @@
   align-items: flex-end;
   min-height: 40svh;
   margin-top: var(--space-12);
-  padding-inline: var(--page-gutter); /* past --page-max the rules sit inside the gutters too */
+  padding-inline: var(--page-gutter);
   container-type: size;
 }
 
-/* The largest 1280:470 strip that fits the box. The lighthouse sits at 75% of the image, on the third rule,
-   so a narrower sea keeps that point at 75% of the width instead of centring. */
 .shatter-footer-stage .shatter-footer__sea {
   --sea-w: min(100cqw, 100cqh * 1280 / 470);
   width: var(--sea-w);
@@ -42,7 +35,6 @@
   border-top: 0.5px dashed var(--line-strong);
 }
 
-/* Columns, rules and sea stop at --page-max; past that the sides extend. */
 .shatter-footer__rules {
   position: absolute;
   inset: 0 var(--page-gutter);
@@ -89,7 +81,7 @@
   font-family: var(--font-label);
   font-size: var(--type-label);
   letter-spacing: var(--type-label-ls);
-  color: var(--text-tertiary); /* gold is for the current page, focus and hover only */
+  color: var(--text-tertiary);
   text-transform: uppercase;
 }
 
@@ -106,7 +98,7 @@
 }
 
 .shatter-footer__link {
-  font-family: var(--font-serif); /* nav links: the same type as the header nav */
+  font-family: var(--font-serif);
   font-size: var(--type-nav);
   color: var(--text-secondary);
   text-decoration: none;
@@ -119,7 +111,6 @@
     transform var(--duration-fade) var(--ease-touch);
 }
 
-/* Hit area: fills the 36px row pitch without reaching the next link, and is at least 44px wide (short labels such as X) */
 a.shatter-footer__link::before {
   content: '';
   position: absolute;
@@ -130,7 +121,6 @@ a.shatter-footer__link::before {
   transform: translateX(-50%);
 }
 
-/* Only real links react: an entry without an address is a span. */
 @media (hover: hover) {
   a.shatter-footer__link:hover {
     color: var(--ember);
@@ -138,7 +128,6 @@ a.shatter-footer__link::before {
   }
 }
 
-/* Text fades in one item after another when the sea starts to assemble */
 .shatter-footer__r,
 .shatter-footer__link {
   opacity: 0;
@@ -165,7 +154,6 @@ a.shatter-footer__link::before {
   }
 }
 
-/* Source crop is 1280 x 470 */
 .shatter-footer__sea {
   display: block;
   width: min(100%, var(--page-max));
@@ -173,7 +161,6 @@ a.shatter-footer__link::before {
   margin: var(--space-12) auto 0;
 }
 
-/* Wider than --page-max: fade the sea's cut edges into the extended sides */
 @media (min-width: 1921px) {
   .shatter-footer__sea {
     mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
@@ -187,7 +174,6 @@ a.shatter-footer__link::before {
   }
 }
 
-/* Two narrow columns on a phone: the brand mark shrinks to stay on one line */
 @media (max-width: 768px) {
   .shatter-footer__brand {
     font-size: var(--type-h3);

@@ -3,17 +3,12 @@ import { useLocation } from 'react-router'
 import type { ShouldRevalidateFunctionArgs } from 'react-router'
 import { samePage } from './localePath.ts'
 
-// The language button navigates to the same page in the other language, at the peak of the water ripple
-// (waterRipple.ts, 300 ms). Every loader returns both languages and none reads the query string, so neither
-// that navigation nor a new ?tag= needs a request.
-
 /** For every route module. A call from revalidate() (the same URL) still reloads. */
 export function shouldRevalidate({ currentUrl, nextUrl, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs): boolean {
   if (currentUrl.href === nextUrl.href) return defaultShouldRevalidate
   return samePage(currentUrl.pathname, nextUrl.pathname) ? false : defaultShouldRevalidate
 }
 
-// Bumped by every save, so no page hands on data from before it.
 let generation = 0
 export const forgetLangSwitch = () => {
   generation++
@@ -29,7 +24,6 @@ export const forgetLangSwitch = () => {
 export function langSwitchCache<T>() {
   let last: { pathname: string; data: T; generation: number } | null = null
   return {
-    /** The page calls this with the data it shows. */
     useRemember(data: T) {
       const { pathname } = useLocation()
       useEffect(() => {

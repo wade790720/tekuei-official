@@ -13,8 +13,6 @@ import { useLocalePath } from '../i18n'
 import type { BlockType } from '../lib/richText.ts'
 import type { Doc } from '../lib/siteData.ts'
 
-// Renders a post body (Tiptap JSON, see src/lib/richText.ts) as the article markup.
-// Each top-level node fades in on its own, as the old blocks did.
 // Tiptap types attrs as any; every read goes through str() or slidesOf() so a stored value of the wrong type is dropped.
 
 type Mark = NonNullable<Doc['marks']>[number]
@@ -61,7 +59,6 @@ function wrapMark(mark: Mark, child: ReactNode, key: number): ReactNode {
   }
 }
 
-/** A link in the body. Wade writes site paths without a language, so on an English page they get /en. */
 function BodyLink({ href, children }: { href: string; children: ReactNode }) {
   const localePath = useLocalePath()
   if (/^https?:/i.test(href)) {
@@ -88,7 +85,6 @@ function textOf(node: Doc) {
 
 function Node({ node }: { node: Doc }) {
   const a: Record<string, unknown> = node.attrs ?? {}
-  // An unknown node renders as a paragraph, like an empty one.
   const type: BlockType = isBlockType(node.type) ? node.type : 'paragraph'
   switch (type) {
     case 'lead':
@@ -161,7 +157,6 @@ function Node({ node }: { node: Doc }) {
       return <hr className="journal-post__hr" />
     case 'paragraph':
     case 'listItem':
-      // An empty paragraph is a blank line Wade left on purpose; the editor shows it one line tall.
       return <p className="journal-post__p">{node.content?.length ? inline(node.content) : <br />}</p>
     default: {
       const unhandled: never = type

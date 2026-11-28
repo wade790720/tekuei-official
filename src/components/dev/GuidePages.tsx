@@ -1,5 +1,3 @@
-// Overview and Theme pages of the library that are mostly prose, code and tables.
-// Copy lives in guides.data.ts; values are read live from tokens.css where a table shows them.
 import { useState } from 'react'
 import { DocCode } from './doc/DocCode.tsx'
 import { DocSection } from './doc/DocSection.tsx'
@@ -137,7 +135,6 @@ export function RadiusPage() {
   )
 }
 
-/** A dot that crosses its track with --ease-touch; click to run it again. */
 function EasingDemo() {
   const [run, setRun] = useState(0)
   return (

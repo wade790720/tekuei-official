@@ -31,7 +31,6 @@ interface Expect {
   missing?: number
 }
 
-// Each of these is requested as it is and, unless oneUrl, under /en with the same expectations.
 const PAGES: Expect[] = [
   { path: '/', status: 200 },
   { path: '/about', status: 200, r2: true },
@@ -57,22 +56,17 @@ const PAGES: Expect[] = [
   { path: '/labs/shatter-footer/live', status: 200, oneUrl: true },
   { path: '/labs/no-such-lab/live', status: 404, oneUrl: true },
   { path: '/checkin', status: 200, oneUrl: true },
-  // Old URLs
   { path: '/work', status: 301, location: '/projects', html: false },
   { path: '/cases/matsu-biennial', status: 301, location: '/projects/matsu-biennial', html: false },
   { path: '/cases/living-portrait', status: 301, location: '/labs/living-portrait', html: false },
   { path: '/journal/', status: 301, location: '/journal', html: false },
-  // The site's own words in another case: one URL each
   { path: '/EN/Journal', status: 301, location: '/en/journal', html: false, oneUrl: true },
   { path: '/Projects/matsu-biennial', status: 301, location: '/projects/matsu-biennial', html: false, oneUrl: true },
   { path: '/Sitemap.xml', status: 301, location: '/sitemap.xml', html: false, oneUrl: true },
   { path: '/LLMS.TXT', status: 301, location: '/llms.txt', html: false, oneUrl: true },
-  // A typo
   { path: '/jounral', status: 404 },
-  // Not pages, but served by the same Worker
   { path: '/sitemap.xml', status: 200, html: false, oneUrl: true, r2: true },
   { path: '/llms.txt', status: 200, html: false, oneUrl: true, r2: true },
-  // The whole file, drafts included: only with the admin code
   { path: '/api/data', status: 401, html: false, oneUrl: true },
   { path: '/api/file/images/no-such-file.png', status: 404, html: false, oneUrl: true },
   { path: '/robots.txt', status: 200, html: false, oneUrl: true },
@@ -80,7 +74,6 @@ const PAGES: Expect[] = [
 
 const REVALIDATE = 'public, max-age=0, must-revalidate'
 const SITE = 'https://tekuei.com'
-// sitemap.xml and llms.txt, which crawlers read now and then
 const FILE_CACHE = 'public, max-age=3600'
 
 const english = (page: Expect): Expect => {
@@ -88,12 +81,10 @@ const english = (page: Expect): Expect => {
   return { ...page, path: en(page.path), location: page.location && en(page.location) }
 }
 const HTML = [...PAGES, ...PAGES.filter((p) => !p.oneUrl).map(english), { path: '/en/', status: 301, location: '/en', html: false }]
-// The data a client-side navigation fetches carries the same status and Cache-Control as the page.
 const DATA = HTML.filter((p) => p.r2 && p.html !== false && !p.path.includes('?')).map((p) => ({ ...p, path: `${p.path}.data`, html: false }))
 const ALL = [...HTML, ...DATA]
 
 const decode = (s: string) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'")
-/** The text a reader sees: no scripts (the loader data is in one), no tags. */
 const visibleText = (html: string) => decode(html.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ''))
 
 const [base, ...flags] = process.argv.slice(2)
@@ -128,13 +119,11 @@ async function check(url: Expect): Promise<string[]> {
     if (!page.oneUrl && lang !== wantLang) problems.push(`${page.path}: <html lang="${lang}">, expected ${wantLang}`)
     if (res.status === 200) problems.push(...headProblems(page, body))
   }
-  // Pages that read R2 are checked again on every visit when they are fine, never stored when missing or failing.
   if (page.r2) {
     const fine = /\.(xml|txt)$/.test(page.path) ? FILE_CACHE : REVALIDATE
     const want = res.status === 200 ? fine : 'no-store'
     if (cache !== want) problems.push(`${page.path}: Cache-Control ${cache}, expected ${want}`)
   } else if (page.html !== false && res.status === 404 && cache !== 'no-store') {
-    // A page that does not exist yet may exist tomorrow: no 404 page is kept.
     problems.push(`${page.path}: Cache-Control ${cache}, expected no-store`)
   }
   return problems
@@ -143,10 +132,6 @@ async function check(url: Expect): Promise<string[]> {
 const attr = (tag: string, name: string) => decode(tag.match(new RegExp(`\\s${name}="([^"]*)"`, 'i'))?.[1] ?? '')
 const tagsOf = (head: string, pattern: RegExp) => [...head.matchAll(pattern)].map((m) => m[0])
 
-/**
- * Which Chinese pages have an English version, as sitemap.xml says: the head must say the same. A page missing from
- * the sitemap (the check-in guide, a 404) is taken to have one.
- */
 const englishBySitemap = new Map<string, boolean>()
 const sitemapLocs = new Set<string>()
 async function readSitemap() {
@@ -158,19 +143,16 @@ async function readSitemap() {
   }
 }
 
-/** Every page address in a JSON-LD object (url, a Blog's posts, a CollectionPage's parts), in its nested objects. */
 function ldUrls(node: unknown, out: string[] = []): string[] {
   if (Array.isArray(node)) for (const n of node) ldUrls(n, out)
   else if (typeof node === 'object' && node !== null) {
     for (const [k, v] of Object.entries(node)) {
-      // A Person's own url and its @id are about the person, not a page of this site's languages
       if (k === 'url' && typeof v === 'string' && !('@type' in node && node['@type'] === 'Person')) out.push(v)
       else ldUrls(v, out)
     }
   }
   return out
 }
-/** Every inLanguage in a JSON-LD object and its nested objects. */
 function ldLanguages(node: unknown, out: string[] = []): string[] {
   if (Array.isArray(node)) for (const n of node) ldLanguages(n, out)
   else if (typeof node === 'object' && node !== null) {
@@ -182,11 +164,6 @@ function ldLanguages(node: unknown, out: string[] = []): string[] {
   return out
 }
 
-/**
- * The head a search engine reads: a canonical (the page itself, or the Chinese page when the page has no English
- * version of its own), hreflang for both languages and x-default (no English one without an English version) unless
- * the page has one URL, og:image, a description, and JSON-LD that parses.
- */
 function headProblems(page: Expect, html: string): string[] {
   const problems: string[] = []
   const head = html.slice(0, html.indexOf('</head>'))
@@ -208,7 +185,6 @@ function headProblems(page: Expect, html: string): string[] {
     for (const [lang, href] of want) if (alternates.get(lang) !== href) problems.push(`${page.path}: hreflang ${lang} ${alternates.get(lang)}, expected ${href}`)
     if (alternates.size !== (chineseOnly ? 2 : 3)) problems.push(`${page.path}: ${alternates.size} hreflang links`)
   }
-  // A lab's live page is the iframe of its lab page: kept out of search results. Every other page is indexed.
   const noindex = tagsOf(head, /<meta[^>]*name="robots"[^>]*>/g).some((t) => /noindex/.test(attr(t, 'content')))
   const wantNoindex = /^\/labs\/[^/]+\/live$/.test(path)
   if (noindex !== wantNoindex) problems.push(`${page.path}: ${noindex ? 'noindex' : 'indexable'}, expected ${wantNoindex ? 'noindex' : 'indexable'}`)
@@ -216,7 +192,6 @@ function headProblems(page: Expect, html: string): string[] {
   if (tagsOf(head, /<meta[^>]*name="description"[^>]*>/g).length !== 1) problems.push(`${page.path}: not one description`)
   const lds = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
   if (!lds.length) problems.push(`${page.path}: no JSON-LD`)
-  // What the page shows: an English page without an English version shows the Chinese text.
   const shown = (path === '/en' || path.startsWith('/en/')) && !chineseOnly ? 'en' : 'zh-Hant'
   for (const [, json] of lds) {
     let ld: unknown
@@ -227,13 +202,11 @@ function headProblems(page: Expect, html: string): string[] {
       continue
     }
     for (const l of ldLanguages(ld)) if (!page.oneUrl && l !== shown) problems.push(`${page.path}: JSON-LD inLanguage ${l}, the page shows ${shown}`)
-    // Addresses the JSON-LD points at are canonical pages: the ones the sitemap lists (when there is one to read).
     if (sitemapLocs.size && !page.oneUrl) for (const u of ldUrls(ld)) if (u.startsWith(SITE) && !sitemapLocs.has(u)) problems.push(`${page.path}: JSON-LD points at ${u}, which the sitemap does not list`)
   }
   return problems
 }
 
-/** Every address listed in sitemap.xml and llms.txt answers 200 here. */
 async function checkListed(): Promise<string[]> {
   const listed = new Set<string>()
   for (const file of ['/sitemap.xml', '/llms.txt']) {
@@ -249,7 +222,6 @@ async function checkListed(): Promise<string[]> {
   return problems
 }
 
-/** A published post's title and first paragraph are in its HTML, and no draft appears anywhere. */
 async function checkContent(site: SiteData): Promise<string[]> {
   const problems: string[] = []
   const journal = site.journal
@@ -264,7 +236,6 @@ async function checkContent(site: SiteData): Promise<string[]> {
     console.log(`\nPost body: /journal/${post.slug} has its title and first paragraph (${first?.length ?? 0} characters).`)
   }
 
-  // A draft's title may also be written in a published post (an excerpt that names a draft project): skip those.
   const work = site.work
   const published = JSON.stringify([readableJournal(journal ?? { posts: { zh: [], en: [] }, content: { zh: {}, en: {} } }), work?.items.filter((i) => !i.draft)])
   const drafts = [

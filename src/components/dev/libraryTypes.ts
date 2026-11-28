@@ -1,5 +1,3 @@
-// The shape of one component page. A missing field here is a compile error in componentLibrary.data.tsx.
-
 /** [prop, type, default, description] */
 export type PropRow = [prop: string, type: string, defaultValue: string, description: string]
 

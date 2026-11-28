@@ -14,7 +14,6 @@ import type { ProjectListData } from '../lib/pageData.ts'
 import type { ProjectType, WorkItem } from '../lib/siteData.ts'
 import '../styles/work.css'
 
-// Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.
 const WorkListEditPanel = lazy(() => import('./work/WorkEditPanel.tsx').then((m) => ({ default: m.WorkListEditPanel })))
 
 function WorkThumbGraphic({ thumbSvg }: { thumbSvg?: string }) {
@@ -61,7 +60,6 @@ function WorkThumbGraphic({ thumbSvg }: { thumbSvg?: string }) {
   )
 }
 
-// A video thumbnail shows only its poster when the system asks for less motion.
 const REDUCE_MOTION = '(prefers-reduced-motion: reduce)'
 function subscribeReduceMotion(onChange: () => void) {
   const query = window.matchMedia(REDUCE_MOTION)
@@ -71,7 +69,6 @@ function subscribeReduceMotion(onChange: () => void) {
 // The server cannot read the setting, so it draws the poster and the browser swaps in the video.
 const useReduceMotion = () => useSyncExternalStore(subscribeReduceMotion, () => window.matchMedia(REDUCE_MOTION).matches, () => true)
 
-/** A card as the list draws it: its section, where it links and its cover are settled. */
 type CardItem = Omit<WorkItem, 'type' | 'caseHref' | 'thumbImage'> & {
   type: ProjectType
   caseHref: string
@@ -128,14 +125,12 @@ export default function WorkListPage({ work }: { work: ProjectListData }) {
   const all: CardItem[] = [
     ...content.items.map((item) => ({
       ...item,
-      // A project nobody has filed yet still has to show up somewhere
       type: projectType(item),
       thumbImage: { ...item.thumbImage, url: projectCover(item) },
       caseHref: projectLink(item, content),
     })),
     ...labWorkItems(lang, 1).map((item) => ({ ...item, type: 'side' as const, caseHref: projectLink(item) })),
   ]
-  // Cards are numbered in the order they are shown: section by section.
   let shown = 0
   const sections = PROJECT_SECTIONS.map((section) => ({
     ...section,

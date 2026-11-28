@@ -15,7 +15,6 @@ import { LANGS } from '../../lib/siteData.ts'
 import type { Doc, JournalData, JournalPost } from '../../lib/siteData.ts'
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
-// The number shown on the site (01, 02 …) follows the list order.
 const renumber = (d: JournalData) => {
   for (const l of LANGS) d.posts[l]?.forEach((p, i) => (p.num = String(i + 1).padStart(2, '0')))
 }
@@ -32,7 +31,6 @@ export function JournalPostEditPanel({ slug }: { slug: string }) {
   const { admin, cms, ready, panelProps, saveWith } = useJournalEditing()
   const draft = ready ? cms.draft : null
 
-  // A draft saves itself once typing pauses. A published post never does: half an edit would go live.
   const isDraft = Boolean(draft?.posts.zh?.find((p) => p.slug === slug)?.draft)
   const autosave = isDraft && draft !== null && differsOnlyIn(draft, cms.savedContent, slug)
   const saveNow = useEffectEvent(() => panelProps.onSave())
@@ -49,7 +47,6 @@ export function JournalPostEditPanel({ slug }: { slug: string }) {
 
   const zhPost = draft.posts.zh?.find((p) => p.slug === slug)
 
-  // Title and text belong to one language. Date and tags are shared.
   const setPost = (key: 'title' | 'titleEn' | 'excerpt', value: string) =>
     cms.updateDraft((d) => {
       const p = d.posts[lang].find((x) => x.slug === slug)
@@ -135,7 +132,6 @@ export function JournalListEditPanel() {
         ? '這個代稱已經有人用了'
         : ''
 
-  // Order and deletion apply to both languages, so the lists stay in step.
   const reorder = (from: number, to: number) =>
     cms.updateDraft((d) => {
       for (const l of LANGS) {

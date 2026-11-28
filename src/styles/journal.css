@@ -1,5 +1,3 @@
-﻿/* Journal */
-
 .journal-page {
   --j-ink-main: transparent;
   --j-page: var(--gray-12);
@@ -17,7 +15,6 @@
   --j-fd: var(--font-serif);
   --j-fc: var(--font-serif);
   --j-ease: var(--ease-touch);
-  /* The list's number column. Post text starts after it, so list titles and post text line up. */
   --j-index: 100px;
   --j-indent: calc(var(--j-index) + var(--space-12));
 
@@ -32,7 +29,6 @@
   line-height: 1.85;
 }
 
-/* 環境光：幾層金色徑向漸層疊出來，不用 blur */
 .journal-atmosphere {
   position: fixed;
   inset: 0;
@@ -116,7 +112,6 @@
   overflow: hidden;
 }
 
-/* glyphField.ts draws here: a fixed 1200 x 400 field at the top centre, faded at the bottom and the sides. */
 .journal-header__glyphs {
   position: absolute;
   top: 0;
@@ -208,8 +203,6 @@
   );
 }
 
-/* List: the latest post as a card, the rest as rows grouped by year */
-
 .journal-list {
   position: relative;
   z-index: 2;
@@ -218,12 +211,10 @@
   padding: 0 var(--page-pad) var(--space-24);
 }
 
-/* Tag filter over the list (a .tag-group) */
 .journal-filter {
   margin-bottom: var(--space-12);
 }
 
-/* Loading placeholders (ListSkeleton): sized like the text they stand in for */
 .journal-skeleton {
   pointer-events: none;
 }
@@ -234,7 +225,7 @@
 }
 
 .journal-skeleton__pill {
-  height: var(--space-6); /* same as a Tag button */
+  height: var(--space-6);
   border-radius: var(--radius-full);
 }
 
@@ -303,7 +294,7 @@
 
 @media (hover: hover) {
   .journal-card:hover .journal-card__arrow-line {
-    transform: scaleX(1.5); /* 32px → 48px */
+    transform: scaleX(1.5);
     background: var(--j-lamp);
   }
 }
@@ -472,24 +463,19 @@
 .journal-post {
   position: relative;
   z-index: 2;
-  /* --page-reading for the content, plus its 8px inset on both sides */
   max-width: calc(var(--page-reading) + 2 * var(--space-2) + 2 * var(--page-pad));
   margin: 0 auto;
   padding: var(--space-24) var(--page-pad);
 }
 
-/* The post text, headings in it included, in the reading face. */
 .journal-post__body {
   --j-fc: var(--font-reading);
   font-family: var(--j-fc);
 }
 
-/* Narrower than the list: the reading width. The divider and footer span the frame.
-   Everything else is 8px in from both edges. Cards and quotes are as wide as the text.
-   Body blocks each sit in a wrapper div, hence > * > *. The editor's floating tools are placed by script. */
 .journal-post :is(.journal-post__crumbs, .journal-post__back, .journal-post__meta, .journal-post__num, .journal-post__title, .journal-post__title-en),
 .journal-post .journal-post__body > * > :not(.cms-ed-gutter, .cms-ed-bar) {
-  margin-inline: var(--space-2); /* also replaces the slides card's 80px overhang */
+  margin-inline: var(--space-2);
 }
 
 .journal-post__crumbs {
@@ -500,7 +486,6 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-4);
-  /* 44px hit area: padding grows the box, the negative margin keeps the layout */
   margin: calc(var(--space-3) * -1) 0 calc(var(--gap-part) - var(--space-3));
   padding: var(--space-3) 0;
   font-family: var(--font-label);
@@ -526,7 +511,7 @@
 .journal-post__meta {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline; /* the tag has a shorter line box than the date; line up the text, not the boxes */
+  align-items: baseline;
   gap: var(--space-3);
   margin-bottom: var(--gap-part);
   font-family: var(--font-label);
@@ -569,10 +554,8 @@
   margin-bottom: var(--space-2);
 }
 
-/* Share buttons at the end of the post header, on the right. No side margin: a 32px button holds a 16px icon,
-   so the last icon's edge, not its button's, lines up with the text column. */
 .journal-post__share {
-  position: relative; /* TooltipGroup places the tooltip under it */
+  position: relative;
   display: flex;
   justify-content: flex-end;
   margin: var(--gap-group) 0 0;
@@ -580,7 +563,6 @@
   gap: var(--space-3);
 }
 
-/* 32px buttons, 12px apart: each tap area grows by half the gap, to 44px, and none overlap */
 .journal-post__share .btn {
   position: relative;
 }
@@ -592,7 +574,6 @@
   inset: calc(var(--space-3) / -2);
 }
 
-/* The project's own site, under the tags on a project page */
 .journal-post__visit {
   margin: var(--gap-group) var(--space-2) 0;
 }
@@ -607,15 +588,15 @@
 .journal-post__rule {
   height: 0.5px;
   margin-block: var(--gap-block);
-  background: var(--line); /* full width, solid: both ends show the list's edges */
+  background: var(--line);
 }
 
 .journal-post__lead,
 .journal-post__body .ProseMirror > p.lead {
   margin: 0 0 var(--gap-group);
-  font-size: var(--type-h2); /* 22px, as Medium's subtitle */
+  font-size: var(--type-h2);
   font-weight: var(--weight-regular);
-  line-height: 1.5; /* Medium's 1.27 is for Latin; Chinese that wraps needs more */
+  line-height: 1.5;
   letter-spacing: 0;
   color: var(--text-secondary);
 }
@@ -634,11 +615,10 @@
 .journal-post__body .ProseMirror > p {
   margin: 0 0 var(--gap-tight);
   font-size: var(--type-body);
-  line-height: 1.6; /* Editor.js spacing */
+  line-height: 1.6;
   color: var(--j-text-dim);
 }
 
-/* Rich text from the editor: small heading, lists, inline code, links, divider */
 .journal-post__h3,
 .journal-post__body .ProseMirror h3 {
   margin: var(--gap-part) 0 var(--space-4);
@@ -654,7 +634,7 @@
   margin: 0 0 var(--gap-tight);
   padding-left: 1.4em;
   font-size: var(--type-body);
-  line-height: 1.6; /* Editor.js spacing */
+  line-height: 1.6;
   color: var(--j-text-dim);
 }
 
@@ -705,7 +685,6 @@
 }
 
 .journal-post__quote,
-/* A bar and nothing else, as Medium's quote: 3px, the text 20px in from it (24px on this scale), no box */
 .journal-post__body .cms-ed-quote {
   margin: var(--gap-block) 0;
   padding: 0 0 0 var(--space-6);
@@ -791,11 +770,10 @@
   color: var(--j-text-dim);
 }
 
-/* Back to the list, after previous / next: where a reader who finished the post is */
 .journal-post__footer .journal-post__back--end {
   display: flex;
   width: fit-content;
-  margin: var(--space-12) auto 0; /* overrides the header link's 8px inset and bottom gap */
+  margin: var(--space-12) auto 0;
 }
 
 

@@ -1,5 +1,3 @@
-// Rich-text editor (Tiptap): toolbar, card node views and the document schema, in one file.
-// Outputs the document format that RichText renders (see src/lib/richText.ts).
 import { memo, useEffect, useEffectEvent, useRef, useState } from 'react'
 import type { ComponentType, MouseEvent as ReactMouseEvent, DragEvent as ReactDragEvent, ReactNode, RefObject } from 'react'
 import { createPortal } from 'react-dom'
@@ -29,13 +27,10 @@ declare module '@tiptap/core' {
   }
 }
 
-/** Stores an image and resolves to its URL. */
 type Upload = (file: File) => Promise<string>
 
-/** Every kind of block the menus can make. The card kinds map to the imageCard, slidesCard and videoCard nodes. */
 type BlockKind = 'paragraph' | 'lead' | 'h2' | 'h3' | 'quote' | 'bullet' | 'ordered' | 'code' | 'image' | 'slides' | 'video' | 'hr'
 
-/** A DropdownMenu row. */
 interface MenuItem<V extends string = string> {
   value: V
   label: string
@@ -53,7 +48,6 @@ interface Slide {
   alt: string
   caption: string
 }
-// The node schemas below declare these attributes with defaults, so ProseMirror fills every one.
 interface QuoteAttrs {
   cite: string
 }
@@ -84,10 +78,8 @@ interface CardOptions {
   upload: Upload | null
 }
 
-/** The error text an upload shows on its card. */
 const failText = (e: unknown) => (e instanceof Error && e.message) || '上傳失敗'
 
-/** A pasted image another site would not let us download: the card keeps its URL. */
 class KeepSrcError extends Error {
   keepSrc: string
   constructor(message: string, keepSrc: string) {
@@ -95,9 +87,6 @@ class KeepSrcError extends Error {
     this.keepSrc = keepSrc
   }
 }
-
-// In-editor views for the custom journal nodes.
-// Text inside quotes and code is edited in place; card settings use small fields on the card.
 
 // Pasted and dropped images: the card shows a preview at once, and its view swaps in the
 // uploaded URL when this promise settles. Keyed by the preview URL, because node positions move.
@@ -137,7 +126,6 @@ async function rehost(src: string, upload: Upload) {
 
 const isOwnImage = (src: string) => !src || src.startsWith('blob:') || src.includes('/api/file/')
 
-/** Pasted or dropped HTML: ImageCardNode parses each <img>. Start the copies; the default handler inserts the cards. */
 function rehostSlice(slice: Slice, upload: Upload) {
   slice.content.descendants((node) => {
     const src = node.type.name === 'imageCard' ? attrsOf<ImageAttrs>(node).src : ''
@@ -157,7 +145,6 @@ function insertImages(view: EditorView, files: File[], upload: Upload, pos?: num
   view.dispatch(tr.scrollIntoView())
 }
 
-/** editorProps: paste or drop images to make image cards. */
 function imagePasteProps(upload: Upload): Pick<PMEditorProps, 'handlePaste' | 'handleDrop'> {
   return {
     handlePaste(view, event, slice) {
@@ -222,7 +209,6 @@ function QuoteView({ node, updateAttributes }: NodeViewProps) {
   )
 }
 
-// The highlighter (src/lib/highlight.ts) uses one grammar for all of these; the choice sets the label and # comments.
 const CODE_LANGS: MenuItem[] = [
   { value: 'ts', label: 'TypeScript' },
   { value: 'tsx', label: 'TSX' },
@@ -267,10 +253,6 @@ function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
   )
 }
 
-/**
- * The frame of a card's form. Its head names the card: an icon, the name, and `meta` as a quiet count beside it.
- * `tools` are the card's own controls, in the head beside the delete button.
- */
 interface CardShellProps {
   title: string
   icon: ReactNode
@@ -328,7 +310,6 @@ function ImageCardView({ node, updateAttributes, deleteNode, selected, extension
     follow(store(file))
   }
 
-  // A pasted or dropped image: finish the upload that imagePasteProps started for the preview URL the card was made with.
   const [pasted] = useState(() => pendingUploads.get(a.src))
   const finishPasted = useEffectEvent(() => {
     if (pasted) follow(pasted)
@@ -339,7 +320,6 @@ function ImageCardView({ node, updateAttributes, deleteNode, selected, extension
   }, [pasted])
 
   const fileInput = <input type="file" accept="image/*" hidden onChange={(e) => upload(e.target.files?.[0])} />
-  // The caption is typed in place, in the caption's own style. ImageCard takes it as its caption.
   const caption = (
     <input
       className="cms-ed-caption"
@@ -400,7 +380,6 @@ function ImageCardView({ node, updateAttributes, deleteNode, selected, extension
   )
 }
 
-/** A "⋯" button with a small settings panel under it. It closes on Escape or a click outside. */
 function CardSettings({ label, children }: { label: string; children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const root = useRef<HTMLDivElement>(null)
@@ -466,7 +445,6 @@ function CarouselView({ node, updateAttributes, deleteNode, selected, extension,
     latest.current = slides
   })
 
-  // Several photos at once: one after another, each added as it arrives, so a failure keeps the ones before it.
   async function uploadMany(files: File[]) {
     if (!store) return
     setErr('')
@@ -489,7 +467,6 @@ function CarouselView({ node, updateAttributes, deleteNode, selected, extension,
     next.splice(to, 0, ...next.splice(from, 1))
     setSlides(next)
   }
-  // Both picture sets change in one step, so one undo puts the photo back.
   const moveTo = (from: number, list: Element, at: number) => {
     const { state, view } = editor
     const self = getPos()
@@ -617,9 +594,6 @@ function CarouselView({ node, updateAttributes, deleteNode, selected, extension,
 }
 
 
-// Tiptap extensions for the journal editor. The node names and attributes match src/lib/richText.ts,
-// which documents the stored format, and RichText.tsx, which renders it on the site.
-
 const attrSpec = (name: string, fallback: unknown): Attribute => ({
   default: fallback,
   parseHTML: (el) => el.getAttribute(`data-${name}`), // null keeps the default, or a parse rule's getAttrs
@@ -627,7 +601,6 @@ const attrSpec = (name: string, fallback: unknown): Attribute => ({
 })
 const attr = (name: string, fallback: unknown = '') => ({ [name]: attrSpec(name, fallback) })
 
-/** The opening paragraph of a post, set larger. */
 const Lead = Node.create({
   name: 'lead',
   group: 'block',
@@ -639,13 +612,11 @@ const Lead = Node.create({
   },
 })
 
-/** A quote with an optional source line. */
 const Quote = Blockquote.extend({
   addAttributes: () => attr('cite'),
   addNodeView: () => ReactNodeViewRenderer(QuoteView),
 })
 
-/** A code card: language and an optional file name in its header. */
 const CodeBlockNode = CodeBlock.extend({
   addAttributes() {
     return { ...this.parent?.(), ...attr('filename') }
@@ -683,7 +654,6 @@ const ImageCardNode = card('imageCard', { src: '', alt: '', caption: '', frame: 
   },
 })
 
-/** A set of pictures, shown as a carousel, a scroll stack, a gallery or one work. `slides` is a list, so it goes through HTML as JSON. */
 const CarouselNode = card('slidesCard', {}, CarouselView).extend({
   addAttributes: () => ({
     ...attr('layout', 'carousel'),
@@ -709,13 +679,10 @@ const CarouselNode = card('slidesCard', {}, CarouselView).extend({
 })
 const VideoPlayerNode = card('videoCard', { src: '', poster: '', caption: '', loop: false }, VideoPlayerView)
 
-/** "/" on a top-level paragraph opens the "+" menu's list at the cursor; typing after it filters the list. */
-/** What a "/" menu row hands to the command when it is picked. */
 interface SlashPick {
   value: BlockKind
 }
 type SlashRender = NonNullable<SuggestionOptions<BlockEntry, SlashPick>['render']>
-/** The "/" menu on screen. `values` are the rows that can be picked, `active` the one the arrow keys are on. */
 interface SlashState {
   items: BlockEntry[]
   values: BlockKind[]
@@ -749,10 +716,6 @@ const SlashCommand = Extension.create<{ render: SlashRender | undefined }>({
   },
 })
 
-/**
- * Suggestion's render hooks for one "/" session. It keeps the list and the arrow-key row here,
- * and hands what to draw to `show` (the editor's state setter).
- */
 function slashRender(show: (s: SlashState | null) => void): ReturnType<SlashRender> {
   let s: SlashState | null = null
   const open = (p: SuggestionProps<BlockEntry, SlashPick>) => {
@@ -780,14 +743,12 @@ function slashRender(show: (s: SlashState | null) => void): ReturnType<SlashRend
   }
 }
 
-/** Matches the "/" keyword ("code", "h2") or the Chinese label. */
 function slashItems(query: string): BlockEntry[] {
   const q = query.trim().toLowerCase()
   if (!q) return BLOCKS
   return BLOCKS.filter((it) => it !== 'divider' && (it.slash.includes(q) || it.label.includes(q)))
 }
 
-/** `slash` makes the "/" menu's render hooks (Tiptap Suggestion). */
 function editorExtensions({ upload, placeholder, slash }: { upload: Upload; placeholder: string; slash: SlashRender }) {
   return [
     StarterKit.configure({
@@ -816,7 +777,6 @@ export interface EditorProps {
   previewing?: boolean
 }
 
-/** A top-level block and where its first line sits: client px from blockAt, px inside the editor in the gutter's state. */
 interface Block {
   pos: number
   node: PMNode
@@ -837,20 +797,18 @@ export const Editor = memo(function Editor({ doc, onChange, upload, previewing =
 
   const root = useRef<HTMLDivElement>(null)
   const gutter = useRef<HTMLDivElement>(null)
-  const [block, setBlock] = useState<Block | null>(null) // the block under the pointer or cursor
+  const [block, setBlock] = useState<Block | null>(null)
   const place = (hit: Block | null) => {
-    if (!hit || !root.current || gutter.current?.querySelector('[aria-expanded="true"]')) return // not mounted yet, or the "+" menu is open
+    if (!hit || !root.current || gutter.current?.querySelector('[aria-expanded="true"]')) return
     const box = root.current.getBoundingClientRect()
     const top = hit.top - box.top
     const left = hit.left - box.left
-    // Same block, same place: keep the old object so a mousemove does not re-render the editor.
     setBlock((b) => (b && b.pos === hit.pos && b.node === hit.node && b.top === top && b.left === left ? b : { ...hit, top, left }))
   }
 
   const [slash, setSlash] = useState<SlashState | null>(null)
 
   // Built once. New objects on each render would make Tiptap call setOptions on every keystroke.
-  // The editor keeps the upload it was created with. That is fine: it unmounts when the login changes.
   const [options] = useState(() => ({
     extensions: editorExtensions({
       upload,
@@ -864,8 +822,6 @@ export const Editor = memo(function Editor({ doc, onChange, upload, previewing =
     ...options,
     immediatelyRender: true,
     onUpdate: ({ editor: e }) => change.current(e.getJSON()),
-    // Typing hides the gutter; the cursor on an empty line shows the "+" there, as in Notion.
-    // On a phone that empty-line "+" is the only one (cms.css).
     onTransaction: ({ editor: e, transaction: tr }) => {
       const { $from, empty } = e.state.selection
       if (empty && $from.depth === 1 && $from.parent.type.name === 'paragraph' && !$from.parent.content.size)
@@ -900,7 +856,6 @@ export const Editor = memo(function Editor({ doc, onChange, upload, previewing =
   )
 }, (a, b) => a.previewing === b.previewing)
 
-/** The "/" menu's list, under the cursor. Focus stays in the text, so `active` marks the row instead. */
 function SlashMenu({ slash }: { slash: SlashState }) {
   const list = useRef<HTMLDivElement>(null)
   // Keeps the active row in view by scrolling the list only; scrollIntoView would also scroll the page.
@@ -911,7 +866,6 @@ function SlashMenu({ slash }: { slash: SlashState }) {
     if (row.offsetTop < box.scrollTop) box.scrollTop = row.offsetTop
     else if (row.offsetTop + row.offsetHeight > box.scrollTop + box.clientHeight) box.scrollTop = row.offsetTop + row.offsetHeight - box.clientHeight
   }, [slash.active])
-  // While it is open the page stays put, as in Notion: the wheel scrolls the list only.
   useEffect(() => {
     const stop = (e: Event) => {
       if (!(e.target instanceof Element && list.current?.contains(e.target))) e.preventDefault()
@@ -923,7 +877,6 @@ function SlashMenu({ slash }: { slash: SlashState }) {
       document.removeEventListener('touchmove', stop)
     }
   }, [])
-  // Opens upward when there is no room below the cursor.
   const above = slash.top + SLASH_MAX_H > window.innerHeight && slash.above > SLASH_MAX_H
   // In <body>: a transformed ancestor would move a fixed element away from the cursor.
   return createPortal(
@@ -935,13 +888,12 @@ function SlashMenu({ slash }: { slash: SlashState }) {
     document.body,
   )
 }
-const SLASH_MAX_H = 340 // px, the list's max-height (cms.css) plus its gap
+const SLASH_MAX_H = 340
 
 const MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent)
 const MOD = MAC ? '⌘' : 'Ctrl '
 const ALT = MAC ? '⌥' : 'Alt '
 const SHIFT = MAC ? '⇧' : 'Shift '
-// Tiptap's own shortcuts, shown in the tooltips.
 const KEYS = {
   bold: `${MOD}B`,
   italic: `${MOD}I`,
@@ -980,7 +932,6 @@ const INSERTS: MenuEntry<BlockKind>[] = [
   { value: 'hr', label: '分隔線', icon: ICON.hr },
 ]
 
-// Text blocks a line can turn into (the selection bubble), then every kind the "+" can make.
 const TEXT_BLOCKS: MenuItem<BlockKind>[] = [
   ...STYLES,
   { value: 'quote', label: '引言', icon: <Glyph d="M3 4v8M6.5 5h6.5M6.5 8h6.5M6.5 11h4" />, kbd: `${MOD}${SHIFT}B` },
@@ -988,22 +939,18 @@ const TEXT_BLOCKS: MenuItem<BlockKind>[] = [
   { value: 'ordered', label: '編號清單', icon: <OrderedIcon />, kbd: `${MOD}${SHIFT}7` },
 ]
 const TEXT_LABEL = Object.fromEntries(TEXT_BLOCKS.map((x) => [x.value, x.label]))
-// The "+" and "/" menus show each block's "/" keyword where the text menus show a shortcut.
 const SLASH_KEY: Partial<Record<BlockKind, string>> = { paragraph: 'text', bullet: 'ul', ordered: 'ol' }
 const BLOCKS = ([...TEXT_BLOCKS, 'divider', ...INSERTS] satisfies MenuEntry<BlockKind>[]).map((it): BlockEntry => {
   if (it === 'divider') return it
   const slash = SLASH_KEY[it.value] ?? it.value
   return { ...it, slash, kbd: `/${slash}` }
 })
-/** DropdownMenu hands back a row's value as a string. */
 const isBlockKind = (v: string): v is BlockKind => BLOCKS.some((it) => it !== 'divider' && it.value === v)
-// The "⠿" menu: what can be done to the block itself.
 const BLOCK_ACTIONS: MenuItem[] = [
   { value: 'duplicate', label: '複製一份', icon: <DuplicateIcon /> },
   { value: 'delete', label: '刪除', icon: <TrashIcon /> },
 ]
 
-/** Turns the block at the cursor into `kind`, or inserts a card there. Used by the bubble and the "+". */
 function applyBlock(editor: TiptapEditor, kind: BlockKind) {
   const run = editor.chain().focus()
   if (kind === 'lead') run.setLead().run()
@@ -1019,11 +966,8 @@ function applyBlock(editor: TiptapEditor, kind: BlockKind) {
   else run.insertContent({ type: { image: 'imageCard', slides: 'slidesCard', video: 'videoCard' }[kind] }).run()
 }
 
-// Block gutter: "+" and "⠿" beside the line under the pointer, as in Notion and Editor.js
+const HANDLE = 24
 
-const HANDLE = 24 // px, the gutter buttons' height (cms.css .cms-ed-gutter .btn--icon)
-
-/** The top-level block at height `y` (client px), its left edge, and where its first line sits. */
 function blockAt(view: EditorView, y: number): Block | null {
   const { doc } = view.state
   for (let i = 0, pos = 0; i < doc.childCount; pos += doc.child(i).nodeSize, i++) {
@@ -1031,7 +975,7 @@ function blockAt(view: EditorView, y: number): Block | null {
     const dom = view.nodeDOM(pos)
     if (!(dom instanceof HTMLElement)) continue
     const r = dom.getBoundingClientRect()
-    if (y >= r.bottom) continue // the gap above a block belongs to that block
+    if (y >= r.bottom) continue
     const cs = getComputedStyle(dom)
     const line = parseFloat(cs.lineHeight)
     const first = node.isAtom || !Number.isFinite(line) ? 0 : parseFloat(cs.paddingTop) + (line - HANDLE) / 2
@@ -1055,7 +999,6 @@ interface BlockGutterProps {
   gutterRef: RefObject<HTMLDivElement | null>
 }
 
-/** "+" opens the block menu for a new line under the block (or this line, when it is empty). "⠿" drags the block. */
 function BlockGutter({ editor, block, gutterRef }: BlockGutterProps) {
   if (!block) return null
 
@@ -1105,7 +1048,6 @@ function BlockGutter({ editor, block, gutterRef }: BlockGutterProps) {
   )
 }
 
-/** The block kind at the cursor, as a TEXT_BLOCKS value. Lists and quotes win over the paragraph inside them. */
 function blockKind(e: TiptapEditor): BlockKind {
   if (e.isActive('bulletList')) return 'bullet'
   if (e.isActive('orderedList')) return 'ordered'
@@ -1116,13 +1058,9 @@ function blockKind(e: TiptapEditor): BlockKind {
   return 'paragraph'
 }
 
-/**
- * Formatting bubble over selected text, as in Editor.js and Notion: block kind, then bold, italic,
- * underline, link and inline code. It shows while text is selected and the editor (or the bubble) has focus.
- */
 function Toolbar({ editor }: { editor: TiptapEditor }) {
   const bar = useRef<HTMLDivElement>(null)
-  const [inside, setInside] = useState(false) // focus is in the bubble, e.g. in the block-kind menu
+  const [inside, setInside] = useState(false)
   const s = useEditorState({
     editor,
     selector: ({ editor: e }) => {
@@ -1141,7 +1079,6 @@ function Toolbar({ editor }: { editor: TiptapEditor }) {
     },
   })
 
-  // A click anywhere outside hands focus back, so a stale bubble does not linger.
   useEffect(() => {
     if (!inside) return undefined
     const away = (e: PointerEvent) => !(e.target instanceof Element && bar.current?.contains(e.target)) && setInside(false)
@@ -1152,7 +1089,6 @@ function Toolbar({ editor }: { editor: TiptapEditor }) {
   const host = editor.view.dom.closest('.cms-ed')
   if (!s.text || !(s.focused || inside) || !host) return null
 
-  // Sit above the first selected line, left-aligned with it, inside the editor's own box.
   const box = host.getBoundingClientRect()
   const at = editor.view.coordsAtPos(s.from)
 

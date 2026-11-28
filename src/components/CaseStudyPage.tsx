@@ -27,7 +27,6 @@ export default function CaseStudyPage({ work, assets }: { work: WorkData; assets
   const { lang } = useLang()
   const localePath = useLocalePath()
   const data = useCaseContent(slug, assets)
-  // In edit mode, the list the edit panel changes, so an edit there shows here before it is saved
   const { items } = useWorkContent(work).content
   const doc = useMemo(() => (data ? caseDoc(data, lang) : null), [data, lang])
   const t = PROJECT_PAGE_LABELS[lang]
@@ -35,13 +34,9 @@ export default function CaseStudyPage({ work, assets }: { work: WorkData; assets
   if (!data || !doc) return <DefaultHead />
 
   const { hero } = data
-  // The card's number on the Projects list; a case that is not on the list keeps its own.
   const listed = projectNumber(items, slug)
-  // The title, the facts and the cover come from the case's card, as on a project page, so the edit panel changes
-  // both. A case that is no longer on the list falls back to what is stored with it.
   const item = items.find((x) => x.id === slug)
   const cover = projectCover(item) || hero.image?.url
-  // The card of a case has no site link of its own until one is typed in the panel; the case's stored link fills in.
   const site = hero.meta.find((m) => m.href)
   const facts: ProjectFact[] = item
     ? [...projectFacts(item, lang), ...(item.link || !site ? [] : [[t.link, site.lines, site.href] satisfies ProjectFact])]

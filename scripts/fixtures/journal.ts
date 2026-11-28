@@ -1,7 +1,5 @@
 import type { JournalData, JournalPost } from '../../src/lib/siteData.ts'
 
-// Four made-up posts, in the shape the site stores a journal. They were the site's first placeholder
-// content; now they only feed the tests.
 const POSTS = {
   zh: [
     {

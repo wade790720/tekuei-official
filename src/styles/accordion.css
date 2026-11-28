@@ -1,6 +1,3 @@
-/* Accordion (src/components/Accordion.tsx). Laid out after HeroUI's Accordion:
-   16px trigger padding, a chevron that turns 180deg, a 1px line between items and none after the last. */
-
 .accordion {
   width: 100%;
 }
@@ -37,7 +34,7 @@
   gap: var(--space-4);
   padding: var(--space-4);
   border: 0;
-  border-radius: 0; /* the hover fill has square corners */
+  border-radius: 0;
   background: transparent;
   font-family: var(--font-serif);
   font-size: var(--type-h3);
@@ -101,7 +98,6 @@
   color: var(--text-body);
 }
 
-/* Surface: the whole stack on a card, the lines inset from both edges */
 .accordion--surface {
   overflow: hidden;
   border-radius: var(--radius-lg);

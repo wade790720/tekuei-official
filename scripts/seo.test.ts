@@ -6,14 +6,11 @@ import { postInEnglish } from '../src/data/journal.ts'
 import { blogLd, collectionLd, firstImage, headLinks, ldJson, llmsTxt, pageUrl, postLd, siteCases, siteJournal, sitemapXml } from '../src/lib/seo.ts'
 import type { Doc, JournalData, WorkData, WorkItem } from '../src/lib/siteData.ts'
 
-// Whole pages (head, body, status) are checked against a running server by the page check script.
-
 const journal = sampleJournal()
 const slug = journal.posts.zh[0].slug
 const work: WorkItem[] = JSON.parse(readFileSync(new URL('../src/data/data.json', import.meta.url), 'utf8')).work.items
 const body = (text: string) => ({ doc: { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text }] }] } })
 
-/** The sample journal with English bodies for every post but the first. */
 function halfTranslated(): JournalData {
   const j = structuredClone(journal)
   j.content.en = Object.fromEntries(j.posts.en.slice(1).map((p) => [p.slug, body('English')]))

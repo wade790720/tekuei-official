@@ -1,7 +1,3 @@
-// Copy for the Overview and Theme pages of /dev/component-library (dev-only, Chinese only).
-// Each page: name, lead, and its "本頁" headings (ids match the sections the page renders).
-// Write as reference docs: state the rule or the fact. No design history, no outside sites.
-
 const BASE = '/dev/component-library'
 const to = (id: string) => `${BASE}/${id}`
 
@@ -252,7 +248,6 @@ npm run dev`,
     ],
     bibliography: {
       lead: '做這個網站時參考了這些網站。新增參考時，在對應的組別加一列，「用在哪裡」寫檔案或頁面。',
-      // [site, url, what we took from it, where it is used]
       groups: [
         {
           title: '元件與效果',

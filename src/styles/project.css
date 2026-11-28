@@ -1,6 +1,3 @@
-/* ProjectPage. A project is shown, not read, so the frame is as wide as the page allows and everything
-   starts at its left edge: text keeps the reading width, pictures take the whole frame. */
-
 .journal-post.project-post {
   max-width: var(--page-max);
 }
@@ -13,12 +10,10 @@
   max-width: none;
 }
 
-/* A stack card sticks under the header, so it is no wider than a 16:9 frame that fits on the screen */
 .journal-post.project-post .journal-post__body > * > .post-stack {
   max-width: calc((100svh - 2 * var(--space-24)) * 16 / 9);
 }
 
-/* On a phone the pictures run to the screen's edges, square-cornered, and the text keeps its margin. */
 @media (max-width: 768px) {
   .journal-post.project-post {
     --gallery-radius: 0px;
@@ -33,7 +28,6 @@
     margin-inline: calc(-1 * var(--page-pad));
   }
 
-  /* Only the large photo of a work runs to the edges; its words and thumbnails keep the margin and the 8px inset */
   .project-post .featured__stage {
     margin-inline: calc(-1 * (var(--page-pad) + var(--space-2)));
   }
@@ -47,7 +41,6 @@
   }
 }
 
-/* With a thumbnail the page opens with ProjectHero, above the article, so the article has no header of its own */
 .journal-post.project-post--cover {
   padding-top: var(--gap-part);
 }

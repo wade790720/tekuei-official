@@ -1,6 +1,5 @@
 import type { Lang } from './siteData.ts'
 
-// Chinese pages live at the root and the same pages in English under /en (/journal/abc and /en/journal/abc).
 // A few URLs have only one address: /checkin is registered in the LINE console, a lab's live page is the lab
 // page's iframe, and the rest are not pages.
 const ONE_URL = /^\/(checkin|labs\/[^/]+\/live|dev\/|sitemap\.xml|llms\.txt|api\/)/
@@ -34,7 +33,6 @@ export const otherLangPath = (pathname: string): string | null =>
 
 // React Router matches paths ignoring case, so /EN/Journal would be a second copy of /en/journal. Slugs keep their case.
 const FIXED = new Set(['en', 'about', 'journal', 'projects', 'labs', 'live', 'how-to-checkin', 'checkin', 'work', 'cases', 'sitemap.xml', 'llms.txt'])
-// The segment after one of these is a slug, even when it happens to be one of the words above.
 const BEFORE_SLUG = new Set(['journal', 'projects', 'labs', 'cases'])
 
 /** The path a page is served at: no trailing slash, and the site's own words in lower case. */

@@ -1,6 +1,3 @@
-// Picks the text to translate out of a Tiptap doc and puts the translation back, leaving images, code and layout alone.
-// One block is one string, so a sentence with a bold word is translated whole. Marks travel as <t0>…</t0>, line breaks as <br/>.
-
 import type { Doc } from './siteData.ts'
 
 /** One string to translate, and where the translation goes. */
@@ -13,7 +10,6 @@ const HAN = /\p{Script=Han}/u
 const INLINE = new Set(['text', 'hardBreak'])
 const ATTR_TEXT: Record<string, string[]> = { imageCard: ['alt', 'caption'], videoCard: ['caption'], slidesCard: ['title', 'text'], blockquote: ['cite'] }
 export const BATCH_CHARS = 6000
-// The most strings /api/translate takes in one request
 export const BATCH_TEXTS = 300
 
 const escapeText = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')

@@ -1,4 +1,3 @@
-// The inside of each social icon, for a 24 x 24 viewBox drawn in 1.5 lines. The footer and a post's share buttons draw them.
 export const SOCIAL_ICONS = {
   X: (
     <path

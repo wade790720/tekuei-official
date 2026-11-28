@@ -1,7 +1,3 @@
-/* ScrollShadow (src/components/ScrollShadow.tsx).
-   A mask fades the content at each edge that has more to scroll. The script sets
-   data-scroll-start / data-scroll-end; the fade length grows from 0 to --scroll-shadow-size. */
-
 @property --scroll-shadow-start {
   syntax: '<length>';
   inherits: false;
@@ -17,9 +13,8 @@
 .scroll-shadow {
   --scroll-shadow-start: 0px;
   --scroll-shadow-end: 0px;
-  --scroll-shadow-bar: 10px; /* the scrollbar lane stays unmasked */
+  --scroll-shadow-bar: 10px;
 
-  /* HeroUI's thin scrollbar: ivory thumb at 15%, no track */
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) transparent;
   mask-repeat: no-repeat;

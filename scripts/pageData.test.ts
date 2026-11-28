@@ -14,7 +14,6 @@ import { sampleJournal } from './fixtures/journal.ts'
 
 const doc = (text: string) => ({ doc: { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text }] }] } })
 
-// The middle post is a draft, in both languages.
 function site(): SiteData {
   const journal = cloneJournal(sampleJournal())
   const draft = journal.posts.zh[1].slug
@@ -51,7 +50,6 @@ it('a post page sends its body and the neighbours next to it, never a draft', ()
   const page = journalPost(s, first)
   assert.ok(page)
   assert.deepEqual(Object.keys(page.journal.content.zh), [first])
-  // The draft between the first and third post is skipped, so the third is the first post's neighbour.
   assert.deepEqual(page.journal.posts.zh.map((p) => p.slug), [first, posts[2].slug])
   assert.ok(!JSON.stringify(page).includes(draft))
 })
@@ -62,7 +60,6 @@ it('a post page says whether the post has an English version by the sitemap rule
   assert.ok(journal)
   const [first, , third] = journal.posts.zh.map((p) => p.slug)
   journal.content.en = { [third]: doc('English body') }
-  // The first post has no English entry at all: the page used to read that as "has English".
   journal.posts.en = journal.posts.en.filter((p) => p.slug !== first)
   assert.equal(journalPost(s, first)?.english, postInEnglish(journal, first))
   assert.equal(journalPost(s, first)?.english, false)
@@ -85,7 +82,6 @@ it('a draft project sends no body; the list points each card where it goes', () 
   assert.equal(list.items.find((i) => i.id === 'live')?.caseHref, '/projects/live')
   assert.equal(list.items.find((i) => i.id === 'card-only')?.caseHref, 'https://example.com')
   assert.ok(!list.items.some((i) => i.id === 'secret'))
-  // The sitemap's rule: a page written in the editor needs an English body
   assert.ok(!list.inEnglish.includes('live'))
   assert.ok(list.inEnglish.includes('card-only'))
 })
@@ -113,7 +109,6 @@ it('readSite: the bundled defaults with no data.json, a 503 when R2 cannot be re
   await broken.put('data.json', '{"journal": ')
   assert.equal(await statusOf(readSite(contextWith(broken), ['journal'])), 503)
 
-  // A malformed section fails only the pages that read it.
   const bad = fakeR2({ 'data.json': { ...site(), journal: { posts: 'nope' } } })
   assert.equal(await statusOf(readSite(contextWith(bad), ['journal'])), 503)
   assert.equal(await statusOf(readSite(contextWith(bad), ['work'])), 200)

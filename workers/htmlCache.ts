@@ -14,9 +14,7 @@ export interface CacheDeps {
 }
 
 // The Free plan allows 10 ms of CPU per request and a page render takes 5 to 40, so readers get a stored copy.
-// The key holds data.json's etag: a save changes it, and the next request renders the new content.
 const KEPT = 'public, max-age=604800'
-// The stored copy keeps a week; the browser still gets the page's own Cache-Control, carried in this header.
 const BROWSER = 'X-Page-Cache-Control'
 
 /** The page from the data center's cache, or `render()` stored there when the page says it may be cached. */

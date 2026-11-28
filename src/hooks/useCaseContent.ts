@@ -4,8 +4,6 @@ import { useLang } from '../i18n'
 import type { CaseStudy, CaseWithImages } from '../lib/caseDoc.ts'
 import type { CaseAssets } from '../lib/siteData.ts'
 
-// Its own file so the case texts load with the case page, not in the main bundle.
-
 function mergeAssets(staticCase: CaseStudy, assets: CaseAssets | undefined): CaseWithImages {
   return {
     ...staticCase,
@@ -28,6 +26,5 @@ function mergeAssets(staticCase: CaseStudy, assets: CaseAssets | undefined): Cas
 export function useCaseContent(slug: string, assets: CaseAssets | undefined): CaseWithImages | null {
   const { lang } = useLang()
   const staticCase = Object.hasOwn(LOCAL_CASES, slug) ? LOCAL_CASES[slug][lang] : null
-  // Memoised: the page's effects depend on this object.
   return useMemo(() => (staticCase ? mergeAssets(staticCase, assets) : null), [staticCase, assets])
 }

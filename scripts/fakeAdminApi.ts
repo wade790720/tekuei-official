@@ -18,7 +18,7 @@ declare global {
 ;(() => {
   const real = window.fetch.bind(window)
   const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
-  let version: string | null = null // the ETag of the last fake save; none before it, as in an empty bucket
+  let version: string | null = null
   window.__api = []
   window.fetch = async (input: RequestInfo | URL, init: RequestInit = {}) => {
     const url = new URL(input instanceof Request ? input.url : input, location.href)

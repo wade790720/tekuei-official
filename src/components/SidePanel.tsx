@@ -13,7 +13,7 @@ import { TextField } from './TextField.tsx'
 import { TooltipGroup } from './Tooltip.tsx'
 import '../styles/cms.css'
 
-const SAVED_MS = 1600 // how long the save button shows "已儲存" after a save
+const SAVED_MS = 1600
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error'
 type Light = 'clean' | 'dirty' | 'saving' | 'error'
@@ -58,7 +58,6 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
   const [justSaved, setJustSaved] = useState(false)
   const [prevSaving, setPrevSaving] = useState(saving)
 
-  // A save that ends without an error shows a tick on the button.
   if (saving !== prevSaving) {
     setPrevSaving(saving)
     setJustSaved(!saving && !error)
@@ -73,7 +72,6 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
   const saveState: SaveState = saving ? 'saving' : justSaved && !dirty ? 'saved' : error ? 'error' : 'idle'
   const light: Light = saving ? 'saving' : error ? 'error' : dirty ? 'dirty' : 'clean'
   const status = saving ? T.saving : error ? `${T.saveFailed}：${error}` : dirty ? (labels.dirty ?? T.unsaved) : (labels.saved ?? T.saved)
-  // One set of buttons for both layouts, so the drawer and the toolbar cannot drift apart.
   const buttons = (
     <PanelActions
       preview={preview}
@@ -111,7 +109,6 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
         </div>
         <DrawerBody>{children}</DrawerBody>
       </Drawer>
-      {/* Collapsed: the dock shows the same save states, so a Ctrl+S save is visible */}
       {panelOpen
         ? null
         : createPortal(
@@ -126,7 +123,6 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
                     </>
                   }
                 />
-                {/* Stays while saving so the dock keeps its width; it goes once the save lands */}
                 {dirty ? <span className="cms-dock__dot" title={T.unsaved} /> : null}
               </button>
               {/* The button's aria-label hides its text, so the state is announced here */}
@@ -140,7 +136,6 @@ export function SidePanel({ title, subtitle, dirty, saving, error, onSave, onLog
   )
 }
 
-/** The save state as a light and a line of text: green saved, gold unsaved or saving, red failed. */
 function PanelStatus({ light, children }: { light: Light; children: ReactNode }) {
   return (
     <span className="cms-bar__status" role="status" data-state={light}>
@@ -200,7 +195,6 @@ function PanelActions({ preview, actions, saveState, saveLabel, canSave, onSave,
         </span>
       </Button>
       <span className="cms-bar__rule" aria-hidden />
-      {/* One action is a button. A menu is for a choice between two or more. */}
       {menu.length ? (
         <DropdownMenu
           label={T.more}
@@ -219,7 +213,6 @@ function PanelActions({ preview, actions, saveState, saveLabel, canSave, onSave,
   )
 }
 
-// Written to the element, not to state: a drag moves it on every pointer event.
 function placeBar(el: HTMLElement, offset: RefObject<Offset>, next: Offset) {
   const room = { width: document.documentElement.clientWidth, height: document.documentElement.clientHeight }
   const box = { left: el.offsetLeft, top: el.offsetTop, width: el.offsetWidth, height: el.offsetHeight }
@@ -229,7 +222,6 @@ function placeBar(el: HTMLElement, offset: RefObject<Offset>, next: Offset) {
   el.toggleAttribute('data-below', box.top + fitted.y + box.height / 2 < room.height / 2)
 }
 
-/** The panel's actions as a small toolbar that can be dragged anywhere and remembers where it was left. */
 const GRIP_STEPS: Partial<Record<string, [number, number]>> = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] }
 
 interface EditBarProps {
@@ -373,7 +365,6 @@ export interface SortRowsProps<T> {
   children: (item: T, i: number) => ReactNode
 }
 
-/** While a row is dragged. gap k = insert before row k; list = another list, or null. */
 interface RowDrag {
   from: number
   gap: number
@@ -390,21 +381,19 @@ export function SortRows<T>({ items, keyOf, nameOf, onMove, listAt, onMoveTo, ro
     const k = rowsOf(list).findIndex((el) => y < el.getBoundingClientRect().top + el.offsetHeight / 2)
     return k < 0 ? rowsOf(list).length : k
   }
-  // The other list belongs to another component, so its drop line is set on the DOM.
   const mark = (list: Element | null, gap = 0) => {
     marked.current?.removeAttribute('data-drop')
     const els = list ? rowsOf(list) : []
     marked.current = list ? (els[gap] ?? els.at(-1) ?? list) : null
     marked.current?.setAttribute('data-drop', gap < els.length ? 'before' : 'after')
   }
-  // Removing the dragged row first shifts the rows below it up by one.
   const target = (d: RowDrag) => (d.gap > d.from ? d.gap - 1 : d.gap)
   const dragMove = (e: PointerEvent<HTMLButtonElement>) => {
     if (!drag || !root.current) return
     const under = listAt?.(e.clientX, e.clientY)
     const list = under && under !== root.current ? under : null
     const gap = gapIn(list ?? root.current, e.clientY)
-    if (gap === drag.gap && list === drag.list) return // pointermove fires far more often than the gap changes
+    if (gap === drag.gap && list === drag.list) return
     mark(list, gap)
     setDrag({ ...drag, gap, list })
   }
@@ -506,10 +495,6 @@ export function PanelSection({ title, action, children }: PanelSectionProps) {
   )
 }
 
-/**
- * Idle, saving and saved labels in one grid cell, so the button keeps the widest label's width.
- * Used by the save button and the dock button.
- */
 function SaveLabels({ state, idle }: { state: SaveState; idle: ReactNode }) {
   return (
     <span className="cms-save__stack">

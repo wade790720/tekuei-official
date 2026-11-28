@@ -1,5 +1,3 @@
-/** 將 src/data/data.json 放進本機的 R2（.wrangler/state，npm run dev 和 preview 讀的那一個）。不會寫到正式站 */
-
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'

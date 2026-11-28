@@ -1,6 +1,3 @@
-// A design-spec overlay on a real UI sample, as in a handoff file: spacing bands, a selection box,
-// baseline and x-height guides.
-// Every number is measured from the DOM, so the overlay shows what the CSS really does.
 import { useEffect, useRef, useState } from 'react'
 import { SPEC_SAMPLE } from './foundations.data.ts'
 
@@ -42,8 +39,6 @@ type Els = Record<string, HTMLElement>
 
 const rel = (r: DOMRect, o: DOMRect): Box => ({ x: r.left - o.left, y: r.top - o.top, w: r.width, h: r.height })
 
-// A Figma-style measurement: a thin "I" across the gap, with caps at both ends and the value in a pill.
-// Gaps that are wider than tall measure their width; the rest measure their height.
 function beam(b: Box, columnX: number): Beam {
   const across = b.w < b.h
   const value = Math.round(across ? b.w : b.h)
@@ -52,7 +47,6 @@ function beam(b: Box, columnX: number): Beam {
     return { ...b, value, x1: x, y1: b.y, x2: x, y2: b.y + b.h, lx: x + 6, ly: b.y + b.h / 2, anchor: 'left' }
   }
   const y = b.y + b.h / 2
-  // Tall gaps (the card's side padding) take the pill above the line; short ones (buttons) put it underneath
   const below = b.h < 60
   return {
     ...b,

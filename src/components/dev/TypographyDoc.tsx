@@ -1,5 +1,3 @@
-// The Typography page of the library, laid out like the Radix Themes typography docs:
-// base components, formatting, the type scale, weights, families, then the measured spec.
 import { useState } from 'react'
 import { blocksToDoc } from '../../lib/richText.ts'
 import { RichText } from '../RichText.tsx'
@@ -10,7 +8,6 @@ import { RuleList } from './doc/RuleList.tsx'
 import { TypeScalePicker } from './doc/TypeScalePicker.tsx'
 import { rootVar } from './doc/tokens.ts'
 
-// Sizes are rem in tokens.css; the docs show the px a 16px root gives
 const toPx = (v: string) => v.replace(/(\d*\.?\d+)rem/g, (_: string, n: string) => `${+n * 16}px`)
 import { TYPE_DOC, TYPE_RULES, TYPE_STEPS } from './foundations.data.ts'
 import { SpecView } from './SpecView.tsx'
@@ -26,7 +23,6 @@ ${base.blocks.map((b) => `    { type: '${b.type}', text: '${b.text}' },`).join('
 const weightCode = weight.rows.map(([, token, use]) => `font-weight: var(${token}); /* ${use} */`).join('\n')
 const familyCode = family.rows.map(([use, token]) => `font-family: var(${token}); /* ${use} */`).join('\n')
 
-// Font stacks are long; the first three names say enough.
 const shortStack = (v: string) =>
   v
     .split(',')

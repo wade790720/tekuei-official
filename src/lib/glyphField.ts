@@ -20,9 +20,9 @@ interface Column {
 const GLYPHS = 'AISDPEL01<>=+*-#$'
 const STEP_MS = 90
 const HEAD_ALPHA = 0.8
-const TRAIL_DECAY = 0.94 // a lit glyph keeps this share of its alpha each step, down to its floor
+const TRAIL_DECAY = 0.94
 const GLOW_DECAY = 0.82
-const REACH = 44 // pointer radius in px
+const REACH = 44
 
 const glyph = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
 const fill = <T>(make: () => T): T[] => Array.from({ length: ROWS }, make)
@@ -47,8 +47,6 @@ export function mountGlyphField(canvas: HTMLCanvasElement): () => void {
   const colW = ctx.measureText('0').width * 1.7
   const cols = Math.ceil(WIDTH / colW)
 
-  // A drop falls down its column to maxRow, then starts again above the top.
-  // Most restarts keep the column's depth and brightness, so columns hold their character.
   const restart = (col: Column, first = false) => {
     col.head = first ? Math.random() * ROWS * 2 : -Math.random() * ROWS * 1.5
     col.speed = 0.25 + Math.random() * 0.75
@@ -65,7 +63,7 @@ export function mountGlyphField(canvas: HTMLCanvasElement): () => void {
       brightness: 0,
       chars: fill(glyph),
       alphas: fill(() => 0),
-      floors: fill(() => 0.04 + Math.random() * 0.08), // glyphs a drop has passed never go fully dark
+      floors: fill(() => 0.04 + Math.random() * 0.08),
       glows: fill(() => 0),
     }
     restart(col, true)
@@ -111,7 +109,6 @@ export function mountGlyphField(canvas: HTMLCanvasElement): () => void {
     ctx.globalAlpha = 1
   }
 
-  // Run ahead so the field is already full on the first frame.
   for (let i = 0; i < ROWS * 4; i++) step()
   draw()
 
@@ -136,10 +133,9 @@ export function mountGlyphField(canvas: HTMLCanvasElement): () => void {
     onScreen = entry.isIntersecting
   })
 
-  // Glyphs within REACH of the pointer light up at once, then fade with GLOW_DECAY.
-  let redraw = 0 // the pending redraw frame
+  let redraw = 0
   const onMove = (e: PointerEvent) => {
-    if (!onScreen) return // the header has scrolled away: skip the layout read
+    if (!onScreen) return
     const rect = canvas.getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top

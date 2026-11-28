@@ -1,7 +1,4 @@
-// Thumbnails of the labs in index.ts, for the Work list and the More Labs row of each lab page.
-// Stills are frames captured from each live piece at 1440x900, scaled to 960x600 to match the Work thumbnail (16:10).
 import portraitThumb from './living-portrait/thumb.webp'
-// A 12s loop recorded from the live piece with a scripted mouse (hover boxes, double-click glitch); the webp is its poster.
 import portraitVideo from './living-portrait/preview.mp4'
 import fallThumb from './falling-figure/thumb.webp'
 import shatterThumb from './shatter-footer/thumb.webp'

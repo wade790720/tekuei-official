@@ -1,5 +1,3 @@
-// Live demos for the component pages. Each entry in componentLibrary.data.tsx names one by key.
-// Demo data only: nothing here is real content, and nothing is sent anywhere.
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import type { ComponentProps, ComponentType, MouseEvent, ReactNode } from 'react'
 import { CodeBlock } from '../CodeBlock.tsx'
@@ -116,7 +114,6 @@ function RippleDemo() {
   )
 }
 
-// One button per sound. data-sound picks it, the same way a real button would (App's click listener plays it).
 function SoundDemo() {
   return (
     <div className="cl-sounds">
@@ -274,7 +271,6 @@ function DrawerDemo() {
   )
 }
 
-// One pane of the editor demo: a header with a direction icon, then the content.
 interface IoPaneProps {
   dir: 'in' | 'out'
   title: string
@@ -304,10 +300,8 @@ function IoPane({ dir, title, meta, className = '', children }: IoPaneProps) {
   )
 }
 
-// Tiptap loads only on the Editor page, not on every Component Library page.
 const Editor = lazy(() => import('../Editor.tsx').then((m) => ({ default: m.Editor })))
 
-// Input (what the editor holds) on the left, output (how RichText shows it) on the right.
 function EditorDemo() {
   const [doc, setDoc] = useState(EDITOR_SAMPLE)
   return (

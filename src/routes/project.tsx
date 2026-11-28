@@ -7,7 +7,6 @@ import type { ProjectPageData } from '../lib/pageData.ts'
 import type { Route } from './+types/project'
 export { shouldRevalidate } from '../lib/langSwitch.ts'
 
-// A draft or a project with no page is a 404; in edit mode the page still opens it from the draft.
 export const loader = async ({ context, params }: Route.LoaderArgs) => {
   const isCase = Object.hasOwn(CASE_BY_SLUG, params.slug)
   const page = projectPage(await readSite(context, isCase ? ['work', 'cases'] : ['work']), params.slug, isCase)

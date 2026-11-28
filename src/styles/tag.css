@@ -1,6 +1,3 @@
-/* Tag (src/components/Tag.tsx). Plain: gold label text. Button: a pill in a filter bar.
-   Gold marks the chosen pill and hover only, as everywhere else on the site. */
-
 .tag {
   font-family: var(--font-label);
   font-size: var(--type-label);
@@ -20,7 +17,6 @@
     color var(--duration-slow) var(--ease-touch);
 }
 
-/* Inside a card link, the tags light up with the card. */
 @media (hover: hover) {
   a:hover .tag--outline {
     border-color: var(--ember);
@@ -59,7 +55,6 @@
     box-shadow var(--duration-base) var(--ease-touch);
 }
 
-/* Touch: taller pills and rows 44px apart, so each pill's hit area reaches 44px without overlapping the next row */
 @media (max-width: 768px) {
   .tag-group {
     row-gap: var(--space-3);
@@ -77,8 +72,6 @@
   }
 }
 
-/* Trim each line to cap height and baseline, so the capitals sit in the optical middle
-   (the font's line box has more room below them than above) */
 .tag--button > * {
   text-box: trim-both cap alphabetic;
 }
@@ -91,7 +84,6 @@
 }
 
 .tag--button[aria-pressed='true'] {
-  /* Filled as well as gold, so the choice does not rest on color alone */
   background: var(--ember-whisper);
   box-shadow: inset 0 0 0 0.5px var(--ember);
   color: var(--ember-soft);

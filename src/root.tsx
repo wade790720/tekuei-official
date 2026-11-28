@@ -16,12 +16,8 @@ import { samePage, stripLang } from './lib/localePath.ts'
 import { mountReveal } from './lib/reveal.ts'
 import { mountClickSounds } from './lib/uiSound.ts'
 
-// The site-wide part of the head: each page draws its own title, description, canonical, social tags and
-// JSON-LD (PageHead), the site's WebSite and Person included, so none of those is here.
-// Without JS nothing adds is-visible, so the entrance would leave the page blank.
 const NO_SCRIPT = '<style>.fade-in{opacity:1!important;transform:none!important;filter:none!important}</style>'
 
-// The page scrolls on <html> (index.css); each route module's handle adds its own classes.
 export const handle: PageHandle = { htmlClass: () => 'has-scroll-document' }
 
 export function Layout({ children }: { children: ReactNode }) {
@@ -56,7 +52,6 @@ function Document({ children }: { children: ReactNode }) {
         <noscript dangerouslySetInnerHTML={{ __html: NO_SCRIPT }} />
       </head>
       <body>
-        {/* SiteNav makes #root inert while the mobile menu, portalled to <body>, is open. */}
         <div id="root">{children}</div>
         <Scripts />
       </body>
@@ -64,13 +59,8 @@ function Document({ children }: { children: ReactNode }) {
   )
 }
 
-// Scroll position of each history entry, so back / forward returns to where the reader was.
 const scrollByEntry = new Map<string, number>()
 
-/**
- * A new page starts at the top. Back and forward (POP) return to the saved position instead. The same page with
- * a new query (the Journal tag filter) or in the other language (the language button) keeps the scroll.
- */
 function ScrollClasses() {
   const { pathname, key } = useLocation()
   const type = useNavigationType()
@@ -89,7 +79,6 @@ function ScrollClasses() {
     const newPage = lastPath.current !== null && !samePage(pathname, lastPath.current)
     if (type === 'POP') window.scrollTo({ top: scrollByEntry.get(key) ?? 0, left: 0, behavior: 'instant' })
     else if (newPage) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-    // A new page (not the first load): move focus to its h1, so a screen reader announces where you are
     if (newPage) {
       requestAnimationFrame(() => {
         const h1 = document.querySelector<HTMLElement>('main h1')
@@ -105,7 +94,6 @@ function ScrollClasses() {
 
 function AppNav() {
   const path = stripLang(useLocation().pathname)
-  // Check-in and the live lab pages are bare: the live pages also run inside the lab page's iframe.
   if (path === '/checkin' || path.endsWith('/live')) return null
   const isCase = path.startsWith('/projects/') || path.startsWith('/labs/')
   return (
@@ -116,7 +104,6 @@ function AppNav() {
   )
 }
 
-/** What every page sits in, the error screen included: the providers, the nav, the scroll and the reveal. */
 function Shell({ children }: { children: ReactNode }) {
   useEffect(() => mountClickSounds(), [])
   // After hydration, so the server's class on each .fade-in still matches when React reads it.

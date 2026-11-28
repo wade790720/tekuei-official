@@ -8,7 +8,6 @@ import { getDoc } from '../../lib/richText.ts'
 import { RichText } from '../RichText.tsx'
 import type { Doc } from '../../lib/siteData.ts'
 
-// Tiptap is large; load it only when Wade opens a post in edit mode, not for every visitor.
 const Editor = lazy(() => import('../Editor.tsx').then((m) => ({ default: m.Editor })))
 
 /**
@@ -27,7 +26,6 @@ export function JournalPostBody({ slug, children }: JournalPostBodyProps) {
   const body = admin.editing && cms.isEditing ? cms.draft?.content[lang]?.[slug] : null
   if (!body) return children
 
-  // The editor saves its own document; the old block list goes away on the first edit.
   const setDoc = (doc: Doc) =>
     cms.updateDraft((d) => {
       d.content[lang][slug] = { doc }
@@ -36,7 +34,6 @@ export function JournalPostBody({ slug, children }: JournalPostBodyProps) {
 
   return (
     <Suspense fallback={children}>
-      {/* The editor stays mounted while previewing, so the cursor and undo history survive. */}
       <Editor key={`${slug}-${lang}-${admin.editorKey}`} doc={getDoc(body)} onChange={setDoc} upload={upload} previewing={admin.previewing} />
       {admin.previewing ? <RichText doc={getDoc(body)} /> : null}
     </Suspense>

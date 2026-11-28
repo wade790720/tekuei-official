@@ -9,9 +9,8 @@ import { useLang } from '../../i18n'
 import { writeClipboard } from '../../lib/clipboard.ts'
 import { SITE_URL } from '../../lib/siteUrl.ts'
 
-const SHOWN_MS = 1600 // how long the copy button shows its tick
+const SHOWN_MS = 1600
 
-// Where each service takes a link to share. The names are brand names, the same in both languages.
 const SERVICES = [
   { name: 'LINE', icon: <LineIcon />, href: (url: string) => `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}` },
   {
@@ -30,7 +29,6 @@ export function ShareLinks() {
   const { lang } = useLang()
   const t = JOURNAL_POST_LABELS[lang]
   const [result, setResult] = useState<'copied' | 'failed' | ''>('')
-  // Without the query and hash: those belong to this visit, not to the post.
   const url = `${SITE_URL}${useLocation().pathname}`
 
   useEffect(() => {

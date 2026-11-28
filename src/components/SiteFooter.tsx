@@ -20,7 +20,6 @@ export function SiteFooter() {
   const { explore, contact } = HOME_FOOTER[lang]
   const email = contact.find((c) => c.href?.startsWith('mailto:'))?.href
   const links = [...explore, ...(email ? [{ label: 'Contact', href: email }] : [])]
-  // The same accounts as the Journal footer. One with no address yet shows as a plain icon.
   const socials = contact.flatMap((c) => {
     const label = c.href?.startsWith('mailto:') ? 'Email' : c.label
     return isSocial(label) ? [{ label, href: c.href }] : []
@@ -42,7 +41,6 @@ export function SiteFooter() {
       el.style.setProperty('--underline-w', `${a.offsetWidth}px`)
     }
     place()
-    // The first position is set without a glide; from then on it moves.
     const raf = requestAnimationFrame(() => {
       el.dataset.ready = ''
     })

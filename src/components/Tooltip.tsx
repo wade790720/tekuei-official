@@ -3,8 +3,6 @@ import type { FocusEvent, HTMLAttributes, PointerEvent, Ref } from 'react'
 import { tokenMs } from '../lib/tokenMs.ts'
 import '../styles/tooltip.css'
 
-// Warm tooltips (after React Bits "Warm Tooltip"): the first one waits, then while the group is "warm"
-// the same tooltip slides to the next trigger at once.
 const TIP_DELAY = 400
 const TIP_WARM = 300
 
@@ -35,7 +33,6 @@ export function TooltipGroup({ ref, children, ...rest }: TooltipGroupProps) {
 
   useEffect(() => () => clearTimeout(timer.current), [])
 
-  // A hidden tooltip keeps its text while it fades out, then goes.
   useEffect(() => {
     if (!tip?.closing) return undefined
     const id = setTimeout(() => setTip(null), tokenMs('--duration-exit'))

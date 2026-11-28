@@ -7,7 +7,6 @@ import type { PostPageData } from '../lib/pageData.ts'
 import type { Route } from './+types/journal-post'
 export { shouldRevalidate } from '../lib/langSwitch.ts'
 
-// A draft is a 404 like an unknown slug: the page draws "not found", or the draft itself once Wade is editing.
 export const loader = async ({ context, params }: Route.LoaderArgs) => {
   const post = journalPost(await readSite(context, ['journal']), params.slug)
   return post ? found(post) : notFound({ journal: getDefaultJournal(), english: true })

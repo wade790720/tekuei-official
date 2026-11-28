@@ -4,14 +4,13 @@
 import Lenis from 'lenis'
 import shatterSrc from './stone_shatter.mp3'
 
-const SAMPLE_W = 420 // the figure picture is read at this width
+const SAMPLE_W = 420
 const WAVE_SECONDS = 1.6
 const NEAR_BLACK = '#0B0B0D'
 
 const subFont = (s: number) => `700 ${s}px ui-monospace, "Cascadia Mono", Consolas, "Noto Sans TC", monospace`
 const titleFont = (s: number) => `400 ${s}px "Instrument Serif", "Noto Serif TC", "Source Han Serif TC", serif`
 
-// Smooth noise in 0..1, three layers. It shapes the impact dust into tall clouds.
 const hash2 = (x: number, y: number) => {
   const v = Math.sin(x * 127.1 + y * 311.7) * 43758.5453
   return v - Math.floor(v)
@@ -95,7 +94,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
   let bx = 0
   let by = 0
   let S = 0
-  let fill = 0.88 // how much of the picture square the figure covers; measured in sample()
+  let fill = 0.88
   let nx = 0
   let parts: Particle[] = []
   let sparks: Spark[] = []
@@ -113,12 +112,10 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
   let dead = false
   let visible = true
 
-  // Slow, weighted scrolling: low lerp, calmer wheel.
   const lenis = reduce
     ? null
     : new Lenis({ lerp: touch ? 0.08 : 0.05, wheelMultiplier: 0.65, touchMultiplier: 1.6, syncTouch: true, smoothWheel: true })
 
-  // Impact sound: a recording of stone breaking.
   // Browsers reject play() until the visitor clicks, taps or presses a key. Before that, impacts are silent.
   const crack = new Audio(shatterSrc)
   crack.preload = 'auto'
@@ -127,7 +124,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
   let lastCrack = 0
   function stoneCrack() {
     const now = performance.now()
-    if (!soundOn || now - lastCrack < 280) return // never two hits on top of each other
+    if (!soundOn || now - lastCrack < 280) return
     lastCrack = now
     crack.currentTime = 0
     crack.play().catch(() => {})
@@ -140,14 +137,12 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     canvas.width = W * dpr
     canvas.height = H * dpr
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    // The picture square is 52% of the width (380 to 620px); on phones 70% (220 to 320px).
     const square = W < 768 ? Math.min(320, Math.max(220, W * 0.7)) : Math.min(620, Math.max(380, W * 0.52))
     bx = W / 2
     by = H * 0.52
     cx = bx
     cy = by
     S = square * fill
-    // Slipstream: 42 lines, each 30 to 115px long, rising 2.2 to 6.7px a frame even when the page is still.
     streaks = Array.from({ length: 42 }, (): Streak => ({
       x: Math.random() * W,
       y: Math.random() * H,
@@ -159,7 +154,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     buildBackground()
   }
 
-  // Each slab is a wide stone tablet, cut into 4 x 2 fragments along a jittered grid.
   function buildWalls() {
     const mobile = W < 640
     const w = mobile ? Math.min(460, Math.max(280, W * 0.9)) : Math.min(980, Math.max(360, W * 0.82))
@@ -207,8 +201,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     })
   }
 
-  // Background, at rest: a few faint points that drift up slowly. They wrap around at the top.
-  // Background, on impact: a hidden field of cloud-shaped dust. It shows only while a wave is crossing the screen.
   function buildBackground() {
     dust = Array.from({ length: Math.round((W * H) / 1700) }, (): Dust => {
       const a = 0.1 + Math.random() * 0.3
@@ -228,7 +220,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     cloud = []
     for (let y = gap / 2; y < H; y += gap)
       for (let x = gap / 2; x < W; x += gap) {
-        // darker near the figure, so the figure stays clear
         const away = Math.hypot((x - W / 2) / (W * 0.5), (y - H * 0.52) / (H * 0.6))
         const lum = fbm(x * 0.0045, y * 0.0016) * Math.min(1, 0.2 + away * 0.8)
         const k = Math.max(0, Math.min(1, (lum - 0.34) / 0.3))
@@ -247,7 +238,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
       }
   }
 
-  // Turn the cutout into particles. The picture's own colour, under a cool light, with a blue rim.
   function sample() {
     const SH = Math.round((SAMPLE_W * figure.naturalHeight) / figure.naturalWidth)
     const c = document.createElement('canvas')
@@ -276,7 +266,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     const mx = (x0 + x1) / 2
     const my = (y0 + y1) / 2
     fill = span / SAMPLE_W
-    const q = (v: number) => Math.min(255, Math.round(v / 12) * 12) // fewer distinct colours, so drawing changes style less often
+    const q = (v: number) => Math.min(255, Math.round(v / 12) * 12)
     const count = W < 900 ? 9000 : 20000
     parts = []
     for (let n = 0; n < count; n++) {
@@ -296,7 +286,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     parts.sort((p, o) => (p.col < o.col ? -1 : p.col > o.col ? 1 : 0))
   }
 
-  // The carved face of a slab: stone, an inset frame, a small line and a large line.
   function slabFace(wall: Wall) {
     const g = ctx.createLinearGradient(-wall.w / 2, -wall.h / 2, wall.w / 2, wall.h / 2)
     g.addColorStop(0, '#1c1f26')
@@ -332,14 +321,13 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
   function drawWalls(now: number) {
     let passed = -1
     walls.forEach((wall, n) => {
-      const sy = wall.top + by - scrollY // the slab is level with the figure when its act begins
-      // Contact starts when the top edge of the slab reaches the lower body. Nothing breaks before that.
+      const sy = wall.top + by - scrollY
       const dist = sy - (wall.h * 0.48 + 25) - by
       if (dist <= 0) passed = n
       if (sy < -300 || sy > H + 300) return
       const wx = W * 0.5 + wall.side * W + nx * 10
       let shatter = 0
-      if (dist <= 0) shatter = Math.pow(Math.min(1, -dist / 220), 1.4) // speeds up outward after contact
+      if (dist <= 0) shatter = Math.pow(Math.min(1, -dist / 220), 1.4)
       if (dist <= 0 && dist >= -45 && !wall.hit) {
         wall.hit = true
         for (let i = 0; i < 24; i++) {
@@ -360,7 +348,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
         waveStart = now
         stoneCrack()
       } else if (dist > 60 && wall.hit) wall.hit = false
-      // Broken fragments fade to dust, so they do not pile up at the screen edges.
       const alpha = Math.max(0, 1 - Math.pow(shatter, 1.5) * 0.94)
       if (alpha < 0.02) return
       ctx.save()
@@ -380,7 +367,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
           ctx.rotate(rot)
           ctx.translate(-c.mx, -c.my)
         }
-        // each fragment carries its part of the carving
         ctx.save()
         place()
         tracePoly(c.poly)
@@ -410,14 +396,12 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     vel += (scrollY - lastY - vel) * 0.16
     lastY = scrollY
     const av = Math.min(46, Math.abs(vel))
-    const dir = vel < -0.6 ? -1 : 1 // the fall reverses only on a real scroll up
+    const dir = vel < -0.6 ? -1 : 1
     ctx.clearRect(0, 0, W, H)
 
-    // After an impact a wave leaves the figure and crosses the screen.
     const wave = waveStart < 0 ? -1 : (now - waveStart) / 1000
     const waveAmp = wave < 0 || wave > WAVE_SECONDS ? 0 : 0.35 * (1 - wave / WAVE_SECONDS)
     const reach = wave * Math.max(W, H) * 0.9
-    // Strength of the wave at a point: a 70px band at distance `reach` from the figure.
     const ringAt = (x: number, y: number) => {
       const band = (Math.hypot(x - cx, y - cy) - reach) / 70
       return Math.exp(-band * band) * waveAmp
@@ -429,7 +413,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
       return [x + (dx / od) * ring * 46, y + (dy / od) * ring * 46]
     }
 
-    // Slow rising dust. Scrolling adds to its speed; scrolling up reverses it.
     let style = ''
     for (const p of dust) {
       p.y -= p.rise * dir + vel * (0.12 + p.seed * 0.08) * 0.25
@@ -455,8 +438,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
       }
       ctx.fillRect(x, y, p.size, p.size)
     }
-    // The cloud field fades in fast when a wave starts, and fades out as the wave dies.
-    // Where the wave front is, its points are pushed outward, grow and brighten.
     if (waveAmp > 0) {
       const show = Math.min(1, wave / 0.12) * Math.pow(1 - wave / WAVE_SECONDS, 0.8)
       for (const p of cloud) {
@@ -470,7 +451,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
       }
     }
 
-    // The environment shakes on impact. The figure is drawn after this block and stays steady.
     ctx.save()
     shake *= 0.88
     if (shake < 0.01) shake = 0
@@ -503,7 +483,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     }
     ctx.restore()
 
-    // The figure bobs a little and leans toward the pointer. The wave also lights the body as it leaves.
     cx = bx + (touch ? 0 : nx * 18)
     cy = by + (touch ? 0 : Math.sin(t * 1.5) * 6)
     const lit: number[] = []
@@ -518,9 +497,8 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
       x += Math.sin(t * fs + p.by * 6 + p.seed * 6.28) * S * 0.012
       y += Math.cos(t * fs * 0.9 + p.bx * 6 + p.seed * 6.28) * S * 0.015
       const ring = waveAmp > 0 ? Math.exp(-(((Math.hypot(x, y) - wave * 650) / 55) ** 2)) * waveAmp : 0
-      y -= vel * (0.25 + p.seed * 0.18) // slipstream stretch
+      y -= vel * (0.25 + p.seed * 0.18)
       if (p.edge) {
-        // the outline peels off into the airflow
         y -= dir * S * (0.018 + p.seed * 0.03) * (0.5 + av * 0.05)
         x += (p.seed - 0.5) * S * 0.018
       }
@@ -557,7 +535,6 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
       const max = document.documentElement.scrollHeight - innerHeight
       progressDot.style.top = `calc(${max > 0 ? (scrollY / max) * 100 : 0}% - 3px)`
     }
-    // With reduced motion: one still frame. Off screen the loop stops until the observer restarts it.
     raf = !reduce && visible ? requestAnimationFrame(frame) : 0
   }
 
@@ -587,7 +564,7 @@ export function mountFallScene({ canvas, figure, sections, acts, progressDot, on
     if (dead) return
     resize()
     sample()
-    resize() // the second pass uses the fill measured by sample
+    resize()
     addEventListener('resize', onResize)
     addEventListener('mousemove', onMouseMove, { passive: true })
     document.documentElement.addEventListener('mouseleave', onMouseLeave)

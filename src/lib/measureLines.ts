@@ -4,12 +4,12 @@
 // A small marker on the ruler follows the pointer's x, as on the rulers of a drawing program.
 // Colours come from CSS: `color` for the lines and numbers, `--measure-accent` for the marker.
 
-const TICK = 6 // half the length of an end tick
-const MINOR = 24 // a short tick every 24px along the ruler
+const TICK = 6
+const MINOR = 24
 const CORNER = 10
-const SIDE = 16 // the side line sits this far left of the block
-const LABEL_GAP = 28 // half the gap a number leaves in its line
-const ROOM = 8.5 // the ruler sits this far above the canvas's bottom edge, so its number is not cut off
+const SIDE = 16
+const LABEL_GAP = 28
+const ROOM = 8.5
 const DRAW_MS = 900
 
 const easeOut = (t: number) => 1 - (1 - t) ** 3
@@ -35,7 +35,7 @@ export function mountMeasureLines(canvas: HTMLCanvasElement, { block }: { block:
 
   const draw = () => {
     const box = canvas.getBoundingClientRect()
-    if (box.bottom < 0) return // scrolled away
+    if (box.bottom < 0) return
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     if (canvas.width !== Math.round(box.width * dpr) || canvas.height !== Math.round(box.height * dpr)) {
       canvas.width = Math.round(box.width * dpr)
@@ -61,7 +61,6 @@ export function mountMeasureLines(canvas: HTMLCanvasElement, { block }: { block:
     ctx.fillStyle = line
     ctx.beginPath()
 
-    // Under the header: the column's width. The ruler grows from the left and leaves a gap for the number.
     const mid = (x0 + x1) / 2
     const end = x0 + (x1 - x0) * p
     ctx.moveTo(x0, base - TICK)
@@ -81,7 +80,6 @@ export function mountMeasureLines(canvas: HTMLCanvasElement, { block }: { block:
       ctx.lineTo(x1, base - TICK)
     }
 
-    // Down the side of the title block: its height. Left out where the page margin has no room for it.
     const sx = Math.round(x0 - SIDE) + 0.5
     const side = sx > 12
     if (side) {
@@ -101,7 +99,6 @@ export function mountMeasureLines(canvas: HTMLCanvasElement, { block }: { block:
       }
     }
 
-    // A corner mark at the far side of the block
     ctx.moveTo(x1 - CORNER, top)
     ctx.lineTo(x1, top)
     ctx.lineTo(x1, top + CORNER)
@@ -133,7 +130,6 @@ export function mountMeasureLines(canvas: HTMLCanvasElement, { block }: { block:
     draw()
     raf = progress < 1 ? requestAnimationFrame(tick) : 0
   }
-  // After the entrance nothing loops: a pointer move or a resize asks for one frame.
   const redraw = () => {
     raf ||= requestAnimationFrame(() => {
       raf = 0
@@ -149,7 +145,6 @@ export function mountMeasureLines(canvas: HTMLCanvasElement, { block }: { block:
   const resize = new ResizeObserver(redraw)
   resize.observe(canvas)
   resize.observe(block)
-  // The marker only shows while the header is on screen, so the pointer is only followed then.
   const seen = new IntersectionObserver(([entry]) => {
     if (entry.isIntersecting) window.addEventListener('pointermove', move)
     else window.removeEventListener('pointermove', move)

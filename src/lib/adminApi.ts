@@ -4,7 +4,6 @@ import { batchTexts } from './docTranslate.ts'
 import { parseSiteData } from './siteData.ts'
 import type { ParsedSiteData, SiteData } from './siteData.ts'
 
-// What the API answers, read field by field: the body is whatever the server or a proxy sent.
 const obj = (v: unknown): v is object => typeof v === 'object' && v !== null
 const errorOf = (v: unknown) => (obj(v) && 'error' in v && typeof v.error === 'string' ? v.error : '')
 const etagOf = (v: unknown) => (obj(v) && 'etag' in v && typeof v.etag === 'string' ? v.etag : null)
@@ -32,15 +31,12 @@ function authHeader(token: string | null): Record<string, string> {
   return { Authorization: `Bearer ${token}` }
 }
 
-// The server checks one code at a time: of several requests carrying the code that arrive together, only one
-// is checked and the others are refused as "too many attempts" (src/lib/adminAuth.ts). So they take turns here.
 let lastAdminRequest: Promise<unknown> = Promise.resolve()
 function inTurn(send: () => Promise<Response>): Promise<Response> {
   const next = lastAdminRequest.then(send, send)
   lastAdminRequest = next
   return next
 }
-// Same origin: the Worker that serves the pages. Locally that is the dev server and the R2 in .wrangler/state.
 const adminFetch = (path: string, init: RequestInit) => inTurn(() => fetch(path, init))
 
 export async function loginAdmin(password: string): Promise<{ token: string }> {
@@ -57,8 +53,6 @@ export async function loginAdmin(password: string): Promise<{ token: string }> {
 /** Edit mode could not read data.json; the message says why, for the panel. */
 export class SiteDataError extends Error {}
 
-// The sections that start editing together (Journal and Projects on login) share one request while it runs.
-// Callers treat the result as read only.
 export type SiteDataResponse = ParsedSiteData & { etag: string | null }
 let siteDataRequest: Promise<SiteDataResponse | null> | null = null
 
@@ -75,7 +69,6 @@ export function fetchSiteData(token: string | null): Promise<SiteDataResponse | 
 
 async function requestSiteData(token: string | null): Promise<SiteDataResponse | null> {
   const res = await adminFetch('/api/data', { headers: { Accept: 'application/json', ...authHeader(token) } })
-  // Empty bucket: the site runs on the bundled data.json until the first save creates it.
   if (res.status === 404) return null
   if (res.status === 429) throw new SiteDataError(CMS_LABELS.loadLocked)
   if (res.status === 401) throw new SiteDataError(CMS_LABELS.loadDenied)
@@ -83,13 +76,8 @@ async function requestSiteData(token: string | null): Promise<SiteDataResponse |
   return { ...parseSiteData(await res.json()), etag: res.headers.get('ETag') }
 }
 
-// Journal, Projects and About each keep the version of data.json they loaded. A section on a version this
-// tab saved over saves against the tab's latest one. A version that another tab or device replaced is not
-// in `ours`, so that save is refused (409), as it should be. R2 etags are content hashes, so a version can
-// come back after an undo; nothing here follows a chain of versions.
 const ours = new Set<string>()
 let latest: string | null = null
-// An empty bucket has no version: its key here is ''.
 const newest = (etag: string | null) => (ours.has(etag ?? '') ? latest : etag)
 
 /**
@@ -141,7 +129,6 @@ export async function translateTexts(
     })
     const data: unknown = await res.json().catch(() => ({}))
     const translated = textsOf(data)
-    // A short answer would shift every later translation onto the wrong text.
     if (!res.ok || translated?.length !== batch.length) throw new Error(errorOf(data) || TRANSLATE_LABELS.failed)
     out.push(...translated)
     onProgress?.(i + 1, batches.length)

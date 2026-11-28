@@ -5,7 +5,6 @@ import type { Route } from './+types/lab'
 import { langSwitchCache } from '../lib/langSwitch.ts'
 export { shouldRevalidate } from '../lib/langSwitch.ts'
 
-// Labs are code, not R2: the loader only gives an unknown lab its 404.
 export const loader = ({ params }: Route.LoaderArgs) => (Object.hasOwn(LAB_BY_ID, params.slug) ? found(null) : notFound(null))
 export const headers = pageHeaders
 

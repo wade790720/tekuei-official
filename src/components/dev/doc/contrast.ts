@@ -1,5 +1,3 @@
-// Live colour values and WCAG 2 contrast for the Color page.
-
 /**
  * Resolve colour tokens to [r, g, b, a] (0–255, alpha 0–1). Aliases and color-mix() only resolve
  * on a painted element, and their computed form can be oklab(); a 1×1 canvas turns any of them into bytes.

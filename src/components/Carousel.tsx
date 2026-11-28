@@ -12,10 +12,8 @@ export interface Slide {
   caption?: string
 }
 
-// The slides are the track's only children, each an HTMLElement (<figure>).
 const slideEls = (el: HTMLElement) => [...el.children].filter((c) => c instanceof HTMLElement)
 
-// The slide whose centre is nearest the track's centre.
 function nearest(el: HTMLElement) {
   const mid = el.scrollLeft + el.clientWidth / 2
   const dist = (c: HTMLElement) => Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid)

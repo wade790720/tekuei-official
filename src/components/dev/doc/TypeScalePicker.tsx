@@ -11,7 +11,6 @@ export interface TypeStep {
   upper?: boolean
 }
 
-/** CSS for one step, as a developer would write it. Label and Mono also change the font. */
 function stepCss({ token, family, tracking }: TypeStep) {
   return [
     family && `font-family: var(${family});`,

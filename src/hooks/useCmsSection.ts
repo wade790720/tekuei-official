@@ -44,18 +44,12 @@ export function useCmsSection<K extends SectionKey>(
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  // Why the remote copy failed to load, so the content on screen is the bundled default. Saving it would
-  // replace the real section in R2, so saving is refused until a reload.
   const [loadFailed, setLoadFailed] = useState('')
-  // Version of data.json this editor loaded or last saved; a save is refused if R2 moved on since.
   const [etag, setEtag] = useState<string | null>(null)
   const revalidator = useRevalidator()
-  // Each start of edit mode; leaving edit mode or unmounting moves it on, so a late /api/data is dropped.
   const run = useRef(0)
   useEffect(() => () => void run.current++, [])
 
-  // Readers see their page's loader data, which has no drafts. Only edit mode reads the whole section, drafts
-  // included, with the version a save must match.
   const startEditing = useCallback(async (token: string | null) => {
     const mine = ++run.current
     setLoading(true)
@@ -67,9 +61,7 @@ export function useCmsSection<K extends SectionKey>(
     let failed = ''
     try {
       const remote = await fetchSiteData(token)
-      // A section R2 holds in a shape the site cannot read is a failed load: saving would replace it.
       if (remote?.invalid.includes(sectionKey)) throw new Error(`${sectionKey} in data.json is malformed`)
-      // An empty bucket: the bundled defaults, until the first save creates data.json.
       next = sectionContent(remote?.data ?? siteDefaults)
       version = remote?.etag ?? null
     } catch (err) {
@@ -122,13 +114,9 @@ export function useCmsSection<K extends SectionKey>(
       setEtag(saved.etag)
       setContent(cloneContent(next))
       forgetLangSwitch()
-      // The pages' loader data is what readers see, and what this page shows again after logout.
       revalidator.revalidate()
-      // Edits made while the request was in flight stay in the draft; replacing it would drop them
-      // while the editor still shows them, and the next save would not send them.
       setDraft((cur) => {
         if (cur === draft) return cloneContent(next)
-        // Left edit mode while saving: there is no draft to carry the change into.
         if (!change || !cur) return cur
         const kept = copyDraft(cur)
         change(kept)
@@ -144,7 +132,7 @@ export function useCmsSection<K extends SectionKey>(
 
   return {
     content: draft ?? content,
-    savedContent: content, // last loaded or saved version; compare with draft for unsaved changes
+    savedContent: content,
     draft,
     loading,
     saving,

@@ -1,5 +1,4 @@
 import type { CaseStudy } from '../../lib/caseDoc.ts'
-// The recording is a scroll tour of lustreyellow.com; the webp is a representative frame of it.
 import tourVideo from '../../assets/work/lustre-yellow.mp4'
 import tourPoster from '../../assets/work/lustre-yellow.webp'
 

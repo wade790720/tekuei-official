@@ -24,7 +24,7 @@ export function fakeR2(initial: Record<string, unknown> = {}) {
       return hit ? { etag: hit.etag } : null
     },
     async put(key, body, opts) {
-      await Promise.resolve() // let a parallel caller read first, like a real network round trip
+      await Promise.resolve()
       const cur = store.get(key)
       if (opts?.onlyIf?.etagMatches && cur?.etag !== opts.onlyIf.etagMatches) return null
       return write(key, typeof body === 'string' ? body : String(body))

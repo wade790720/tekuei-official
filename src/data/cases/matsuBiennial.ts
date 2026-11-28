@@ -1,6 +1,4 @@
 import type { CaseStudy } from '../../lib/caseDoc.ts'
-// Recordings of matsubiennial.tw/2025 (a scroll tour with a drawn cursor), shown on the case page.
-// Each webp is a representative frame of its video.
 import homeVideo from '../../assets/cases/matsu-biennial/home.mp4'
 import homePoster from '../../assets/cases/matsu-biennial/home.webp'
 import themeVideo from '../../assets/cases/matsu-biennial/theme.mp4'
