@@ -115,7 +115,7 @@ export const LABS: Lab[] = [
 export const LAB_BY_ID: Partial<Record<string, Lab>> = Object.fromEntries(LABS.map((x) => [x.id, x]))
 
 export const labHref = (id: LabId) => `/labs/${id}`
-export const liveHref = (id: LabId) => `/labs/${id}/live`
+export const liveHref = (id: LabId, lang: Lang) => `/labs/${id}/live?lang=${lang}`
 
 export const LAB_LABELS: Record<Lang, Record<'category' | 'year' | 'credit' | 'home' | 'crumbs' | 'preview' | 'showPreview' | 'copyPrompt' | 'copied' | 'about' | 'more', string>> = {
   zh: { category: 'LABS', year: '年份', credit: '參考', home: '首頁', crumbs: '導覽路徑', preview: '實際效果', showPreview: '全螢幕預覽', copyPrompt: '複製提示詞', copied: '已複製', about: '關於', more: '更多 Labs' },

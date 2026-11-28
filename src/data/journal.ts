@@ -17,12 +17,10 @@ export const JOURNAL_HEADER = {
   zh: {
     pre: 'JOURNAL · 隨筆',
     desc: ['我當下遇到的事：行銷、AI、技術、實作過程'],
-    loading: '文章載入中',
   },
   en: {
     pre: 'JOURNAL',
     desc: ['What I am working through right now: marketing, AI, engineering and the build process.'],
-    loading: 'Loading posts',
   },
 }
 

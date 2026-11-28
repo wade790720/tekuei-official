@@ -2,7 +2,8 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import { SOCIAL_ICONS } from './socialIcons.tsx'
 import { Link, useLocation } from 'react-router'
 import { HOME_FOOTER } from '../data/homepage.ts'
-import { useLang } from '../i18n'
+import { useLang, useLocalePath } from '../i18n'
+import { stripLang } from '../lib/localePath.ts'
 import '../styles/siteFooter.css'
 
 type SocialName = keyof typeof SOCIAL_ICONS
@@ -14,7 +15,8 @@ const isSocial = (label: string): label is SocialName => Object.hasOwn(SOCIAL_IC
  */
 export function SiteFooter() {
   const { lang } = useLang()
-  const { pathname } = useLocation()
+  const localePath = useLocalePath()
+  const pathname = stripLang(useLocation().pathname)
   const { explore, contact } = HOME_FOOTER[lang]
   const email = contact.find((c) => c.href?.startsWith('mailto:'))?.href
   const links = [...explore, ...(email ? [{ label: 'Contact', href: email }] : [])]
@@ -56,7 +58,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="site-footer__inner">
         <div className="site-footer__brand">
-          <Link to="/" className="site-footer__logo">TEKUEI</Link>
+          <Link to={localePath('/')} className="site-footer__logo">TEKUEI</Link>
           <span className="site-footer__copy">© {new Date().getFullYear()}</span>
         </div>
         <nav ref={nav} aria-label="Footer" className="site-footer__nav">
@@ -72,7 +74,7 @@ export function SiteFooter() {
               return (
                 <li key={l.href}>
                   {l.href.startsWith('/') ? (
-                    <Link to={l.href} {...props}>{l.label}</Link>
+                    <Link to={localePath(l.href)} {...props}>{l.label}</Link>
                   ) : (
                     <a href={l.href} {...props}>{l.label}</a>
                   )}

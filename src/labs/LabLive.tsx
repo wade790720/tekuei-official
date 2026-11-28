@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useParams } from 'react-router'
 import './lab.css'
 import CaseStub from '../components/CaseStub.tsx'
@@ -14,11 +13,6 @@ import { DefaultHead } from '../components/DefaultHead.tsx'
 export default function LabLive() {
   const { slug } = useParams()
   const { lang } = useLang()
-
-  useEffect(() => {
-    document.documentElement.classList.add('lab-live-doc')
-    return () => document.documentElement.classList.remove('lab-live-doc')
-  }, [])
 
   // Falling Figure and the stub render their own title.
   const title = slug && slug !== 'falling-figure' ? LAB_BY_ID[slug]?.[lang].title : undefined

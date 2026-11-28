@@ -16,6 +16,7 @@
     "scripts",
     "vite.config.*",
     "eslint.config.*",
-    "react-router.config.ts"
+    "react-router.config.ts",
+    "src/routes.ts"
   ]
 }

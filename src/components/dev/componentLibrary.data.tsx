@@ -1157,7 +1157,7 @@ export const GROUPS: ComponentGroup[] = [
         api: [
           {
             part: 'mountReveal()',
-            description: '監看全站的 .fade-in 元素，進入畫面時加上 is-visible，只觸發一次。App.tsx 呼叫一次，回傳 cleanup。新元件不用另外接',
+            description: '監看全站的 .fade-in 元素，進入畫面時加上 is-visible，只觸發一次。root.tsx 呼叫一次，回傳 cleanup。新元件不用另外接',
             props: [],
           },
           {
@@ -1191,7 +1191,7 @@ export const GROUPS: ComponentGroup[] = [
           },
           {
             part: 'mountClickSounds()',
-            description: '在 document 掛一個點擊監聽，全站的連結和按鈕自動出聲。App.tsx 呼叫一次，回傳 cleanup。新元件不用另外接',
+            description: '在 document 掛一個點擊監聽，全站的連結和按鈕自動出聲。root.tsx 呼叫一次，回傳 cleanup。新元件不用另外接',
             props: [],
           },
           {

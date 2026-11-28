@@ -417,7 +417,7 @@ export function llmsTxt(journal: JournalData, workItems: Pick<WorkItem, 'caseHre
 
 // Old links that are already in search indexes. A Pages Function answers a path before public/_redirects
 // is read, so the redirects for /cases/* are here: the two labs went to /labs/, every case to /projects/.
-const MOVED: Record<string, string> = {
+export const MOVED: Record<string, string> = {
   '/cases/living-portrait': '/labs/living-portrait',
   '/cases/falling-figure': '/labs/falling-figure',
 }

@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom'
 import { NavLink } from 'react-router'
 import { HOME_FOOTER } from '../data/homepage.ts'
 import { NAV_LABELS, SITE_LOGO } from '../data/nav.ts'
-import { useLang } from '../i18n'
+import { useLang, useLocalePath } from '../i18n'
 import { playWaterRipple } from '../lib/waterRipple.ts'
 import { tokenMs } from '../lib/tokenMs.ts'
 import '../styles/siteNav.css'
@@ -32,6 +32,7 @@ export interface SiteNavProps {
 export function SiteNav({ current, variant = 'default' }: SiteNavProps) {
   const [open, setOpen] = useState(false)
   const { lang, toggle } = useLang()
+  const localePath = useLocalePath()
   const t = NAV_LABELS[lang]
   const toggleRef = useRef<HTMLButtonElement>(null)
   const close = () => setOpen(false)
@@ -57,7 +58,7 @@ export function SiteNav({ current, variant = 'default' }: SiteNavProps) {
 
   return (
     <nav className={navClass}>
-      <NavLink end to="/" className="site-nav__logo" onClick={close}>
+      <NavLink end to={localePath('/')} className="site-nav__logo" onClick={close}>
         <span className="site-logo">
           {SITE_LOGO}
           <span className="site-logo__cursor" aria-hidden />
@@ -101,6 +102,7 @@ interface SiteNavLinksProps {
 
 function SiteNavLinks({ onNavigate, variant = 'desktop', current }: SiteNavLinksProps) {
   const overlay = variant === 'overlay'
+  const localePath = useLocalePath()
 
   const linkClass = (active: boolean) =>
     [overlay ? 'nav-overlay__link' : '', active ? 'is-active' : '']
@@ -110,14 +112,14 @@ function SiteNavLinks({ onNavigate, variant = 'desktop', current }: SiteNavLinks
   return (
     <>
       <NavLink
-        to="/about"
+        to={localePath('/about')}
         className={({ isActive }) => linkClass(isActive)}
         onClick={onNavigate}
       >
         About
       </NavLink>
       <NavLink
-        to="/projects"
+        to={localePath('/projects')}
         className={({ isActive }) =>
           linkClass(isActive || current === 'projects')
         }
@@ -126,7 +128,7 @@ function SiteNavLinks({ onNavigate, variant = 'desktop', current }: SiteNavLinks
         Projects
       </NavLink>
       <NavLink
-        to="/journal"
+        to={localePath('/journal')}
         className={({ isActive }) =>
           linkClass(isActive || current === 'journal')
         }
@@ -135,7 +137,7 @@ function SiteNavLinks({ onNavigate, variant = 'desktop', current }: SiteNavLinks
         Journal
       </NavLink>
       <a
-        href={CONTACT_HREF}
+        href={localePath(CONTACT_HREF)}
         className={overlay ? 'nav-overlay__link' : undefined}
         onClick={onNavigate}
       >

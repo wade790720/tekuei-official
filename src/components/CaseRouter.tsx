@@ -4,19 +4,20 @@ import { useAdmin } from '../context/admin.ts'
 import { CASE_BY_SLUG } from '../data/cases/index.ts'
 import CaseStudyPage from './CaseStudyPage.tsx'
 import ProjectPage from './ProjectPage.tsx'
+import type { ProjectPageData } from '../lib/pageData.ts'
 
 const ProjectEditPanel = lazy(() => import('./work/WorkEditPanel.tsx').then((m) => ({ default: m.ProjectEditPanel })))
 
 /** /projects/:slug. The first three cases have pages written in code; every other project's page is written in the editor. */
-export default function CaseRouter() {
+export default function CaseRouter({ page }: { page: ProjectPageData }) {
   const { slug = '' } = useParams<{ slug: string }>()
   const { editing } = useAdmin()
 
-  if (!CASE_BY_SLUG[slug]) return <ProjectPage />
+  if (!Object.hasOwn(CASE_BY_SLUG, slug)) return <ProjectPage work={page.work} />
 
   return (
     <>
-      <CaseStudyPage />
+      <CaseStudyPage work={page.work} assets={page.assets} />
       {/* The page is code, but its card on the Projects list is edited here */}
       {editing ? (
         <Suspense fallback={null}>

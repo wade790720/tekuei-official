@@ -39,7 +39,7 @@ export interface CaseStudy {
   }
   videos?: { src: string; poster?: string; caption?: string }[]
 }
-/** A case with the pictures stored in R2 (useCaseCms). */
+/** A case with the pictures stored in R2 (useCaseContent). */
 export type CaseWithImages = CaseStudy & {
   hero: CaseStudy['hero'] & { image: ImageRef }
   media: CaseStudy['media'] & { fullWidthImage: ImageRef; inlineImage: ImageRef }
