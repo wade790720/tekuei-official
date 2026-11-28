@@ -83,16 +83,14 @@ async function requestSiteData(token: string | null): Promise<SiteDataResponse |
   return { ...parseSiteData(await res.json()), etag: res.headers.get('ETag') }
 }
 
-// Journal, Projects and About each keep the version of data.json they loaded. This tab's saves are written
-// down here: a section on a version this tab replaced saves against what it became. A version that another
-// tab or device replaced is not here, so that save is refused (409), as it should be.
-const replacedBy = new Map<string, string>()
+// Journal, Projects and About each keep the version of data.json they loaded. A section on a version this
+// tab saved over saves against the tab's latest one. A version that another tab or device replaced is not
+// in `ours`, so that save is refused (409), as it should be. R2 etags are content hashes, so a version can
+// come back after an undo; nothing here follows a chain of versions.
+const ours = new Set<string>()
+let latest: string | null = null
 // An empty bucket has no version: its key here is ''.
-function newest(etag: string | null): string | null {
-  let at = etag ?? ''
-  for (let next = replacedBy.get(at); next !== undefined; next = replacedBy.get(at)) at = next
-  return at || null
-}
+const newest = (etag: string | null) => (ours.has(etag ?? '') ? latest : etag)
 
 /**
  * @param patch  whole sections; the others in R2 are kept
@@ -115,7 +113,10 @@ export async function saveSitePatch(patch: SiteData, token: string | null, etag:
     throw new Error(res.status === 409 ? CMS_LABELS.stale : errorOf(data) || CMS_LABELS.saveFailed)
   }
   const saved = etagOf(data)
-  if (saved) replacedBy.set(version ?? '', saved)
+  if (saved) {
+    ours.add(version ?? '')
+    latest = saved
+  }
   return { etag: saved }
 }
 
