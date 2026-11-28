@@ -46,7 +46,8 @@ describe('Worker API table', () => {
 
   it('POST /api/admin/verify reaches the verify handler', async () => {
     const res = await call('POST', '/api/admin/verify', { headers: auth })
-    assert.deepEqual(await res.json(), { ok: true })
+    const body: unknown = await res.json()
+    assert.ok(typeof body === 'object' && body !== null && 'token' in body, 'answers with a token')
   })
 
   it('GET /api/file/* reaches the file handler', async () => {

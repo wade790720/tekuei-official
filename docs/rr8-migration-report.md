@@ -84,11 +84,11 @@
 | Issue | 狀態 | 說明 |
 |---|---|---|
 | [#6](https://github.com/wade790720/tekuei-official/issues/6) | 已關閉 | About 的標題和描述重複，#11 修好 |
-| [#7](https://github.com/wade790720/tekuei-official/issues/7) | 未關閉 | 淡入在 Suspense 的內容 hydrate 之前就加上 class。#9 的驗收在 dev 沒有再看到，但還沒找到確定的原因 |
+| [#7](https://github.com/wade790720/tekuei-official/issues/7) | 已關閉 | 淡入在 Suspense 的內容 hydrate 之前就加上 class。原因是頁面包在 `App.tsx` 的 Suspense 裡；拆成 route module 後整頁一次 hydrate，`mountReveal` 在那之後才跑，讀者頁面剩下的 Suspense 都只在編輯模式出現 |
 | [#8](https://github.com/wade790720/tekuei-official/issues/8) | 已關閉 | `VITE_API_BASE` 可能讓本機開發連到正式站，#13 刪掉了這個設定 |
 | [#10](https://github.com/wade790720/tekuei-official/issues/10) | 已關閉 | 文章內文的站內連結沒有跟著語言，#11 修好 |
 | [#14](https://github.com/wade790720/tekuei-official/issues/14) | 已關閉 | 驗收留下的 SEO 小問題，#16 修好 |
-| [#15](https://github.com/wade790720/tekuei-official/issues/15) | 未關閉 | 第 1 項（401、429 的快取標頭）由 #16 修好。第 2 項管理密碼以明碼存在 sessionStorage，這是原本就有的行為，改法牽涉到 admin 驗證，要 Wade 決定 |
+| [#15](https://github.com/wade790720/tekuei-official/issues/15) | 已關閉 | 第 1 項（401、429 的快取標頭）由 #16 修好。第 2 項改成登入後只存 12 小時失效的簽章 token，不再存密碼 |
 | [#17](https://github.com/wade790720/tekuei-official/issues/17) | 已關閉 | Lab 頁換語言後第一次按上一頁沒有反應、不存在的 live 頁回 200，#18 修好 |
 
 ## 要 Wade 做的事
