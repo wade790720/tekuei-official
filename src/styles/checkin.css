@@ -163,6 +163,7 @@
 
 .checkin-phone-container.react-tel-input {
   container-type: inline-size;
+  -webkit-tap-highlight-color: transparent;
   width: 100%;
   font-family: var(--checkin-fc);
 }
@@ -211,15 +212,11 @@
   transition: background-color var(--duration-fast) var(--ease-touch);
 }
 
-.checkin-phone-container .selected-flag:focus,
-.checkin-phone-container .flag-dropdown.open .selected-flag {
+/* the library's :hover colours are not inside (hover: hover), so on a phone a tap leaves them on */
+.checkin-phone-container.react-tel-input .selected-flag:hover,
+.checkin-phone-container.react-tel-input .selected-flag:focus,
+.checkin-phone-container.react-tel-input .flag-dropdown.open .selected-flag {
   background: transparent;
-}
-
-@media (hover: hover) {
-  .checkin-phone-container .selected-flag:hover {
-    background: transparent;
-  }
 }
 
 .checkin-phone-dropdown.country-list {
@@ -239,6 +236,10 @@
   font-size: var(--type-caption);
   color: var(--text-primary);
   transition: background-color var(--duration-fast) var(--ease-touch);
+}
+
+.checkin-phone-container .country-list.checkin-phone-dropdown .country:hover {
+  background: transparent;
 }
 
 .checkin-phone-container .country-list.checkin-phone-dropdown .country.highlight {
