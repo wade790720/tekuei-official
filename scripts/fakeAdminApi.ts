@@ -30,7 +30,7 @@ declare global {
     }
     const call = { method, path: url.pathname, body: typeof init.body === 'string' ? init.body : null, status: 200 }
     window.__api.push(call)
-    if (url.pathname === '/api/admin/verify') return json({ ok: true })
+    if (url.pathname === '/api/admin/verify') return json({ ok: true, token: 'fake.token' })
     if (url.pathname === '/api/data') {
       const loaded = new Headers(init.headers).get('If-Match')
       if (version && loaded !== version) {

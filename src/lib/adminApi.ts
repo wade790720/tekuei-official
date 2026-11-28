@@ -9,6 +9,7 @@ const obj = (v: unknown): v is object => typeof v === 'object' && v !== null
 const errorOf = (v: unknown) => (obj(v) && 'error' in v && typeof v.error === 'string' ? v.error : '')
 const etagOf = (v: unknown) => (obj(v) && 'etag' in v && typeof v.etag === 'string' ? v.etag : null)
 const textsOf = (v: unknown) => (obj(v) && 'texts' in v && Array.isArray(v.texts) && v.texts.every((t) => typeof t === 'string') ? v.texts : null)
+const tokenOf = (v: unknown) => (obj(v) && 'token' in v && typeof v.token === 'string' && v.token ? v.token : null)
 const urlOf = (v: unknown) => (obj(v) && 'url' in v && typeof v.url === 'string' ? v.url : null)
 
 export function getAdminToken(): string {
@@ -31,8 +32,8 @@ function authHeader(token: string | null): Record<string, string> {
   return { Authorization: `Bearer ${token}` }
 }
 
-// The server lets one admin request through at a time: of several that arrive together, only one is
-// checked and the others are refused as "too many attempts" (src/lib/adminAuth.ts). So they take turns here.
+// The server checks one code at a time: of several requests carrying the code that arrive together, only one
+// is checked and the others are refused as "too many attempts" (src/lib/adminAuth.ts). So they take turns here.
 let lastAdminRequest: Promise<unknown> = Promise.resolve()
 function inTurn(send: () => Promise<Response>): Promise<Response> {
   const next = lastAdminRequest.then(send, send)
@@ -48,10 +49,9 @@ export async function loginAdmin(password: string): Promise<{ token: string }> {
     method: 'POST',
     headers: authHeader(trimmed),
   })
-  if (!res.ok) {
-    throw new Error(res.status === 429 ? CMS_LABELS.locked : CMS_LABELS.wrong)
-  }
-  return { token: trimmed }
+  const token = res.ok ? tokenOf(await res.json().catch(() => null)) : null
+  if (!token) throw new Error(res.status === 429 ? CMS_LABELS.locked : CMS_LABELS.wrong)
+  return { token }
 }
 
 /** Edit mode could not read data.json; the message says why, for the panel. */
