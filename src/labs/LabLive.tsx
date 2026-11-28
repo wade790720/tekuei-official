@@ -18,7 +18,7 @@ export default function LabLive() {
   const lab = slug && Object.hasOwn(LAB_BY_ID, slug) ? LAB_BY_ID[slug]?.[lang] : undefined
   return (
     <>
-      {lab ? <PageHead title={`${lab.title} · TEKUEI`} description={lab.summary} path={`/labs/${slug}/live`} oneUrl /> : null}
+      {lab ? <PageHead title={`${lab.title} · TEKUEI`} description={lab.summary} path={`/labs/${slug}/live`} oneUrl noindex /> : null}
       {slug === 'living-portrait' ? (
         <LivingPortrait name={HOME_HERO[lang].name} label="Living Portrait" />
       ) : slug === 'falling-figure' ? (

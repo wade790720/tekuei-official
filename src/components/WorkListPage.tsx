@@ -10,7 +10,8 @@ import { projectLink, PROJECT_SECTIONS, PROJECTS_PAGE, projectTitle, projectType
 import { useAdmin } from '../context/admin.ts'
 import { useLang, useLocalePath } from '../i18n'
 import { mountMeasureLines } from '../lib/measureLines.ts'
-import type { ProjectType, WorkData, WorkItem } from '../lib/siteData.ts'
+import type { ProjectListData } from '../lib/pageData.ts'
+import type { ProjectType, WorkItem } from '../lib/siteData.ts'
 import '../styles/work.css'
 
 // Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.
@@ -115,8 +116,8 @@ function WorkCard({ item, total }: { item: CardItem; total: string }) {
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
-/** @param work  the loader's published cards, each already pointing where it goes */
-export default function WorkListPage({ work }: { work: WorkData }) {
+/** @param work  the loader's published cards, each already pointing where it goes; the labs are not among them and are always in English */
+export default function WorkListPage({ work }: { work: ProjectListData }) {
   const { content } = useWorkContent(work)
   const { lang } = useLang()
   const { editing } = useAdmin()
@@ -153,7 +154,11 @@ export default function WorkListPage({ work }: { work: WorkData }) {
         title={page.title}
         description={page.description}
         path="/projects"
-        ld={collectionLd(page, all.filter((w) => w.caseHref.startsWith('/')).map((w) => ({ name: projectTitle(w), href: w.caseHref })), lang)}
+        ld={collectionLd(
+          page,
+          all.filter((w) => w.caseHref.startsWith('/')).map((w) => ({ name: projectTitle(w), href: w.caseHref, english: !work.items.some((x) => x.id === w.id) || work.inEnglish.includes(w.id) })),
+          lang,
+        )}
       />
       <header className="work-page-header">
         <canvas className="work-page-header__measure" ref={measure} aria-hidden />

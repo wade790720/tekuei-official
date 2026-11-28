@@ -88,9 +88,11 @@ describe('JSON-LD', () => {
     const untranslated = blogLd({ title: 'Journal', description: 'd' }, [{ ...journal.posts.en[0], untranslated: true }], 'en')
     assert.equal(untranslated.blogPost[0].url, `https://tekuei.com/journal/${journal.posts.en[0].slug}`, 'an untranslated post is listed at its Chinese URL')
     const cases = siteCases(work)
-    const page = collectionLd({ title: 'Projects', description: 'd' }, cases.map((w) => ({ name: w.title ?? w.id, href: w.caseHref })), 'zh')
+    const page = collectionLd({ title: 'Projects', description: 'd' }, cases.map((w) => ({ name: w.title ?? w.id, href: w.caseHref, english: w.english })), 'zh')
     assert.equal(page.hasPart.length, cases.length)
     assert.ok(page.hasPart.some((p) => p.url === 'https://tekuei.com/labs/shatter-footer'))
+    const english = collectionLd({ title: 'Projects', description: 'd' }, [{ name: 'A', href: '/projects/a', english: false }, { name: 'B', href: '/projects/b', english: true }], 'en')
+    assert.deepEqual(english.hasPart.map((p) => p.url), ['https://tekuei.com/projects/a', 'https://tekuei.com/en/projects/b'], 'an untranslated project is listed at its Chinese URL')
   })
 })
 

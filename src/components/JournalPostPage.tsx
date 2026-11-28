@@ -28,8 +28,11 @@ function listDepth(state: unknown): number {
   return typeof state === 'object' && state !== null && 'fromList' in state && typeof state.fromList === 'number' ? state.fromList : 0
 }
 
-/** @param journal  the loader's post and its neighbours, as readers see them; empty for an unknown slug or a draft */
-export default function JournalPostPage({ journal: reader }: { journal: ReadableJournal }) {
+/**
+ * @param journal  the loader's post and its neighbours, as readers see them; empty for an unknown slug or a draft
+ * @param english  the post has an English version of its own (postInEnglish)
+ */
+export default function JournalPostPage({ journal: reader, english }: { journal: ReadableJournal; english: boolean }) {
   const { slug = '' } = useParams<{ slug: string }>()
   const { lang } = useLang()
   const localePath = useLocalePath()
@@ -59,7 +62,7 @@ export default function JournalPostPage({ journal: reader }: { journal: Readable
 
   return (
     <div className="journal-page journal-page--post">
-      <PostHead post={post} content={content} slug={slug} english={!journal.posts.en.find((p) => p.slug === slug)?.untranslated} />
+      <PostHead post={post} content={content} slug={slug} english={english} />
       <main>
       <article className="journal-post" lang={post.untranslated ? 'zh-Hant' : undefined}>
         <header className="journal-post__header">
@@ -140,10 +143,7 @@ export default function JournalPostPage({ journal: reader }: { journal: Readable
  * returns with its tag filter and scroll position. `fromList` counts the posts read since the list
  * (previous / next add one). Opened from anywhere else, it is a plain link to /journal.
  */
-/**
- * @param english  postInEnglish, read from the English list (an untranslated post is marked there), so the Chinese page
- *   knows too
- */
+/** @param english  postInEnglish: without an English version both URLs point search engines at the Chinese page */
 function PostHead({ post, content, slug, english }: { post: ReadablePost; content: Body; slug: string; english: boolean }) {
   const { lang } = useLang()
   const doc = getDoc(content)

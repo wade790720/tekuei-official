@@ -5,6 +5,7 @@ import { cloneJournal } from '../src/data/journal.ts'
 import { siteDefaults } from '../src/data/siteDefaults.ts'
 import { cf, readSite } from '../src/lib/cf.server.ts'
 import { hasEnglish, langOf, localePath, otherLangPath, samePage, servedPath, stripLang } from '../src/lib/localePath.ts'
+import { postInEnglish } from '../src/data/journal.ts'
 import { journalList, journalPost, projectList, projectPage } from '../src/lib/pageData.ts'
 import { LANGS } from '../src/lib/siteData.ts'
 import type { SiteData, WorkData } from '../src/lib/siteData.ts'
@@ -49,10 +50,23 @@ it('a post page sends its body and the neighbours next to it, never a draft', ()
   const first = posts[0].slug
   const page = journalPost(s, first)
   assert.ok(page)
-  assert.deepEqual(Object.keys(page.content.zh), [first])
+  assert.deepEqual(Object.keys(page.journal.content.zh), [first])
   // The draft between the first and third post is skipped, so the third is the first post's neighbour.
-  assert.deepEqual(page.posts.zh.map((p) => p.slug), [first, posts[2].slug])
+  assert.deepEqual(page.journal.posts.zh.map((p) => p.slug), [first, posts[2].slug])
   assert.ok(!JSON.stringify(page).includes(draft))
+})
+
+it('a post page says whether the post has an English version by the sitemap rule, even with no English entry', () => {
+  const s = site()
+  const journal = s.journal
+  assert.ok(journal)
+  const [first, , third] = journal.posts.zh.map((p) => p.slug)
+  journal.content.en = { [third]: doc('English body') }
+  // The first post has no English entry at all: the page used to read that as "has English".
+  journal.posts.en = journal.posts.en.filter((p) => p.slug !== first)
+  assert.equal(journalPost(s, first)?.english, postInEnglish(journal, first))
+  assert.equal(journalPost(s, first)?.english, false)
+  assert.equal(journalPost(s, third)?.english, true)
 })
 
 it('a draft project sends no body; the list points each card where it goes', () => {
@@ -71,6 +85,9 @@ it('a draft project sends no body; the list points each card where it goes', () 
   assert.equal(list.items.find((i) => i.id === 'live')?.caseHref, '/projects/live')
   assert.equal(list.items.find((i) => i.id === 'card-only')?.caseHref, 'https://example.com')
   assert.ok(!list.items.some((i) => i.id === 'secret'))
+  // The sitemap's rule: a page written in the editor needs an English body
+  assert.ok(!list.inEnglish.includes('live'))
+  assert.ok(list.inEnglish.includes('card-only'))
 })
 
 const contextWith = (bucket: ReturnType<typeof fakeR2>) => {

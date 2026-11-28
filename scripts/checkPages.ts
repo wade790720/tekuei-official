@@ -64,6 +64,8 @@ const PAGES: Expect[] = [
   // The site's own words in another case: one URL each
   { path: '/EN/Journal', status: 301, location: '/en/journal', html: false, oneUrl: true },
   { path: '/Projects/matsu-biennial', status: 301, location: '/projects/matsu-biennial', html: false, oneUrl: true },
+  { path: '/Sitemap.xml', status: 301, location: '/sitemap.xml', html: false, oneUrl: true },
+  { path: '/LLMS.TXT', status: 301, location: '/llms.txt', html: false, oneUrl: true },
   // A typo
   { path: '/jounral', status: 404 },
   // Not pages, but served by the same Worker
@@ -142,12 +144,38 @@ const tagsOf = (head: string, pattern: RegExp) => [...head.matchAll(pattern)].ma
  * the sitemap (the check-in guide, a 404) is taken to have one.
  */
 const englishBySitemap = new Map<string, boolean>()
+const sitemapLocs = new Set<string>()
 async function readSitemap() {
   const xml = await (await fetch(new URL('/sitemap.xml', base))).text()
   for (const [, url] of xml.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
     const loc = url.match(/<loc>([^<]+)<\/loc>/)?.[1]
+    if (loc) sitemapLocs.add(loc)
     if (loc && !loc.startsWith(`${SITE}/en`)) englishBySitemap.set(loc, /hreflang="en"/.test(url))
   }
+}
+
+/** Every page address in a JSON-LD object (url, a Blog's posts, a CollectionPage's parts), in its nested objects. */
+function ldUrls(node: unknown, out: string[] = []): string[] {
+  if (Array.isArray(node)) for (const n of node) ldUrls(n, out)
+  else if (typeof node === 'object' && node !== null) {
+    for (const [k, v] of Object.entries(node)) {
+      // A Person's own url and its @id are about the person, not a page of this site's languages
+      if (k === 'url' && typeof v === 'string' && !('@type' in node && node['@type'] === 'Person')) out.push(v)
+      else ldUrls(v, out)
+    }
+  }
+  return out
+}
+/** Every inLanguage in a JSON-LD object and its nested objects. */
+function ldLanguages(node: unknown, out: string[] = []): string[] {
+  if (Array.isArray(node)) for (const n of node) ldLanguages(n, out)
+  else if (typeof node === 'object' && node !== null) {
+    for (const [k, v] of Object.entries(node)) {
+      if (k === 'inLanguage' && typeof v === 'string') out.push(v)
+      else ldLanguages(v, out)
+    }
+  }
+  return out
 }
 
 /**
@@ -176,16 +204,27 @@ function headProblems(page: Expect, html: string): string[] {
     for (const [lang, href] of want) if (alternates.get(lang) !== href) problems.push(`${page.path}: hreflang ${lang} ${alternates.get(lang)}, expected ${href}`)
     if (alternates.size !== (chineseOnly ? 2 : 3)) problems.push(`${page.path}: ${alternates.size} hreflang links`)
   }
+  // A lab's live page is the iframe of its lab page: kept out of search results. Every other page is indexed.
+  const noindex = tagsOf(head, /<meta[^>]*name="robots"[^>]*>/g).some((t) => /noindex/.test(attr(t, 'content')))
+  const wantNoindex = /^\/labs\/[^/]+\/live$/.test(path)
+  if (noindex !== wantNoindex) problems.push(`${page.path}: ${noindex ? 'noindex' : 'indexable'}, expected ${wantNoindex ? 'noindex' : 'indexable'}`)
   if (tagsOf(head, /<meta[^>]*property="og:image"[^>]*>/g).length !== 1) problems.push(`${page.path}: not one og:image`)
   if (tagsOf(head, /<meta[^>]*name="description"[^>]*>/g).length !== 1) problems.push(`${page.path}: not one description`)
   const lds = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
   if (!lds.length) problems.push(`${page.path}: no JSON-LD`)
+  // What the page shows: an English page without an English version shows the Chinese text.
+  const shown = (path === '/en' || path.startsWith('/en/')) && !chineseOnly ? 'en' : 'zh-Hant'
   for (const [, json] of lds) {
+    let ld: unknown
     try {
-      JSON.parse(json)
+      ld = JSON.parse(json)
     } catch {
       problems.push(`${page.path}: JSON-LD does not parse`)
+      continue
     }
+    for (const l of ldLanguages(ld)) if (!page.oneUrl && l !== shown) problems.push(`${page.path}: JSON-LD inLanguage ${l}, the page shows ${shown}`)
+    // Addresses the JSON-LD points at are canonical pages: the ones the sitemap lists (when there is one to read).
+    if (sitemapLocs.size && !page.oneUrl) for (const u of ldUrls(ld)) if (u.startsWith(SITE) && !sitemapLocs.has(u)) problems.push(`${page.path}: JSON-LD points at ${u}, which the sitemap does not list`)
   }
   return problems
 }
