@@ -55,6 +55,7 @@ const PAGES: Expect[] = [
   { path: '/labs/living-portrait/live', status: 200, oneUrl: true },
   { path: '/labs/falling-figure/live', status: 200, oneUrl: true },
   { path: '/labs/shatter-footer/live', status: 200, oneUrl: true },
+  { path: '/labs/no-such-lab/live', status: 404, oneUrl: true },
   { path: '/checkin', status: 200, oneUrl: true },
   // Old URLs
   { path: '/work', status: 301, location: '/projects', html: false },
@@ -132,6 +133,9 @@ async function check(url: Expect): Promise<string[]> {
     const fine = /\.(xml|txt)$/.test(page.path) ? FILE_CACHE : REVALIDATE
     const want = res.status === 200 ? fine : 'no-store'
     if (cache !== want) problems.push(`${page.path}: Cache-Control ${cache}, expected ${want}`)
+  } else if (page.html !== false && res.status === 404 && cache !== 'no-store') {
+    // A page that does not exist yet may exist tomorrow: no 404 page is kept.
+    problems.push(`${page.path}: Cache-Control ${cache}, expected no-store`)
   }
   return problems
 }

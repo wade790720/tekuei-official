@@ -63,7 +63,8 @@ export default function LabPage() {
         </header>
 
         <Card className="lab__preview" style={item.previewAspect ? ({ '--lab-aspect': item.previewAspect } as CSSProperties) : undefined}>
-          <iframe src={liveHref(item.id, lang)} title={`${text.title} · ${labels.preview}`} />
+          {/* A new iframe per language: changing the src of the same one would add a history entry, and Back would only rewind the preview. */}
+          <iframe key={lang} src={liveHref(item.id, lang)} title={`${text.title} · ${labels.preview}`} />
         </Card>
 
         <section className="lab__about" aria-labelledby="lab-about-title">
