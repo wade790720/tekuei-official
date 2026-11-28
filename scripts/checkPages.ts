@@ -240,7 +240,7 @@ if (r2 !== 'broken') await readSitemap()
 for (const page of ALL) problems.push(...(await check(page)))
 if (r2 !== 'broken') problems.push(...(await checkListed()))
 const code = localAdminCode(base)
-if (!r2 && !code) console.log('\nPost body and drafts not checked: the admin code is sent only to a server on this machine, and none was found.')
+if (!r2 && !code) console.log('\nPost body and drafts not checked: the admin code is sent only to localhost, 127.0.0.1 or [::1], and only when ADMIN_SECRET or .dev.vars has one.')
 if (!r2 && code) {
   const res = await fetch(new URL('/api/data', base), { headers: { Authorization: `Bearer ${code}` } })
   if (!res.ok) problems.push(`/api/data with the admin code: ${res.status}`)

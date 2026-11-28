@@ -15,7 +15,7 @@ TEKUEI 德溎，Wade 的個人網站。文章是主角，案例第二，聯絡�
 | 項目 | 現況 |
 |---|---|
 | 前端 | Vite 7、React 19、React Router 8（framework 模式，伺服器渲染）、TypeScript strict |
-| 後端 | 一個 Cloudflare Worker（`workers/app.ts`）：`/api/*` 交給 `functions/api/`，其他由 React Router 畫出。一個 R2 bucket `tekuei-cms` |
+| 後端 | 一個 Cloudflare Worker（`workers/app.ts`）：`workers/api.ts` 列出的 API 交給 `functions/api/`，其他由 React Router 畫出。一個 R2 bucket `tekuei-cms` |
 | 語言 | 中文在 `/`，英文在 `/en`。`localStorage` 的 `lang` 只記讀者選過的語言 |
 | 動畫 | 原生 Canvas 2D、IntersectionObserver。Falling Figure lab 用 Lenis |
 
@@ -45,7 +45,7 @@ node scripts/checkPages.ts <網址>  # 每一頁的狀態碼、head、草稿
 | `src/hooks/` | React hook，例如 `useCmsSection` |
 | `src/assets/` | 圖片，依頁面分資料夾 |
 | `src/labs/` | Labs。`index.ts` 是清單，每個 lab 一個資料夾，元件、樣式、效果、素材都放在一起（依類型分資料夾的例外） |
-| `src/root.tsx`、`src/routes.ts`、`src/routes/` | 全站外殼，路由表，每一頁的 route module（loader、狀態碼）。loader 只匯入 `*.server.ts` |
+| `src/root.tsx`、`src/routes.ts`、`src/routes/` | 全站外殼，路由表，每一頁的 route module（loader、狀態碼）。只在伺服器執行的檔案叫 `*.server.ts` |
 | `workers/`、`functions/api/` | Worker 入口和 API：`/api/data`（讀寫都要密碼）、`/api/upload`、`/api/file/*`、`/api/translate`、`/api/admin/verify` |
 | `src/components/PageHead.tsx`、`src/lib/seo.ts` | SEO：每一頁的 head 和 JSON-LD。`src/routes/sitemap.ts`、`llms.ts` 產生 sitemap 和 llms.txt |
 
@@ -78,7 +78,7 @@ node scripts/checkPages.ts <網址>  # 每一頁的狀態碼、head、草稿
 
 ## 不明顯的坑
 
-1. **本機用的是本機的 R2。** `npm run dev` 和 `npm run preview` 的 `/api` 讀寫 `.wrangler/state` 裡模擬的 bucket，密碼在 `.dev.vars`。要正式資料時，用 `wrangler r2 object get --remote` 只讀一份副本（放 repo 外，裡面有草稿），再用 `--local` 放進本機。不要用 `--remote` 寫入。想讓編輯器的測試連本機的 bucket 也不寫入時，先在頁面執行 `await import('/scripts/fakeAdminApi.ts')`，重新整理後要再執行一次。
+1. **本機用的是本機的 R2。** `npm run dev` 和 `npm run preview` 的 `/api` 讀寫 `.wrangler/state` 裡模擬的 bucket，密碼在 `.dev.vars`。要正式資料時，用 `wrangler r2 object get --remote` 只讀一份副本（放 repo 外，裡面有草稿），再用 `--local` 放進本機。不要寫入正式的 `tekuei-cms`。想讓編輯器的測試連本機的 bucket 也不寫入時，先在頁面執行 `await import('/scripts/fakeAdminApi.ts')`，重新整理後要再執行一次。
 2. **文章不在程式碼裡。** Journal 文章在 R2 `data.json` 的 `journal`。`src/data/journal.ts` 只有文案和工具函式，沒有文章；R2 讀不到時 Journal 是空的。
 3. **CSS 和 Canvas 的坑**（`transform` 被淡入蓋掉、Canvas 讀不到變數、假粗體……）列在 DESIGN.md 的「Don't」。
 

@@ -21,6 +21,8 @@ npx wrangler r2 object put tekuei-cms-next/data.json --remote --file <repo 外�
 
 第一行只讀取正式 bucket。副本裡有草稿，放在 repo 外，用完刪掉。
 
+這只複製了 `data.json`，上傳的圖片仍在 `tekuei-cms` 的 `images/`，所以 `tekuei-next` 上文章和專案的圖片會是壞的，驗證時不要把它當成問題。
+
 ## 2. 設定 tekuei-next 的管理密碼
 
 ```sh
@@ -72,7 +74,7 @@ Pages 專案 tekuei-official → Settings → Builds & deployments，暫停 prod
 npx wrangler secret put ADMIN_SECRET --name tekuei-official
 ```
 
-輸入和現在 Pages 專案相同的密碼，Wade 才能用原本的密碼登入。
+輸入和現在 Pages 專案相同的密碼，Wade 才能用原本的密碼登入。如果 Worker 還沒有部署過，wrangler 會問要不要先建立一個 Worker，可以先建立，也可以先做第 7、8 步，等 Worker 部署之後再回來設定，但要在第 9 步移網域之前設好。
 
 ## 7. 連上 Git（Workers Builds）
 
@@ -84,22 +86,25 @@ npx wrangler secret put ADMIN_SECRET --name tekuei-official
 | Build command | `npm run build` |
 | Deploy command | `npx wrangler deploy` |
 
+同一頁的 preview builds（非 production 分支的建置）先關掉。它們讀的是同一份 `wrangler.jsonc`，有可能綁到正式的 `tekuei-cms`，沒有確認之前不要開。
+
 ## 8. 合併 migrate/rr8 到 main
 
 開一個從 `migrate/rr8` 到 `main` 的 PR，在本機跑過 `npm run lint`、`npm run build`、`npm test` 再合併（repo 沒有 GitHub Actions）。PR 上 Cloudflare Pages 的建置檢查在整合分支上一直是失敗的，因為 framework 模式的建置產物和 Pages 不相容，這是預期的。合併後 Workers Builds 會建置並部署正式 Worker，部署完先用它的 `workers.dev` 網址看一次，這時資料已經是正式的 `tekuei-cms`，用這個網址登入只讀取資料，先不要存檔。
 
 ## 9. 把網域從 Pages 移到 Worker
 
-1. Pages 專案 tekuei-official → Custom domains，移除 `tekuei.com`，有 `www` 的話也一起移除。
-2. 正式 Worker → Settings → Domains & Routes，加上 Custom domain `tekuei.com`（和 `www`）。
-3. 等憑證生效後打開 `https://tekuei.com/`，確認頁面由 Worker 提供，例如 `https://tekuei.com/en` 打得開。
+從 Pages 移除網域不會刪掉 DNS 記錄，而 Worker 不能把 Custom domain 加在已經有 CNAME 記錄的網域上，所以要照這個順序：
 
-移除和加入之間網站會短暫連不上，兩個步驟要連著做。
+1. Cloudflare 的 DNS → Records，刪掉 `tekuei.com`（和 `www`）指向 `*.pages.dev` 的 CNAME 記錄。刪掉之後網站就連不上，下面兩步要連著做。
+2. Pages 專案 tekuei-official → Custom domains，移除 `tekuei.com`，有 `www` 的話也一起移除。
+3. 正式 Worker → Settings → Domains & Routes，加上 Custom domain `tekuei.com`（和 `www`），Cloudflare 會自己建立需要的 DNS 記錄。等狀態變成 Active、憑證生效。
+4. 打開 `https://tekuei.com/`，確認頁面由 Worker 提供，例如 `https://tekuei.com/en` 打得開。
 
 ## 10. 切換後的檢查
 
 - 在本機執行 `node scripts/checkPages.ts https://tekuei.com`，同樣不會帶密碼。
-- 用手機在 LINE 裡打開報到的 LIFF 網址，完成一次報到，LINE Developers 後台登記的 Endpoint URL 仍是 `https://tekuei.com/checkin`，不用改。
+- 用手機在 LINE 裡打開報到的 LIFF 網址，確認登入和報到畫面正常，LINE Developers 後台登記的 Endpoint URL 仍是 `https://tekuei.com/checkin`，不用改。正式站的報到現在就是試跑模式（`VITE_CHECKIN_LIVE` 沒有設定，送出不會真的寫入），切換前後一樣，所以這一步只確認畫面。
 - 登入編輯模式，在一篇文章按英文翻譯，確認 `/api/translate` 正常，這會用掉 Workers AI 的免費額度。
 - 改一篇文章並存檔，確認讀者畫面和 `https://tekuei.com/sitemap.xml` 都更新了。
 
@@ -113,9 +118,11 @@ npx wrangler secret put ADMIN_SECRET --name tekuei-official
 
 Pages 專案和它最後一次的部署至少保留 30 天，這段時間不要刪除。出問題時：
 
-1. 正式 Worker → Domains & Routes，移除 `tekuei.com`。
-2. Pages 專案 → Custom domains，加回 `tekuei.com`，舊的 SPA 會立刻回來。
-3. 在 GitHub revert 合併到 `main` 的那個 PR，再恢復 Pages 的自動部署。順序不能反過來，否則 Pages 會部署新的 `functions/api/data.ts`。
+1. 正式 Worker → Settings → Builds，中斷和 Git 的連結，否則下面 revert 之後，Workers Builds 會把舊版的 `main` 部署到 Worker 上。
+2. 正式 Worker → Domains & Routes，移除 `tekuei.com`（和 `www`），確認 DNS → Records 裡 Worker 建立的記錄也已經消失，沒有消失就手動刪掉。
+3. Pages 專案 → Custom domains，加回 `tekuei.com`（和 `www`），照畫面的指示建立 CNAME 記錄，等網域的狀態變回 Active、憑證生效，舊的 SPA 才會回來，這段時間網站連不上。
+4. Worker 的 Custom domain 產生的憑證不會跟著刪掉，到 SSL/TLS → Edge Certificates 刪除。
+5. 在 GitHub revert 合併到 `main` 的那個 PR，再恢復 Pages 的自動部署。順序不能反過來，否則 Pages 會部署新的 `functions/api/data.ts`。
 
 `data.json` 的格式沒有變，切換期間在 Worker 上存的文章，回到 Pages 之後仍然讀得到。
 

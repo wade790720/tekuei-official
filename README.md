@@ -53,7 +53,7 @@ npx wrangler r2 object get tekuei-cms/data.json --remote --file <repo 外的路�
 npx wrangler r2 object put tekuei-cms/data.json --local --persist-to=.wrangler/state --file <repo 外的路徑>/data.json --content-type application/json
 ```
 
-副本裡有草稿，放在 repo 外。不要用 `--remote` 寫入任何 bucket。
+副本裡有草稿，放在 repo 外。不要寫入正式的 `tekuei-cms`。
 
 ## 使用方式
 
@@ -74,7 +74,7 @@ npx wrangler r2 object put tekuei-cms/data.json --local --persist-to=.wrangler/s
 | `/sitemap.xml`、`/llms.txt` | 兩種語言的 sitemap 和給 AI 讀的網站地圖 |
 | `/dev/component-library` | Component Library，只在開發模式 |
 
-舊網址 `/work` 和 `/cases/:slug` 301 轉到 `/projects` 或 `/labs`。網址結尾的斜線、大小寫不同的網站用字（例如 `/EN/Journal`）也 301 轉到正式的網址。右上角的語言按鈕換到另一個語言的同一頁，讀者選過英文之後，再點中文網址會換到英文網址。
+舊網址 `/work` 和 `/cases/:slug` 301 轉到 `/projects` 或 `/labs`，網址結尾的斜線、大小寫不同的網站用字（例如 `/EN/Journal`）也 301 轉到正式的網址。右上角的語言按鈕換到另一個語言的同一頁，讀者選過英文之後，下次直接打開中文網址時，會換到同一頁的英文網址。
 
 ### 編輯內容
 

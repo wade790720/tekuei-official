@@ -3,17 +3,17 @@
 各頁和各功能的規格。全站共用的視覺規則在 [DESIGN.md](DESIGN.md)。這份檔案只寫「某一頁長什麼樣、怎麼動」。
 ## 全站
 
-- 中文在 `/`，英文在 `/en`（例如 `/en/journal`），每一頁都有兩個網址。語言按鈕換到另一個語言的同一頁，捲動位置不變，也不重新讀資料。讀者按過 EN 之後，再點中文網址時會換到英文網址，`localStorage` 的 `lang` 只記這個選擇，不看瀏覽器的語言。`/checkin` 和 `/labs/<id>/live` 只有一個網址，用 `?lang=en` 指定語言，Lab 頁的預覽框和「全螢幕預覽」會帶上它。
+- 中文在 `/`，英文在 `/en`（例如 `/en/journal`），每一頁都有兩個網址。語言按鈕換到另一個語言的同一頁，捲動位置不變，也不重新讀資料。讀者按過 EN 之後，下次直接打開中文網址（整頁載入）時，會換到同一頁的英文網址，在站內點中文連結則不會換。`localStorage` 的 `lang` 只記這個選擇，不看瀏覽器的語言。`/checkin` 和 `/labs/<id>/live` 只有一個網址，用 `?lang=en` 指定語言，Lab 頁的預覽框和「全螢幕預覽」會帶上它。
 - 點連結換頁時從最上面開始。瀏覽器的上一頁、下一頁回到離開時的捲動位置（`src/root.tsx` 的 `ScrollClasses`）。
 - 頁首 logo：「TEKUEI CHU」後面接一個 8 × 2px、約 1 秒亮 1 秒暗的底線游標。只有頁首用到，所以直接寫在 SiteNav 和 NavOverlay 裡，不抽成元件（class `site-logo`）。
 - Projects、Journal 列表、Journal 文章頁、專案內頁、案例頁、About、Lab 頁的最下面都是同一個 `SiteFooter`（規格見 About）。首頁和 `/labs/<id>/live` 沒有頁尾。
 - 頁尾的品牌字維持字距拉開的「T E K U E I」。
-- 網站圖示是一條錦鯉，呼應首頁 Hero 的錦鯉池。`public/favicon.svg` 給瀏覽器分頁，背景透明，身體跟著系統的深淺色切換（淺色用深色身體、深色用象牙白），斑紋都是金色（`--ember`）。`public/apple-touch-icon.png`（180px）給手機主畫面，主畫面不能透明，所以用深色方塊（`--surface-0`）當底。`index.html` 的 `theme-color` 是同一個深色，手機瀏覽器的網址列跟著變深。
+- 網站圖示是一條錦鯉，呼應首頁 Hero 的錦鯉池。`public/favicon.svg` 給瀏覽器分頁，背景透明，身體跟著系統的深淺色切換（淺色用深色身體、深色用象牙白），斑紋都是金色（`--ember`）。`public/apple-touch-icon.png`（180px）給手機主畫面，主畫面不能透明，所以用深色方塊（`--surface-0`）當底。`src/root.tsx` 的 `theme-color` 是同一個深色，手機瀏覽器的網址列跟著變深。
 - 分享到 Threads、LINE、Facebook 時的預覽圖：預設是 `public/og.jpg`（1200 × 630，正式站首頁 Hero 的截圖），文章、專案和 About 有圖片時改用內文的第一張圖（專案先用縮圖）。
 - 每一頁由伺服器畫出完整的 HTML，不跑 JS 也讀得到內容。沒有 JS 時，淡入的元素直接顯示（`src/root.tsx` 的 `<noscript>`）。
 - 每一頁的 head 由 `PageHead` 畫出：title、description、canonical、hreflang（zh-Hant、en、x-default 指向中文）、og、twitter 和 JSON-LD（`src/lib/seo.ts`）。英文內文還是空的文章、專案和 About，中英文兩個網址的 canonical 都指向中文，也不輸出 en 的 hreflang，判斷規則和 sitemap 共用（`postInEnglish`、`projectInEnglish`、`aboutInEnglish`）。
 - `/sitemap.xml` 和 `/llms.txt` 列出兩種語言，只列已發布的內容（`src/routes/sitemap.ts`、`llms.ts`）。
-- 狀態碼：找不到的頁面和草稿回 404，R2 讀不到時回 503，兩者都不快取（`no-store`），其他頁面是 `public, max-age=0, must-revalidate`，所以存檔後讀者立刻看到新內容。網址結尾的斜線和大寫的網站用字（例如 `/EN/Journal`）301 轉到正式的網址。
+- 狀態碼：找不到的頁面和草稿回 404，R2 讀不到時回 503，兩者都不快取（`no-store`）。讀 R2 的頁面（Journal、文章、Projects、專案、Lab、About）是 `public, max-age=0, must-revalidate`，所以存檔後讀者立刻看到新內容。首頁、報到相關頁和 `/labs/<id>/live` 不讀 R2，回應沒有 `Cache-Control`，`/sitemap.xml` 和 `/llms.txt` 則是 `public, max-age=3600`。網址結尾的斜線和大寫的網站用字（例如 `/EN/Journal`）301 轉到正式的網址。
 - 文章每次儲存時，內容有變的文章會記下 `updated`（`stampUpdated`），JSON-LD 的 `dateModified` 和 sitemap 的 `lastmod` 讀它。
 
 ## 首頁
@@ -145,7 +145,7 @@
 - 面板沒有聚焦框：文字欄位和編輯器只顯示游標。按鈕保留鍵盤聚焦框。
 - 面板的字小於 18px，所以一律用 `--font-label`：英文是等寬字，中文是思源宋體。日期、編號、狀態加標籤字距 0.1em。
 - 面板和密碼框只給 Wade 用，介面文字只寫中文。
-- 英文翻譯是頂端的一顆圖示按鈕（`TranslateSection`），中文和英文版都能按，翻的永遠是英文草稿。翻譯時圖示換成轉圈，提示顯示進度；翻完在按鈕下方出現一張小字條（在中文版會提醒切到 EN 檢查），5 秒後消失，錯誤訊息則留著。它把中文內文（文章還有標題、摘要）交給 `/api/translate`，翻好放進英文草稿，不自動儲存，英文已有內容時先問。只翻文字、圖片的替代文字和圖說，程式碼和版面不動（`docTranslate.ts`）。模型是 Cloudflare Workers AI 的 `@cf/qwen/qwen3.8-27b`，用 `wrangler.toml` 的 `AI` 綁定，不需要金鑰，每天有 10,000 Neurons 免費額度，只有登入的編輯模式能呼叫。姓名、公司名的固定英文寫在 `functions/api/translate.ts` 的翻譯規則裡，新增合作單位時要一起補。
+- 英文翻譯是頂端的一顆圖示按鈕（`TranslateSection`），中文和英文版都能按，翻的永遠是英文草稿。翻譯時圖示換成轉圈，提示顯示進度；翻完在按鈕下方出現一張小字條（在中文版會提醒切到 EN 檢查），5 秒後消失，錯誤訊息則留著。它把中文內文（文章還有標題、摘要）交給 `/api/translate`，翻好放進英文草稿，不自動儲存，英文已有內容時先問。只翻文字、圖片的替代文字和圖說，程式碼和版面不動（`docTranslate.ts`）。模型是 Cloudflare Workers AI 的 `@cf/qwen/qwen3.8-27b`，用 `wrangler.jsonc` 的 `AI` 綁定，不需要金鑰，每天有 10,000 Neurons 免費額度，只有登入的編輯模式能呼叫。姓名、公司名的固定英文寫在 `functions/api/translate.ts` 的翻譯規則裡，新增合作單位時要一起補。
 - 文章有草稿和已發布兩種狀態（`draft`，中英文共用）。新文章預設是草稿。草稿停止打字 3 秒後自動儲存，面板的主按鈕是「發布」；已發布的文章不自動儲存，以免改到一半就上線，主按鈕是「更新」，「⋯」裡有「取消公開」。登出也收在「⋯」。只有這篇文章有修改時才自動儲存，列表面板的刪除或排序不會被順便存進去。草稿只在編輯模式出現，網站、上一篇和下一篇、SEO 頁、sitemap、llms.txt 都看不到，直接開網址也是找不到文章；其他文章的編號跳過草稿重新排（`publishedJournal`）。草稿的內容仍存在 R2 的 `data.json`，`/api/data` 讀得到，所以只是不公開，不是保密。
 - Journal、About、Projects 可以編輯。Projects 的規格見「Projects 和案例頁」。最早的三個案例頁（Matsu Biennial、MONOLAB、Lustre Yellow）內文寫在程式碼裡，只有卡片的欄位能在面板改。
 

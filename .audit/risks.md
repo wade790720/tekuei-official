@@ -6,7 +6,7 @@
 |---|---|---|---|---|
 | 1 | 高 | `src/lib/adminAuth.ts:34` | 登入成功會把失敗次數歸零，每次存檔都重新驗證密碼，所以 Wade 每存一次，攻擊者就多 4 次猜測機會。6 位數密碼約 200 到 1000 天可猜中一半 | 已修：成功只撤回自己那一次的計數，之前猜錯的次數保留，有測試。現在一天最多猜 480 次，猜中一半的機率約要 1000 天；session token 沒做 |
 | 2 | 中 | `src/lib/adminAuth.ts:21` | 鎖定是全站共用，任何人每 15 分鐘錯 5 次就能讓 Wade 一直被鎖住，已登入的分頁存檔也會 429 | 只回報（admin）。session token 一併解決 |
-| 3 | 中 | `src/App.tsx:131`、`src/hooks/useCmsSection.ts` | 每個頁面（含首頁、報到頁、lab iframe）都下載整份 `data.json`，含全部文章和草稿；自動儲存也整檔重寫 | 已修（#9）：每一頁的 loader 只送出那一頁的已發布內容，首頁、Lab、報到頁不讀 R2。自動儲存仍是整個區段寫入（第 7 項） |
+| 3 | 中 | 當時的 `App.tsx`、`src/hooks/useCmsSection.ts` | 每個頁面（含首頁、報到頁、lab iframe）都下載整份 `data.json`，含全部文章和草稿；自動儲存也整檔重寫 | 已修（#9）：每一頁的 loader 只送出那一頁的已發布內容，首頁、Lab、報到頁不讀 R2。自動儲存仍是整個區段寫入（第 7 項） |
 | 4 | 中 | `functions/api/data.ts:5` | 草稿全文經 `/api/data` 公開 | 已修（#12）：`GET /api/data` 要管理密碼，讀者的頁面只讀 loader 的資料。沒有做 session token，用的仍是密碼 |
 | 5 | 中低 | `functions/api/data.ts:16` | `If-None-Match` 逐字比對，弱 ETag `W/"…"` 時永遠不會 304 | 這次修 |
 | 6 | 中低 | `src/data/journal.ts` `differsOnlyIn`、`JournalEditPanel.tsx:35` | 每打一個字都把整個 journal 序列化兩次 | 這次修 |
@@ -36,7 +36,7 @@
 ## 架構
 
 - 已修（#11）：`docHtml` 和 `RichText` 各寫一套節點 switch 的問題，`docHtml` 已刪除。
-- 已修（#11）：頁面 Function 經由 `seo.ts` 匯入前端資料的問題，頁面 Function 已刪除，`seo.ts` 只由頁面和 resource route 使用。
+- 已修（#11）：頁面 Function 經由 `seo.ts` 匯入前端資料的問題，頁面 Function 已刪除，`seo.ts` 只在 `src/` 和測試裡使用。
 - `src/labs/falling-figure/fallScene.ts:529` 在畫面外不停 rAF（只在 lab iframe 內）。
 
 ## 檢查過沒有問題
