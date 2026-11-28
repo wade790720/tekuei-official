@@ -20,7 +20,6 @@ export interface CaseNamed {
 /** One case in one language, as written in src/data/cases. */
 export interface CaseStudy {
   slug: string
-  documentTitle: string
   hero: {
     num: string
     titleEm?: string

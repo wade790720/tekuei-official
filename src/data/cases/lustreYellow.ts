@@ -8,7 +8,6 @@ const FULL_BG = 'linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 94%
 
 const ZH: CaseStudy = {
   slug: 'lustre-yellow',
-  documentTitle: 'TEKUEI · Lustre Yellow',
   hero: {
     num: 'CASE 03',
     titleEm: 'Lustre',
@@ -90,7 +89,6 @@ const ZH: CaseStudy = {
 
 const EN: CaseStudy = {
   slug: 'lustre-yellow',
-  documentTitle: 'TEKUEI · Lustre Yellow',
   hero: {
     num: 'CASE 03',
     titleEm: 'Lustre',

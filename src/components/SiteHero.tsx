@@ -1,6 +1,7 @@
 import '../styles/hero.css'
 import '../styles/home.css'
 import { HomeHero } from './HomeHero.tsx'
+import { PageHead } from './PageHead.tsx'
 import { HOME_META } from '../data/homepage.ts'
 import { useLang } from '../i18n'
 
@@ -10,8 +11,7 @@ export default function SiteHero() {
 
   return (
     <div className="hero-root home">
-      <title>{meta.title}</title>
-      <meta name="description" content={meta.description} />
+      <PageHead title={meta.title} description={meta.description} path="/" />
       <main>
         <HomeHero />
       </main>

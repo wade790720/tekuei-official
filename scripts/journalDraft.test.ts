@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { it } from 'node:test'
 import { cloneJournal, copyJournalDraft, differsOnlyIn, publishedJournal, readableJournal } from '../src/data/journal.ts'
 import { sampleJournal, samplePost } from './fixtures/journal.ts'
-import { postPage, siteJournal, sitemapXml, llmsTxt } from '../src/lib/seo.ts'
+import { siteJournal, sitemapXml, llmsTxt } from '../src/lib/seo.ts'
 import { LANGS } from '../src/lib/siteData.ts'
 
 it('copyJournalDraft: edits on the copy leave the saved journal alone, bodies are shared', () => {
@@ -39,13 +39,12 @@ it('a draft is hidden from readers and the rest are renumbered from 01', () => {
   assert.ok(j.posts.zh.some((p) => p.slug === slug), 'the stored journal keeps the draft for the editor')
 })
 
-it('a draft has no SEO page and is not in the sitemap or llms.txt', () => {
+it('a draft is not in the sitemap or llms.txt', () => {
   const j = withDraft()
   const slug = j.posts.zh[0].slug
   const site = siteJournal({ journal: j })
-  assert.equal(postPage(site, slug), null)
-  assert.ok(!sitemapXml(site, []).includes(`/journal/${slug}<`))
-  assert.ok(!llmsTxt(site, []).includes(`/journal/${slug})`))
+  assert.ok(!sitemapXml(site, [], true).includes(`/journal/${slug}<`))
+  assert.ok(!llmsTxt(site, [], [], false).includes(`/journal/${slug})`))
 })
 
 it('a journal with no drafts is returned as it is', () => {

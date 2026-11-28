@@ -7,7 +7,6 @@ import { nodeAt } from './testDoc.ts'
 const section = { num: '01', label: 'L' }
 const data: CaseWithImages = {
   slug: 'case',
-  documentTitle: 'Case',
   hero: { num: '01', titleRest: 'Case', subtitle: '', bg: '', meta: [], image: { url: '' } },
   videos: [{ src: 'v.mp4', poster: 'v.webp', caption: 'Home' }],
   media: { fullWidthLabel: '', fullWidthBg: '', inlineLabel: '', fullWidthImage: { url: '' }, inlineImage: { url: '/i.webp' } },

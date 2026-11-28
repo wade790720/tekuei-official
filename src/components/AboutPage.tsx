@@ -1,12 +1,14 @@
 import { lazy, Suspense, useEffect, useRef } from 'react'
 import { RichText } from './RichText.tsx'
 import { Marquee } from './Marquee.tsx'
+import { PageHead } from './PageHead.tsx'
+import { firstImage, profileLd } from '../lib/seo.ts'
 import { SiteFooter } from './SiteFooter.tsx'
 import { useAdmin } from '../context/admin.ts'
 import { useCmsSection } from '../hooks/useCmsSection.ts'
-import { ABOUT_CLIENTS, ABOUT_META, cloneAbout, getDefaultAbout } from '../data/about.ts'
+import { ABOUT_CLIENTS, ABOUT_META, aboutInEnglish, cloneAbout, getDefaultAbout } from '../data/about.ts'
 import { uploadSiteImage } from '../lib/adminApi.ts'
-import { docText, getDoc, hasBody } from '../lib/richText.ts'
+import { docText, getDoc } from '../lib/richText.ts'
 import { mountGrainHaze } from '../lib/grainHaze.ts'
 import { useLang } from '../i18n'
 import type { AboutPageData, Doc } from '../lib/siteData.ts'
@@ -54,7 +56,7 @@ export default function AboutPage({ about }: { about: AboutPageData }) {
   const editing = admin.editing && cms.isEditing
   const shown = editing ? cms.content : about
   // Like an untranslated post: readers of an empty English page see the Chinese one.
-  const untranslated = !editing && lang === 'en' && !hasBody(shown.en)
+  const untranslated = !editing && lang === 'en' && !aboutInEnglish(shown)
   const doc = getDoc(shown[untranslated ? 'zh' : lang])
 
   const setDoc = (next: Doc) =>
@@ -66,8 +68,15 @@ export default function AboutPage({ about }: { about: AboutPageData }) {
 
   return (
     <div className="journal-page journal-page--post about-page">
-      <title>{meta.documentTitle}</title>
-      <meta name="description" content={docText(doc).slice(0, 120)} />
+      <PageHead
+        title={meta.documentTitle}
+        description={docText(doc).slice(0, 120)}
+        path="/about"
+        type="profile"
+        image={firstImage(doc)}
+        ld={profileLd(aboutInEnglish(shown) ? lang : 'zh')}
+        english={aboutInEnglish(shown)}
+      />
       <div className="about-backdrop" aria-hidden>
         <canvas className="about-backdrop__haze" ref={haze} />
       </div>

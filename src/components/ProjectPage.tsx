@@ -10,14 +10,17 @@ import { useAdmin } from '../context/admin.ts'
 import { useWork } from '../context/work.ts'
 import { projectCover, withProjectVideo } from '../data/workMedia.ts'
 import { PROJECT_PAGE_LABELS, PROJECT_SECTIONS, projectBody, projectFacts, projectNumber, projectTitle, projectType } from '../data/work.ts'
+import { projectInEnglish } from '../lib/projectHref.ts'
 import { useWorkContent } from '../hooks/useWorkContent.ts'
 import { useLang, useLocalePath } from '../i18n'
 import { uploadSiteImage } from '../lib/adminApi.ts'
-import { docText, getDoc, hasBody, safeHref } from '../lib/richText.ts'
+import { docText, getDoc, safeHref } from '../lib/richText.ts'
 import type { Doc, WorkData } from '../lib/siteData.ts'
 import '../styles/journal.css'
 import '../styles/project.css'
 import { DefaultHead } from './DefaultHead.tsx'
+import { PageHead } from './PageHead.tsx'
+import { creativeWorkLd, firstImage, imageUrl, pageUrl } from '../lib/seo.ts'
 
 // Only Wade edits, so Tiptap and the panel load in edit mode, not for every visitor.
 const Editor = lazy(() => import('./Editor.tsx').then((m) => ({ default: m.Editor })))
@@ -37,7 +40,8 @@ export default function ProjectPage({ work }: { work: WorkData }) {
   const editing = admin.editing && cms.isEditing
   const zh = item && projectBody(content, slug, 'zh')
   // Like an untranslated post: readers of an empty English page see the Chinese one.
-  const untranslated = !editing && lang === 'en' && !hasBody(projectBody(content, slug, 'en'))
+  const english = projectInEnglish(content, slug)
+  const untranslated = !editing && lang === 'en' && !english
   const doc = getDoc(untranslated ? zh : item && projectBody(content, slug, lang))
   const title = item ? projectTitle(item) : ''
 
@@ -64,11 +68,19 @@ export default function ProjectPage({ work }: { work: WorkData }) {
   const saved = <RichText doc={withProjectVideo(doc, slug, lang)} />
   const cover = projectCover(item)
   const link = safeHref(item.link)
+  const description = docText(doc).slice(0, 120) || item.client
 
   return (
     <div className="journal-page journal-page--post">
-      <title>{`${title} · Projects · TEKUEI`}</title>
-      <meta name="description" content={docText(doc).slice(0, 120) || item.client} />
+      <PageHead
+        title={`${title} · Projects · TEKUEI`}
+        description={description}
+        path={`/projects/${slug}`}
+        type="article"
+        image={imageUrl(cover) ?? firstImage(doc)}
+        ld={creativeWorkLd({ name: title, description, url: pageUrl(`/projects/${slug}`, english ? lang : 'zh'), tags: item.tags }, english ? lang : 'zh')}
+        english={english}
+      />
       <main>
         {cover ? <ProjectHero cover={cover} num={`${t.num} ${projectNumber(content.items, slug)}`} title={title} facts={projectFacts(item, lang)} /> : null}
         <article className={`journal-post project-post${cover ? ' project-post--cover' : ''}`} lang={untranslated ? 'zh-Hant' : undefined}>

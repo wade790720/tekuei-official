@@ -1,7 +1,8 @@
 /**
  * Requests every page of the site, in Chinese and in English, from a running server and fails on any 5xx or an
- * unexpected status, Location, Cache-Control, <html lang> or title count. It also reads /api/data to check that a
- * published post's title and first paragraph are in its HTML and that no draft shows up in any page.
+ * unexpected status, Location, Cache-Control, <html lang> or head (one title, a canonical, the hreflang links,
+ * og:image, JSON-LD that parses). It requests every address in sitemap.xml and llms.txt, and reads /api/data to
+ * check that a published post's title and first paragraph are in its HTML and that no draft shows up anywhere.
  * Usage: node scripts/checkPages.ts <base URL> [--r2=broken|missing]
  *   --r2=broken   the local bucket's data.json is not valid JSON: every page that reads R2 answers 503
  *   --r2=missing  the local bucket has no data.json: those pages draw the bundled defaults (200)
@@ -57,17 +58,23 @@ const PAGES: Expect[] = [
   { path: '/cases/matsu-biennial', status: 301, location: '/projects/matsu-biennial', html: false },
   { path: '/cases/living-portrait', status: 301, location: '/labs/living-portrait', html: false },
   { path: '/journal/', status: 301, location: '/journal', html: false },
+  // The site's own words in another case: one URL each
+  { path: '/EN/Journal', status: 301, location: '/en/journal', html: false, oneUrl: true },
+  { path: '/Projects/matsu-biennial', status: 301, location: '/projects/matsu-biennial', html: false, oneUrl: true },
   // A typo
   { path: '/jounral', status: 404 },
   // Not pages, but served by the same Worker
-  { path: '/sitemap.xml', status: 200, html: false, oneUrl: true },
-  { path: '/llms.txt', status: 200, html: false, oneUrl: true },
+  { path: '/sitemap.xml', status: 200, html: false, oneUrl: true, r2: true },
+  { path: '/llms.txt', status: 200, html: false, oneUrl: true, r2: true },
   { path: '/api/data', status: 200, html: false, oneUrl: true },
   { path: '/api/file/images/no-such-file.png', status: 404, html: false, oneUrl: true },
   { path: '/robots.txt', status: 200, html: false, oneUrl: true },
 ]
 
 const REVALIDATE = 'public, max-age=0, must-revalidate'
+const SITE = 'https://tekuei.com'
+// sitemap.xml and llms.txt, which crawlers read now and then
+const FILE_CACHE = 'public, max-age=3600'
 
 const english = (page: Expect): Expect => {
   const en = (p: string) => (p === '/' ? '/en' : `/en${p}`)
@@ -75,7 +82,7 @@ const english = (page: Expect): Expect => {
 }
 const HTML = [...PAGES, ...PAGES.filter((p) => !p.oneUrl).map(english), { path: '/en/', status: 301, location: '/en', html: false }]
 // The data a client-side navigation fetches carries the same status and Cache-Control as the page.
-const DATA = HTML.filter((p) => p.r2 && !p.path.includes('?')).map((p) => ({ ...p, path: `${p.path}.data`, html: false }))
+const DATA = HTML.filter((p) => p.r2 && p.html !== false && !p.path.includes('?')).map((p) => ({ ...p, path: `${p.path}.data`, html: false }))
 const ALL = [...HTML, ...DATA]
 
 const decode = (s: string) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'")
@@ -97,7 +104,7 @@ async function check(url: Expect): Promise<string[]> {
   if (r2 === 'missing' && url.missing) page = { ...url, status: url.missing }
   const res = await fetch(new URL(page.path, base), { redirect: 'manual' })
   const body = await res.text()
-  if (page.html !== false || page.path.endsWith('.data')) pages.set(page.path, body)
+  if (page.html !== false || /\.(data|xml|txt)$/.test(page.path)) pages.set(page.path, body)
   const raw = res.headers.get('Location')
   const location = raw ? new URL(raw, base).pathname : undefined
   const cache = res.headers.get('Cache-Control')
@@ -113,12 +120,86 @@ async function check(url: Expect): Promise<string[]> {
     if (titles.length !== 1) problems.push(`${page.path}: ${titles.length} <title> elements, expected 1`)
     const wantLang = page.path === '/en' || page.path.startsWith('/en/') ? 'en' : 'zh-Hant'
     if (!page.oneUrl && lang !== wantLang) problems.push(`${page.path}: <html lang="${lang}">, expected ${wantLang}`)
+    if (res.status === 200) problems.push(...headProblems(page, body))
   }
   // Pages that read R2 are checked again on every visit when they are fine, never stored when missing or failing.
   if (page.r2) {
-    const want = res.status === 200 ? REVALIDATE : 'no-store'
+    const fine = /\.(xml|txt)$/.test(page.path) ? FILE_CACHE : REVALIDATE
+    const want = res.status === 200 ? fine : 'no-store'
     if (cache !== want) problems.push(`${page.path}: Cache-Control ${cache}, expected ${want}`)
   }
+  return problems
+}
+
+const attr = (tag: string, name: string) => decode(tag.match(new RegExp(`\\s${name}="([^"]*)"`, 'i'))?.[1] ?? '')
+const tagsOf = (head: string, pattern: RegExp) => [...head.matchAll(pattern)].map((m) => m[0])
+
+/**
+ * Which Chinese pages have an English version, as sitemap.xml says: the head must say the same. A page missing from
+ * the sitemap (the check-in guide, a 404) is taken to have one.
+ */
+const englishBySitemap = new Map<string, boolean>()
+async function readSitemap() {
+  const xml = await (await fetch(new URL('/sitemap.xml', base))).text()
+  for (const [, url] of xml.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+    const loc = url.match(/<loc>([^<]+)<\/loc>/)?.[1]
+    if (loc && !loc.startsWith(`${SITE}/en`)) englishBySitemap.set(loc, /hreflang="en"/.test(url))
+  }
+}
+
+/**
+ * The head a search engine reads: a canonical (the page itself, or the Chinese page when the page has no English
+ * version of its own), hreflang for both languages and x-default (no English one without an English version) unless
+ * the page has one URL, og:image, a description, and JSON-LD that parses.
+ */
+function headProblems(page: Expect, html: string): string[] {
+  const problems: string[] = []
+  const head = html.slice(0, html.indexOf('</head>'))
+  const path = page.path.split('?')[0]
+  const self = `${SITE}${path}`
+  const zh = `${SITE}${path === '/en' ? '/' : path.replace(/^\/en(?=\/)/, '')}`
+  const canonicals = tagsOf(head, /<link[^>]*rel="canonical"[^>]*>/g).map((t) => attr(t, 'href'))
+  const alternates = new Map(tagsOf(head, /<link[^>]*rel="alternate"[^>]*>/g).map((t) => [attr(t, 'hreflang'), attr(t, 'href')]))
+  if (canonicals.length !== 1) problems.push(`${page.path}: ${canonicals.length} canonical links, expected 1`)
+  const canonical = canonicals[0]
+  const chineseOnly = !page.oneUrl && englishBySitemap.get(zh) === false
+  const want = page.oneUrl ? self : chineseOnly ? zh : self
+  if (canonical !== want) problems.push(`${page.path}: canonical ${canonical}, expected ${want}`)
+  if (page.oneUrl) {
+    if (alternates.size) problems.push(`${page.path}: hreflang on a page with one URL`)
+  } else {
+    const en = `${SITE}${path.startsWith('/en') ? path : path === '/' ? '/en' : `/en${path}`}`
+    const want: [string, string | undefined][] = [['zh-Hant', zh], ['en', chineseOnly ? undefined : en], ['x-default', zh]]
+    for (const [lang, href] of want) if (alternates.get(lang) !== href) problems.push(`${page.path}: hreflang ${lang} ${alternates.get(lang)}, expected ${href}`)
+    if (alternates.size !== (chineseOnly ? 2 : 3)) problems.push(`${page.path}: ${alternates.size} hreflang links`)
+  }
+  if (tagsOf(head, /<meta[^>]*property="og:image"[^>]*>/g).length !== 1) problems.push(`${page.path}: not one og:image`)
+  if (tagsOf(head, /<meta[^>]*name="description"[^>]*>/g).length !== 1) problems.push(`${page.path}: not one description`)
+  const lds = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+  if (!lds.length) problems.push(`${page.path}: no JSON-LD`)
+  for (const [, json] of lds) {
+    try {
+      JSON.parse(json)
+    } catch {
+      problems.push(`${page.path}: JSON-LD does not parse`)
+    }
+  }
+  return problems
+}
+
+/** Every address listed in sitemap.xml and llms.txt answers 200 here. */
+async function checkListed(): Promise<string[]> {
+  const listed = new Set<string>()
+  for (const file of ['/sitemap.xml', '/llms.txt']) {
+    for (const [url] of (pages.get(file) ?? '').matchAll(/https:\/\/tekuei\.com[^\s<>")]*/g)) listed.add(url.slice(SITE.length) || '/')
+  }
+  const problems: string[] = []
+  for (const path of listed) {
+    const res = await fetch(new URL(path, base), { redirect: 'manual' })
+    await res.body?.cancel()
+    if (res.status !== 200) problems.push(`${path} is listed in sitemap.xml or llms.txt but answers ${res.status}`)
+  }
+  console.log(`\nListed: ${listed.size} addresses in sitemap.xml and llms.txt, each requested.`)
   return problems
 }
 
@@ -147,12 +228,14 @@ async function checkContent(site: SiteData): Promise<string[]> {
   for (const [path, html] of pages) {
     for (const marker of new Set(drafts)) if (html.includes(marker)) problems.push(`${path}: shows the draft "${marker}"`)
   }
-  console.log(`Drafts: ${new Set(drafts).size} draft slugs and titles looked for in ${pages.size} pages and their loader data.`)
+  console.log(`Drafts: ${new Set(drafts).size} draft slugs and titles looked for in ${pages.size} pages, their loader data, sitemap.xml and llms.txt.`)
   return problems
 }
 
 const problems: string[] = []
+if (r2 !== 'broken') await readSitemap()
 for (const page of ALL) problems.push(...(await check(page)))
+if (r2 !== 'broken') problems.push(...(await checkListed()))
 if (!r2) {
   const res = await fetch(new URL('/api/data', base))
   problems.push(...(await checkContent(parseSiteData(await res.json()).data)))

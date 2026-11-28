@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import 'lenis/dist/lenis.css'
 import './aboutFall.css'
 import figureSrc from './carving.png'
-import { ABOUT_FALL_ACTS, ABOUT_FALL_INTRO, ABOUT_FALL_META } from './content.ts'
+import { ABOUT_FALL_ACTS, ABOUT_FALL_INTRO } from './content.ts'
 import type { AboutFallAct } from './content.ts'
 import { mountFallScene } from './fallScene.ts'
 import type { FallScene } from './fallScene.ts'
@@ -13,7 +13,6 @@ import { useLang, useLocalePath } from '../../i18n'
 export function FallingFigure() {
   const { lang } = useLang()
   const localePath = useLocalePath()
-  const meta = ABOUT_FALL_META[lang]
   const intro = ABOUT_FALL_INTRO[lang]
   const acts = ABOUT_FALL_ACTS[lang]
   const canvas = useRef<HTMLCanvasElement>(null)
@@ -48,8 +47,6 @@ export function FallingFigure() {
 
   return (
     <div className="about-fall">
-      <title>{meta.title}</title>
-      <meta name="description" content={meta.description} />
       <canvas className="about-fall__canvas" ref={canvas} aria-hidden />
       <img ref={figure} src={figureSrc} alt="" hidden />
 

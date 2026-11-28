@@ -1,37 +1,18 @@
-// Server-side SEO for a client-rendered site. Pages Functions use these to put each page's
-// real text, meta tags and JSON-LD into the HTML, so crawlers and AI readers see content without JS.
-// Chinese only: the URL does not carry a language yet, and zh is the default.
+// What search engines and AI readers get besides the page itself: JSON-LD, the preview image, sitemap.xml and
+// llms.txt. The pages draw their head with these (PageHead); the resource routes call the last two.
 
-import { getDoc, docText, safeHref, youtubeId } from './richText.ts'
-import { getDefaultJournal, postTags, publishedJournal } from '../data/journal.ts'
-import { ABOUT_CLIENTS, ABOUT_META, getDefaultAbout } from '../data/about.ts'
-import { LAB_BY_ID, labLinks } from '../labs/index.ts'
-import { projectBody, projectHref, projectLink, projectTitle } from './projectHref.ts'
-import { parseSiteData } from './siteData.ts'
+import { getDefaultJournal, postInEnglish, postTags, publishedJournal } from '../data/journal.ts'
+import { labLinks } from '../labs/index.ts'
+import { localePath } from './localePath.ts'
+import { projectInEnglish, projectLink, projectTitle } from './projectHref.ts'
 import { SITE_URL } from './siteUrl.ts'
-import type { Doc, JournalData, SiteData, WorkData, WorkItem } from './siteData.ts'
+import type { Doc, JournalData, JournalPost, Lang, SiteData, WorkData, WorkItem } from './siteData.ts'
 
-/** One page's head and body text, as injectPage writes them into index.html. */
-export interface SeoPage {
-  title: string
-  description: string | undefined
-  url: string
-  type: string
-  image?: string
-  ld: Record<string, unknown>
-  html: string
-}
-/** A project or lab whose page is written in code, at its own address. */
-export type CaseLink = Pick<WorkItem, 'id' | 'client' | 'title' | 'titleEmWord' | 'tags' | 'descriptionLines'> & { caseHref: string }
-
-// The parts of the Pages Function context used here, so this file also type-checks in the browser project.
-interface SiteBucket {
-  get(key: string): Promise<{ json(): Promise<unknown> } | null>
-}
-export interface SeoContext {
-  request: Request
-  env: { BUCKET?: SiteBucket; ASSETS: { fetch(url: URL): Promise<Response> } }
-  params?: { slug?: string | string[] }
+/** A project or lab with a page here, at its own address. */
+export type CaseLink = Pick<WorkItem, 'id' | 'client' | 'title' | 'titleEmWord' | 'tags' | 'descriptionLines'> & {
+  caseHref: string
+  /** False for a project written in the editor whose English body is still empty. */
+  english: boolean
 }
 
 export const SITE_NAME = 'TEKUEI 德溎'
@@ -47,22 +28,64 @@ export const PERSON = {
   knowsAbout: ['軟體工程', '美學', '設計', '行銷', 'AI'],
 }
 
-const ESC: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }
-export const esc = (s: unknown): string => String(s ?? '').replace(/[&<>"']/g, (c) => ESC[c])
+const SITE_DESCRIPTION = '遵循內心並實踐創造，追求卓越，為熱愛而學習，勇於面對未知與挑戰。'
 
-// "<\/script>" inside JSON-LD would end the script tag early.
-export const jsonLd = (obj: unknown): string =>
-  `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`
+const IN_LANGUAGE: Record<Lang, string> = { zh: 'zh-Hant', en: 'en' }
 
-/** R2 data.json, or null when the bucket is empty or the JSON is bad. A malformed section is left out. */
-export async function readSiteData(bucket: SiteBucket | undefined): Promise<SiteData | null> {
-  try {
-    const obj = await bucket?.get('data.json')
-    return obj ? parseSiteData(await obj.json()).data : null
-  } catch {
-    return null
+/** The address of a site path in one language. */
+export const pageUrl = (path: string, lang: Lang): string => {
+  const p = localePath(path, lang)
+  return p === '/' ? `${SITE_URL}/` : `${SITE_URL}${p}`
+}
+
+export interface HeadLinks {
+  canonical: string
+  /** hreflang and URL */
+  alternates: [string, string][]
+  /** og:locale, and og:locale:alternate when the page has the other language */
+  locale: string
+  localeAlternate?: string
+}
+
+const OG_LOCALE: Record<Lang, string> = { zh: 'zh_TW', en: 'en_US' }
+
+/**
+ * The links that tie a page's two languages together. A page with no English version of its own (its English URL
+ * shows the Chinese text) has one page as far as search engines go: both URLs name the Chinese one as canonical and
+ * neither names an English version, as the sitemap does.
+ * @param english  postInEnglish, projectInEnglish or aboutInEnglish; the same rule the sitemap uses
+ */
+export function headLinks(path: string, lang: Lang, english: boolean): HeadLinks {
+  const zh = pageUrl(path, 'zh')
+  if (!english) return { canonical: zh, alternates: [['zh-Hant', zh], ['x-default', zh]], locale: OG_LOCALE.zh }
+  const en = pageUrl(path, 'en')
+  return {
+    canonical: lang === 'en' ? en : zh,
+    alternates: [['zh-Hant', zh], ['en', en], ['x-default', zh]],
+    locale: OG_LOCALE[lang],
+    localeAlternate: OG_LOCALE[lang === 'zh' ? 'en' : 'zh'],
   }
 }
+
+/** WebSite and Person, on every page. */
+export const siteLd = (lang: Lang) => ({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      name: SITE_NAME,
+      url: pageUrl('/', lang),
+      inLanguage: IN_LANGUAGE[lang],
+      description: SITE_DESCRIPTION,
+      author: { '@id': `${SITE_URL}/#person` },
+    },
+    PERSON,
+  ],
+})
+
+// "</script>" inside JSON-LD would end the script tag early.
+export const ldJson = (obj: unknown): string => JSON.stringify(obj).replace(/</g, '\\u003c')
 
 /** The journal as the site shows it: R2's copy when it exists, else the bundled default. Drafts never leave here. */
 export function siteJournal(r2Data: SiteData | null): JournalData {
@@ -72,10 +95,10 @@ export function siteJournal(r2Data: SiteData | null): JournalData {
 export const isoDate = (d: string | undefined): string => String(d ?? '').replace(/\./g, '-')
 
 // Social sites fetch the preview image themselves, so it needs a full URL. An inline data: picture is not one.
-const imageUrl = (src: unknown) => (typeof src === 'string' && /^(https?:|\/)/.test(src) ? new URL(src, SITE_URL).href : undefined)
+export const imageUrl = (src: unknown) => (typeof src === 'string' && /^(https?:|\/)/.test(src) ? new URL(src, SITE_URL).href : undefined)
 
 /** The first picture in a doc: an image card, a picture set's first slide, or a video's poster. */
-function firstImage(node: Doc): string | undefined {
+export function firstImage(node: Doc): string | undefined {
   const a = node.attrs ?? {}
   const own = node.type === 'imageCard' ? a.src : node.type === 'slidesCard' ? a.slides?.[0]?.src : node.type === 'videoCard' ? a.poster : undefined
   if (imageUrl(own)) return imageUrl(own)
@@ -86,399 +109,161 @@ function firstImage(node: Doc): string | undefined {
   return undefined
 }
 
-function inlineHtml(nodes: Doc[] = []): string {
-  return nodes
-    .map((n) => {
-      if (n.type === 'hardBreak') return '<br>'
-      if (n.type !== 'text') return inlineHtml(n.content)
-      let out = esc(n.text)
-      for (const m of n.marks ?? []) {
-        if (m.type === 'bold') out = `<strong>${out}</strong>`
-        else if (m.type === 'italic') out = `<em>${out}</em>`
-        else if (m.type === 'code') out = `<code>${out}</code>`
-        else if (m.type === 'link') {
-          const href = safeHref(m.attrs?.href)
-          if (href) out = `<a href="${esc(href)}">${out}</a>`
-        }
-      }
-      return out
-    })
-    .join('')
-}
-
-const figure = (src?: string, alt?: string, caption?: string) =>
-  src
-    ? `<figure><img src="${esc(src)}" alt="${esc(alt)}">${caption ? `<figcaption>${esc(caption)}</figcaption>` : ''}</figure>`
-    : ''
-
-/** Semantic HTML of a post doc. Crawlers read it; React replaces it on mount. */
-export function docHtml(node: Doc): string {
-  const kids = () => (node.content ?? []).map(docHtml).join('')
-  const a = node.attrs ?? {}
-  switch (node.type) {
-    case 'doc':
-      return kids()
-    case 'paragraph':
-    case 'lead':
-      return `<p>${inlineHtml(node.content)}</p>`
-    case 'heading':
-      return `<h${a.level === 3 ? 3 : 2}>${inlineHtml(node.content)}</h${a.level === 3 ? 3 : 2}>`
-    case 'blockquote':
-      return `<blockquote>${kids()}${a.cite ? `<cite>${esc(a.cite)}</cite>` : ''}</blockquote>`
-    case 'bulletList':
-      return `<ul>${kids()}</ul>`
-    case 'orderedList':
-      return `<ol>${kids()}</ol>`
-    case 'listItem':
-      return `<li>${kids()}</li>`
-    case 'codeBlock':
-      return `<pre><code>${esc(docText(node))}</code></pre>`
-    case 'imageCard':
-      return figure(a.src, a.alt, a.caption)
-    case 'slidesCard':
-      // Only the "work" layout shows its name and words on the page
-      return `${a.layout === 'work' && a.title ? `<h3>${esc(a.title)}</h3>` : ''}${a.layout === 'work' && a.text ? `<p>${esc(a.text)}</p>` : ''}${(a.slides ?? []).map((s: { src?: string; alt?: string; caption?: string }) => figure(s.src, s.alt, s.caption)).join('')}`
-    case 'videoCard': {
-      // A YouTube video becomes a link, so crawlers see it; a file video has nothing to show without the player.
-      const id = youtubeId(a.src)
-      const label = esc(a.caption || 'YouTube')
-      if (id) return `<p><a href="https://www.youtube.com/watch?v=${id}">${label}</a></p>`
-      return a.caption ? `<p>${esc(a.caption)}</p>` : ''
-    }
-    case 'horizontalRule':
-      return '<hr>'
-    default:
-      return inlineHtml(node.content)
-  }
-}
-
-/** Everything one journal page needs for its HTML head and body. Null when the slug is unknown. */
-export function postPage(journal: JournalData, slug: string): SeoPage | null {
-  const post = journal.posts.zh.find((p) => p.slug === slug)
-  const body = journal.content.zh[slug]
-  if (!post || !body) return null
-  const url = `${SITE_URL}/journal/${slug}`
-  const doc = getDoc(body)
-  const image = firstImage(doc)
+export function postLd(post: JournalPost, lang: Lang, url: string, image: string | undefined) {
+  const tags = postTags(post)
   return {
-    title: `${post.title} · Journal · TEKUEI`,
-    description: post.excerpt || docText(doc).slice(0, 120),
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: isoDate(post.date),
+    dateModified: isoDate(post.updated || post.date),
+    ...(image ? { image } : {}),
+    inLanguage: IN_LANGUAGE[lang],
     url,
-    type: 'article',
-    image,
-    ld: {
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: post.title,
-      description: post.excerpt,
-      datePublished: isoDate(post.date),
-      dateModified: isoDate(post.updated || post.date),
-      ...(image ? { image } : {}),
-      inLanguage: 'zh-Hant',
-      url,
-      mainEntityOfPage: url,
-      author: PERSON,
-      publisher: PERSON,
-      ...(postTags(post).length ? { articleSection: postTags(post)[0], keywords: postTags(post).join(', ') } : {}),
-    },
-    html:
-      `<article><h1>${esc(post.title)}</h1>` +
-      `<p><time datetime="${esc(isoDate(post.date))}">${esc(post.date)}</time></p>` +
-      `${docHtml(doc)}<p><a href="/journal">Journal</a></p></article>`,
+    mainEntityOfPage: url,
+    author: PERSON,
+    publisher: PERSON,
+    ...(tags.length ? { articleSection: tags[0], keywords: tags.join(', ') } : {}),
   }
 }
 
-export function journalIndexPage(journal: JournalData, meta: { title: string; description: string }): SeoPage {
-  const url = `${SITE_URL}/journal`
-  const items = journal.posts.zh
-    .map(
-      (p) =>
-        `<li><a href="/journal/${esc(p.slug)}">${esc(p.title)}</a> ` +
-        `<time datetime="${esc(isoDate(p.date))}">${esc(p.date)}</time><p>${esc(p.excerpt)}</p></li>`,
-    )
-    .join('')
+/** @param posts  as readers see them: an untranslated English post is listed at its Chinese URL */
+export function blogLd(meta: { title: string; description: string }, posts: (JournalPost & { untranslated?: boolean })[], lang: Lang) {
   return {
-    title: meta.title,
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: meta.title,
     description: meta.description,
-    url,
-    type: 'website',
-    ld: {
-      '@context': 'https://schema.org',
-      '@type': 'Blog',
-      name: meta.title,
-      description: meta.description,
-      url,
-      inLanguage: 'zh-Hant',
-      author: PERSON,
-      blogPost: journal.posts.zh.map((p) => ({
-        '@type': 'BlogPosting',
-        headline: p.title,
-        url: `${SITE_URL}/journal/${p.slug}`,
-        datePublished: isoDate(p.date),
-      })),
-    },
-    html: `<main><h1>Journal</h1><p>${esc(meta.description)}</p><ul>${items}</ul></main>`,
+    url: pageUrl('/journal', lang),
+    inLanguage: IN_LANGUAGE[lang],
+    author: PERSON,
+    blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.title, url: pageUrl(`/journal/${p.slug}`, p.untranslated ? 'zh' : lang), datePublished: isoDate(p.date) })),
   }
 }
 
-/** Puts one page into the built index.html: title, description, social tags, JSON-LD and body text. */
-export function injectPage(indexHtml: string, page: SeoPage): string {
-  const head = [
-    `<link rel="canonical" href="${esc(page.url)}">`,
-    `<meta property="og:type" content="${page.type}">`,
-    `<meta property="og:url" content="${esc(page.url)}">`,
-    `<meta property="og:title" content="${esc(page.title)}">`,
-    `<meta property="og:description" content="${esc(page.description)}">`,
-    `<meta name="twitter:title" content="${esc(page.title)}">`,
-    `<meta name="twitter:description" content="${esc(page.description)}">`,
-    ...(page.image
-      ? [`<meta property="og:image" content="${esc(page.image)}">`, `<meta name="twitter:image" content="${esc(page.image)}">`]
-      : []),
-    jsonLd(page.ld),
-  ].join('\n    ')
-  // The default image's width and height go too: the page's own picture has other sizes.
-  const ownImage = (html: string) =>
-    page.image ? html.replace(/<meta (?:property="og:image[^"]*"|name="twitter:image")[^>]*>\s*/g, '') : html
-  return ownImage(indexHtml)
-    // Every replacement is a function: in a replacement string, "$1" or "$&" in a title or an excerpt
-    // (a price, say) would be read as a command.
-    .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(page.title)}</title>`)
-    .replace(/(<meta\s+name="description"\s+content=")[^"]*(")/, (_, open: string, close: string) => open + esc(page.description) + close)
-    .replace(/<meta property="og:(?:type|url|title|description)"[^>]*>\s*/g, '')
-    .replace(/<meta name="twitter:(?:title|description)"[^>]*>\s*/g, '')
-    .replace('</head>', () => `    ${head}\n  </head>`)
-    .replace('<div id="root"></div>', () => `<div id="root">${page.html}</div>`)
+export function creativeWorkLd(page: { name: string; description: string | undefined; url: string; tags?: string[] }, lang: Lang) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: page.name,
+    description: page.description,
+    inLanguage: IN_LANGUAGE[lang],
+    url: page.url,
+    mainEntityOfPage: page.url,
+    creator: PERSON,
+    ...(page.tags?.length ? { keywords: page.tags.join(', ') } : {}),
+  }
 }
+
+export function collectionLd(meta: { title: string; description: string }, cases: { name: string; href: string }[], lang: Lang) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: meta.title,
+    description: meta.description,
+    url: pageUrl('/projects', lang),
+    inLanguage: IN_LANGUAGE[lang],
+    author: PERSON,
+    hasPart: cases.map((w) => ({ '@type': 'CreativeWork', name: w.name, url: pageUrl(w.href, lang) })),
+  }
+}
+
+export const profileLd = (lang: Lang) => ({
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  url: pageUrl('/about', lang),
+  inLanguage: IN_LANGUAGE[lang],
+  mainEntity: PERSON,
+})
 
 /**
- * Case pages for sitemap and llms.txt: the client cases (R2 work items, at their /projects links), then the labs.
+ * Pages for sitemap and llms.txt: the client cases (R2 work items, at their /projects links), then the labs.
  * @param work  the work section the items came from, so a project with a page written in the editor is found
  */
-export const siteCases = (workItems: WorkItem[], work?: WorkData): CaseLink[] => [
+export const siteCases = (workItems: WorkItem[], work?: WorkData, lang: Lang = 'zh'): CaseLink[] => [
   ...workItems
     .filter((w) => !w.draft)
-    .map((w) => ({ ...w, caseHref: projectLink(w, work) }))
+    .map((w) => ({ ...w, caseHref: projectLink(w, work), english: projectInEnglish(work, w.id) }))
     // A card that only links to another site has no page here
     .filter((w) => w.caseHref.startsWith('/')),
-  ...labLinks('zh'),
+  ...labLinks(lang).map((l) => ({ ...l, english: true })),
 ]
 
-/** Everything a project page written in the editor needs for its HTML head and body. Null for any other slug. */
-export function projectPage(work: WorkData | undefined, slug: string): SeoPage | null {
-  const item = work?.items?.find((w) => w.id === slug && !w.draft)
-  const body = projectBody(work, slug, 'zh')
-  if (!item || !body) return null
-  const url = `${SITE_URL}/projects/${slug}`
-  const title = projectTitle(item)
-  const doc = getDoc(body)
-  const description = docText(doc).slice(0, 120) || item.client
-  return {
-    title: `${title} · Projects · TEKUEI`,
-    description,
-    url,
-    type: 'article',
-    image: imageUrl(item.thumbImage?.url) ?? firstImage(doc),
-    ld: {
-      '@context': 'https://schema.org',
-      '@type': 'CreativeWork',
-      name: title,
-      description,
-      inLanguage: 'zh-Hant',
-      url,
-      mainEntityOfPage: url,
-      creator: PERSON,
-      ...(item.tags?.length ? { keywords: item.tags.join(', ') } : {}),
-    },
-    html:
-      `<article><h1>${esc(title)}</h1>` +
-      (item.client ? `<p>${esc(item.client)}</p>` : '') +
-      `${docHtml(doc)}<p><a href="/projects">Projects</a></p></article>`,
-  }
+const ESC: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }
+const esc = (s: unknown): string => String(s ?? '').replace(/[&<>"']/g, (c) => ESC[c])
+
+interface SitemapPage {
+  path: string
+  lastmod?: string
+  /** The page has an English version of its own (an untranslated one points search engines at the Chinese). */
+  english: boolean
 }
 
-const paragraphs = (lines: (string | undefined)[]) => lines.filter(Boolean).map((t) => `<p>${esc(t)}</p>`).join('')
+/** One <url> per address, each naming the other language (Google: every language version lists all of them). */
+export function sitemapXml(journal: JournalData, cases: CaseLink[], aboutEnglish: boolean): string {
+  const pages: SitemapPage[] = [
+    { path: '/', english: true },
+    { path: '/journal', english: true },
+    { path: '/projects', english: true },
+    { path: '/about', english: aboutEnglish },
+    ...journal.posts.zh.map((p) => ({ path: `/journal/${p.slug}`, lastmod: isoDate(p.updated || p.date), english: postInEnglish(journal, p.slug) })),
+    ...cases.map((w) => ({ path: w.caseHref, english: w.english })),
+  ]
+  const urls = pages.flatMap((page) => {
+    const zh = pageUrl(page.path, 'zh')
+    const en = pageUrl(page.path, 'en')
+    const links =
+      `<xhtml:link rel="alternate" hreflang="zh-Hant" href="${esc(zh)}"/>` +
+      (page.english ? `<xhtml:link rel="alternate" hreflang="en" href="${esc(en)}"/>` : '') +
+      `<xhtml:link rel="alternate" hreflang="x-default" href="${esc(zh)}"/>`
+    const lastmod = page.lastmod ? `<lastmod>${esc(page.lastmod)}</lastmod>` : ''
+    return (page.english ? [zh, en] : [zh]).map((loc) => `<url><loc>${esc(loc)}</loc>${lastmod}${links}</url>`)
+  })
+  return (
+    '<?xml version="1.0" encoding="UTF-8"?>' +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urls.join('')}</urlset>`
+  )
+}
 
 /**
- * A case or lab whose page is written in code: the text of its card, or of its lab entry.
- * The old case files also import videos, which a Pages Function cannot bundle, so their long copy is not used.
+ * llms.txt (llmstxt.org): a Markdown map of the site for AI readers, the Chinese pages and then the English ones.
+ * @param enCases  siteCases in English
  */
-export function casePage(item: CaseLink): SeoPage {
-  const url = `${SITE_URL}${item.caseHref}`
-  const lab = item.caseHref.startsWith('/labs/') ? LAB_BY_ID[item.id]?.zh : null
-  const title = lab?.title ?? projectTitle(item)
-  const description = lab?.summary ?? ((item.descriptionLines ?? []).join('') || item.client)
-  const tags = lab?.tags ?? item.tags ?? []
-  return {
-    title: `${title} · ${lab ? 'Labs' : 'Projects'} · TEKUEI`,
-    description,
-    url,
-    type: 'article',
-    ld: {
-      '@context': 'https://schema.org',
-      '@type': 'CreativeWork',
-      name: title,
-      description,
-      inLanguage: 'zh-Hant',
-      url,
-      mainEntityOfPage: url,
-      creator: PERSON,
-      ...(tags.length ? { keywords: tags.join(', ') } : {}),
-    },
-    html:
-      `<article><h1>${esc(title)}</h1>` +
-      paragraphs(lab ? [lab.subtitle, ...lab.intro] : [item.client, description]) +
-      (tags.length ? `<p>${esc(tags.join('、'))}</p>` : '') +
-      `<p><a href="/projects">Projects</a></p></article>`,
-  }
-}
-
-/** @param cases  siteCases: what the Projects list shows, with a page here */
-export function projectsIndexPage(cases: CaseLink[], meta: { title: string; description: string; heading: string }): SeoPage {
-  const url = `${SITE_URL}/projects`
-  const items = cases
-    .map((w) => `<li><a href="${esc(w.caseHref)}">${esc(projectTitle(w))}</a><p>${esc(w.client)}</p></li>`)
-    .join('')
-  return {
-    title: meta.title,
-    description: meta.description,
-    url,
-    type: 'website',
-    ld: {
-      '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      name: meta.title,
-      description: meta.description,
-      url,
-      inLanguage: 'zh-Hant',
-      author: PERSON,
-      hasPart: cases.map((w) => ({ '@type': 'CreativeWork', name: projectTitle(w), url: `${SITE_URL}${w.caseHref}` })),
-    },
-    html: `<main><h1>${esc(meta.heading)}</h1><p>${esc(meta.description)}</p><ul>${items}</ul></main>`,
-  }
-}
-
-/** The About page: R2's `aboutPage` body, else the bundled default, and the clients named under it. */
-export function aboutPage(r2Data: SiteData | null): SeoPage {
-  const url = `${SITE_URL}/about`
-  const doc = getDoc(r2Data?.aboutPage?.zh ?? getDefaultAbout().zh)
-  const meta = ABOUT_META.zh
-  const clients = ABOUT_CLIENTS.flat().map((c) => `<li>${esc(c.zh)}</li>`).join('')
-  return {
-    title: meta.documentTitle,
-    description: docText(doc).slice(0, 120),
-    url,
-    type: 'profile',
-    image: firstImage(doc),
-    ld: { '@context': 'https://schema.org', '@type': 'ProfilePage', url, inLanguage: 'zh-Hant', mainEntity: PERSON },
-    html: `<main><h1>${esc(meta.title)}</h1>${docHtml(doc)}<h2>${esc(meta.clients)}</h2><ul>${clients}</ul></main>`,
-  }
-}
-
-const STATIC_PATHS = ['/', '/journal', '/projects', '/about']
-
-export function sitemapXml(journal: JournalData, workItems: Pick<WorkItem, 'caseHref'>[]): string {
-  const rows: { loc: string; lastmod?: string }[] = [
-    ...STATIC_PATHS.map((p) => ({ loc: `${SITE_URL}${p}` })),
-    ...journal.posts.zh.map((p) => ({ loc: `${SITE_URL}/journal/${p.slug}`, lastmod: isoDate(p.updated || p.date) })),
-    ...workItems.filter((w) => w.caseHref).map((w) => ({ loc: `${SITE_URL}${w.caseHref}` })),
-  ]
-  const urls = rows
-    .map((r) => `<url><loc>${esc(r.loc)}</loc>${r.lastmod ? `<lastmod>${esc(r.lastmod)}</lastmod>` : ''}</url>`)
-    .join('')
-  return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`
-}
-
-/** llms.txt (llmstxt.org): a Markdown map of the site for AI readers. */
-export function llmsTxt(journal: JournalData, workItems: Pick<WorkItem, 'caseHref' | 'title' | 'titleEmWord' | 'client'>[]): string {
-  const posts = journal.posts.zh.map((p) => `- [${p.title}](${SITE_URL}/journal/${p.slug}): ${p.excerpt}`)
-  const cases = workItems.filter((w) => w.caseHref).map(
-    (w) => `- [${[w.titleEmWord, w.title].filter(Boolean).join(' ')}](${SITE_URL}${w.caseHref}): ${w.client}`,
-  )
+export function llmsTxt(journal: JournalData, cases: CaseLink[], enCases: CaseLink[], aboutEnglish: boolean): string {
+  const english = journal.posts.en.filter((p) => postInEnglish(journal, p.slug))
   return [
     `# ${SITE_NAME}`,
     '',
-    '> 遵循內心並實踐創造，追求卓越，為熱愛而學習，勇於面對未知與挑戰。',
+    `> ${SITE_DESCRIPTION}`,
     '',
     `Wade：${PERSON.description}`,
     '',
     `主題：${PERSON.knowsAbout.join('、')}`,
     '',
     '## Journal',
-    ...posts,
+    ...journal.posts.zh.map((p) => `- [${p.title}](${pageUrl(`/journal/${p.slug}`, 'zh')}): ${p.excerpt}`),
     '',
     '## Projects',
-    ...cases,
+    ...cases.map((w) => `- [${projectTitle(w)}](${pageUrl(w.caseHref, 'zh')}): ${w.client}`),
     '',
     '## Pages',
-    `- [About](${SITE_URL}/about)`,
+    `- [About](${pageUrl('/about', 'zh')})`,
     '',
+    '## English',
+    '',
+    '### Journal',
+    ...english.map((p) => `- [${p.title}](${pageUrl(`/journal/${p.slug}`, 'en')}): ${p.excerpt}`),
+    '',
+    '### Projects',
+    ...enCases.filter((w) => w.english).map((w) => `- [${projectTitle(w)}](${pageUrl(w.caseHref, 'en')}): ${w.client}`),
+    '',
+    ...(aboutEnglish ? ['### Pages', `- [About](${pageUrl('/about', 'en')})`, ''] : []),
   ].join('\n')
 }
 
-// Old links that are already in search indexes. A Pages Function answers a path before public/_redirects
-// is read, so the redirects for /cases/* are here: the two labs went to /labs/, every case to /projects/.
+// Old links that are already in search indexes: the two labs went to /labs/, every other case to /projects/.
 export const MOVED: Record<string, string> = {
   '/cases/living-portrait': '/labs/living-portrait',
   '/cases/falling-figure': '/labs/falling-figure',
-}
-
-/**
- * Pages Function body for /projects/:slug, /labs/:slug and the old /cases/:slug: the SPA's index.html, with status 404 when no
- * such page exists. The app draws its own "not found" either way; the status is for crawlers.
- * @param workItems  the client cases; the labs are added here
- */
-export async function serveCase({ request, env }: SeoContext, workItems: WorkItem[]): Promise<Response> {
-  const url = new URL(request.url)
-  const path = url.pathname.replace(/\/$/, '')
-  const moved = MOVED[path]
-  if (moved) return Response.redirect(new URL(moved, url).href, 301)
-  if (path.startsWith('/cases/')) return Response.redirect(new URL(projectHref(path), url).href, 301)
-  const shell = await env.ASSETS.fetch(new URL('/', url))
-  if (!shell.ok) return shell
-  const item = siteCases(workItems).find((w) => w.caseHref === path)
-  if (item) return rendered(shell, casePage(item))
-  return new Response(shell.body, {
-    status: 404,
-    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
-  })
-}
-
-/** Pages Function body: the SPA's index.html with one page rendered into it. */
-export async function servePage(
-  { request, env }: SeoContext,
-  build: (journal: JournalData, site: SiteData | null) => SeoPage | null,
-): Promise<Response> {
-  const data = readSiteData(env.BUCKET) // runs while the shell loads; it catches its own errors
-  const shell = await env.ASSETS.fetch(new URL('/', request.url))
-  if (!shell.ok) return shell
-  const site = await data
-  const page = build(siteJournal(site), site)
-  // Unknown slug: the app still renders its own "not found", but crawlers get a 404 instead of an empty 200.
-  // Not cached: a slug can be missing only because R2 was unreachable for a moment.
-  if (!page) {
-    return new Response(shell.body, {
-      status: 404,
-      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
-    })
-  }
-  return rendered(shell, page)
-}
-
-const rendered = async (shell: Response, page: SeoPage) =>
-  new Response(injectPage(await shell.text(), page), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=300' },
-  })
-
-/**
- * Pages Function body for /projects/:slug. A project written in the editor is rendered into the HTML,
- * like a journal post. Any other slug goes to serveCase: the cases whose pages are code, or a 404.
- * @param bundled  the work items to use when R2 has none
- */
-export async function serveProject(ctx: SeoContext, bundled: WorkItem[]): Promise<Response> {
-  const work = (await readSiteData(ctx.env.BUCKET))?.work
-  const slug = ctx.params?.slug
-  const page = typeof slug === 'string' ? projectPage(work, slug) : null
-  if (!page) return serveCase(ctx, work?.items ?? bundled)
-  const shell = await ctx.env.ASSETS.fetch(new URL('/', ctx.request.url))
-  return shell.ok ? rendered(shell, page) : shell
 }

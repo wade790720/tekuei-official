@@ -54,13 +54,8 @@ describe('Worker API table', () => {
     assert.equal(await res.text(), '"png"')
   })
 
-  it('GET /sitemap.xml and /llms.txt reach their functions', async () => {
-    const sitemap = await call('GET', '/sitemap.xml')
-    assert.equal(sitemap.headers.get('Content-Type'), 'application/xml; charset=utf-8')
-    assert.match(await sitemap.text(), /<urlset/)
-    const llms = await call('GET', '/llms.txt')
-    assert.equal(llms.headers.get('Content-Type'), 'text/markdown; charset=utf-8')
-    assert.match(await llms.text(), /tekuei\.com/)
+  it('leaves /sitemap.xml and /llms.txt to React Router', () => {
+    for (const path of ['/sitemap.xml', '/llms.txt']) assert.equal(routeApi(new Request(`https://tekuei.com${path}`), env()), undefined)
   })
 
   it('answers 405 to a method the handler does not export', async () => {
@@ -72,7 +67,6 @@ describe('Worker API table', () => {
       ['DELETE', '/api/data'],
       ['PATCH', '/api/data'],
       ['PUT', '/api/file/images/a.png'],
-      ['POST', '/sitemap.xml'],
     ]) {
       assert.equal((await call(method, path)).status, 405, `${method} ${path}`)
     }

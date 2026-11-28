@@ -2,6 +2,7 @@
 // edited in place like a Journal post. This file is only the default before R2 has one.
 // Not `about`: that key still holds the old About copy, and a save would replace it.
 // Facts come from Wade's CV (src/labs/falling-figure/content.ts). Lines in 【】 are placeholders.
+import { hasBody } from '../lib/richText.ts'
 import type { AboutPageData, Doc } from '../lib/siteData.ts'
 
 export const ABOUT_META = {
@@ -84,3 +85,6 @@ const DEFAULT_ABOUT: AboutPageData = {
 
 export const cloneAbout = (v: AboutPageData): AboutPageData => structuredClone(v)
 export const getDefaultAbout = (): AboutPageData => DEFAULT_ABOUT
+
+/** About has an English version of its own. Without one /en/about shows the Chinese text. */
+export const aboutInEnglish = (about: AboutPageData): boolean => hasBody(about.en)

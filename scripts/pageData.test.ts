@@ -4,7 +4,7 @@ import { RouterContextProvider } from 'react-router'
 import { cloneJournal } from '../src/data/journal.ts'
 import { siteDefaults } from '../src/data/siteDefaults.ts'
 import { cf, readSite } from '../src/lib/cf.server.ts'
-import { hasEnglish, langOf, localePath, otherLangPath, samePage, stripLang } from '../src/lib/localePath.ts'
+import { hasEnglish, langOf, localePath, otherLangPath, samePage, servedPath, stripLang } from '../src/lib/localePath.ts'
 import { journalList, journalPost, projectList, projectPage } from '../src/lib/pageData.ts'
 import { LANGS } from '../src/lib/siteData.ts'
 import type { SiteData, WorkData } from '../src/lib/siteData.ts'
@@ -126,4 +126,18 @@ it('localePath: English under /en, one-URL pages and outside links unchanged', (
   assert.equal(otherLangPath('/checkin'), null)
   assert.ok(samePage('/journal', '/en/journal'))
   assert.ok(!samePage('/journal', '/en/journal/abc'))
+})
+
+it("servedPath: no trailing slash, the site's own words in lower case, slugs as they are", () => {
+  assert.equal(servedPath('/'), '/')
+  assert.equal(servedPath('/en/'), '/en')
+  assert.equal(servedPath('/journal//'), '/journal')
+  assert.equal(servedPath('/EN/Journal'), '/en/journal')
+  assert.equal(servedPath('/En/about'), '/en/about')
+  assert.equal(servedPath('/PROJECTS/Matsu-Biennial'), '/projects/Matsu-Biennial')
+  assert.equal(servedPath('/labs/living-portrait/LIVE'), '/labs/living-portrait/live')
+  assert.equal(servedPath('/journal/respect-the-effort'), '/journal/respect-the-effort')
+  assert.equal(servedPath('/en/journal/About'), '/en/journal/About', 'a slug that is one of the words keeps its case')
+  assert.equal(servedPath('/Sitemap.xml'), '/sitemap.xml')
+  assert.equal(servedPath('/LLMS.TXT'), '/llms.txt')
 })

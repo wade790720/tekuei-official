@@ -11,11 +11,14 @@ import { docText, getDoc } from '../lib/richText.ts'
 import { useJournalContent } from '../context/journal.ts'
 import { useAdmin } from '../context/admin.ts'
 import { getAdjacentPosts, getJournalPost, JOURNAL_POST_LABELS, postTags } from '../data/journal.ts'
-import type { ReadableJournal } from '../data/journal.ts'
+import type { ReadableJournal, ReadablePost } from '../data/journal.ts'
+import type { Body } from '../lib/siteData.ts'
 import { useLang, useLocalePath } from '../i18n'
 import '../styles/work.css'
 import '../styles/journal.css'
 import { DefaultHead } from './DefaultHead.tsx'
+import { PageHead } from './PageHead.tsx'
+import { firstImage, pageUrl, postLd } from '../lib/seo.ts'
 
 // Only Wade edits, so the panel, SidePanel and cms.css load in edit mode, not for every visitor.
 const JournalPostEditPanel = lazy(() => import('./journal/JournalEditPanel.tsx').then((m) => ({ default: m.JournalPostEditPanel })))
@@ -56,8 +59,7 @@ export default function JournalPostPage({ journal: reader }: { journal: Readable
 
   return (
     <div className="journal-page journal-page--post">
-      <title>{`${post.title} · Journal · TEKUEI`}</title>
-      <meta name="description" content={post.excerpt || docText(getDoc(content)).slice(0, 120)} />
+      <PostHead post={post} content={content} slug={slug} english={!journal.posts.en.find((p) => p.slug === slug)?.untranslated} />
       <main>
       <article className="journal-post" lang={post.untranslated ? 'zh-Hant' : undefined}>
         <header className="journal-post__header">
@@ -138,6 +140,28 @@ export default function JournalPostPage({ journal: reader }: { journal: Readable
  * returns with its tag filter and scroll position. `fromList` counts the posts read since the list
  * (previous / next add one). Opened from anywhere else, it is a plain link to /journal.
  */
+/**
+ * @param english  postInEnglish, read from the English list (an untranslated post is marked there), so the Chinese page
+ *   knows too
+ */
+function PostHead({ post, content, slug, english }: { post: ReadablePost; content: Body; slug: string; english: boolean }) {
+  const { lang } = useLang()
+  const doc = getDoc(content)
+  const image = firstImage(doc)
+  const shown = english ? lang : 'zh'
+  return (
+    <PageHead
+      title={`${post.title} · Journal · TEKUEI`}
+      description={post.excerpt || docText(doc).slice(0, 120)}
+      path={`/journal/${slug}`}
+      type="article"
+      image={image}
+      ld={postLd(post, shown, pageUrl(`/journal/${slug}`, shown), image)}
+      english={english}
+    />
+  )
+}
+
 function BackLink({ className, children }: { className: string; children: ReactNode }) {
   const navigate = useNavigate()
   const localePath = useLocalePath()

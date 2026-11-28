@@ -37,7 +37,7 @@ export function journalPost(site: SiteData, slug: string): ReadableJournal | nul
 }
 
 /** The work section as readers see it: the projects that began as code added, drafts left out. */
-const readerWork = (site: SiteData): WorkData => publishedWork(cloneWork(site.work ?? getDefaultWork()))
+export const readerWork = (site: SiteData): WorkData => publishedWork(cloneWork(site.work ?? getDefaultWork()))
 
 /** The Projects list: the cards, each already pointing where it goes, without the pages' bodies. */
 export function projectList(site: SiteData): WorkData {

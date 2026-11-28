@@ -7,6 +7,8 @@ import { useAdmin } from '../context/admin.ts'
 import { useLang, useLocalePath } from '../i18n'
 import { mountGlyphField } from '../lib/glyphField.ts'
 import { SiteFooter } from './SiteFooter.tsx'
+import { PageHead } from './PageHead.tsx'
+import { blogLd } from '../lib/seo.ts'
 import type { ReadableJournal, ReadablePost } from '../data/journal.ts'
 import type { JournalPost } from '../lib/siteData.ts'
 import '../styles/work.css'
@@ -41,8 +43,7 @@ export default function JournalListPage({ journal }: { journal: ReadableJournal 
 
   return (
     <div className="journal-page">
-      <title>{meta.title}</title>
-      <meta name="description" content={meta.description} />
+      <PageHead title={meta.title} description={meta.description} path="/journal" ld={blogLd(meta, allPosts, lang)} />
       <main>
       <header className="journal-header">
         <canvas className="journal-header__glyphs" ref={glyphs} aria-hidden />
