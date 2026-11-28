@@ -19,7 +19,7 @@ TEKUEI 德溎，Wade 的個人網站。文章是主角，案例第二，聯絡�
 | 語言 | 中文在 `/`，英文在 `/en`。`localStorage` 的 `lang` 只記讀者選過的語言 |
 | 動畫 | 原生 Canvas 2D、IntersectionObserver。Falling Figure lab 用 Lenis |
 
-正式站 tekuei.com 還是 `main` 上的舊 Pages 版本，新版在整合分支 `migrate/rr8`。合進 `main` 就會部署正式站，切換照 `docs/rr8-cutover.md`。
+正式站 tekuei.com 是 Worker `tekuei-official`，合進 `main` 就由 Workers Builds 自動部署。要先在測試站看，用 `npm run build:next` 加 `npx wrangler deploy` 部署到 `tekuei-next`。
 
 ## 指令
 

@@ -31,9 +31,9 @@ Wade 寫了十年程式，也做了兩年策展，辦過十場以上的展覽。
 
 ## Capabilities and Constraints
 
-- 技術：React Router 8 的 framework 模式（伺服器渲染）、Cloudflare Workers、R2。已在整合分支 `migrate/rr8` 完成，正式站 tekuei.com 還是舊的 Pages 版本，切換步驟見 `docs/rr8-cutover.md`。
+- 技術：React Router 8 的 framework 模式（伺服器渲染）、Cloudflare Workers、R2。
 - 保留 LIFF 報到功能和 R2 後端。
-- 語言放進網址：中文在 `/`，英文在 `/en`。已在 `migrate/rr8` 完成，和上一條一起在切換時上線。
+- 語言放進網址：中文在 `/`，英文在 `/en`。
 - SEO、AEO、GEO 都要做，每頁完整內容要在 HTML 裡。
 - 文章編輯器用 Tiptap，所見即所得，存成 Tiptap 的 JSON 文件，有草稿和發布狀態。
 - 案例用圖片為主的短格式：封面、一句話、年份和角色、一組大圖、最多三條重點、選填外部連結。
