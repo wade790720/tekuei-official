@@ -11,7 +11,7 @@
 - 遷移的程式碼全部在整合分支 `migrate/rr8`（目前在 `363dcc3`），還沒有進 `main`。
 - 正式站 tekuei.com 沒有變，仍是 Pages 上的舊 SPA。Pages 連著 Git，`main` 有任何變動就會重新部署，framework 模式的程式碼會讓 Pages 的建置失敗，所以不能先合進 `main`。
 - 切換之前，正式站的 `/api/data` 仍然公開，草稿也讀得到。這件事要到切換之後才會改變。
-- 這次遷移沒有部署任何東西，沒有改網域或 DNS，也沒有寫入正式的 R2。每一輪有請求正式站的驗收，前後量到的 `/api/data` ETag 都是 `6c8b4d864c0db9d094956b14cfd2e519`。
+- 這次遷移沒有部署任何東西，沒有改網域或 DNS，每一輪有請求正式站的驗收都只發 GET，前後量到的 `/api/data` ETag 都是 `6c8b4d864c0db9d094956b14cfd2e519`，`data.json` 沒有變。
 - 切換要由 Wade 操作，步驟寫在 `migrate/rr8` 的 `docs/rr8-cutover.md`。
 
 ## 合併了哪些 PR
@@ -34,7 +34,7 @@
 
 ## 讀者會看到的改變
 
-- 英文有自己的網址，例如 `/en/journal`，用英文搜尋進來的人直接看到英文，不用先按語言按鈕。舊的 `localStorage` 語言設定仍然有效，記住英文的讀者第一次打開中文網址時，頁面載入後由瀏覽器換到對應的英文網址，伺服器不轉址。
+- 英文有自己的網址，例如 `/en/journal`，用英文搜尋進來的人直接看到英文，不用先按語言按鈕。舊的 `localStorage` 語言設定仍然有效，記住英文的讀者打開中文網址時，頁面載入後由瀏覽器換到對應的英文網址，伺服器不轉址。
 - 還沒翻成英文的文章、專案和 About，英文網址顯示中文內文，canonical 指向中文網址，sitemap 和 hreflang 也不列它的英文版。
 - 每一頁的 HTML 一開始就有完整的內文和 head，不跑 JavaScript 也讀得到。
 - 讀者不再讀 `/api/data`。每一頁只拿自己的資料，例如 Journal 列表約 1.3 kB，整份 `data.json` 是 104 kB。
@@ -76,8 +76,8 @@
 - `/api/translate`：測了會用掉正式的 Workers AI 額度。
 - 登入失效時（401）面板顯示的訊息：只讀了程式碼。
 - 新舊內文的純文字比對：沒有做，只比對了 DOM 快照。
-- 每頁邊緣的放大截圖：#5 抽看了幾張，之後沒有重拍。
-- 瀏覽器：只用 Chrome 測，沒有測 Safari、Firefox 和手機實機。驗收時內建瀏覽器面板是隱藏的，所以全部改用 headless Chrome，沒有用肉眼看畫面。減少動態效果是用 CDP 模擬的，沒有在系統設定裡打開。
+- 每頁邊緣的放大截圖：#9 和 #11 用程式檢查了 9 頁中英文在 375 和 2560px 的邊緣，也拍了兩倍放大的截圖，但只用眼睛抽看了幾張，#12 之後沒有重拍。
+- 瀏覽器：只用 Chrome 測，沒有測 Safari、Firefox 和手機實機。從 #5 起，驗收時內建瀏覽器面板是隱藏的，所以改用 headless Chrome，沒有用肉眼看畫面，#4 則用內建瀏覽器。減少動態效果是用 CDP 或替換 `matchMedia` 模擬的，沒有在系統設定裡打開。
 
 ## Issue
 
@@ -93,14 +93,14 @@
 
 ## 要 Wade 做的事
 
-1. 照 `docs/rr8-cutover.md`（在 `migrate/rr8`）切換。`functions/api/data.ts` 由新舊兩邊共用，所以合併 `migrate/rr8` 到 `main` 之前，一定要先停掉 Pages 的自動部署（清單第 5 步），否則 Pages 會部署要密碼的 `GET /api/data`，舊站的讀者頁面會讀不到資料。清單裡另外幾件要先知道的事：
+1. 照 `docs/rr8-cutover.md`（在 `migrate/rr8`）切換。`functions/api/data.ts` 由新舊兩邊共用，所以合併 `migrate/rr8` 到 `main` 之前，一定要先停掉 Pages 的自動部署（清單第 5 步），否則合併後 Pages 會用新程式建置。現在這個建置會失敗，正式站會停在上一次的部署，但只要 Pages 的建置設定改過、讓建置成功，Pages 就會部署要密碼的 `GET /api/data`，舊站的讀者頁面會讀不到資料。清單裡另外幾件要先知道的事：
+   - 第 3、4 步：在停掉自動部署和合併之前，先部署 `tekuei-next`，用 `wrangler tail` 確認每頁的 CPU 時間在 10 ms 以內，超過時再考慮 Cache API 或付費方案。
    - 第 6 步要在 Worker `tekuei-official` 設定和 Pages 相同的 `ADMIN_SECRET`。
    - 第 7 步連上 Workers Builds 時要關掉 preview builds，因為它們可能綁到正式的 `tekuei-cms`。
    - 第 9 步刪掉 CNAME 之後到新網域生效之前，網站會短暫連不上，要選沒人在看的時段。
-   - Pages 專案至少保留 30 天，回復時要用。
-2. 切換前先部署 `tekuei-next`，用 `wrangler tail` 確認每頁的 CPU 時間在 10 ms 以內，超過時再考慮 Cache API 或付費方案。
-3. 切換後用手機在 LINE 裡測 `/checkin`，在 Search Console 送出新的 sitemap，並檢查 hreflang。
-4. 決定 #15 第 2 項要不要改。
+   - Pages 專案至少保留 30 天，回復時要用。回復要照清單的順序：先中斷 Workers Builds 和 Git 的連結，網域移回 Pages 之後才 revert，最後才恢復 Pages 的自動部署。
+2. 切換後用手機在 LINE 裡測 `/checkin`，在 Search Console 送出新的 sitemap，並檢查 hreflang。
+3. 決定 #15 第 2 項要不要改。
 
 ## 決策紀錄
 
