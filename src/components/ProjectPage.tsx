@@ -18,6 +18,8 @@ import type { Doc, WorkData } from '../lib/siteData.ts'
 import '../styles/journal.css'
 import '../styles/project.css'
 import { DefaultHead } from './DefaultHead.tsx'
+import { PageHead } from './PageHead.tsx'
+import { creativeWorkLd, firstImage, imageUrl, pageUrl } from '../lib/seo.ts'
 
 // Only Wade edits, so Tiptap and the panel load in edit mode, not for every visitor.
 const Editor = lazy(() => import('./Editor.tsx').then((m) => ({ default: m.Editor })))
@@ -64,11 +66,19 @@ export default function ProjectPage({ work }: { work: WorkData }) {
   const saved = <RichText doc={withProjectVideo(doc, slug, lang)} />
   const cover = projectCover(item)
   const link = safeHref(item.link)
+  const description = docText(doc).slice(0, 120) || item.client
 
   return (
     <div className="journal-page journal-page--post">
-      <title>{`${title} · Projects · TEKUEI`}</title>
-      <meta name="description" content={docText(doc).slice(0, 120) || item.client} />
+      <PageHead
+        title={`${title} · Projects · TEKUEI`}
+        description={description}
+        path={`/projects/${slug}`}
+        type="article"
+        image={imageUrl(cover) ?? firstImage(doc)}
+        ld={creativeWorkLd({ name: title, description, url: pageUrl(`/projects/${slug}`, untranslated ? 'zh' : lang), tags: item.tags }, untranslated ? 'zh' : lang)}
+        chineseOnly={untranslated}
+      />
       <main>
         {cover ? <ProjectHero cover={cover} num={`${t.num} ${projectNumber(content.items, slug)}`} title={title} facts={projectFacts(item, lang)} /> : null}
         <article className={`journal-post project-post${cover ? ' project-post--cover' : ''}`} lang={untranslated ? 'zh-Hant' : undefined}>

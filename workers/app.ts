@@ -1,5 +1,6 @@
 import { createRequestHandler, RouterContextProvider } from 'react-router'
 import { cf } from '../src/lib/cf.server.ts'
+import { servedPath } from '../src/lib/localePath.ts'
 import { onRequest as cors } from '../functions/_middleware.ts'
 import { routeApi } from './api.ts'
 
@@ -12,10 +13,11 @@ export default {
       next: () => {
         const api = routeApi(request, env)
         if (api) return api
-        // Page URLs have no trailing slash: /en/ and /journal/ are the same pages as /en and /journal.
+        // /en/ and /EN/Journal are the same pages as /en and /en/journal: one URL each.
         const url = new URL(request.url)
-        if (url.pathname.length > 1 && url.pathname.endsWith('/')) {
-          url.pathname = url.pathname.replace(/\/+$/, '') || '/'
+        const path = servedPath(url.pathname)
+        if (path !== url.pathname) {
+          url.pathname = path
           return Promise.resolve(Response.redirect(url.href, 301))
         }
         const context = new RouterContextProvider()

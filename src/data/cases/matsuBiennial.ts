@@ -16,7 +16,6 @@ const VIDEOS = [
 
 const ZH: CaseStudy = {
   slug: 'matsu-biennial',
-  documentTitle: 'TEKUEI · Matsu Biennial',
   hero: {
     num: 'CASE 01',
     titleEm: 'Matsu',
@@ -96,7 +95,6 @@ const ZH: CaseStudy = {
 
 const EN: CaseStudy = {
   slug: 'matsu-biennial',
-  documentTitle: 'TEKUEI · Matsu Biennial',
   hero: {
     num: 'CASE 01',
     titleEm: 'Matsu',

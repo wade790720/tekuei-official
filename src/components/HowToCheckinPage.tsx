@@ -8,6 +8,7 @@ import {
   HOW_TO_CHECKIN_STEPS,
 } from '../data/howToCheckin.ts'
 import { useLang } from '../i18n'
+import { PageHead } from './PageHead.tsx'
 import '../styles/howToCheckin.css'
 
 type Step = (typeof HOW_TO_CHECKIN_STEPS)['zh'][number]
@@ -109,8 +110,7 @@ export default function HowToCheckinPage() {
 
   return (
     <div className="howto-checkin-page">
-      <title>{meta.title}</title>
-      <meta name="description" content={meta.description} />
+      <PageHead title={meta.title} description={meta.description} path="/how-to-checkin" />
       <div className="howto-checkin-content">
         <header className="howto-checkin-hero">
           <div className="howto-checkin-hero__inner">

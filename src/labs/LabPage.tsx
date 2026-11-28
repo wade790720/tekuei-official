@@ -14,6 +14,8 @@ import { LAB_BY_ID, LAB_LABELS, LABS, labHref, liveHref } from './index.ts'
 import { LAB_THUMBS } from './media.ts'
 import { LAB_PROMPTS } from './prompts.ts'
 import { useLang, useLocalePath } from '../i18n'
+import { PageHead } from '../components/PageHead.tsx'
+import { creativeWorkLd, pageUrl } from '../lib/seo.ts'
 
 /**
  * One lab, laid out like a Framer Marketplace component page: title and actions, a playable preview,
@@ -33,8 +35,13 @@ export default function LabPage() {
 
   return (
     <>
-      <title>{`${text.title} · TEKUEI`}</title>
-      <meta name="description" content={text.summary} />
+      <PageHead
+        title={`${text.title} · Labs · TEKUEI`}
+        description={text.summary}
+        path={labHref(item.id)}
+        type="article"
+        ld={creativeWorkLd({ name: text.title, description: text.summary, url: pageUrl(labHref(item.id), lang), tags: text.tags }, lang)}
+      />
       <main className="lab">
         <header className="lab__head">
           <Breadcrumbs label={labels.crumbs} className="lab__crumbs">

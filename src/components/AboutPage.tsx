@@ -1,6 +1,8 @@
 import { lazy, Suspense, useEffect, useRef } from 'react'
 import { RichText } from './RichText.tsx'
 import { Marquee } from './Marquee.tsx'
+import { PageHead } from './PageHead.tsx'
+import { firstImage, profileLd } from '../lib/seo.ts'
 import { SiteFooter } from './SiteFooter.tsx'
 import { useAdmin } from '../context/admin.ts'
 import { useCmsSection } from '../hooks/useCmsSection.ts'
@@ -66,8 +68,15 @@ export default function AboutPage({ about }: { about: AboutPageData }) {
 
   return (
     <div className="journal-page journal-page--post about-page">
-      <title>{meta.documentTitle}</title>
-      <meta name="description" content={docText(doc).slice(0, 120)} />
+      <PageHead
+        title={meta.documentTitle}
+        description={docText(doc).slice(0, 120)}
+        path="/about"
+        type="profile"
+        image={firstImage(doc)}
+        ld={profileLd(untranslated ? 'zh' : lang)}
+        chineseOnly={untranslated}
+      />
       <div className="about-backdrop" aria-hidden>
         <canvas className="about-backdrop__haze" ref={haze} />
       </div>

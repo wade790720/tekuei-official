@@ -9,6 +9,7 @@ import { Gallery } from './Gallery.tsx'
 import { ScrollStack } from './ScrollStack.tsx'
 import { VideoPlayer } from './VideoPlayer.tsx'
 import { isBlockType, safeHref } from '../lib/richText.ts'
+import { useLocalePath } from '../i18n'
 import type { BlockType } from '../lib/richText.ts'
 import type { Doc } from '../lib/siteData.ts'
 
@@ -49,16 +50,28 @@ function wrapMark(mark: Mark, child: ReactNode, key: number): ReactNode {
     case 'link': {
       const href = safeHref(str(mark.attrs?.href))
       if (!href) return child
-      const external = /^https?:/i.test(href)
       return (
-        <a key={key} href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+        <BodyLink key={key} href={href}>
           {child}
-        </a>
+        </BodyLink>
       )
     }
     default:
       return child
   }
+}
+
+/** A link in the body. Wade writes site paths without a language, so on an English page they get /en. */
+function BodyLink({ href, children }: { href: string; children: ReactNode }) {
+  const localePath = useLocalePath()
+  if (/^https?:/i.test(href)) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    )
+  }
+  return <a href={localePath(href)}>{children}</a>
 }
 
 function inline(nodes: Doc[] = []) {

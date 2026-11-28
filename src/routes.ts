@@ -22,8 +22,9 @@ export default [
     // One URL each: the lab page's iframe, and the LIFF URL registered with LINE.
     route('labs/:slug/live', 'routes/lab-live.tsx'),
     route('checkin', 'routes/checkin.tsx'),
-    // workers/api.ts answers /sitemap.xml and /llms.txt before React Router.
     ...(process.env.NODE_ENV === 'development' ? [route('dev/component-library/:page?', 'routes/dev-library.tsx')] : []),
     route('*', 'routes/not-found.tsx'),
   ]),
+  route('sitemap.xml', 'routes/sitemap.ts'),
+  route('llms.txt', 'routes/llms.ts'),
 ] satisfies RouteConfig

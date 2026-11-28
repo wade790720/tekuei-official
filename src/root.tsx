@@ -13,36 +13,13 @@ import { htmlClassOf } from './lib/htmlClass.ts'
 import type { PageHandle } from './lib/htmlClass.ts'
 import { samePage, stripLang } from './lib/localePath.ts'
 import { mountReveal } from './lib/reveal.ts'
+import { ldJson, siteLd } from './lib/seo.ts'
 import { mountClickSounds } from './lib/uiSound.ts'
 
-// Site-wide defaults for social cards and search. Each page renders its own <title> and description (DefaultHead
-// when it has none), so neither is here.
-const SITE_LD = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'WebSite',
-      '@id': 'https://tekuei.com/#website',
-      name: 'TEKUEI 德溎',
-      url: 'https://tekuei.com/',
-      inLanguage: 'zh-Hant',
-      description: '遵循內心並實踐創造，追求卓越，為熱愛而學習，勇於面對未知與挑戰。',
-      author: { '@id': 'https://tekuei.com/#person' },
-    },
-    {
-      '@type': 'Person',
-      '@id': 'https://tekuei.com/#person',
-      name: 'Wade',
-      alternateName: 'TEKUEI 德溎',
-      url: 'https://tekuei.com/about',
-      jobTitle: '軟體工程師、策展人',
-      description:
-        '10 年軟體工程師經歷，策劃過 10 餘檔展覽，同時是 MONOLAB 共同創辦人。目前專注記錄日常想法，以及行銷、軟體工程、AI 相關的內容創作。',
-      knowsAbout: ['軟體工程', '美學', '設計', '行銷', 'AI'],
-    },
-  ],
-}
-const SITE_DESCRIPTION = '探索底層邏輯與真相，對未知領域充滿好奇，喜愛技術、行銷與人工智慧。'
+// The site-wide part of the head: each page draws its own title, description, canonical, social tags and
+// JSON-LD (PageHead), so none of those is here.
+// Without JS nothing adds is-visible, so the entrance would leave the page blank.
+const NO_SCRIPT = '<style>.fade-in{opacity:1!important;transform:none!important;filter:none!important}</style>'
 
 // The page scrolls on <html> (index.css); each route module's handle adds its own classes.
 export const handle: PageHandle = { htmlClass: () => 'has-scroll-document' }
@@ -67,19 +44,8 @@ function Document({ children }: { children: ReactNode }) {
         <meta name="theme-color" content="#0b0b0d" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta property="og:site_name" content="TEKUEI 德溎" />
-        <meta property="og:locale" content="zh_TW" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://tekuei.com/" />
-        <meta property="og:title" content="TEKUEI 德溎" />
-        <meta property="og:description" content={SITE_DESCRIPTION} />
-        <meta property="og:image" content="https://tekuei.com/og.jpg" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://tekuei.com/og.jpg" />
-        <meta name="twitter:title" content="TEKUEI 德溎" />
-        <meta name="twitter:description" content={SITE_DESCRIPTION} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SITE_LD) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(siteLd(lang)) }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
@@ -88,6 +54,7 @@ function Document({ children }: { children: ReactNode }) {
         />
         <Meta />
         <Links />
+        <noscript dangerouslySetInnerHTML={{ __html: NO_SCRIPT }} />
       </head>
       <body>
         {/* SiteNav makes #root inert while the mobile menu, portalled to <body>, is open. */}
@@ -96,19 +63,6 @@ function Document({ children }: { children: ReactNode }) {
       </body>
     </html>
   )
-}
-
-// The title and description the server sent, read before hydration. React normally takes them over, but on some
-// pages (About) it renders its own beside them, so a server copy goes once React has another of the same kind.
-const SERVER_HEAD = typeof document === 'undefined' ? [] : [...document.head.querySelectorAll('title, meta[name="description"]')]
-const HEAD_KINDS = ['title', 'meta[name="description"]']
-
-function dropServerHeadCopies() {
-  for (const kind of HEAD_KINDS) {
-    const all = [...document.head.querySelectorAll(kind)]
-    if (all.length < 2) continue
-    for (const el of all) if (SERVER_HEAD.includes(el)) el.remove()
-  }
 }
 
 // Scroll position of each history entry, so back / forward returns to where the reader was.
@@ -182,12 +136,6 @@ function Shell({ children }: { children: ReactNode }) {
 }
 
 export default function Root() {
-  useEffect(() => {
-    dropServerHeadCopies()
-    const observer = new MutationObserver(dropServerHeadCopies)
-    observer.observe(document.head, { childList: true })
-    return () => observer.disconnect()
-  }, [])
   return (
     <Shell>
       <Outlet />

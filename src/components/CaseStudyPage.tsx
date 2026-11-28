@@ -14,6 +14,8 @@ import { ProjectHero } from './work/ProjectHero.tsx'
 import '../styles/journal.css'
 import '../styles/project.css'
 import { DefaultHead } from './DefaultHead.tsx'
+import { PageHead } from './PageHead.tsx'
+import { creativeWorkLd, imageUrl, pageUrl } from '../lib/seo.ts'
 
 /** One of the first three cases. Its text is in code; the page is laid out as a project page (ProjectPage). */
 /**
@@ -45,15 +47,25 @@ export default function CaseStudyPage({ work, assets }: { work: WorkData; assets
     ? [...projectFacts(item, lang), ...(item.link || !site ? [] : [[t.link, site.lines, site.href] satisfies ProjectFact])]
     : hero.meta.map((m): ProjectFact => [m.label, m.lines, m.href])
 
+  const title = item ? projectTitle(item) : [hero.titleEm, hero.titleRest].filter(Boolean).join(' ')
+  const description = item ? (item.descriptionLines ?? []).join('') || item.client : undefined
+
   return (
     <div className="journal-page journal-page--post">
-      <DefaultHead title={data.documentTitle} description={item ? (item.descriptionLines ?? []).join('') || item.client : undefined} />
+      <PageHead
+        title={`${title} · Projects · TEKUEI`}
+        description={description}
+        path={`/projects/${slug}`}
+        type="article"
+        image={imageUrl(cover)}
+        ld={creativeWorkLd({ name: title, description, url: pageUrl(`/projects/${slug}`, lang), tags: item?.tags }, lang)}
+      />
       <main>
         <ProjectHero
           cover={cover}
           background={hero.bg}
           num={listed === '00' ? hero.num : `${t.num} ${listed}`}
-          title={item ? projectTitle(item) : [hero.titleEm, hero.titleRest].filter(Boolean).join(' ')}
+          title={title}
           facts={facts}
         />
         <article className="journal-post project-post project-post--cover">

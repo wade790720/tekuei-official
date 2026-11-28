@@ -4,6 +4,8 @@ import { useWorkContent } from '../hooks/useWorkContent.ts'
 import { labWorkItems } from '../labs/media.ts'
 import { SiteFooter } from './SiteFooter.tsx'
 import { projectCover } from '../data/workMedia.ts'
+import { PageHead } from './PageHead.tsx'
+import { collectionLd } from '../lib/seo.ts'
 import { projectLink, PROJECT_SECTIONS, PROJECTS_PAGE, projectTitle, projectType, WORK_LABELS } from '../data/work.ts'
 import { useAdmin } from '../context/admin.ts'
 import { useLang, useLocalePath } from '../i18n'
@@ -147,8 +149,12 @@ export default function WorkListPage({ work }: { work: WorkData }) {
 
   return (
     <div className="work-page">
-      <title>{page.title}</title>
-      <meta name="description" content={page.description} />
+      <PageHead
+        title={page.title}
+        description={page.description}
+        path="/projects"
+        ld={collectionLd(page, all.filter((w) => w.caseHref.startsWith('/')).map((w) => ({ name: projectTitle(w), href: w.caseHref })), lang)}
+      />
       <header className="work-page-header">
         <canvas className="work-page-header__measure" ref={measure} aria-hidden />
         <div className="work-page-header-inner" ref={block}>
