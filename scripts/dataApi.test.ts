@@ -11,8 +11,21 @@ const { right: SECRET, wrong } = testCodes()
 const site = () => ({ journal: { posts: ['old'] }, work: { items: ['matsu'] } })
 const env = (initial: Record<string, unknown> = { 'data.json': site() }): TestEnv => ({ ADMIN_SECRET: SECRET, BUCKET: fakeR2(initial) })
 
-const get = (e: TestEnv, ifNoneMatch?: string) =>
-  onRequestGet({ request: new Request('https://x/api/data', { headers: ifNoneMatch ? { 'If-None-Match': ifNoneMatch } : {} }), env: e })
+const get = (e: TestEnv, ifNoneMatch?: string, code: string | null = SECRET) =>
+  onRequestGet({
+    request: new Request('https://x/api/data', {
+      headers: { ...(code === null ? {} : { Authorization: `Bearer ${code}` }), ...(ifNoneMatch ? { 'If-None-Match': ifNoneMatch } : {}) },
+    }),
+    env: e,
+  })
+/** Wrong guesses counted so far, as src/lib/adminAuth.ts keeps them. */
+const fails = (e: TestEnv) => {
+  try {
+    return Number(e.BUCKET.read('admin/attempts.json').fails)
+  } catch {
+    return 0
+  }
+}
 const etagOf = async (e: TestEnv) => (await get(e)).headers.get('ETag') ?? undefined
 const put = (e: TestEnv, body: unknown, { code = SECRET, etag }: { code?: string; etag?: string } = {}) =>
   onRequestPut({
@@ -136,4 +149,25 @@ test('a weak ETag, as Cloudflare sends when it compresses the file, still gets 3
   const e = env()
   const etag = (await get(e)).headers.get('ETag') ?? ''
   assert.equal((await get(e, `W/${etag}`)).status, 304)
+})
+
+test('reading data.json needs the code: drafts are in it', async () => {
+  const e = env()
+  const res = await get(e, undefined, null)
+  assert.equal(res.status, 401)
+  assert.doesNotMatch(await res.text(), /matsu/)
+  // No code at all is no guess: a crawler or an old link cannot lock the site.
+  assert.equal(fails(e), 0)
+  assert.equal((await get(e)).status, 200)
+  assert.equal(fails(e), 0, 'the right code takes back its own count')
+})
+
+test('a wrong code for reading counts as a wrong guess, and the lock covers reading too', async () => {
+  const e = env()
+  const res = await get(e, undefined, wrong())
+  assert.equal(res.status, 401)
+  assert.doesNotMatch(await res.text(), /matsu/)
+  assert.equal(fails(e), 1)
+  for (let i = 2; i <= 5; i++) await get(e, undefined, wrong(i))
+  assert.equal((await get(e)).status, 429, 'locked: even the right code reads nothing for a while')
 })

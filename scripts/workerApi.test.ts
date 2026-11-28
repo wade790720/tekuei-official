@@ -19,9 +19,10 @@ async function call(method: string, path: string, init: RequestInit = {}) {
 }
 
 describe('Worker API table', () => {
-  it('GET and HEAD /api/data reach the data handler', async () => {
+  it('GET and HEAD /api/data reach the data handler, which asks for the code', async () => {
     for (const method of ['GET', 'HEAD']) {
-      const res = await call(method, '/api/data')
+      assert.equal((await call(method, '/api/data')).status, 401)
+      const res = await call(method, '/api/data', { headers: auth })
       assert.equal(res.status, 200)
       assert.ok(res.headers.get('ETag'), `${method} has the data ETag`)
     }

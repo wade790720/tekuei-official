@@ -5,8 +5,8 @@ import { PageHead } from './PageHead.tsx'
 import { firstImage, profileLd } from '../lib/seo.ts'
 import { SiteFooter } from './SiteFooter.tsx'
 import { useAdmin } from '../context/admin.ts'
-import { useCmsSection } from '../hooks/useCmsSection.ts'
-import { ABOUT_CLIENTS, ABOUT_META, aboutInEnglish, cloneAbout, getDefaultAbout } from '../data/about.ts'
+import { useAbout } from '../context/about.ts'
+import { ABOUT_CLIENTS, ABOUT_META, aboutInEnglish } from '../data/about.ts'
 import { uploadSiteImage } from '../lib/adminApi.ts'
 import { docText, getDoc } from '../lib/richText.ts'
 import { mountGrainHaze } from '../lib/grainHaze.ts'
@@ -44,7 +44,7 @@ const AboutEditPanel = lazy(() => import('./about/AboutEditPanel.tsx').then((m) 
 export default function AboutPage({ about }: { about: AboutPageData }) {
   const { lang } = useLang()
   const admin = useAdmin()
-  const cms = useCmsSection('aboutPage',getDefaultAbout, cloneAbout)
+  const cms = useAbout()
   const meta = ABOUT_META[lang]
   const haze = useRef<HTMLCanvasElement>(null)
 
